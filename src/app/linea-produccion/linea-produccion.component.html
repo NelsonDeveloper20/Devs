@@ -1,0 +1,46 @@
+<ngx-spinner bdColor="rgba(255, 255, 255, 1)" size="medium" color="#0D7ABD" type="ball-beat" [fullScreen]="true">
+    <p style="color: black">Loading...</p>
+  </ngx-spinner> 
+  <div class="content-body">
+      <div class="container-fluid">
+          
+          <div class="row page-titles mx-0"  style="padding: 0 !important;
+      background: transparent !important;
+      margin-bottom: 0 !important;
+      border-radius: 5px !important;
+      margin-top: -20px !important;">
+              <div class="col-sm-6 p-md-0">
+                  <div class="welcome-text">
+                      <h4>Linea de Producción</h4> 
+                  </div>
+              </div>
+              <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+                  <ol class="breadcrumb">
+                                 
+  <mat-button-toggle-group name="ingredients" aria-label="Ingredients" multiple style="border-radius: 70px;
+  border: 3px solid #B8122B;font-weight: 500;
+  box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 0%), 0px 6px 10px 0px rgba(0, 0, 0, .14), 0px 1px 18px 0px rgba(0, 0, 0, .12);">
+    <mat-button-toggle value="flour" >Filtro <mat-icon style="color: #B8122B;">filter_list</mat-icon></mat-button-toggle>
+    <mat-button-toggle value="eggs" (click)="iniciarGraficos()">Refrescar <mat-icon style="color: #B8122B;">autorenew</mat-icon ></mat-button-toggle> 
+  </mat-button-toggle-group>	
+                  </ol>
+              </div>
+          </div>
+          <div class="row">
+			 <!-- FILTRO -->
+          </div> 
+          <div class="row">  
+            <div class="col-lg-6">    
+                <div id="container_circular" class="card"></div>
+            </div>
+            <div class="col-lg-6">           
+                <div id="container_derecho" class="card"></div>
+            </div> 
+            
+            <div class="col-lg-12">
+                <div id="container_linea_horizontal" class="card"></div>
+            </div>
+    </div>
+      </div>
+  </div> 
+  

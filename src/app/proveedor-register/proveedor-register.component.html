@@ -1,0 +1,442 @@
+ 
+<style>
+ .mat-form-field--inline {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.mat-form-field--inline .mat-form-field {
+    display: inline-block;
+    width: 100%;
+    vertical-align: middle;
+}
+ 
+    .mat-form-field--inline .mat-form-field:nth-child(1) {
+        margin-right: 25px;
+    }
+   
+      </style>
+      <div class="main-content" style="margin: 26px;">
+ <div class="container-fluid"> 
+    <div class="col-lg-12" style="    width: 80%;    margin: auto;">
+        <div class="row">
+          <div class="col-lg-12 col-md-6 col-sm-6">
+              <div class="card card-stats">
+                  <div class="card-header card-header-warning card-header-icon" style="    padding-top: 15px;
+                  padding-bottom: 15px;
+              ">
+                      <div class="card-icon">
+                        <img  
+                         src="https://konfirma.com.co/wp-content/uploads/2016/05/konfirma-icono-gestion-proveedores.png"  
+                            style="width: 44px;
+                        height: auto;"     />
+                      </div>
+                    <br> 
+                    <div class="center" style="    width: 100%;
+                    text-align: center;">
+                      <h4 class="card-category">Complete sus datos</h4>
+                    </div>
+                    <button mat-raised-button [routerLink]="['/']">Regresar</button>
+                  </div> 
+              <div class="">
+                <div class="">
+                  <ngb-alert
+                  [type]="'danger'"
+                  (closed)="message = ''"
+                  *ngIf="!!message"
+                  >{{ message }}</ngb-alert
+                >
+                    <!--<button mat-raised-button (click)="isLinear = !isLinear" id="toggle-linear">
+            {{!isLinear ? 'Enable linear mode' : 'Disable linear mode'}}
+           </button>-->
+           <mat-stepper [linear]="isLinear" #stepper  >
+            <mat-step [stepControl]="firstFormGroup">
+              <form [formGroup]="firstFormGroup">
+                <ng-template matStepLabel>Datos generales</ng-template>
+                <br>
+           <div class="row" style="    font-size: 14px;    margin-left: 12px;">
+           
+            <div class="mat-form-field--inline"> 
+                <mat-form-field appearance="outline">
+                  <mat-label [style.color]="'black'"  style="font-size: 17px">Correo electrónico</mat-label>
+                  <input  matInput [(ngModel)]="user.correoelectronico"  placeholder="Ingrese correo" formControlName="correoElectronico" required>
+                </mat-form-field> 
+             </div>
+           
+            <div class="mat-form-field--inline"> 
+                <mat-form-field appearance="outline">
+                  <mat-label [style.color]="'black'"  style="font-size: 17px">Nombre </mat-label>
+                  <input  matInput [(ngModel)]="user.nombre"  placeholder="Ingrese nombre" formControlName="nombreProv" required>
+                </mat-form-field> 
+            </div>
+           
+            <div class="mat-form-field--inline"> 
+                <mat-form-field appearance="outline">
+                  <mat-label [style.color]="'black'"  style="font-size: 17px">Ruc</mat-label>
+                  <input  matInput  [(ngModel)]="user.ruc" placeholder="Ingrese ruc" formControlName="rucProv" required>
+                </mat-form-field>  
+              </div>
+              <div class="mat-form-field--inline"> 
+                <mat-form-field appearance="outline">
+                  <mat-label [style.color]="'black'"  style="font-size: 17px">Razón Social</mat-label>
+                  <input  matInput [(ngModel)]="user.razonsocial"  placeholder="Ingrese razón social" formControlName="razonSocialProv" required>
+                </mat-form-field> 
+              </div>
+              <!--<p>
+                <mat-form-field appearance="outline">
+                  <mat-label [style.color]="'black'"  style="font-size: 17px">Outline form field</mat-label>
+                  <input matInput placeholder="Placeholder">
+                  <mat-icon matSuffix>sentiment_very_satisfied</mat-icon> 
+                </mat-form-field>
+              </p> -->
+              <div class="mat-form-field--inline"> 
+                <mat-form-field appearance="outline">
+                  <mat-label [style.color]="'black'"  style="font-size: 17px">Direccion</mat-label>
+                  <input  matInput    [(ngModel)]="user.direccion" placeholder="Ingrese direccion" formControlName="direccionProv" required>
+                </mat-form-field> 
+              </div>
+              <div class="mat-form-field--inline"> 
+                <mat-form-field appearance="outline">
+                  <mat-label [style.color]="'black'"  style="font-size: 17px">Número</mat-label>
+                  <input  matInput   [(ngModel)]="user.numero" placeholder="Ingrese numero" formControlName="numeroProv" required>
+                </mat-form-field> 
+              </div>
+              <div class="mat-form-field--inline"> 
+                <mat-form-field appearance="outline">
+                  <mat-label [style.color]="'black'"  style="font-size: 17px">Distrito</mat-label>
+                  <input  matInput  [(ngModel)]="user.distrito" placeholder="Ingrese distrito" formControlName="distritoProv" required>
+                </mat-form-field>
+                </div> 
+                
+              <div class="mat-form-field--inline"> 
+               <mat-form-field appearance="outline">
+                 <mat-label [style.color]="'black'"  style="font-size: 17px">Provincia</mat-label>
+                 <input  matInput  [(ngModel)]="user.provincia" placeholder="Ingrese provincia" formControlName="provinciaProv" required>
+               </mat-form-field>
+               </div> 
+               
+              <div class="mat-form-field--inline"> 
+               <mat-form-field appearance="outline">
+                 <mat-label [style.color]="'black'"  style="font-size: 17px">Departamento</mat-label>
+                 <input  matInput [(ngModel)]="user.departamento"  placeholder="Ingrese departamento" formControlName="departamentoProv" required>
+               </mat-form-field>
+               </div> 
+               
+               <div class="mat-form-field--inline"> 
+                   <mat-form-field appearance="outline">
+                     <mat-label [style.color]="'black'"  style="font-size: 17px">Pais</mat-label>
+                     <input  matInput [(ngModel)]="user.pais"  placeholder="Ingrese pais" formControlName="paisProv" required>
+                   </mat-form-field>
+                   </div> 
+           
+                   
+              <div class="mat-form-field--inline"> 
+               <mat-form-field appearance="outline">
+                  <!-- <span>(Actividad económica principal consignada en ficha RUC)</span>-->
+                 <mat-label [style.color]="'black'"  style="font-size: 17px">Código CIU</mat-label>
+                 <input  matInput [(ngModel)]="user.codigociu"  placeholder="Ingrese CIU" formControlName="codigoCiuProv" required>
+                 
+                 <mat-hint align="start">Actividad económica principal consignada en ficha RUC</mat-hint>
+               </mat-form-field>
+               </div> 
+               <div class="mat-form-field--inline"> 
+                <mat-form-field appearance="outline">
+                  <mat-label [style.color]="'black'"  style="font-size: 17px">Teléfono Fijo</mat-label>
+                  <input  matInput  [(ngModel)]="user.telefonofijo" placeholder="Ingrese Telefono" formControlName="telefonoFijo" required>
+                </mat-form-field> 
+             </div>
+            
+            <div class="mat-form-field--inline"> 
+                <mat-form-field appearance="outline">
+                  <mat-label [style.color]="'black'"  style="font-size: 17px">Página Web</mat-label>
+                  <input  matInput  [(ngModel)]="user.paginaweb" placeholder="Ingrese página web" formControlName="paginaWeb" required>
+                </mat-form-field>  
+              </div>
+              </div>
+                <div> 
+                  <button mat-button matStepperNext class="btn btn-primary">Siguiente</button>
+                </div>
+              </form>
+            </mat-step>
+            <mat-step [stepControl]="secondFormGroup" label="Datos De Contacto">
+              <form [formGroup]="secondFormGroup">
+                <br>
+                
+                <div class="example-container" >
+                 
+                  <fieldset style="  padding-top: 0px !important; ">
+                    <legend style="    font-size: 17px;">Cuenta Bancaria</legend> 
+                    <div class="row"  style="float: right;z-index: 999999;">
+                      <div class="mat-form-field--inline" style="float: right;"> 
+                           <button mat-mini-fab color="primary" (click)="addCuentaBancaria()"
+                            aria-label="Example icon button with a delete icon" style="    z-index: 999999;
+                            right: 9px; ">
+                           <mat-icon>plus_one</mat-icon>
+                           </button> 
+                     </div></div>
+                    <div class="row"  style="  font-size: 14px;   margin-left: 12px;"> 
+                        
+                        <form [formGroup]="cuentasForm" (ngSubmit)="onSubmit()" 
+                        class="row" style="  font-size: 14px;   margin-left: 12px;"> 
+    <br>
+                             <div  formArrayName="contenidocuentas">  
+                           
+                            <div class="row" *ngFor="let quantity of contenidocuentas().controls; let i=index" [formGroupName]="i">  
+                               
+                              <div class="col-lg-12"> 
+                                <div class="col-lg-6">
+                                <h5 style="float: left;"*ngIf="i!=0" >Cuenta Bancaria - {{i + 1}}</h5>
+                              </div>
+     
+                            <div class="example-button-container">
+                              <button mat-mini-fab color="warn" style="float: right;" *ngIf="i!=0" (click)="removecuentasy(i)" aria-label="Example icon button with a delete icon">
+                              <mat-icon>delete</mat-icon>
+                              </button>
+                              </div>  
+                              </div>
+    
+    
+                              
+                              
+                              <div class="mat-form-field--inline"> 
+                                <mat-form-field appearance="outline">
+                                  <mat-label [style.color]="'black'"  style="font-size: 17px">Banco</mat-label>
+                                  <input  matInput   formControlName="banco" placeholder="Ingrese banco"   required>
+                                </mat-form-field> 
+                              </div> 
+                              <div class="mat-form-field--inline"> 
+                                <mat-form-field appearance="outline">
+                                  <mat-label [style.color]="'black'"  style="font-size: 17px">Cuenta Bancaria</mat-label>
+                                  <input  matInput   formControlName="cuentabancaria" placeholder="Ingrese cuenta bancaria"  required>
+                                </mat-form-field> 
+                              </div> 
+                              <div class="mat-form-field--inline"> 
+                                <mat-form-field appearance="outline">
+                                  <mat-label [style.color]="'black'"  style="font-size: 17px">CCI</mat-label>
+                                  <input  matInput   formControlName="cci" placeholder="Ingrese correo cci" required>
+                                </mat-form-field>
+                                </div> 
+                                
+                              <div class="mat-form-field--inline"> 
+                               <mat-form-field appearance="outline">
+                                 <mat-label [style.color]="'black'"  style="font-size: 17px">Padron al que pertenece</mat-label>
+                                 <input  matInput  formControlName="padron"  placeholder="Ingrese padron"  required>
+                               </mat-form-field>
+                               </div> 
+                               <div class="mat-form-field--inline"> 
+                                <mat-form-field appearance="outline">
+                                  <mat-label [style.color]="'black'"  style="font-size: 17px">Año</mat-label>
+                                  <input  matInput  formControlName="anio"  placeholder="Ingrese año"  required>
+                                </mat-form-field>
+                                </div> 
+                                <div class="mat-form-field--inline"> 
+                                 <mat-form-field appearance="outline">
+                                   <mat-label [style.color]="'black'"  style="font-size: 17px">Correo Electronico</mat-label>
+                                   <input  matInput  formControlName="correo"  placeholder="Ingrese correo"  required>
+                                 </mat-form-field>
+                                 </div> 
+                            </div>  
+                          </div>  
+                           
+                        <!--  <button type="submit" class="btn btn-success">Submit</button>   -->
+                            
+                        </form> 
+                    </div>
+                  </fieldset>                  
+                </div> 
+               
+                <div class="example-container" >
+                 
+                  <fieldset style="  padding-top: 0px !important; ">
+                    <legend style="    font-size: 17px;">Contacto</legend>
+                <div class="row"  style="float: right;z-index: 999999;">
+                  <div class="mat-form-field--inline" style="float: right;"> 
+                       <button mat-mini-fab color="primary" (click)="addQuantity()"
+                        aria-label="Example icon button with a delete icon" style="    z-index: 999999;
+                        right: 9px; ">
+                       <mat-icon>plus_one</mat-icon>
+                       </button> 
+                 </div>
+                </div>
+                <div class="row"  style="  font-size: 14px;   margin-left: 12px;">
+                    <form [formGroup]="productForm" (ngSubmit)="onSubmit()" 
+                    class="row" style="  font-size: 14px;   margin-left: 12px;">
+                        
+                     <!-- <p>  
+                        <label for="name">Product Name:</label>  
+                        <input type="text" id="name" name="name" formControlName="name" class="form-control">  
+                      </p> 
+                    --> 
+                    
+<br>
+                         <div  formArrayName="quantities">  
+                       
+                        <div class="row" *ngFor="let quantity of quantities().controls; let i=index" [formGroupName]="i">  
+                           
+                          <div class="col-lg-12"> 
+                            <div class="col-lg-6">
+                            <h5 style="float: left;"  *ngIf="i!=0">Contacto - {{i + 1}}</h5>
+                          </div>
+ 
+                        <div class="example-button-container">
+                          <button mat-mini-fab color="warn" style="float: right;" *ngIf="i!=0" (click)="removeQuantity(i)" aria-label="Example icon button with a delete icon">
+                          <mat-icon>delete</mat-icon>
+                          </button>
+                          </div>  
+                          </div>
+
+
+                          
+                          
+                          <div class="mat-form-field--inline"> 
+                            <mat-form-field appearance="outline">
+                              <mat-label [style.color]="'black'"  style="font-size: 17px">Nombre</mat-label>
+                              <input  matInput   formControlName="nombre" placeholder="Ingrese nombre"   required>
+                            </mat-form-field> 
+                          </div> 
+                          <div class="mat-form-field--inline"> 
+                            <mat-form-field appearance="outline">
+                              <mat-label [style.color]="'black'"  style="font-size: 17px">Apellido</mat-label>
+                              <input  matInput   formControlName="apellido" placeholder="Ingrese apellido"  required>
+                            </mat-form-field> 
+                          </div> 
+                          <div class="mat-form-field--inline"> 
+                            <mat-form-field appearance="outline">
+                              <mat-label [style.color]="'black'"  style="font-size: 17px">Correo Electronico</mat-label>
+                              <input  matInput   formControlName="correo" placeholder="Ingrese correo electronico" required>
+                            </mat-form-field>
+                            </div> 
+                            
+                          <div class="mat-form-field--inline"> 
+                           <mat-form-field appearance="outline">
+                             <mat-label [style.color]="'black'"  style="font-size: 17px">Celular</mat-label>
+                             <input  matInput  formControlName="celular"  placeholder="Ingrese celular"  required>
+                           </mat-form-field>
+                           </div> 
+                        </div>  
+                      </div>  
+                       
+                    <!--  <button type="submit" class="btn btn-success">Submit</button>   -->
+                        
+                    </form>  
+                        <!--
+                    <br/>  
+                    </div> -->
+                   
+                    <div class="col-lg-12">
+                <div class="row"> 
+                    <div class="form-group" style="    margin: 4px;">
+                    <button mat-button matStepperPrevious class="btn btn-danger">Atrás</button>
+                </div>
+                <div class="form-group" style="    margin: 4px;">
+                        <button mat-button matStepperNext class="btn btn-primary">Siguiente</button>
+                    </div>
+                </div>
+            </div>
+                </div>
+              </fieldset>                  
+            </div> 
+              </form>
+            </mat-step>
+            
+         
+              <mat-step [stepControl]="treeFormGroup" label="Forma De Pago">
+                <form [formGroup]="treeFormGroup">
+                    <br>
+                  <div class="row"  style="    margin-left: 12px; font-size: 14px;">
+                   
+                    
+
+                    <div class="mat-form-field--inline"> 
+                      <mat-form-field appearance="outline" fxFill>
+                        <mat-label [style.color]="'black'"  style="font-size: 17px">Moneda</mat-label>
+                        <mat-select formControlName="moneda" (selectionChange)="changemoneda()"   [(ngModel)]="user.moneda">
+                          <mat-option value="PEN">PEN</mat-option>
+                          <mat-option value="USD">USD</mat-option> 
+                        </mat-select>
+                        
+                        <mat-hint align="start">Seleccione moneda^</mat-hint>
+                      </mat-form-field>
+                    </div>
+                  
+                    <div class="mat-form-field--inline"> 
+                      <mat-form-field appearance="outline" fxFill>
+                        <mat-label [style.color]="'black'"  style="font-size: 17px">Condición Pago</mat-label>
+                        <mat-select formControlName="condicionPago"  [(ngModel)]="user.condicionpago">
+                          <mat-option value="7D">7D</mat-option>
+                          <mat-option value="15D">15D</mat-option> 
+                          <mat-option value="30D">30D</mat-option> 
+                          <mat-option value="45D">45D</mat-option>
+                          <mat-option value="PAGO CONTADO">PAGO CONTADO</mat-option>  
+                        </mat-select>
+                        <mat-hint align="start">Seleccione moneda^</mat-hint>
+                      </mat-form-field>
+                    </div> 
+                    <div class="mat-form-field--inline"> 
+                      <mat-form-field appearance="outline">
+                        <mat-label [style.color]="'black'"  style="font-size: 17px">Monto Crédito Besco</mat-label>
+                        <input  matInput  [(ngModel)]="user.montocreditobesco" (change)="creditBesco($event)"  placeholder="Ingrese numero de cuenta" formControlName="creditoMontoBesco" required>
+                      </mat-form-field> 
+                    </div>
+                    <div class="mat-form-field--inline"> 
+                      <mat-form-field appearance="outline">
+                        <mat-label [style.color]="'black'"  style="font-size: 17px">Monto Crédito Miranda</mat-label>
+                        <input  matInput  [(ngModel)]="user.montocreditomiranda" (change)="creditMiranda($event)" placeholder="Ingrese monto credito" formControlName="creditoMontoMiranda" required>
+                      </mat-form-field>
+                      </div> 
+                       
+                                                            
+                      <div class="col-lg-12">
+                  <div class="row"> 
+                      <div class="form-group" style="    margin: 4px;">
+                      <button mat-button matStepperPrevious class="btn btn-danger">Atrás</button>
+                  </div>
+                  <div class="form-group" style="    margin: 4px;">
+                          <button mat-button matStepperNext class="btn btn-primary">Siguiente</button>
+                      </div>
+                  </div>
+              </div>
+                  </div>
+                </form>
+              </mat-step>
+            <mat-step [stepControl]="firstFormGroup" [editable]="isEditable">
+              <ng-template matStepLabel>Hecho</ng-template>
+              <p>Ya has terminado.</p>
+              <div class="row" >
+                
+               
+                <div class="form-group" style="    margin: 4px;">
+                    <button mat-button matStepperPrevious class="btn btn-danger">Atrás</button>
+                </div><div class="form-group" style="    margin: 4px;">
+                    <button mat-button (click)="stepper.reset()" class="btn btn-danger">Reiniciar</button>
+                    
+                </div> <div class="form-group" style="    margin: 4px;">
+                    <button mat-button class="btn btn-suscess" 
+                    (click)="ActualizarProveedor()">Finalizar</button>
+                    <!-- [routerLink]="['/Home-main']"-->
+                </div>
+              </div>
+            </mat-step>
+           </mat-stepper>
+           </div>
+              </div>
+                  <!-- <div class="card-footer">
+                      <div class="stats">
+                        <button mat-raised-button type="submit" class="btn btn-danger">Seleccionar</button>
+                      </div>
+                  </div> -->
+              </div>
+          </div>
+           
+      </div>
+        
+  </div>
+     
+</div>
+</div>
+ 
+<!--  <h1>JSONSS</h1>
+{{this.productForm.value | json}}  <br>
+{{contenidocuentas.value | json}}
+{{user | json}}-->

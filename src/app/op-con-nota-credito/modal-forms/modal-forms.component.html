@@ -1,0 +1,28 @@
+<h2 mat-dialog-title>Seleccionar una fila</h2>
+<mat-dialog-content>
+  <table>
+    <thead>
+      <tr> 
+        <td>Documento</td>
+        <td>Tipo Documento</td>
+        <td>Accion        </td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of data.rows">
+        <td>{{ row.COD_CLIENTE }}</td>
+        <td>{{ row.Tipodocumento }}</td>
+        <td>
+          <mat-radio-button
+            [checked]="row.selected"
+            (click)="selectRow(row)"
+          ></mat-radio-button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="dialogRef.close()">Cancelar</button>
+  <!--<button mat-button color="primary" [mat-dialog-close]="data.selectedRow">Aceptar</button>-->
+</mat-dialog-actions>

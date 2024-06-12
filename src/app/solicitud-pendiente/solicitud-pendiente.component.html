@@ -1,0 +1,642 @@
+<ngx-spinner bdColor="rgba(255, 255, 255, 1)" size="medium" color="#0D7ABD" type="ball-beat" [fullScreen]="true">
+  <p style="color: black">Loading...</p>
+</ngx-spinner>
+<style>
+  .vacios_ {
+    color: #e51717;
+    font-weight: 600;
+  }
+
+  .mat-fab-extended {
+
+    border-radius: 5px !important;
+    width: auto;
+    height: auto;
+    padding: 0 16px;
+    min-width: 64px;
+    min-height: 36px;
+    font-size: 14px;
+    text-transform: uppercase;
+  }
+
+  .mat-fab-extended span {
+    margin-left: 8px;
+  }
+
+  .mat-form-field--inline {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .mat-form-field--inline .mat-form-field {
+    display: inline-block;
+    width: 100%;
+    vertical-align: middle;
+  }
+
+  .mat-form-field--inline .mat-form-field:nth-child(1) {
+    margin-right: 25px;
+  }
+
+  .long-text-column {
+    white-space: normal;
+    width: 300px !important;
+  }
+
+  .long-text-column2 {
+    white-space: normal;
+    width: 150px !important;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  .breadcrumb-item:before {
+    color: #6c757d00 !important;
+}
+.btn-reveal-trigger{font-size: 14px;}
+
+
+</style>
+<div class="content-body">
+	<div class="container-fluid">
+		
+		<div class="row page-titles mx-0"  style="padding: 0 !important;
+    background: transparent !important;
+    margin-bottom: 0 !important;
+    border-radius: 5px !important;
+    margin-top: -20px !important;">
+            <div class="col-sm-6 p-md-0">
+                <div class="welcome-text">
+                    <h4>Ventas</h4>
+                    <p class="mb-0">Listado de consultas</p>
+                </div>
+            </div>
+            <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+                <ol class="breadcrumb">			 
+<mat-button-toggle-group name="ingredients" aria-label="Ingredients" multiple style="border-radius: 70px;
+border: 3px solid #B8122B;font-weight: 500;
+box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 0%), 0px 6px 10px 0px rgba(0, 0, 0, .14), 0px 1px 18px 0px rgba(0, 0, 0, .12);">
+  <mat-button-toggle value="flour" (click)="showFilter()">Filtro <mat-icon style="color: #B8122B;">filter_list</mat-icon></mat-button-toggle>
+  <mat-button-toggle value="eggs">Refrescar <mat-icon style="color: #B8122B;">autorenew</mat-icon ></mat-button-toggle>
+  <mat-button-toggle value="sugar" (click)="nuevaOP()">Nueva OP <mat-icon style="color: #B8122B;">note_add</mat-icon></mat-button-toggle>
+</mat-button-toggle-group>	
+					<!--<li class="breadcrumb-item item"><button mat-raised-button color="primary">Refrescar</button></li>
+					<li class="breadcrumb-item item"><button mat-raised-button color="primary" (click)="nuevaOP()">Nueva OP</button></li>-->
+                </ol>
+            </div>
+        </div>
+		<br>
+		<div class="row">
+			
+		<div class="col-lg-12" *ngIf="showfilter">
+				
+			<div class="card">
+				
+				<div class="card-body">
+				<div class="row">
+				<div class="form-group col-md-2">
+					<label for="cboVendedor">Vendedor</label>
+					<!--<select class="form-control" id="cboVendedor" name="cboVendedor" [(ngModel)]="vendedor"></select>-->
+          <!-- Vendedor Combo -->
+          <mat-form-field appearance="outline" style="width: 100%;font-size: 14px;">
+            <mat-select [(ngModel)]="selectedVendedor" placeholder="Vendedor" style="width: 190px;" (openedChange)="filterVendedores($event)">
+              <mat-select-trigger>
+                {{ selectedVendedor || '---Seleccione---' }}
+              </mat-select-trigger>
+              <input matInput (keyup)="filterVendedores($event)" placeholder="Buscar" class="search-input" />
+              <mat-option value="">---Seleccione---</mat-option>
+              <mat-option *ngFor="let vendedor of filteredVendedores" [value]="vendedor">
+                {{ vendedor }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+				</div> 
+				<div class="form-group col-md-2">
+					<label for="cboCotizacion">Cotizacion</label>
+					<!--<select class="form-control" id="cboCotizacion" name="cboCotizacion" [(ngModel)]="cotizacion"></select>-->
+           <!-- Cotización Combo -->
+          <mat-form-field appearance="outline" style="width: 100%;font-size: 14px;">
+            <mat-select [(ngModel)]="selectedCotizacion" placeholder="Cotización" style="width: 190px;" (openedChange)="filterCotizaciones($event)">
+              <mat-select-trigger>
+                {{ selectedCotizacion || '---Seleccione---' }}
+              </mat-select-trigger>
+              <input matInput (keyup)="filterCotizaciones($event)" placeholder="Buscar" class="search-input" />
+              <mat-option value="">---Seleccione---</mat-option>
+              <mat-option *ngFor="let cotizacion of filteredCotizaciones" [value]="cotizacion">
+                {{ cotizacion }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+				</div> 
+				<div class="form-group col-md-2">
+					<label for="cboRazonSocial">Razon Social</label>
+					<input type="text" class="form-control" placeholder="Ingrese Razon Social" id="cboRazonSocial" name="cboRazonSocial" [(ngModel)]="razonSocial"> 
+				</div> 
+				<div class="form-group col-md-2">
+					<label for="cboTipoCliente">TipoCliente</label>
+					<!--<select class="form-control" id="cboTipoCliente" name="cboTipoCliente" [(ngModel)]="tipoCliente"></select>-->
+          <!-- Tipo Cliente Combo -->
+          <mat-form-field appearance="outline" style="width: 100%;font-size: 14px;">
+            <mat-select [(ngModel)]="selectedTipoCliente" placeholder="Tipo Cliente" style="width: 190px;" (openedChange)="filterTiposClientes($event)">
+              <mat-select-trigger>
+                {{ selectedTipoCliente?.nombre || '---Seleccione---' }} <!-- Cambio aquí: selectedTipoCliente?.nombre -->
+              </mat-select-trigger>
+              <input matInput (keyup)="filterTiposClientes($event)" placeholder="Buscar" class="search-input" />
+              <mat-option value="">---Seleccione---</mat-option>
+              <mat-option *ngFor="let tipoCliente of filteredTiposClientes" [value]="tipoCliente">
+                {{ tipoCliente.nombre }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+				</div> 
+				<div class="form-group col-md-2">
+					<label for="txtfec_inicio_n">Fecha Inicio</label>
+					<input type="date" class="form-control" placeholder="Ingrese los Nombres" id="txtfec_inicio_n" name="txtfec_inicio_n" [(ngModel)]="fechaInicio">
+					<p class="help-block" style="display: none;">Example block-level help text here.</p>
+				</div> 
+				<div class="form-group col-md-2">
+					<label for="txtfec_fin_n">Fecha Fin</label>
+					<input type="date" class="form-control" placeholder="Ingrese el Apellido Paterno" id="txtfec_fin_n" name="txtfec_fin_n" [(ngModel)]="fechaFin">
+					<p class="help-block" style="display: none;">Example block-level help text here.</p>
+				</div>  
+				<div class="form-group col-md-2">
+					<label for="CboOP">Grupo</label>
+					<!--<select class="form-control" id="CboOP" name="CboOP" [(ngModel)]="op"></select>-->
+          <mat-form-field appearance="outline" style="width: 100%;font-size: 14px;">
+            <mat-select [(ngModel)]="selectedGrupo" placeholder="Grupo" style="width: 190px;" (openedChange)="filterGrupos($event)">
+              <mat-select-trigger>
+                {{ selectedGrupo || '---Seleccione---' }}
+              </mat-select-trigger>
+              <input matInput (keyup)="filterGrupos($event)" placeholder="Buscar" class="search-input" />
+              <mat-option value="">---Seleccione---</mat-option>
+              <mat-option *ngFor="let grupo of filteredGrupos" [value]="grupo">
+                {{ grupo }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+				</div> 
+				<div class="form-group col-md-2">
+					<label for="CboRuc">RUC/DNI</label>
+					<!--<select class="form-control" id="CboRuc" name="CboRuc" [(ngModel)]="ruc"></select>-->
+          <!-- RUC Combo -->
+          <mat-form-field appearance="outline" style="width: 100%;font-size: 14px;">
+            <mat-select [(ngModel)]="selectedRuc" placeholder="RUC/DNI" style="width: 190px;" (openedChange)="filterRucs($event)">
+              <mat-select-trigger>
+                {{ selectedRuc || '---Seleccione---' }}
+              </mat-select-trigger>
+              <input matInput (keyup)="filterRucs($event)" placeholder="Buscar" class="search-input" />
+              <mat-option value="">---Seleccione---</mat-option>
+              <mat-option *ngFor="let ruc of filteredRucs" [value]="ruc">
+                {{ ruc }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+				</div> 
+				<div class="form-group col-md-2">
+					<label for="CboProyecto">Proyecto</label>
+					<!--<select class="form-control" id="CboProyecto" name="CboProyecto" [(ngModel)]="proyecto"></select>-->
+         <!-- Proyecto Combo -->
+         <mat-form-field appearance="outline" style="width: 100%;font-size: 14px;">
+          <mat-select [(ngModel)]="selectedProyecto" placeholder="Proyecto" style="width: 190px;" (openedChange)="filterProyectos($event)">
+            <mat-select-trigger>
+              {{ selectedProyecto?.nombre || '---Seleccione---' }} <!-- Cambio aquí: selectedProyecto?.nombre -->
+            </mat-select-trigger>
+            <input matInput (keyup)="filterProyectos($event)" placeholder="Buscar" class="search-input" />
+            <mat-option value="">---Seleccione---</mat-option>
+            <mat-option *ngFor="let proyecto of filteredProyectos" [value]="proyecto">
+              {{ proyecto.nombre }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+				</div> 
+				<div class="form-group col-md-4"><br>
+					
+				<section> 
+					<div class="example-button-row"> 
+					  <button mat-flat-button color="primary" style="    margin: 6px;" class="btn btn-primary" (click)="obtenerDetalleOpGrupo()">Buscar</button>
+					  <button mat-flat-button color="accent"  style="    margin: 6px;" class="btn btn-primary" (click)="exportToExcel()">Exportar</button>
+					  <button mat-flat-button color="warn"  style="    margin: 6px;" class="btn btn-success" (click)="EnviarGrupoMasivo()">Enviar a operaciones<mat-icon>send</mat-icon></button> 
+					</div>
+				  </section>
+				</div> 
+			
+
+			</div></div>
+
+			</div>
+</div>
+			<div class="col-lg-12">
+				<div class="card">
+					<div class="card-body">
+						<div class="table-responsive">
+              <section class="example-containerss" tabindex="0">
+                <table mat-table [dataSource]="dataSource" class="table table-sm mb-0 table-responsive-lg text-black">
+              
+                  <!-- Checkbox Column -->
+                  <ng-container matColumnDef="select">
+                    <th mat-header-cell *matHeaderCellDef sticky>
+                      <mat-checkbox (change)="$event ? toggleAllRows() : null"
+                                    [checked]="selection.hasValue() && isAllSelected()"
+                                    [indeterminate]="selection.hasValue() && !isAllSelected()"
+                                    [aria-label]="checkboxLabel()">
+                      </mat-checkbox>
+                    </th>
+                    <td mat-cell *matCellDef="let row">
+                      <mat-checkbox (click)="$event.stopPropagation()" 
+                                    [disabled]="row.estadoPedido !== 'Pendiente Venta'"
+                                    (change)="$event ? selection.toggle(row) : null"
+                                    [checked]="selection.isSelected(row)"
+                                    [aria-label]="checkboxLabel(row)">
+                      </mat-checkbox>
+                    </td>
+                  </ng-container>
+              
+                  <!-- Actions Column -->
+                  <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef sticky> Aciones </th>
+                    <td mat-cell *matCellDef="let element" class="center">
+                      <button class="btn btn-primary tp-btn-light sharp" type="button" data-toggle="tooltip" data-placement="bottom"
+                      (click)="EnviarAOperaciones(element)"
+                      [disabled]="element.estadoPedido !== 'Pendiente Venta'" 
+                      matTooltip="{{element.estadoDescripcion}}"  
+                      matTooltipClass="example-tooltip-red"
+                      >
+                        <i class="fa fa-arrow-right fa-fw"></i>
+                      </button>
+                      
+                    </td>
+                  </ng-container>
+              
+                  <!-- Cotización Column -->
+                  <ng-container matColumnDef="cotizacion">
+                    <th mat-header-cell *matHeaderCellDef sticky> Cotización </th>
+                    <td mat-cell *matCellDef="let element"> {{element.numeroCotizacion}} </td>
+                  </ng-container>
+              
+                  <!-- OP Column -->
+                  <ng-container matColumnDef="op">
+                    <th mat-header-cell *matHeaderCellDef sticky> OP </th>
+                    <td mat-cell *matCellDef="let element"> {{element.codigoSisgeco}} </td>
+                  </ng-container>
+              
+                  <!-- F. Cotización Column -->
+                  <ng-container matColumnDef="grupo">
+                    <th mat-header-cell *matHeaderCellDef sticky> Grupo OP </th>
+                    <td mat-cell *matCellDef="let element"> {{element.cotizacionGrupo}} </td>
+                  </ng-container>
+                  <!-- F. Cotización Column -->
+                  <ng-container matColumnDef="fCotizacion">
+                    <th mat-header-cell *matHeaderCellDef sticky> Fec. Cotización </th>
+                    <td mat-cell *matCellDef="let element"> {{element.fechaRegistro | date:'dd/MM/yyyy HH:mm'}} </td>
+                  </ng-container>
+              
+                   <!-- F. Venta Column -->
+                <ng-container matColumnDef="fVenta">
+                  <th mat-header-cell *matHeaderCellDef sticky> Fec. Venta </th>
+                  <td mat-cell *matCellDef="let element"> {{element.fechaVenta}} </td>
+                </ng-container>
+            
+                <!-- RUC/DNI Column -->
+                <ng-container matColumnDef="rucDni">
+                  <th mat-header-cell *matHeaderCellDef sticky> RUC/DNI </th>
+                  <td mat-cell *matCellDef="let element"> {{element.rucCliente}} </td>
+                </ng-container>
+            
+                <!-- RAZON SOCIAL Column -->
+                <ng-container matColumnDef="razonSocial">
+                  <th mat-header-cell *matHeaderCellDef sticky> RAZON SOCIAL </th>
+                  <td mat-cell *matCellDef="let element"> {{element.cliente}} </td>
+                </ng-container>
+            
+                <!-- Proyecto Column -->
+                <ng-container matColumnDef="proyecto">
+                  <th mat-header-cell *matHeaderCellDef sticky> Proyecto </th>
+                  <td mat-cell *matCellDef="let element"> {{element.nombreProyecto}} </td>
+                </ng-container>
+            
+                <!-- Tipo Operación Column -->
+                <ng-container matColumnDef="tipoOperacion">
+                  <th mat-header-cell *matHeaderCellDef sticky> Tipo Operación </th>
+                  <td mat-cell *matCellDef="let element"> {{element.tipoOperacion}} </td>
+                </ng-container>
+            
+                <!-- Tipo Cambio Column -->
+                <ng-container matColumnDef="tipoCambio">
+                  <th mat-header-cell *matHeaderCellDef sticky> Tipo Cambio </th>
+                  <td mat-cell *matCellDef="let element"> {{element.tipoCambio}} </td>
+                </ng-container>
+            
+                <!-- Tipo Moneda Column -->
+                <ng-container matColumnDef="tipoMoneda">
+                  <th mat-header-cell *matHeaderCellDef sticky> Tipo Moneda </th>
+                  <td mat-cell *matCellDef="let element"> {{element.tipoMoneda}} </td>
+                </ng-container>
+            
+                <!-- Total Column -->
+                <ng-container matColumnDef="total">
+                  <th mat-header-cell *matHeaderCellDef sticky> Total </th>
+                  <td mat-cell *matCellDef="let element"> {{element.total}} </td>
+                </ng-container>
+            
+                <!-- IGV Column -->
+                <ng-container matColumnDef="igv">
+                  <th mat-header-cell *matHeaderCellDef sticky> IGV </th>
+                  <td mat-cell *matCellDef="let element"> {{element.totalIgv}} </td>
+                </ng-container>
+            
+                <!-- Monto Column -->
+                <ng-container matColumnDef="monto">
+                  <th mat-header-cell *matHeaderCellDef sticky> Monto </th>
+                  <td mat-cell *matCellDef="let element"> {{element.monto}} </td>
+                </ng-container>
+            
+                <!-- F. Produccion Column -->
+                <ng-container matColumnDef="fProduccion">
+                  <th mat-header-cell *matHeaderCellDef sticky> F. Produccion </th>
+                  <td mat-cell *matCellDef="let element"> {{element.fechaproduccion | date:'dd/MM/yyyy HH:mm'}} </td>
+                </ng-container>
+            
+                <!-- RS Column -->
+                <ng-container matColumnDef="rs">
+                  <th mat-header-cell *matHeaderCellDef sticky> RS </th>
+                  <td mat-cell *matCellDef="let element"> {{element.rs}} </td>
+                </ng-container>
+            
+                <!-- ZB Column -->
+                <ng-container matColumnDef="zb">
+                  <th mat-header-cell *matHeaderCellDef sticky> ZB </th>
+                  <td mat-cell *matCellDef="let element"> {{element.zb}} </td>
+                </ng-container>
+            
+                <!-- PH Column -->
+                <ng-container matColumnDef="ph">
+                  <th mat-header-cell *matHeaderCellDef sticky> PH </th>
+                  <td mat-cell *matCellDef="let element"> {{element.ph}} </td>
+                </ng-container>
+            
+                <!-- CV Column -->
+                <ng-container matColumnDef="cv">
+                  <th mat-header-cell *matHeaderCellDef sticky> CV </th>
+                  <td mat-cell *matCellDef="let element"> {{element.cv}} </td>
+                </ng-container>
+            
+                <!-- SH Column -->
+                <ng-container matColumnDef="sh">
+                  <th mat-header-cell *matHeaderCellDef sticky> SH </th>
+                  <td mat-cell *matCellDef="let element"> {{element.sh}} </td>
+                </ng-container>
+            
+                <!-- CE Column -->
+                <ng-container matColumnDef="ce">
+                  <th mat-header-cell *matHeaderCellDef sticky> CE </th>
+                  <td mat-cell *matCellDef="let element"> {{element.ce}} </td>
+                </ng-container>
+            
+                <!-- PJ Column -->
+                <ng-container matColumnDef="pj">
+                  <th mat-header-cell *matHeaderCellDef sticky> PJ </th>
+                  <td mat-cell *matCellDef="let element"> {{element.pj}} </td>
+                </ng-container>
+            
+                <!-- OTROS Column -->
+                <ng-container matColumnDef="otros">
+                  <th mat-header-cell *matHeaderCellDef sticky> OTROS </th>
+                  <td mat-cell *matCellDef="let element"> {{element.otros}} </td>
+                </ng-container>
+            
+                <!-- Tipo Cliente Column -->
+                <ng-container matColumnDef="tipoCliente">
+                  <th mat-header-cell *matHeaderCellDef sticky> Tipo Cliente </th>
+                  <td mat-cell *matCellDef="let element"> {{element.tipoCliente}} </td>
+                </ng-container>
+            
+                <!-- Vendendor Column -->
+                <ng-container matColumnDef="vendendor">
+                  <th mat-header-cell *matHeaderCellDef sticky> Vendendor </th>
+                  <td mat-cell *matCellDef="let element"> {{element.nombreVendedor}} </td>
+                </ng-container>
+            
+                <!-- Distrito Venta Column -->
+                <ng-container matColumnDef="distritoVenta">
+                  <th mat-header-cell *matHeaderCellDef sticky> Distrito Venta </th>
+                  <td mat-cell *matCellDef="let element"> {{element.distrito}} </td>
+                </ng-container>
+            
+                <!-- Provincia Column -->
+                <ng-container matColumnDef="provincia">
+                  <th mat-header-cell *matHeaderCellDef sticky> Provincia </th>
+                  <td mat-cell *matCellDef="let element"> {{element.provincia}} </td>
+                </ng-container>
+            
+                <!-- Departamento Column -->
+                <ng-container matColumnDef="departamento">
+                  <th mat-header-cell *matHeaderCellDef sticky> Departamento </th>
+                  <td mat-cell *matCellDef="let element"> {{element.departamento}} </td>
+                </ng-container>
+            
+                <!-- Destino Column -->
+                <ng-container matColumnDef="destino">
+                  <th mat-header-cell *matHeaderCellDef sticky> Destino </th>
+                  <td mat-cell *matCellDef="let element"> {{element.nombreDestino}} </td>
+                </ng-container>
+                
+                <!-- Fecha Entrega Column -->
+               <!-- <ng-container matColumnDef="fechaEntrega">
+                  <th mat-header-cell *matHeaderCellDef sticky> Fecha Entrega </th>
+                  <td mat-cell *matCellDef="let element"> {{element.fechaEntrega}} </td>
+                </ng-container>
+              -->
+                <!-- Estado Pedido Column -->
+                <ng-container matColumnDef="estadoPedido">
+                  <th mat-header-cell *matHeaderCellDef sticky> Estado Pedido </th>
+                  <td mat-cell *matCellDef="let element"> {{element.estadoPedido}} </td>
+                </ng-container>
+            
+                <!-- MAIL Column -->
+                <ng-container matColumnDef="mail">
+                  <th mat-header-cell *matHeaderCellDef sticky> Archivo </th>
+                  <td mat-cell *matCellDef="let element">        
+                    <button mat-mini-fab color="primary" *ngIf="element.archivo"
+                    (click)="descargarArchivo(element.archivo)">
+                      <mat-icon>cloud_download</mat-icon>
+                  </button>       
+                   <span style="color: #B8122B;" *ngIf="!element.archivo">---</span>
+                </td>
+                </ng-container>
+            
+                <!-- Observacion Column -->
+                <ng-container matColumnDef="observacion">
+                  <th mat-header-cell *matHeaderCellDef sticky> Observacion </th>
+                  <td mat-cell *matCellDef="let element"> {{element.observacion}} </td>
+                </ng-container>
+            
+                <!-- Observacion 2 Column -->
+                <!--<ng-container matColumnDef="observacion2">
+                  <th mat-header-cell *matHeaderCellDef sticky> Observacion 2 </th>
+                  <td mat-cell *matCellDef="let element"> {{element.observacion2}} </td>
+                </ng-container>-->
+            
+                <!-- Nivel Column -->
+                <ng-container matColumnDef="nivel">
+                  <th mat-header-cell *matHeaderCellDef sticky> Nivel </th>
+                  <td mat-cell *matCellDef="let element"> {{element.matriz}} </td>
+                </ng-container>
+            
+                <!-- Sub Nivel Column -->
+                <ng-container matColumnDef="subNivel">
+                  <th mat-header-cell *matHeaderCellDef sticky> Sub Nivel </th>
+                  <td mat-cell *matCellDef="let element"> {{element.submatriz}} </td>
+                </ng-container>
+            
+                <!-- Reproceso Column -->
+                <ng-container matColumnDef="reproceso">
+                  <th mat-header-cell *matHeaderCellDef sticky> Reproceso </th>
+                  <td mat-cell *matCellDef="let element">  </td>
+                </ng-container>
+            
+                <!-- Coti. Principal Column -->
+                <!--<ng-container matColumnDef="cotiPrincipal">
+                  <th mat-header-cell *matHeaderCellDef sticky> Coti. Principal </th>
+                  <td mat-cell *matCellDef="let element"> {{element.Principal}} </td>
+                </ng-container> -->
+            
+                <!-- F. Sisgeco Column -->
+              <!--  <ng-container matColumnDef="fSisgeco">
+                  <th mat-header-cell *matHeaderCellDef sticky> F. Sisgeco </th>
+                  <td mat-cell *matCellDef="let element"> {{element.Sisgeco}} </td>
+                </ng-container>
+              -->
+                <!-- Detalle Column -->
+                <ng-container matColumnDef="detalle">
+                  <th mat-header-cell *matHeaderCellDef sticky> Detalle </th>
+                  <td mat-cell *matCellDef="let element">         
+                    <button mat-mini-fab color="primary" 
+                    (click)="AbrirPopupDetalleProducto(element,element.cotizacionGrupo)">
+                      <mat-icon>assignment</mat-icon>
+                  </button>
+                  </td>
+                </ng-container> 
+                  <!-- Otros Columnas... -->
+              
+                  <ng-container matColumnDef="layout">
+                    <th mat-header-cell *matHeaderCellDef sticky> Layout </th>
+                    <td mat-cell *matCellDef="let element">          
+                      <button class="btn btn-primary-azul tp-btn-light sharp" title="Generar PDF Layout" type="button" (click)="GenerarLayout(element.cotizacionGrupo)">
+                        <mat-icon>apps</mat-icon> 
+                    </button> 
+                    </td>
+                  </ng-container>
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+                
+
+              </section> 
+						</div>
+            <!--<mat-paginator [pageSizeOptions]="[5, 10, 20]"
+            showFirstLastButtons
+            aria-label="Select page of periodic elements">
+</mat-paginator>	-->
+           
+<div style="display: none;">
+  <table #tableRef class="mi-tabla">
+
+    <thead style="background: #b8122b !important">
+      <tr>
+        <th>Cotización</th>
+        <th>OP</th>
+        <th> Grupo Cotizacion </th>
+        <th> F. Cotización </th>
+        <th> F. Venta </th>
+        <th> RUC/DNI </th>
+        <th> RAZON SOCIAL </th>
+        <th> Proyecto </th>
+        <th> Tipo Operación </th>
+        <th> Tipo Cambio </th>
+        <th> Tipo Moneda </th>
+        <th> Total </th>
+        <th> IGV </th>
+        <th> Monto </th>
+        <th> F. Produccion</th>
+        <th> RS</th>
+        <th> ZB</th>
+        <th> PH</th>
+        <th> CV</th>
+        <th> SH</th>
+        <th> CE</th>
+        <th> PJ</th>
+        <th> OTROS</th>
+        <th> Tipo Cliente</th>
+        <th> Vendendor</th>
+        <th> Distrito Venta</th>
+        <th> Provincia</th>
+        <th> Departamento</th>
+        <th> Destino</th>
+        <th> Estado Pedido</th>
+        <th> MAIL</th>
+        <th> Observacion</th>
+        <th> Observacion 2</th>
+        <th> Nivel</th>
+        <th> Sub Nivel</th>
+        <th> Sub Nivel</th>
+        <th> Reproceso</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let element of ListVenta">
+        <td>{{ element.numeroCotizacion }}</td>
+        <td>{{element.codigoSisgeco}}</td>
+        <td>{{element.cotizacionGrupo}}</td>
+        <td>{{element.fechaRegistro}}</td>
+        <td>{{element.fechaVenta}}</td>
+        <td>{{element.rucCliente}}</td>
+        <td>{{element.cliente}}</td>
+        <td>{{element.nombreProyecto}}</td>
+        <td>{{element.tipoOperacion}}</td>
+        <td>{{element.tipoCambio}}</td>
+        <td>{{element.tipoMoneda}}</td>
+        <td>{{element.total}}</td>
+        <td>{{element.totalIgv}}</td>
+        <td>{{element.monto}}</td>
+        <td>{{element.fechaproduccion}}</td>
+        <td>{{element.rs}}</td>
+        <td>{{element.zb}}</td>
+        <td>{{element.ph}}</td>
+        <td>{{element.cv}}</td>
+        <td>{{element.sh}}</td>
+        <td>{{element.ce}}</td>
+        <td>{{element.pj}}</td>
+        <td>{{element.otros}}</td>
+        <td>{{element.tipoCliente}}</td>
+        <td>{{element.nombreVendedor}}</td>
+        <td>{{element.distrito}}</td>
+        <td>{{element.provincia}}</td>
+        <td>{{element.departamento}}</td>
+        <td>{{element.nombreDestino}}</td>
+        <td>{{element.estadoPedido}}</td>
+        <td>{{element.archivo}}</td>
+        <td>{{element.observacion}}</td>
+        <td>{{element.Observacion2}}</td>
+        <td>{{element.matriz}}</td>
+        <td>{{element.submatriz}}</td>
+        <td></td>  
+      </tr>
+      <!-- Agrega más filas según sea necesario -->
+    </tbody>
+  </table>
+</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div> 
+
+<div style="display: none;">
+  <app-layout></app-layout>
+</div>

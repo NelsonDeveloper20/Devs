@@ -1,0 +1,142 @@
+
+ 
+
+    <ngx-spinner
+  bdColor="rgba(255, 255, 255, 1)"
+  size="medium"
+  color="#0D7ABD"
+  type="ball-beat"
+  [fullScreen]="true"
+  ><p style="color: black">Loading...</p></ngx-spinner>
+  
+<style>
+  .row{
+    margin-bottom: 17px;
+  }
+</style>
+<h2 mat-dialog-title>Modificar Usuario</h2>
+<div mat-dialog-content> 
+  <!--<form>-->
+    <div class="form-group">
+      <div class="row">
+        <div class="col-lg-6">
+          <label class="text-right label-item" for="usuario"> Correo: </label>
+          <div class="">
+            <input
+              type="text"
+              class="form-control form-control-lg" 
+              [(ngModel)]="user.correo"  placeholder="Ingrese usuario"  required
+            />
+          </div> 
+          </div>
+          <div class="col-lg-6">
+            <label class="text-right label-item"  for="usuario"> Nombre: </label>
+            <div class="">
+              <input
+                type="text"
+                class="form-control form-control-lg"  
+                placeholder="Ingrese nombre"                 
+            [(ngModel)]="user.nombre"   required
+              />
+            </div>
+            </div>
+      </div> 
+      
+      <div class="col-lg-12" style="padding-left: 0px;  padding-right: 0px;">
+        <label class="text-right label-item" for="state"> Estado: </label>
+        <div class="">
+          <select
+            class="form-control form-control-lg default-select"
+            name="state"
+            [(ngModel)]="user.estado"
+          >
+            <option value="1">Activo</option>
+            <option value="0">Inactivo</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">  
+        <!-- TABLE -->    
+        <button mat-mini-fab color="primary"  (click)="addRow()"  >
+          <mat-icon>add_circle_outline</mat-icon>
+        </button> 
+        <table mat-table [dataSource]="dataSource" matSort>
+          <ng-container [matColumnDef]="col.key" *ngFor="let col of columnsSchema">
+            <th mat-header-cell *matHeaderCellDef [ngSwitch]="col.key"> 
+              <span *ngSwitchDefault>{{ col.label }}</span>
+            </th>
+            <td mat-cell *matCellDef="let element" style="min-width: 120px !important;"> 
+              <div [ngSwitch]="col.type" > 
+                <div class="btn-edit" *ngSwitchCase="'isEdit'" style="    width: 0% !important;">  
+                  <button mat-mini-fab color="warn"   
+                  (click)="eliminar(element.Id,element.idDelete)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>  
+                
+                <mat-form-field class="form-input" *ngSwitchCase="'select'" style="width: 100%;"> 
+                
+                  <mat-select  [ngModel]="element[col.key]" *ngIf="col.label=='Rol'"
+                  (selectionChange)="someMethod($event.value,element,col.label)">
+                    <mat-option *ngFor="let itemss of roles" [value]="itemss.id">
+                      {{itemss.nombre}}
+                    </mat-option>
+                  </mat-select>
+
+                  <mat-select  [ngModel]="element[col.key]" *ngIf="col.label=='UnidadNegocio'"
+                  (selectionChange)="someMethod($event.value,element,col.label)">
+                    <mat-option *ngFor="let itemss of unidadNegocio" [value]="itemss.id">
+                      {{itemss.descripcion}}
+                    </mat-option>
+                  </mat-select>
+      
+                  <mat-select  [ngModel]="element[col.key]" *ngIf="col.label=='Sede'"
+                  (selectionChange)="someMethod($event.value,element,col.label)">
+                    <mat-option *ngFor="let itemss of sede" [value]="itemss.id">
+                      {{itemss.descripcion}}
+                    </mat-option>
+                  </mat-select>
+      
+                </mat-form-field>
+      
+              </div>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table> 
+    <br>
+    <div class="col-lg-12"> 
+      <div class="mab-1 campo">
+        <!--<button mat-raised-button class="btn-success" type="submit" (click)="submitform()" >GRABAR</button>
+      </div>-->
+      <div class=" mab-1 barra-progreso">
+        <mat-progress-bar mode="determinate" value="90">100%</mat-progress-bar>
+      </div>
+    </div>
+    <!-- END TABLE -->
+      </div>
+      
+      <ngb-alert
+      [type]="'danger'"
+      (closed)="message = ''"
+      *ngIf="!!message"
+      >{{ message }}</ngb-alert
+    >
+  
+    </div>
+  <!--</form> 
+    [disabled]="!(user.estado && user.rol)"-->
+    </div>
+<div mat-dialog-actions>
+  
+  <button
+    mat-button
+    class="btn btn-sm btn-primary"
+    (click)="save()"
+  >
+    Grabar
+  </button>
+  <button mat-button mat-dialog-close>Cerrar</button>
+
+</div>

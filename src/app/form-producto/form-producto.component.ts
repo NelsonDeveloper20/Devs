@@ -1,0 +1,1426 @@
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'; 
+import { ObjConfigs } from '../configuration';
+import { ProductoService } from '../services/productoservice';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { ITblDetalleOrdenProduccion } from '../services/models/TBL_DetalleOrdenProduccion.model';
+export interface IAgregarUsuarioRequest {
+  nombre?:string;
+  correo?: string;
+  roles?: Array<number>;
+  usuario?: string;
+  idUnidadNegocio?:string;
+}
+interface ConfiguracionAtributos {
+  [key: string]: {
+    [key: string]: {
+      visible: number;
+      required: number;
+    };
+  };
+}
+@Component({
+  selector: 'app-form-producto',
+  templateUrl: './form-producto.component.html',
+  styleUrls: ['./form-producto.component.css']
+})
+export class FormProductoComponent implements OnInit {
+  tiposProducto: string[];
+  tipoProductoSeleccionado: string; 
+
+  TblAmbiente: any[] =  [];
+  getTiposProducto(): string[] {
+    // Obtenemos los nombres únicos de los productos de ObjConfigs
+    return Object.keys(this.objConfiguracionAtributos);
+  } 
+  listAtributs:any;
+  getAtributos(): string[] {
+    if (this.tipoProductoSeleccionado) {
+      return Object.keys(this.objConfiguracionAtributos[this.tipoProductoSeleccionado]);
+    } else {
+      return [];
+    }
+  }
+  filtrarAtributos() {
+    this.listAtributs= this.getAtributos().filter(atributo => this.objConfiguracionAtributos[this.tipoProductoSeleccionado][atributo]);
+  }
+  guardarCambios() {
+    // Aquí puedes enviar los cambios a tu backend para guardarlos
+    console.log('Cambios guardados:', this.objConfiguracionAtributos);
+  }
+  //EENNNNNDS
+  @Input() JsonItemHijo: any; // Objeto de entrada
+  @Output() JsonProuctoDelHijo: EventEmitter<any> = new EventEmitter(); // Evento de salida
+  attributosProducto = {};// Objeto que contendrá los datos del formulario 
+  objConfiguracionAtributos:ConfiguracionAtributos=ObjConfigs;
+  TipoProducto:string=""; 
+  constructor(
+    private spinner: NgxSpinnerService,
+    private _productoService: ProductoService) {
+    
+    this.tiposProducto = this.getTiposProducto(); 
+  } 
+  // Método para emitir el objeto actualizado cuando se modifican los campos del formulario
+  
+  actualizarProducto() {
+    var itemsEcuadra=[];
+    if(this.escuadraVisible==true){
+      itemsEcuadra=  this.TblEscuadraItems;
+    }
+    this.JsonProuctoDelHijo.emit(
+      { Formulario: this.attributosProducto,
+        Escuadra: itemsEcuadra}
+    );
+  }
+   IdProducto:string="";
+    ngOnInit(): void {      
+    this.TipoProducto=this.JsonItemHijo.tipo; 
+    this.IdProducto=this.JsonItemHijo.producto.id;
+    
+      
+      if(this.JsonItemHijo.producto.id!=""){
+        
+        //this.ObtenerProductoPorID(this.IdProducto);      
+               
+        //this.spinner.show();
+        //setTimeout(() => {          
+        //this.spinner.hide();
+          this.TblAmbiente=this.JsonItemHijo.ambiente; 
+          /*this.CargarItemsCombos(this.JsonItemHijo.producto);
+          this.setFormValues(this.JsonItemHijo.producto);*/
+        //}, 3000);
+      }else{
+        //this.spinner.show();
+        //setTimeout(() => {          
+        //this.spinner.hide();
+          // Llamar al método después del tiempo de espera           
+          this.TblAmbiente=this.JsonItemHijo.ambiente; 
+          /*this.CargarItemsCombos(this.JsonItemHijo.producto);
+          this.setFormValues(this.JsonItemHijo.producto);
+        }, 3000);*/
+      }
+    }
+    ngAfterViewInit() {
+      // Llamar al método para asignar valores después de que se haya renderizado completamente el HTML 
+      this.spinner.show();          
+        this.CargarItemsCombos(this.JsonItemHijo.producto);     
+      
+      this.spinner.hide();
+
+    }
+    sets(){      
+      this.CargarItemsCombos(this.JsonItemHijo.producto);
+    }
+    set2(){
+
+      this.setFormValues(this.JsonItemHijo.producto);
+    }
+  // Método para detectar los cambios en los campos del formulario y emitir la salida de datos
+  onInputChange() {
+    this.obtener();
+  }
+  
+  Producto: ITblDetalleOrdenProduccion={};
+  ObtenerProductoPorID(id:any){
+    this.spinner.show();
+    this._productoService
+      .ObtenerProductoPorId(id)
+      .subscribe(
+        (response) => { 
+          if(response){  
+            if(response.length>0){
+              this.Producto = response[0];               
+              this.setFormValues(this.Producto);
+            }
+          }
+          this.spinner.hide();
+        },
+        () => {
+          this.spinner.hide();
+        }
+      );
+   }
+  //ESTE METODO ASIGNA VALORES A TODOS LOS FORMULARIOS QUE SE MUESTRA
+   setFormValues(values:any) {
+  // Seleccionar todos los elementos del formulario
+  const formElements = document.querySelectorAll('#formularionuevoDetalleOP input, #formularionuevoDetalleOP select, #formularionuevoDetalleOP textarea');
+  // Iterar sobre los elementos del formulario
+  formElements.forEach((element) => {
+      // Verificar si el elemento es un input, select o textarea
+      if (element instanceof HTMLInputElement || element instanceof HTMLSelectElement || element instanceof HTMLTextAreaElement) {
+          // Obtener el nombre del atributo
+          const attributeName = element.getAttribute('name'); 
+          // Asignar un valor basado en el nombre del atributo 
+           
+          switch (attributeName) {
+          //::::::::::::::::::::::::::::::::::::...COMBOS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+case "IndiceAgrupacion": (element as HTMLSelectElement).value = values.IndiceAgrupacion;  break;
+case "Ambiente": (element as HTMLSelectElement).value = values.ambiente;  break;
+case "Turno":  (element as HTMLSelectElement).value = values.turno; 
+break;
+case "CodigoTela": (element as HTMLSelectElement).value = values.codigoTela;  break;
+case "SoporteCentral": (element as HTMLSelectElement).value = values.soporteCentral;  break;
+case "TipoSoporteCentral": (element as HTMLSelectElement).value = values.tipoSoporteCentral;  break;
+case "Caida": (element as HTMLSelectElement).value = values.caida;  break;
+case "Accionamiento": (element as HTMLSelectElement).value = values.accionamiento;  break;
+case "CodigoTubo": (element as HTMLSelectElement).value = values.codigoTubo;  break;
+case "Mando": (element as HTMLSelectElement).value = values.mando;  break;
+case "TipoMecanismo": (element as HTMLSelectElement).value = values.tipoMecanismo;  break;
+case "ModeloMecanismo": (element as HTMLSelectElement).value = values.modeloMecanismo;  break;
+case "TipoCadena": (element as HTMLSelectElement).value = values.tipoCadena;  break;
+case "CodigoCadena": (element as HTMLSelectElement).value = values.codigoCadena;  break;
+case "TipoRiel": (element as HTMLSelectElement).value = values.tipoRiel;  break;
+case "TipoInstalacion": (element as HTMLSelectElement).value = values.tipoInstalacion;  break;
+case "CodigoRiel": (element as HTMLSelectElement).value = values.codigoRiel;  break;
+case "TipoCassete": (element as HTMLSelectElement).value = values.tipoCassete;  break;
+case "Lamina": (element as HTMLSelectElement).value = values.lamina;  break;
+case "Apertura": (element as HTMLSelectElement).value = values.apertura;  break;
+case "ViaRecogida": (element as HTMLSelectElement).value = values.viaRecogida;  break;
+case "TipoSuperior": (element as HTMLSelectElement).value = values.tipoSuperior;  break;
+case "CodigoBaston": (element as HTMLSelectElement).value = values.codigoBaston;  break; 
+case "NumeroVias": (element as HTMLSelectElement).value = values.numeroVias;  break;
+case "TipoCadenaInferior": (element as HTMLSelectElement).value = values.tipoCadenaInferior;  break;
+case "MandoCordon": (element as HTMLSelectElement).value = values.mandoCordon;  break;
+case "MandoBaston": (element as HTMLSelectElement).value = values.mandoBaston;  break;
+case "CodigoBastonVarrilla": (element as HTMLSelectElement).value = values.codigoBastonVarrilla;  break;
+case "Cabezal": (element as HTMLSelectElement).value = values.cabezal;  break;
+case "CodigoCordon": (element as HTMLSelectElement).value = values.codigoCordon;  break;
+case "CodigoCordonTipo2": (element as HTMLSelectElement).value = values.codigoCordonTipo2;  break;
+case "Cruzeta": (element as HTMLSelectElement).value = values.cruzeta;  break;
+case "Dispositivo": (element as HTMLSelectElement).value = values.dispositivo;  break;
+case "CodigoControl": (element as HTMLSelectElement).value = values.codigoControl;  break;
+case "CodigoSwitch": (element as HTMLSelectElement).value = values.codigoSwitch;  break;
+case "LlevaBaston": (element as HTMLSelectElement).value = values.llevaBaston;  break;
+case "MandoAdaptador": (element as HTMLSelectElement).value = values.mandoAdaptador;  break;
+case "CodigoMotor": (element as HTMLSelectElement).value = values.codigoMotor;  break;
+//::::::::::::::::::::::::::::::::::::...INPUTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+case "Familia": (element as HTMLInputElement).value = values.familia;  break;
+case "SubFamilia": (element as HTMLInputElement).value = values.subFamilia;  break;
+case "Precio": (element as HTMLInputElement).value = values.precio;  break;
+case "PrecioInc": (element as HTMLInputElement).value = values.precioInc;  break;
+case "Igv": (element as HTMLInputElement).value = values.igv;  break;
+case "Lote": (element as HTMLInputElement).value = values.lote;  break;
+
+case "Tela": (element as HTMLInputElement).value = values.tela;  break;
+case "NombreTubo": (element as HTMLInputElement).value = values.nombreTubo;  break;
+case "Cadena": (element as HTMLInputElement).value = values.cadena;  break;
+case "Riel": (element as HTMLInputElement).value = values.riel;  break;
+case "Baston": (element as HTMLInputElement).value = values.baston;  break;
+case "BastonVarrilla": (element as HTMLInputElement).value = values.bastonVarilla;  break;
+case "Cordon": (element as HTMLInputElement).value = values.cordon;  break;
+case "CordonTipo2": (element as HTMLInputElement).value = values.cordonTipo2;  break;
+case "Control": (element as HTMLInputElement).value = values.control;  break;
+case "Switch": (element as HTMLInputElement).value = values.switch;  break;
+
+
+case "Linea": (element as HTMLInputElement).value = values.linea;  break;
+case "Id": (element as HTMLInputElement).value = values.id;  break;
+case "CodigoProducto":(element as HTMLInputElement).value = values.codigoProducto; break;
+case "NombreProducto":(element as HTMLInputElement).value = values.nombreProducto; break;
+case "UnidadMedida":(element as HTMLInputElement).value = values.unidadMedida; break;
+case "Cantidad":(element as HTMLInputElement).value = values.cantidad; break;
+case "FechaProduccion":(element as HTMLInputElement).value = '2024-05-04'; break;
+case "FechaEntrega":(element as HTMLInputElement).value = '2024-05-04'; break;
+case "Nota":(element as HTMLInputElement).value = values.nota; break;
+case "Ancho":(element as HTMLInputElement).value = values.ancho; break;
+case "Alto":(element as HTMLInputElement).value = values.alto; break;
+case "Color":(element as HTMLInputElement).value = values.color; break;
+case "Cenefa":(element as HTMLInputElement).value = values.cenefa; break;
+case "NumeroMotores":(element as HTMLInputElement).value = values.numeroMotores; break;
+case "Serie":(element as HTMLInputElement).value =values.serie; break;
+case "AlturaCadena":
+  if(!values.id){
+    var alturaCadena = values.alto; 
+    // Lógica de cálculo
+    const rptAlturaCadena = this.calcularAlturaCadena(this.TipoProducto, alturaCadena);
+    console.log('Altura de Cadena:', rptAlturaCadena);
+    
+    if (this.TipoProducto == "PRTCV" || this.TipoProducto == "PRTPH") {
+      var altura_cadena = (rptAlturaCadena * 2);
+      (element as HTMLInputElement).value = altura_cadena.toFixed(3);
+    }    
+    if (this.TipoProducto !== "PRTRF" && this.TipoProducto !== "PRTRH" && this.TipoProducto !== "PRTRM") {
+      if (this.TipoProducto.substring(0, 4) == "PRTR") {
+        var altura_cadena = (rptAlturaCadena * 2);
+        (element as HTMLInputElement).value = altura_cadena.toFixed(3);
+      }
+    }
+
+  }else{
+    (element as HTMLInputElement).value = values.alturaCadena; 
+  }
+break;
+case "AlturaCordon":(element as HTMLInputElement).value = values.alturaCodon; break;
+case "MarcaMotor":(element as HTMLInputElement).value = values.marcaMotor; break;
+default :
+break;
+            
+        }
+      }
+  });
+  }
+    // Método para verificar si el valor está dentro del rango
+    range(value: number, min: number, max: number, inclusive: boolean): boolean {
+      return inclusive ? value >= min && value <= max : value > min && value < max;
+    }
+   // Método para calcular la altura de la cadena
+  calcularAlturaCadena(keyProduct: string, alturaCadena: number): number {
+    let rptAlturaCadena = 0;
+
+    if (keyProduct !== 'PRTRF' && keyProduct !== 'PRTRH' && keyProduct !== 'PRTRM') {
+      if (keyProduct === 'PRTCV' || keyProduct === 'PRTPH' || keyProduct.substring(0, 4) === 'PRTR') {
+        const windowSize = alturaCadena;
+
+        if (this.range(windowSize, 1.000, 1.200, true)) {
+          rptAlturaCadena = 1.000;
+        } else if (this.range(windowSize, 1.210, 1.400, true)) {
+          rptAlturaCadena = 1.100;
+        } else if (this.range(windowSize, 1.410, 1.600, true)) {
+          rptAlturaCadena = 1.200;
+        } else if (this.range(windowSize, 1.610, 1.700, true)) {
+          rptAlturaCadena = 1.300;
+        } else if (this.range(windowSize, 1.710, 1.800, true)) {
+          rptAlturaCadena = 1.400;
+        } else if (this.range(windowSize, 1.810, 2.000, true)) {
+          rptAlturaCadena = 1.500;
+        } else if (this.range(windowSize, 2.010, 2.100, true)) {
+          rptAlturaCadena = 1.600;
+        } else if (this.range(windowSize, 2.110, 2.200, true)) {
+          rptAlturaCadena = 1.700;
+        } else if (this.range(windowSize, 2.210, 2.400, true)) {
+          rptAlturaCadena = 1.800;
+        } else if (this.range(windowSize, 2.410, 2.500, true)) {
+          rptAlturaCadena = 1.900;
+        } else if (this.range(windowSize, 2.510, 2.600, true)) {
+          rptAlturaCadena = 2.000;
+        } else if (this.range(windowSize, 2.610, 2.800, true)) {
+          rptAlturaCadena = 2.100;
+        } else if (this.range(windowSize, 2.810, 2.900, true)) {
+          rptAlturaCadena = 2.200;
+        } else if (this.range(windowSize, 3.000, 3.100, true)) {
+          rptAlturaCadena = 2.200;
+        } else if (this.range(windowSize, 3.110, 3.200, true)) {
+          rptAlturaCadena = 2.300;
+        } else if (this.range(windowSize, 3.210, 3.400, true)) {
+          rptAlturaCadena = 2.400;
+        } else if (this.range(windowSize, 3.410, 3.500, true)) {
+          rptAlturaCadena = 2.500;
+        } else if (this.range(windowSize, 3.510, 3.600, true)) {
+          rptAlturaCadena = 2.600;
+        } else if (this.range(windowSize, 3.610, 3.800, true)) {
+          rptAlturaCadena = 2.700;
+        } else if (this.range(windowSize, 3.810, 3.900, true)) {
+          rptAlturaCadena = 2.800;
+        } else if (this.range(windowSize, 4.000, 4.100, true)) {
+          rptAlturaCadena = 2.900;
+        } else if (this.range(windowSize, 4.110, 4.200, true)) {
+          rptAlturaCadena = 3.000;
+        } else if (this.range(windowSize, 4.210, 4.400, true)) {
+          rptAlturaCadena = 3.100;
+        } else if (this.range(windowSize, 4.410, 4.500, true)) {
+          rptAlturaCadena = 3.200;
+        } else if (this.range(windowSize, 4.510, 4.600, true)) {
+          rptAlturaCadena = 3.300;
+        } else if (this.range(windowSize, 4.610, 4.800, true)) {
+          rptAlturaCadena = 3.400;
+        } else if (this.range(windowSize, 4.810, 4.900, true)) {
+          rptAlturaCadena = 3.500;
+        } else if (this.range(windowSize, 5.000, 5.100, true)) {
+          rptAlturaCadena = 3.600;
+        } else if (this.range(windowSize, 5.110, 5.200, true)) {
+          rptAlturaCadena = 3.700;
+        } else if (this.range(windowSize, 5.210, 5.400, true)) {
+          rptAlturaCadena = 3.800;
+        } else if (this.range(windowSize, 5.410, 5.500, true)) {
+          rptAlturaCadena = 3.900;
+        } else if (this.range(windowSize, 5.510, 5.600, true)) {
+          rptAlturaCadena = 4.000;
+        } else if (this.range(windowSize, 5.610, 5.800, true)) {
+          rptAlturaCadena = 4.100;
+        } else if (this.range(windowSize, 5.810, 5.900, true)) {
+          rptAlturaCadena = 4.200;
+        } else if (this.range(windowSize, 6.000, 6.100, true)) {
+          rptAlturaCadena = 4.300;
+        } else if (this.range(windowSize, 6.110, 6.200, true)) {
+          rptAlturaCadena = 4.400;
+        } else if (this.range(windowSize, 6.210, 6.400, true)) {
+          rptAlturaCadena = 4.500;
+        } else if (this.range(windowSize, 6.410, 6.500, true)) {
+          rptAlturaCadena = 4.600;
+        } else if (this.range(windowSize, 6.510, 6.600, true)) {
+          rptAlturaCadena = 4.700;
+        } else if (this.range(windowSize, 6.610, 6.800, true)) {
+          rptAlturaCadena = 4.800;
+        } else if (this.range(windowSize, 6.810, 6.900, true)) {
+          rptAlturaCadena = 4.900;
+        }
+      }
+    }
+
+    return rptAlturaCadena;
+  }
+  //ESTE METODO OBTIENE DE TODOS LOS CAMPOS VISIBLES 
+    obtener(): void {    
+  // Seleccionar todos los elementos del formulario
+  const formElements = document.querySelectorAll('#formularionuevoDetalleOP input, #formularionuevoDetalleOP select, #formularionuevoDetalleOP textarea');
+  // Iterar sobre los elementos del formulario
+  formElements.forEach((element) => {
+      // Verificar si el elemento es un input, select o textarea
+      if (element instanceof HTMLInputElement || element instanceof HTMLSelectElement || element instanceof HTMLTextAreaElement) {
+          // Obtener el nombre del atributo y su valor
+          const attributeName = element.getAttribute('name');
+          const attributeValue = element.value; // Puedes usar .value para input, select y textarea  
+          // Almacenar el nombre del atributo y su valor en el objeto
+          this.attributosProducto[attributeName] = attributeValue;
+      }
+  });
+  
+      const request: IAgregarUsuarioRequest = {
+      nombre: "",
+      correo: "", 
+      usuario:"",
+      idUnidadNegocio:"",
+    };
+      //this.dialogRef.close(request); 
+    var itemsEcuadra=[];
+    if(this.escuadraVisible==true){
+      itemsEcuadra=  this.TblEscuadraItems;
+    }
+    this.JsonProuctoDelHijo.emit(
+      { Formulario: this.attributosProducto,
+        Escuadra: itemsEcuadra}
+    );
+
+    }
+    
+    obtenerarticulos(tipo, subfamilia) {
+      return this._productoService.ObtenerArticulo(tipo, subfamilia);
+    }
+ 
+//GUARDAR CODIGO Y NOMBRE
+CboTela=[{codigo:0,nombre:"--Seleccione--"}];listarCboTela(codsubfamilia){
+  if(codsubfamilia=='CS'){ //cellular
+    codsubfamilia='TELCS';
+} 
+  this.CboTela=[{codigo:0,nombre:"--Seleccione--"}]; 
+  this.spinner.show();  
+  this.obtenerarticulos("Tela", codsubfamilia).subscribe(
+    (response) => {
+      if (response) { 
+        this.CboTela.push(...response); 
+      }
+      this.spinner.hide();
+    },
+    () => {
+      this.spinner.hide();
+    }
+  );  
+}
+
+ChangeTela(event: any): void {
+  const value = event.target.value;  
+  const Tela = document.getElementById("Tela") as HTMLInputElement ;
+  const item = this.CboTela.find(element => element.codigo === value);
+  if (Tela && item) {
+    Tela.value = item.nombre; 
+  }
+}
+
+CboIndiceAgrupacion=[{id:"--Seleccione--",indice:0,nombre:"--Seleccione--"}];listarCboIndiceAgrupacion(){  
+
+  //this.CboIndiceAgrupacion=[{id:"--Seleccione--",indice:0,nombre:"--Seleccione--"}]; 
+ 
+  this.TblAmbiente.forEach(element => {
+    this.CboIndiceAgrupacion.push({
+      id: element.id,
+      indice:element.indice,
+      nombre: element.ambiente
+    });
+  });
+}
+CboAmbiente=[{id:"--Seleccione--",indice:0,nombre:"--Seleccione--"}];listarCboAmbiente(){  
+  //this.CboAmbiente=[{id:"--Seleccione--",indice:0,nombre:"--Seleccione--"}];
+   
+  this.TblAmbiente.forEach(element => {
+    this.CboAmbiente.push({
+      id: element.id,
+      indice:element.indice,
+      nombre: element.ambiente
+    });
+  });
+}
+changeIndiceAgrupacion(event: any): void {
+  const value = event.target.value; 
+  const _ambiente = this.TblAmbiente.find(item => item.indice == value);  
+  const IdTbl_Ambiente = document.getElementById("IdTbl_Ambiente") as HTMLInputElement;
+  const detalle_ambiente = document.getElementById("detalle_ambiente") as HTMLSelectElement;
+
+  if (_ambiente) {
+    if (IdTbl_Ambiente) {
+      IdTbl_Ambiente.value = _ambiente.id.toString();
+    }
+    if (detalle_ambiente) { 
+      detalle_ambiente.value = _ambiente.ambiente;
+    }
+  } else {
+    if (IdTbl_Ambiente) {
+      IdTbl_Ambiente.value = "";
+    }
+    if (detalle_ambiente) {
+      detalle_ambiente.value = "";
+    }
+  }
+}
+
+CboTurno=[{id:0,nombre:"--Seleccione--"}];listarCboTurno(){
+  this.CboTurno=[
+  {id:0,nombre:"--Seleccione--"},
+  {id:1,nombre:"Mañana"},
+  {id:2,nombre:"Tarde"}]; 
+}
+CboSoporteCentral=[{id:0,nombre:"--Seleccione--"}];listarCboSoporteCentral(){  
+  this.CboSoporteCentral=[
+  {id:0,nombre:"--Seleccione--"},
+  {id:1,nombre:"Si"},
+  {id:2,nombre:"No"}]; 
+}
+changeCboSoporteCentral(event: any) {
+  const valorSeleccionado = event.target.value;
+  
+  if (valorSeleccionado === "Si") {
+    // Habilitar el segundo select y establecer el atributo 'required'
+    /*document.getElementById("tipo_sop_central").removeAttribute('disabled');
+    document.getElementById("tipo_sop_central").setAttribute('required', 'true');*/
+    this.objConfiguracionAtributos[this.TipoProducto]['tipoSopCentral'].visible=1;
+    this.listarCboTipoSoporteCentral();
+  } else {
+    this.objConfiguracionAtributos[this.TipoProducto]['tipoSopCentral'].visible=0;
+    // Deshabilitar el segundo select y eliminar el atributo 'required'
+   /* document.getElementById("tipo_sop_central").setAttribute('disabled', 'true');
+    document.getElementById("tipo_sop_central").removeAttribute('required');*/
+  } 
+}
+
+CboTipoSoporteCentral=[];listarCboTipoSoporteCentral(){  
+  this.CboTipoSoporteCentral=[{id:0,nombre:"--Seleccione--"},{id:1,nombre:"Fijo"},{id:2,nombre:"Transmision"}]; 
+}
+CboCaida=[{id:0,nombre:"--Seleccione--"}];listarCboCaida(){  
+  this.CboCaida=[{id:0,nombre:"--Seleccione--"},
+  {id:1,nombre:"ADENTRO"},
+  {id:2,nombre:"AFUERA"}]; 
+}
+defaultAccionamientoId: number;
+CboAccionamiento=[{id:0,nombre:"--Seleccione--"}];listarCboAccionamiento(tipoProducto,nombre_prod){  
+  this.defaultAccionamientoId = 0; 
+  this.CboAccionamiento=[
+    {id:0,nombre:"--Seleccione--"}];
+    var data=[
+  {id:1,nombre:"Manual"},
+  {id:2,nombre:"Motorizado"},
+  {id:3,nombre:"Manual + Motorizado"}];   
+  for (let i = 0; i < data.length; i++) {  
+    if (data[i].id == 3) {
+      var str = nombre_prod.toUpperCase();
+      var valorsearch = 'M1';
+      var values = str.includes(valorsearch);
+      if (!values && tipoProducto == 'PRTTO') {
+        this.CboAccionamiento.push(data[i]);
+      }
+    } else {
+      if (tipoProducto == 'PRTCS' && data[i].id != 2) { // CELULAR SHADE
+        this.CboAccionamiento.push(data[i]);
+      } else {
+        if (tipoProducto == 'PRTCV' || tipoProducto == 'PRTPH' || tipoProducto == 'PRTRH' || tipoProducto == 'PRTRF') { // PERSIANA VERTICAL // RIEL HOTELERO: FLEXIBLE
+          if (data[i].id == 1) { 
+            this.CboAccionamiento.push(data[i]);
+            this.defaultAccionamientoId = data[i].id; // Establecer la opción por defecto
+          }
+        } else {
+          if (tipoProducto == 'PRTRM' && data[i].id != 1) { // solo motorizado
+            this.CboAccionamiento.push(data[i]);
+          } else {
+            this.CboAccionamiento.push(data[i]);
+          }
+        }
+      }
+    }
+  };
+}
+//region ACCIONAMIENTO
+codProd: string = '';
+nomProducto: string = '';
+existeMotor(event: any,tipo:any) {
+  var valMotor ="";
+  if(tipo=="html"){
+    valMotor= event.target.value;// existeMotor
+  }else{
+    valMotor=event;
+  }
+ 
+  let codProd = this.codProd;
+  let nomProducto = this.nomProducto.toUpperCase(); 
+  if(valMotor == 'Motorizado' || valMotor =='Manual + Motorizado'){ // MOTORIZADO 
+    if(codProd=='PRTPJ'){               
+            this.objConfiguracionAtributos[this.TipoProducto]['baston'].visible=0;
+    } else  if(codProd=='PRTTO'){
+          const element = document.getElementById("nom_producto") as HTMLInputElement;// HTMLSelectElement; 
+            //element.value = value; 
+        var str =element.value.toUpperCase();
+        var valorsearch='M1';  
+        var values = str.includes(valorsearch);
+        if(values==true){ 
+        this.objConfiguracionAtributos[this.TipoProducto]['baston'].visible=0;
+        }else{
+            if(valMotor=="Motorizado"){ 
+            this.objConfiguracionAtributos[this.TipoProducto]['baston'].visible=0;
+            }
+        }
+    }
+    /********* HABLITAR  ************/
+    /*Numero Motores*/  
+    const num_motores = document.getElementById("num_motores") as HTMLInputElement ;
+    if(num_motores){
+      num_motores.value="";
+    num_motores.disabled = false; // El elemento está habilitado, se puede interactuar con él y modificar su valor
+  }
+    //element.setAttribute("disabled", "true"); 
+
+    /*Nombre Motor*/    
+    const nomb_motor = document.getElementById("nomb_motor") as HTMLInputElement ;
+    if(nomb_motor){
+    nomb_motor.disabled = false; // El elemento está habilitado, se puede interactuar con él y modificar su valor
+  }  
+    /*Marca Motor*/    
+    const marcamotor = document.getElementById("marcamotor") as HTMLInputElement ;
+    if(marcamotor){
+      marcamotor.value="";
+    marcamotor.disabled = false; // El elemento está habilitado, se puede interactuar con él y modificar su valor
+    }
+     
+    /*Serie*/
+    const serie = document.getElementById("serie") as HTMLInputElement ;
+    if(serie){
+      serie.disabled = false; // El elemento está habilitado, se puede interactuar con él y modificar su valor
+    }
+     
+    /************** DESABILITAR  ****************/
+    /*Tipo Mecan*/ 
+    const tipoMecanismo = document.getElementById('tipoMecanismo') as HTMLSelectElement;
+    if(tipoMecanismo){
+    tipoMecanismo.value = ''; 
+    tipoMecanismo.disabled = true; // El elemento está habilitado, se puede interactuar con él y modificar su valor
+    }
+    /*Modelo Mec*/ 
+    const modeloMecanismo = document.getElementById('modeloMecanismo') as HTMLSelectElement;
+    if(modeloMecanismo){
+    modeloMecanismo.value = ''; 
+    modeloMecanismo.disabled = true; // El elemento está habilitado, se puede interactuar con él y modificar su valor
+    }
+    /*Tipo Cadena*/
+    if(codProd=='PRTRM'){
+
+    }else{ 
+      
+    const modeloMecanismo = document.getElementById('tipo_cadena') as HTMLSelectElement;
+    if(modeloMecanismo){
+    modeloMecanismo.value = ''; 
+    modeloMecanismo.disabled = true; // El elemento está habilitado, se puede interactuar con él y modificar su valor
+    }
+      this.objConfiguracionAtributos[this.TipoProducto]['tipoCadena'].visible=1;
+
+    }
+    /*Altura Cadena*/ 
+    const altura_cadena = document.getElementById("altura_cadena") as HTMLInputElement ;
+    if(altura_cadena){
+    altura_cadena.value = ''; 
+    altura_cadena.disabled = true; // El elemento está deshabilitado, no se puede interactuar con él
+    }
+    }else if(valMotor == "Manual"){//MANUAL 
+    if(codProd=='PRTPJ'){
+         
+        this.objConfiguracionAtributos[this.TipoProducto]['baston'].visible=1;
+    }else if(codProd=='PRTTO'){
+          const element = document.getElementById("nom_producto") as HTMLInputElement;
+            var str = element.value.toUpperCase();
+            var valorsearch='M1';  
+            var values = str.includes(valorsearch);
+            if(values==true){  
+            this.objConfiguracionAtributos[this.TipoProducto]['baston'].visible=1;
+            }else{
+              this.objConfiguracionAtributos[this.TipoProducto]['baston'].visible=1; 
+            }
+    }
+        
+    /****** HABILITAR ********/ 
+    const tipoMecanismo = document.getElementById("tipoMecanismo") as HTMLSelectElement ;
+    if(tipoMecanismo){
+    tipoMecanismo.disabled = false; // El elemento está habilitado, se puede interactuar con él y modificar su valor
+    }
+    /*Nombre Motor*/
+    const modeloMecanismo = document.getElementById("modeloMecanismo") as HTMLSelectElement ;
+    if(modeloMecanismo){
+    modeloMecanismo.disabled = false; // El elemento está habilitado, se puede interactuar con él y modificar su valor
+    }
+
+    /*Marca Motor*/
+    //reg_cont_tipoCadena
+    if(codProd=='PRTCS' || codProd=='PRTRH'  || codProd=='PRTRF' ){
+       
+    }else{            
+    const tipo_cadena = document.getElementById("tipo_cadena") as HTMLSelectElement ;
+    if(tipo_cadena){
+    tipo_cadena.disabled = false; // El elemento está habilitado, se puede interactuar con él y modificar su valor
+    }
+    this.objConfiguracionAtributos[this.TipoProducto]['tipoCadena'].visible=0;
+    } 
+    
+    if(codProd=='PRTPH'){           
+      const tipo_cadena = document.getElementById("tipo_cadena") as HTMLSelectElement ;
+      if(tipo_cadena){
+      tipo_cadena.disabled = false; // El elemento está habilitado, se puede interactuar con él y modificar su valor
+      }
+    this.objConfiguracionAtributos[this.TipoProducto]['tipoCadena'].visible=0;
+    }
+    /*Altura Cadena*/ 
+    const altura_cadena = document.getElementById("altura_cadena") as HTMLInputElement ;
+    if(altura_cadena){
+    altura_cadena.disabled = false; // El elemento está habilitado, se puede interactuar con él y modificar su valor
+    }
+
+    /******** DESABILITAR  N***********/
+    /*Numero Motores*/
+    const num_motores = document.getElementById("num_motores") as HTMLInputElement ;
+    if(num_motores){
+      num_motores.value="";
+    num_motores.disabled = true; // El elemento está deshabilitado, no se puede interactuar con él 
+    }
+
+    /*Nombre Motor*/ 
+    const nomb_motor = document.getElementById("nomb_motor") as HTMLSelectElement ;
+    if(nomb_motor){
+      nomb_motor.value="";
+    nomb_motor.disabled = true; // El elemento está deshabilitado, no se puede interactuar con él
+    }
+    /*Marca Motor*/ 
+    const marcamotor = document.getElementById("marcamotor") as HTMLSelectElement ;
+    if(marcamotor){
+      marcamotor.value="";
+    marcamotor.disabled = true; // El elemento está deshabilitado, no se puede interactuar con él
+    }
+
+    /*Serie*/ 
+    const serie = document.getElementById("serie") as HTMLSelectElement ;
+    if(serie){
+    serie.disabled = true; // El elemento está deshabilitado, no se puede interactuar con él
+    }
+
+}else{ 
+
+    const num_motores = document.getElementById("num_motores") as HTMLInputElement ;
+    if(num_motores){
+    num_motores.disabled = false; // El elemento está habilitado, se puede interactuar con él y modificar su valor
+    }
+    /*Nombre Motor*/ 
+    const nomb_motor = document.getElementById("nomb_motor") as HTMLInputElement ;
+    if(nomb_motor){
+    nomb_motor.disabled = false; // El elemento está habilitado, se puede interactuar con él y modificar su valor
+    }
+    
+    /*Marca Motor*/ 
+    const marcamotor = document.getElementById("marcamotor") as HTMLInputElement ;
+    if(marcamotor){
+      marcamotor.value="";
+    marcamotor.disabled = false; // El elemento está habilitado, se puede interactuar con él y modificar su valor
+    }
+
+    /*Serie*/ 
+    const serie = document.getElementById("serie") as HTMLInputElement ;
+    if(serie){
+    serie.disabled = false; // El elemento está habilitado, se puede interactuar con él y modificar su valor
+    }
+    
+    const tipoMecanismo = document.getElementById("tipoMecanismo") as HTMLSelectElement ;
+    if(tipoMecanismo){
+    tipoMecanismo.disabled = false; // El elemento está habilitado, se puede interactuar con él y modificar su valor
+    }
+
+    /*Nombre Motor*/ 
+    const modeloMecanismo = document.getElementById("modeloMecanismo") as HTMLSelectElement ;
+    if(modeloMecanismo){
+    modeloMecanismo.disabled = false; // El elemento está habilitado, se puede interactuar con él y modificar su valor
+    }
+
+    if(codProd=='PRTCS' ||  codProd=='PRTRH'  || codProd=='PRTRF' ){
+    
+    }else{
+    /*Marca Motor*/
+    const tipo_cadena = document.getElementById("tipo_cadena") as HTMLInputElement ;
+    if(tipo_cadena){
+    tipo_cadena.disabled = true; // El elemento está deshabilitado, no se puede interactuar con él 
+    }
+    }
+    /*Altura Cadena*/ 
+    const altura_cadena = document.getElementById("altura_cadena") as HTMLInputElement ;
+    if(altura_cadena){
+    altura_cadena.disabled = false;  // El elemento está habilitado, se puede interactuar con él y modificar su valor
+
+
+    //CALCULO ALTURA DE CADENA
+    var alturaCadena = this.JsonItemHijo.producto.alto; 
+    // Lógica de cálculo
+    const rptAlturaCadena = this.calcularAlturaCadena(this.TipoProducto, alturaCadena);
+    console.log('Altura de Cadena:', rptAlturaCadena);
+    
+    if (this.TipoProducto == "PRTCV" || this.TipoProducto == "PRTPH") {
+      var altura_cadena2 = (rptAlturaCadena * 2);
+      altura_cadena.value = altura_cadena2.toFixed(3);
+    }    
+    if (this.TipoProducto !== "PRTRF" && this.TipoProducto !== "PRTRH" && this.TipoProducto !== "PRTRM") {
+      if (this.TipoProducto.substring(0, 4) == "PRTR") {
+        var altura_cadena2 = (rptAlturaCadena * 2);
+        altura_cadena.value = altura_cadena2.toFixed(3);
+      }
+    }
+
+    }
+
+    
+
+}
+}
+ 
+//endregion 
+//GUARDAR NOMBRE Y CODIGO
+CboNombreTubo=[{codigo:0,nombre:"--Seleccione--"}];listarCboNombreTubo(familia,tipoProducto){  
+  this.CboNombreTubo=[{codigo:0,nombre:"--Seleccione--"}]; 
+  this.spinner.show();  
+  this.obtenerarticulos("Nombretubo", familia).subscribe(
+    (response) => {
+      if (response) {  
+      var data = response;
+      for (var i = 0; i < data.length; i++) {
+        if (
+          (tipoProducto === 'PRTRS' && !['PALRS00000001', 'PALRS00000002'].includes(data[i].codigo)) ||
+          (tipoProducto === 'PRTRZ' && !['PALRS00000001', 'PALRS00000002'].includes(data[i].codigo)) ||
+          (tipoProducto === 'PRTRS' && !['PALRS00000001', 'PALRS00000002', 'PALRS00000005', 'PALRZ00000026', 'PALRZ00000011'].includes(data[i].codigo))
+        ) {
+          this.CboNombreTubo.push(data[i]);
+        }
+      }
+      }
+      this.spinner.hide();
+    },
+    () => {
+      this.spinner.hide();
+    }
+  );  
+}
+
+ChangeTubo(event: any): void {
+  const value = event.target.value;  
+  const Tela = document.getElementById("NombreTubo") as HTMLInputElement ;
+  const item = this.CboNombreTubo.find(element => element.codigo === value);
+  if (Tela && item) {
+    Tela.value = item.nombre; 
+  }
+}
+
+CboMando=[{id:0,nombre:"--Seleccione--"}];listarCboMando(tipoProducto){  
+  this.CboMando=[{id:0,nombre:"--Seleccione--"}];
+  var data=[ 
+  {id:1,nombre:"Izquierda"} , 
+  {id:2,nombre:"Derecha"}, 
+  {id:3,nombre:"Ambos"}, 
+  {id:4,nombre:"Ninguno"},
+  {id:5,nombre:"No Aplica"}  ]; 
+  for (let i = 0; i < data.length; i++) {
+    if (
+      (tipoProducto === 'PRTPJ' || tipoProducto === 'PRTRH' || tipoProducto === 'PRTRF') &&
+      (tipoProducto !== 'PRTRH' && tipoProducto !== 'PRTRF' || data[i].id !== 4)
+    ) {
+      this.CboMando.push(data[i]);
+    } else if (tipoProducto === 'PRTCV' || (data[i].id !== 3 && data[i].id !== 4)) {
+      this.CboMando.push(data[i]);
+    }
+  } 
+
+
+}
+CboTipoMecanismo=[{id:0,nombre:"--Seleccione--"}];listarCboTipoMecanismo(){
+  this.CboTipoMecanismo=[
+    {id:0,nombre:"--Seleccione--"},
+    {id:1,nombre:"ROLLEASE"},
+    {id:2,nombre:"STANDARD 38/GENERICO"},
+    {id:3,nombre:"VERTILUX"}, 
+
+  ]; 
+}
+CboModeloMecanismo=[{id:0,nombre:"--Seleccione--",idTipoMecanismo:"0"}];listarCboModeloMecanismo(event: Event,tipo:any){ 
+  var valor="";
+  if(tipo=="html"){
+    valor=(event.target as HTMLSelectElement).value;
+  }else{
+    valor=tipo;
+  }
+  const valorSeleccionado = valor;
+  this.CboModeloMecanismo=[
+    {id:0,nombre:"--Seleccione--",idTipoMecanismo:"0"},
+    {id:0,nombre:"SL15",idTipoMecanismo:"ROLLEASE"},
+    {id:0,nombre:"SL20",idTipoMecanismo:"ROLLEASE"},
+    {id:0,nombre:"GALAXY 200",idTipoMecanismo:"ROLLEASE"},
+    {id:0,nombre:"GALAXY 400",idTipoMecanismo:"ROLLEASE"},
+    {id:0,nombre:"VTX17",idTipoMecanismo:"VERTILUX"},
+    {id:0,nombre:"VTX20",idTipoMecanismo:"VERTILUX"},
+    {id:0,nombre:"32MM",idTipoMecanismo:"STANDARD 38/GENERICO"},
+    {id:0,nombre:"38MM",idTipoMecanismo:"STANDARD 38/GENERICO"}, 
+  ]; 
+  var result=this.CboModeloMecanismo.filter(elem=>{elem.idTipoMecanismo==valorSeleccionado});
+  this.CboModeloMecanismo=result;
+}
+CboTipoCadena=[{id:0,nombre:"--Seleccione--"}];listarCboTipoCadena(){  
+  this.CboTipoCadena=[
+    {id:0,nombre:"--Seleccione--"},
+    {id:1,nombre:"Plastico"},
+    {id:2,nombre:"Metal"}
+  ]; 
+}
+//GUARDAR CODIGO Y NOMBRE
+CboCodigoCadena=[{codigo:"0",nombre:"--Seleccione--",tipocadena:"0",producto:""}];listarCboCodigoCadena(event: Event,tipo:any){  
+  var valor="";
+  if(tipo=="html"){
+    valor=(event.target as HTMLSelectElement).value;
+  }else{
+    valor=tipo;
+  }
+  const valorSeleccionado = valor;
+  var result
+  this.CboCodigoCadena=[
+    {codigo:"0",nombre:"--Seleccione--",tipocadena:"0",producto:""}];
+    
+  var data=[
+    {codigo:"0",nombre:"--Seleccione--",tipocadena:"0",producto:""},
+    {codigo:"ACCRS00000001",nombre:"Cadena Plastica gruesa/ while accrs 01",tipocadena:"Plastico",producto:"PRTCV"},
+    {codigo:"ACCRS00000002",nombre:"Cadena plastico gruesa/ para mando accrs 02 ivory",tipocadena:"Plastico",producto:"PRTCV"},
+
+    {codigo:"ACCCV00000012",nombre:"Cadena metal grueso/ para mando acccv 12",tipocadena:"Metal",producto:""},
+    {codigo:"ACCCV00000013",nombre:"Cadena metalica delgada  accv13",tipocadena:"Metal",producto:""},
+    {codigo:"ACCCV00000014",nombre:"Cadena plastica delgada inferior accv14",tipocadena:"Metal",producto:""}];
+  
+  if(this.codProd=='PRTCV'){ 
+    if(valor=="Plastico"){ //plastico 
+        result=data.filter(elem=>{elem.tipocadena=="Plastico"});
+    }
+    if(valor=="Metal"){ //Metal 
+        result=data.filter(elem=>{elem.tipocadena=="Metal"});
+    }   
+}else{
+    result=data.filter(elem=>{elem.tipocadena==valorSeleccionado});
+}
+  this.CboCodigoCadena=result;
+}
+ChangeCadena(event: any): void {
+  const value = event.target.value;  
+  const Tela = document.getElementById("Cadena") as HTMLInputElement ;
+  const item = this.CboCodigoCadena.find(element => element.codigo === value);
+  if (Tela && item) {
+    Tela.value = item.nombre; 
+  }
+}
+CboTipoRiel=[{id:0,nombre:"--Seleccione--"}];listarCboTipoRiel(){  
+  this.CboTipoRiel=[
+    {id:0,nombre:"--Seleccione--"},
+    {id:1,nombre:"EXCLUSIVE"},
+    {id:2,nombre:"CLASSIC"},
+    {id:3,nombre:"EUROSLIM"},
+    {id:4,nombre:"RIEL INFERIOR CLASSIC"},
+    {id:5,nombre:"RIEL INFERIOR NEOLUX"},
+    {id:6,nombre:"RIEL INFERIOR SHANGRILLA"},
+  ]; 
+}
+CboTipoInstalacion=[{id:0,nombre:"--Seleccione--"}];listarCboTipoInstalacion(){  
+  this.CboTipoInstalacion=[
+    {id:0,nombre:"--Seleccione--"},
+    {id:1,nombre:"TECHO"},
+    {id:2,nombre:"PARED"},
+  ]; 
+} 
+//GUARDAR CODIGO Y NOMBRE
+CboRiel=[{codigo:0,nombre:"--Seleccione--"}];listarCboRiel(subfamilia){  
+  this.CboRiel=[{codigo:0,nombre:"--Seleccione--"}]; 
+  this.spinner.show();
+  this.obtenerarticulos("Familia", subfamilia).subscribe(
+    (response) => {
+      if (response) { 
+        this.CboRiel.push(...response);
+      }
+      this.spinner.hide();
+    },
+    () => {
+      this.spinner.hide();
+    }
+  ); 
+}
+ChangeRiel(event: any): void {
+  const value = event.target.value;  
+  const Tela = document.getElementById("Riel") as HTMLInputElement ;
+  const item = this.CboRiel.find(element => element.codigo === value);
+  if (Tela && item) {
+    Tela.value = item.nombre; 
+  }
+}
+CboTipoCassete=[{id:0,nombre:"--Seleccione--"}];listarCboTipoCassete(){  
+  this.CboTipoCassete=[
+    {id:0,nombre:"--Seleccione--"},
+    {id:1,nombre:"Cassete Redondo 100"},
+    {id:2,nombre:"Cassete Redondo 120"},
+    {id:3,nombre:"Cassete Plano 100"},
+    {id:4,nombre:"Cassete Plano 120"}, 
+  ]; 
+}
+CboLamina=[{id:0,nombre:"--Seleccione--"}];listarCboLamina(){  
+  this.CboLamina=[
+    {id:0,nombre:"--Seleccione--"},
+    {id:1,nombre:"LAMINA DE PVC CURVED 90mm"},
+    {id:2,nombre:"LAMINA DE ALUMINIO 25mm"}, 
+  ]; 
+}
+CboApertura=[{id:0,nombre:"--Seleccione--"}];listarCboApertura(){  
+  this.CboApertura=[
+    {id:0,nombre:"--Seleccione--"},
+    {id:1,nombre:"Izquierda"},
+    {id:2,nombre:"Derecha"},
+    {id:3,nombre:"Ambos"},  
+  ]; 
+}
+CboViaRecogida=[{id:0,nombre:"--Seleccione--"}];listarCboViaRecogida(){  
+  this.CboViaRecogida=[
+    {id:0,nombre:"--Seleccione--"},
+    {id:1,nombre:"Normal"},
+    {id:2,nombre:"Invertida"},
+  
+  ]; 
+}
+CboTipoSuperior=[{id:0,nombre:"--Seleccione--"}];listarCboTipoSuperior(){  
+  this.CboTipoSuperior=[
+    {id:0,nombre:"--Seleccione--"},
+    {id:1,nombre:"VERSARAIL"},
+    {id:2,nombre:"CELLULAR"}, 
+  
+  ]; 
+}
+
+changeViaTipoSuperior(event: any) {
+  var valVia = event.target.value;  
+  if(this.codProd=='PRTCS'){
+
+if(valVia=='VERSARAIL'){ 
+  this.objConfiguracionAtributos[this.TipoProducto]['cordontipo2'].visible=1;
+  this.objConfiguracionAtributos[this.TipoProducto]['cordon'].visible=1; 
+}else{
+   
+  this.objConfiguracionAtributos[this.TipoProducto]['cordontipo2'].visible=1;
+  this.objConfiguracionAtributos[this.TipoProducto]['cordon'].visible=1;  
+}
+
+  }
+} 
+//GUARDAR CODIGO Y NOMBRE
+CboBaston=[{codigo:0,nombre:"--Seleccione--"}];listarCboBaston(subfamilia){  
+  this.CboBaston=[
+    {codigo:0,nombre:"--Seleccione--"}, 
+  ];   
+  this.spinner.show();
+  this.obtenerarticulos("Familia", subfamilia).subscribe(
+    (response) => {
+      if (response) { 
+        this.CboBaston.push(...response);
+      }
+      this.spinner.hide();
+    },
+    () => {
+      this.spinner.hide();
+    }
+  ); 
+}
+ChangeBaston(event: any): void {
+  const value = event.target.value;  
+  const Tela = document.getElementById("Baston") as HTMLInputElement ;
+  const item = this.CboBaston.find(element => element.codigo === value);
+  if (Tela && item) {
+    Tela.value = item.nombre; 
+  }
+}
+
+CboNumeroVias=[{id:0,nombre:"--Seleccione--"}];listarCboNumeroVias(){  
+  this.CboNumeroVias=[
+    {id:0,nombre:"--Seleccione--"},
+    {id:1,nombre:"1 Via"},
+    {id:2,nombre:"2 Vias"},
+    {id:3,nombre:"3 Vias"},
+    {id:4,nombre:"4 Vias"},
+    {id:5,nombre:"5 Vias"},
+  ]; 
+}
+CboTipoCadenaInferior=[{id:0,nombre:"--Seleccione--"}];listarCboTipoCadenaInferior(){  
+  this.CboTipoCadenaInferior=[
+    {id:0,nombre:"--Seleccione--"},
+    {id:1,nombre:"Plastico"},
+    {id:2,nombre:"Metal"},
+  ]; 
+}
+CboMandoCordon=[{id:0,nombre:"--Seleccione--"}];listarCboMandoCordon(){  
+  this.CboMandoCordon=[
+    {id:0,nombre:"--Seleccione--"},
+    {id:1,nombre:"Izquierda"},
+    {id:2,nombre:"Derecha"}, 
+  ]; 
+}
+CboMandoBaston=[{id:0,nombre:"--Seleccione--"}];listarCboMandoBaston(){  
+  this.CboMandoBaston=[   
+    {id:0,nombre:"--Seleccione--"},
+    {id:1,nombre:"Izquierda"},
+    {id:2,nombre:"Derecha"}, 
+  ]; 
+} 
+//GUARDAR CODIGO Y NOMBRE
+CboBastonVarrilla=[{codigo:0,nombre:"--Seleccione--"}];listarCboBastonVarrilla(subfamilia){  
+  this.CboBastonVarrilla=[{codigo:0,nombre:"--Seleccione--"}]; 
+  this.spinner.show();
+  this.obtenerarticulos("Varrilla", subfamilia).subscribe(
+    (response) => {
+      if (response) { 
+        this.CboBastonVarrilla.push(...response);
+      }
+      this.spinner.hide();
+    },
+    () => {
+      this.spinner.hide();
+    }
+  ); 
+}
+ChangeBastonVarrilla(event: any): void {
+  const value = event.target.value;  
+  const Tela = document.getElementById("BastonVarrilla") as HTMLInputElement ;
+  const item = this.CboBastonVarrilla.find(element => element.codigo === value);
+  if (Tela && item) {
+    Tela.value = item.nombre; 
+  }
+}
+CboCabezal=[{id:0,nombre:"--Seleccione--"}];listarCboCabezal(){  
+  this.CboCabezal=[   
+    {id:0,nombre:"--Seleccione--"},
+    {id:1,nombre:"1"},
+    {id:2,nombre:"2"}, 
+    {id:3,nombre:"3"}, 
+  ]; 
+} 
+//GUARDAR CODIGO Y NOMBRE
+CboCordon=[{codigo:0,nombre:"--Seleccione--"}];listarCboCordon(subfamilia){  
+  this.CboCordon=[{codigo:0,nombre:"--Seleccione--"}]; 
+  this.spinner.show();
+  this.obtenerarticulos("Cordon", subfamilia).subscribe(
+    (response) => {
+      if (response) { 
+        this.CboCordon.push(...response);
+      }
+      this.spinner.hide();
+    },
+    () => {
+      this.spinner.hide();
+    }
+  ); 
+} 
+ChangeCordon(event: any): void {
+  const value = event.target.value;  
+  const Tela = document.getElementById("Cordon") as HTMLInputElement ;
+  const item = this.CboCordon.find(element => element.codigo === value);
+  if (Tela && item) {
+    Tela.value = item.nombre; 
+  }
+}
+   //GUARDAR CODIGO Y NOMBRE
+CboCordonTipo2=[{codigo:0,nombre:"--Seleccione--"}];listarCboCordonTipo2(subfamilia){  
+  this.CboCordonTipo2=[{codigo:0,nombre:"--Seleccione--"}]; 
+  this.spinner.show();
+  this.obtenerarticulos("Varrilla", subfamilia).subscribe(
+    (response) => {
+      if (response) { 
+        this.CboCordonTipo2.push(...response);
+      }
+      this.spinner.hide();
+    },
+    () => {
+      this.spinner.hide();
+    }
+  ); 
+}
+
+ChangeCordonTipo2(event: any): void {
+  const value = event.target.value;  
+  const Tela = document.getElementById("CordonTipo2") as HTMLInputElement ;
+  const item = this.CboCordonTipo2.find(element => element.codigo === value);
+  if (Tela && item) {
+    Tela.value = item.nombre; 
+  }
+}
+
+CboCruzeta=[{id:0,nombre:"--Seleccione--"}];listarCboCruzeta(){  
+  this.CboCruzeta=[
+    {id:0,nombre:"--Seleccione--"},
+    {id:1,nombre:"LATERAL IZQ"},
+    {id:2,nombre:"LATERAL DER"},
+    {id:3,nombre:"AMBOS LADOS"},
+  ]; 
+}
+CboDispositivo=[{id:"0",nombre:"--Seleccione--"}];listarCboDispositivo(){  
+  this.CboDispositivo=[
+    {id:"0",nombre:"--Seleccione--"},
+    {id:"Control",nombre:"Control"},
+    {id:"Switch",nombre:"Switch"},
+    {id:"Control + Swichtol",nombre:"Control + Swichtol"},
+    {id:"Ninguno",nombre:"Ninguno"}, 
+  ]; 
+}
+chamgeDispositivo(event: any) { 
+    var valor= event.target.value;// existeMotor 
+    var valDispositivo =valor;
+if(valDispositivo=='Control'){
+  this.objConfiguracionAtributos[this.TipoProducto]['control'].visible=1; 
+  this.objConfiguracionAtributos[this.TipoProducto]['swicth'].visible=0; 
+}
+if(valDispositivo=='Switch'){
+  this.objConfiguracionAtributos[this.TipoProducto]['control'].visible=0; 
+  this.objConfiguracionAtributos[this.TipoProducto]['swicth'].visible=1; 
+}
+if(valDispositivo=='Control + Swicht'){
+  this.objConfiguracionAtributos[this.TipoProducto]['control'].visible=1; 
+  this.objConfiguracionAtributos[this.TipoProducto]['swicth'].visible=0; 
+}
+if(valDispositivo=='Ninguno'){
+  this.objConfiguracionAtributos[this.TipoProducto]['control'].visible=0; 
+  this.objConfiguracionAtributos[this.TipoProducto]['swicth'].visible=0;  
+}
+}
+    //GUARDAR CODIGO y NOMBRE
+CboControl=[{codigo:0,nombre:"--Seleccione--"}];listarCboControl(subfamilia){  
+  this.CboControl=[{codigo:0,nombre:"--Seleccione--"}];  
+  this.spinner.show();
+  this.obtenerarticulos("Articulo", subfamilia).subscribe(
+    (response) => {
+      if (response) { 
+        this.CboControl.push(...response);
+      }
+      this.spinner.hide();
+    },
+    () => {
+      this.spinner.hide();
+    }
+  ); 
+} 
+
+ChangeControl(event: any): void {
+  const value = event.target.value;  
+  const Tela = document.getElementById("Control") as HTMLInputElement ;
+  const item = this.CboControl.find(element => element.codigo === value);
+  if (Tela && item) {
+    Tela.value = item.nombre; 
+  }
+}
+    //GUARDAR EN BD CODIGO Y NOMBRE
+CboSwitch=[{codigo:0,nombre:"--Seleccione--"}];listarCboSwitch(subfamilia){  
+  this.CboSwitch=[{codigo:0,nombre:"--Seleccione--"}]; 
+  this.spinner.show();
+  this.obtenerarticulos("Articulo", subfamilia).subscribe(
+    (response) => {
+      if (response) { 
+        this.CboControl.push(...response);
+      }
+      this.spinner.hide();
+    },
+    () => {
+      this.spinner.hide();
+    }
+  ); 
+}
+
+ChangeSwitch(event: any): void {
+  const value = event.target.value;  
+  const Tela = document.getElementById("Switch") as HTMLInputElement ;
+  const item = this.CboSwitch.find(element => element.codigo === value);
+  if (Tela && item) {
+    Tela.value = item.nombre; 
+  }
+}
+CboLlevaBaston=[{id:0,nombre:"--Seleccione--"}];listarCboLlevaBaston(){  
+  this.CboLlevaBaston=[
+    {id:0,nombre:"--Seleccione--"},
+    {id:1,nombre:"Si"},
+    {id:2,nombre:"No"},
+  ]; 
+}
+CboMandoAdaptador=[{id:0,nombre:"--Seleccione--"}];listarCboMandoAdaptador(){  
+  this.CboMandoAdaptador=[
+    {id:0,nombre:"--Seleccione--"},
+    {id:1,nombre:"Si"},
+    {id:2,nombre:"No"},
+
+  ]; 
+} 
+//GUARDAR CODIGO Y NOMBRE
+CboMotor=[{codigo:0,nombre:"--Seleccione--"}];listarCboMotor(tupoProducto){  
+  this.CboMotor=[{codigo:0,nombre:"--Seleccione--"}];
+  this.spinner.show();
+  this.obtenerarticulos("Motor", tupoProducto).subscribe(
+    (response) => {
+      if (response) { 
+        this.CboMotor.push(...response); 
+      }
+      this.spinner.hide();
+    },
+    () => {
+      this.spinner.hide();
+    }
+  );  
+} 
+ 
+cancheCbopNombreMotor(event: any) {
+  //BUSCA
+  /*const valorSeleccionado = event.target.value;
+  const motor = this.CboMotor.find(opcion => opcion.codigo === valorSeleccionado);
+  this.selectedMotorName = motor ? motor.nombre : '';*/
+  const valorSeleccionado = event.target.value;
+  const motor = this.CboMotor.find(opcion => opcion.codigo === valorSeleccionado);
+  const motorName = motor ? motor.nombre : '';
+  // Acceder y asignar valor directamente al elemento del DOM
+  const inputElement = document.getElementById('marcamotor') as HTMLInputElement;
+  if (inputElement) {
+    inputElement.value = motorName;
+  }
+  const Tela = document.getElementById("Motor") as HTMLInputElement ;
+  const item = this.CboTela.find(element => element.codigo === valorSeleccionado);
+  if (Tela && item) {
+    Tela.value = item.nombre; 
+  }
+
+  }
+    CargarItemsCombos(values){
+      
+  this.spinner.show();
+  var tipoProducto = String(values.familia+values.subFamilia); 
+  var subFamiliaProd = String(values.subFamilia);  
+  var nombreProd=values.nombreProducto;
+  this.codProd=values.codigoProducto;
+  this.nomProducto=nombreProd;
+  var accionamiento="--";
+      const formElements = document.querySelectorAll('#formularionuevoDetalleOP select');
+  // Iterar sobre los elementos del formulario
+  formElements.forEach((element) => {
+      // Verificar si el elemento es un input, select o textarea
+      if (element instanceof HTMLSelectElement) {
+          // Obtener el nombre del atributo y su valor
+          const attributeName = element.getAttribute('name');          
+          switch (attributeName) {
+            //::::::::::::::::::::::::::::::::::::...COMBOS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+case "IndiceAgrupacion":this.listarCboIndiceAgrupacion();break;
+case "Ambiente":this.listarCboAmbiente();break;
+case "Turno":this.listarCboTurno();break;
+case "SoporteCentral":this.listarCboSoporteCentral();break;
+case "TipoSoporteCentral":this.listarCboTipoSoporteCentral();break;
+case "Caida":this.listarCboCaida();break;
+case "Accionamiento":this.listarCboAccionamiento(tipoProducto,nombreProd); accionamiento="SI" ;break;
+case "CodigoTela":this.listarCboTela(subFamiliaProd);break;
+case "CodigoTubo": 
+this.listarCboNombreTubo(subFamiliaProd,tipoProducto);break; 
+case "Mando":this.listarCboMando(tipoProducto);break;
+case "TipoMecanismo":this.listarCboTipoMecanismo();break;
+case "ModeloMecanismo":this.listarCboModeloMecanismo(null,"0");break;
+case "TipoCadena":this.listarCboTipoCadena();break;
+case "CodigoCadena":this.listarCboCodigoCadena(null,"0");break;
+case "TipoRiel":this.listarCboTipoRiel();break;
+case "TipoInstalacion":this.listarCboTipoInstalacion();break;
+case "CodigoRiel":this.listarCboRiel(subFamiliaProd);break;
+case "TipoCassete":this.listarCboTipoCassete();break;
+case "Lamina":this.listarCboLamina();break;
+case "Apertura":this.listarCboApertura();break;
+case "ViaRecogida":this.listarCboViaRecogida();break;
+case "TipoSuperior":this.listarCboTipoSuperior();break;
+case "CodigoBaston":this.listarCboBaston(subFamiliaProd);break;
+case "NumeroVias":this.listarCboNumeroVias();break;
+case "TipoCadenaInferior":this.listarCboTipoCadenaInferior();break;
+case "MandoCordon":this.listarCboMandoCordon();break;
+case "MandoBaston":this.listarCboMandoBaston();break;
+case "CodigoBastonVarrilla":this.listarCboBastonVarrilla(subFamiliaProd);break;
+case "Cabezal":this.listarCboCabezal();break;
+case "CodigoCordon":this.listarCboCordon(subFamiliaProd);break;
+case "CodigoCordonTipo2":this.listarCboCordonTipo2(subFamiliaProd);break;
+case "Cruzeta":this.listarCboCruzeta();break;
+case "Dispositivo":this.listarCboDispositivo();break;
+case "CodigoControl":this.listarCboControl(subFamiliaProd);break;
+case "CodigoSwitch":this.listarCboSwitch(subFamiliaProd);break;
+case "LlevaBaston":this.listarCboLlevaBaston();break;
+case "MandoAdaptador":this.listarCboMandoAdaptador();break;
+case "CodigoMotor":this.listarCboMotor(tipoProducto);break;
+            default :
+            break;
+            }
+      }
+  });
+  
+  this.spinner.hide();
+  //asignar:
+  
+  this.spinner.show();
+      setTimeout(() => {            
+        this.spinner.hide();
+        this.setFormValues(this.JsonItemHijo.producto);
+        if(accionamiento=="SI"){
+          this.existeMotor(values.accionamiento,"edit");
+        }
+      }, 3000);
+  
+    }
+
+    //#endregion
+    labelPosition:boolean=false;
+    //#region  MANTENIMIENTO ESCUADRA
+    escuadraVisible: boolean = false;
+    defaultDescription: string = "ESCUADRA (L) 6x14x2.5cm x 2.5mm - WHITE";
+    CboEcuadra=[
+      {Codigo:"ACCRS00000505", Descripcion:"ESCUADRA (L) 6x14x2.5cm x 2.5mm - WHITE", },
+      {Codigo:"ACCRS00000506", Descripcion:"ESCUADRA (L) 5x6x2.5cm x 2.5mm - WHITE", },
+      {Codigo:"ACCRS00000507", Descripcion:"ESCUADRA (L) 10x16.5x4cm x 4.0mm - WHITE", }
+    ];
+    TblEscuadraItems=[
+      {Id:1, Codigo:"ACCRS00000505",Descripcion:"ESCUADRA (L) 6x14x2.5cm x 2.5mm - WHITE",Cantidad:"" }
+    ];
+    chengeescuadra(event: string) {
+      this.escuadraVisible = event  === 'SI';
+    }
+   
+    updateDescription(event: any, item: any) {
+      const selected = event.target.value;
+      const selectedItem = this.CboEcuadra.find(cboItem => cboItem.Codigo === selected);
+      if (selectedItem) {
+        item.Codigo = selected;
+        item.Descripcion = selectedItem.Descripcion;
+      }
+    }
+   
+    addProduct(elem: any) {
+      // Encontrar el último ID en TblEscuadraItems
+      let lastId = 0;
+      this.TblEscuadraItems.forEach(item => {
+        if (item.Id > lastId) {
+          lastId = item.Id;
+        }
+      });    
+      // Incrementar el último ID para la nueva fila
+      const newId = lastId + 1;    
+      // Agregar la nueva fila con el ID incrementado
+      const newItem = { Id: newId, Codigo: elem.Codigo, Descripcion: elem.Descripcion, Cantidad: "" };
+      this.TblEscuadraItems.push(newItem);
+    }
+    deleteProduct(event: any) {
+      this.TblEscuadraItems = this.TblEscuadraItems.filter(item => item.Id !== event.Id);
+    }  
+    //#endregion 
+    }

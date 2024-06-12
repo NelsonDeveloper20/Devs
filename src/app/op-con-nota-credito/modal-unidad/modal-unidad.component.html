@@ -1,0 +1,28 @@
+<h2 mat-dialog-title>A que UN y sede pertenece tu solicitud</h2>
+<mat-dialog-content>
+  <table style="width: 100%;" class="table">
+    <thead style="    background: #d2d6d7;">
+      <tr> 
+        <td>Unidad </td>
+        <td>Sede</td>
+        <td>Accion        </td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of data.rows">
+        <td>{{ row.unidadNombre }}</td>
+        <td>{{ row.sedeNombre }}</td>
+        <td>
+          <mat-radio-button
+            [checked]="row.selected"
+            (click)="selectRow(row)"
+          ></mat-radio-button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="dialogRef.close()">Cancelar</button>
+  <!--<button mat-button color="primary" [mat-dialog-close]="data.selectedRow">Aceptar</button>-->
+</mat-dialog-actions>

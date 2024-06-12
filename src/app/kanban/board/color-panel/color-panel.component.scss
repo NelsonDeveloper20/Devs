@@ -1,0 +1,11 @@
+.color-panel-item {
+  width: 25px;
+  height: 25px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: ease-in-out opacity .1s;
+}
+
+.color-panel-item:hover {
+  opacity: .6;
+}

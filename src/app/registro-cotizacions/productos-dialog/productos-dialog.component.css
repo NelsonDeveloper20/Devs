@@ -1,0 +1,14 @@
+  
+  .form-control {
+    height: 46px !important;
+}
+.form-control {
+  border-radius: 1.375rem;
+  background: #fff;
+  border: 1px solid #EEEEEE;
+  color: #6e6e6e;
+  height: 50px !important;
+}
+.custom-dialog-container {
+  max-width: 67vw !important; /* 80% del ancho del viewport */
+}

@@ -1,0 +1,201 @@
+<style>
+    /*.search-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }*/
+  .search-input {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: white; /* Opcional: para asegurarse de que el campo de búsqueda esté sobre el contenido de la tabla */
+
+  
+  width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.mat-select-panel-wrap{
+width: 528px !important;
+}
+</style> 
+ 
+ <ngx-spinner
+ bdColor="rgba(255, 255, 255, 1)"
+ size="medium"
+ color="#0D7ABD"
+ type="ball-beat"
+ [fullScreen]="true"
+ ><p style="color: black">Loading...</p></ngx-spinner>        
+
+ <div class="content-body">
+	<div class="container-fluid">
+    
+                      <div class="row page-titles mx-0" style="padding: 0 !important;
+                      background: transparent !important;
+                      margin-bottom: 0 !important;
+                      border-radius: 5px !important;
+                      margin-top: -20px !important;">
+                              <div class="col-sm-6 p-md-0">
+                                  <div class="welcome-text">
+                                      <h4>Componentes</h4>
+                                      <p class="mb-0">Mantenimiento componentes</p>
+                                  </div>
+                              </div>
+                              <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+                                  <ol class="breadcrumb"> 
+                                      <mat-button-toggle-group name="ingredients" aria-label="Ingredients" multiple style="border-radius: 70px;
+                                      border: 3px solid #B8122B;font-weight: 500;
+                                      box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 0%), 0px 6px 10px 0px rgba(0, 0, 0, .14), 0px 1px 18px 0px rgba(0, 0, 0, .12);"> 
+                                        <mat-button-toggle value="eggs" (click)="addRowComponente()">Nuevo Componete <mat-icon style="color: #B8122B;">note_add</mat-icon ></mat-button-toggle> 
+                                      </mat-button-toggle-group>	
+                                  </ol>
+                              </div>
+                            </div>
+                            
+		<br>
+		
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card"> 
+						<div class="table-responsive">
+                       <table mat-table [dataSource]="dataSource" class="table table-responsive-lg mb-0 table-striped">
+
+                        <!--<ng-container matColumnDef="isSelected">
+                          <th mat-header-cell *matHeaderCellDef> Seleccionado </th>
+                          <td mat-cell *matCellDef="let element">
+                            <mat-checkbox [(ngModel)]="element.isSelected" [ngModelOptions]="{standalone: true}"></mat-checkbox>
+                          </td>
+                        </ng-container>-->
+                    
+                        <ng-container matColumnDef="id">
+                          <th mat-header-cell *matHeaderCellDef> ID </th>
+                          <td mat-cell *matCellDef="let element">{{element.id}}</td>
+                        </ng-container>
+                    
+                        <ng-container matColumnDef="nombre">
+                          <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                          <td mat-cell *matCellDef="let element">
+                            <ng-container *ngIf="!element.isEdit">{{element.nombre}}</ng-container>
+                            <ng-container *ngIf="element.isEdit"> 
+                              <mat-form-field appearance="outline" style="width: 100%;">
+                                <mat-select [(value)]="element.nombre" placeholder="Buscar" style="width: 190px;" (selectionChange)="onNombreChange($event, element)" >
+                                  <mat-select-trigger>
+                                    {{ element.nombre || '---Seleccione---' }}
+                                  </mat-select-trigger>
+                                  <input matInput (keyup)="applyFilter($event)" placeholder="Buscar"  class="search-input" />
+                                  <mat-option value="">---Seleccione---</mat-option>
+                                  <mat-option *ngFor="let item of filteredList" [value]="item.des">
+                                    {{ item.codigo }} : {{ item.des }}
+                                  </mat-option>
+                                </mat-select>
+                              </mat-form-field>
+                            </ng-container>
+                          </td>
+                        </ng-container>
+                    
+                        <ng-container matColumnDef="codigo">
+                          <th mat-header-cell *matHeaderCellDef> Codigo </th>
+                          <td mat-cell *matCellDef="let element">
+                            <ng-container *ngIf="!element.isEdit">{{element.codigo}}</ng-container>
+                            <ng-container *ngIf="element.isEdit">
+                              <input [(ngModel)]="element.codigo" [ngModelOptions]="{standalone: true}" class="form-control" />
+                            </ng-container>
+                          </td>
+                        </ng-container>
+                    
+                        <ng-container matColumnDef="descripcionComponente">
+                          <th mat-header-cell *matHeaderCellDef> Descripción </th>
+                          <td mat-cell *matCellDef="let element">
+                            <ng-container *ngIf="!element.isEdit">{{element.descripcionComponente}}</ng-container>
+                            <ng-container *ngIf="element.isEdit">
+                              <!--<input [(ngModel)]="element.descripcionComponente" [ngModelOptions]="{standalone: true}"  class="form-control"/>-->
+                              <textarea [(ngModel)]="element.descripcionComponente" [ngModelOptions]="{standalone: true}" 
+                              style="    border-radius: 9px;
+                              background: #fff;  border: 1px solid rgb(221 220 220);
+                              color: #6e6e6e; 
+                              min-height: 50px; /* Ajusta la altura mínima según tus necesidades */
+                              padding: 8px; /* Ajusta el relleno según tus necesidades */
+                              box-sizing: border-box; /* Asegura que el relleno se incluya en el ancho y la altura totales */  
+                              resize: vertical; /* Permite al usuario cambiar la altura del textarea */
+                              font-family: inherit; /* Mantiene la fuente coherente con el resto de la aplicación */
+                              font-size: 14px; /* Ajusta el tamaño de la fuente según tus necesidades */
+                              line-height: 1.5; /* Ajusta la altura de la línea para mejorar la legibilidad */
+                              "
+                              ></textarea>
+                            </ng-container>
+                          </td>
+                        </ng-container>
+                    
+                        <ng-container matColumnDef="color">
+                          <th mat-header-cell *matHeaderCellDef> Color </th>
+                          <td mat-cell *matCellDef="let element">
+                            <ng-container *ngIf="!element.isEdit">{{element.color}}</ng-container>
+                            <ng-container *ngIf="element.isEdit">
+                              <input [(ngModel)]="element.color" [ngModelOptions]="{standalone: true}"  class="form-control"/>
+                            </ng-container>
+                          </td>
+                        </ng-container>
+                    
+                        <ng-container matColumnDef="unidad">
+                          <th mat-header-cell *matHeaderCellDef> Unidad </th>
+                          <td mat-cell *matCellDef="let element">
+                            <ng-container *ngIf="!element.isEdit">{{element.unidad}}</ng-container>
+                            <ng-container *ngIf="element.isEdit">
+                              <input [(ngModel)]="element.unidad" [ngModelOptions]="{standalone: true}"  class="form-control"/>
+                            </ng-container>
+                          </td>
+                        </ng-container>
+                    
+                        <ng-container matColumnDef="subProducto">
+                          <th mat-header-cell *matHeaderCellDef> Sub Producto </th>
+                          <td mat-cell *matCellDef="let element">
+                            <ng-container *ngIf="!element.isEdit">{{element.subProducto}}</ng-container>
+                            <ng-container *ngIf="element.isEdit">
+                              <input [(ngModel)]="element.subProducto" [ngModelOptions]="{standalone: true}" class="form-control" />
+                            </ng-container>
+                          </td>
+                        </ng-container>
+                    
+                        <ng-container matColumnDef="codigoProducto">
+                          <th mat-header-cell *matHeaderCellDef> Codigo Producto </th>
+                          <td mat-cell *matCellDef="let element">
+                            <ng-container *ngIf="!element.isEdit">{{element.codigoProducto}}</ng-container>
+                            <ng-container *ngIf="element.isEdit">
+                              <input [(ngModel)]="element.codigoProducto" [ngModelOptions]="{standalone: true}"  class="form-control"/>
+                            </ng-container>
+                          </td>
+                        </ng-container>
+                    
+                        <ng-container matColumnDef="acciones">
+                          <th mat-header-cell *matHeaderCellDef> Acciones </th>
+                          <td mat-cell *matCellDef="let element"  style="min-width: 126px !important;">
+                            <ng-container *ngIf="!element.isEdit">                              
+                              <button class="btn btn-primary tp-btn-light sharp" style="margin: 5px;"  (click)="editRow(element)">
+								<mat-icon>edit</mat-icon>
+                              </button>
+                                <button class="btn btn-primary tp-btn-light sharp" (click)="deleteRow(element)">
+                                <mat-icon>delete</mat-icon>
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="element.isEdit">                      
+                              <button class="btn btn-primary tp-btn-light sharp" style="margin: 5px;"  (click)="saveRow(element)">
+								<mat-icon>save</mat-icon>
+                              </button>
+                                <button class="btn btn-primary tp-btn-light sharp" (click)="cancelEdit(element)">
+                                <mat-icon>cancel</mat-icon>
+                                </button>                              
+                            </ng-container>
+                          </td>
+                        </ng-container>
+                    
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                      </table>
+                      </div> 
+            </div></div>
+    </div>
+    </div>
+</div>   

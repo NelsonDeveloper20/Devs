@@ -1,0 +1,76 @@
+<ngx-spinner
+  bdColor="rgba(255, 255, 255, 1)"
+  size="medium"
+  color="#0D7ABD"
+  type="ball-beat"
+  [fullScreen]="true"
+  ><p style="color: black">Loading...</p></ngx-spinner><style>
+  .row{
+    margin-bottom: 17px;
+  }
+</style>
+<h2 mat-dialog-title *ngIf="nuevo=='NO'">Modificar Usuario</h2>
+<h2 mat-dialog-title *ngIf="nuevo=='SI'">Registrar Usuario</h2>
+<div mat-dialog-content>
+   
+    <div class="form-group"> 
+      <div id="formularionuevoUsuario" class="row">
+        <input type="hidden" name="id_usuario" id="id_usuario" value="0">
+        <div class="form-group col-md-3">
+          <label>Nombres</label>
+          <input class="form-control" placeholder="Ingrese los Nombres" id="nombre_usuario" name="nombre_usuario" [(ngModel)]="usuario.nombre">
+          <p class="help-block" style="display: none;">Example block-level help text here.</p>
+        </div> 
+        <div class="form-group col-md-3">
+          <label>Apellidos</label>
+          <input class="form-control" placeholder="Ingrese los Apellidos" id="apellido_usuario" name="apellido_usuario" [(ngModel)]="usuario.apellido">
+          <p class="help-block" style="display: none;">Example block-level help text here.</p>
+        </div> 
+        <div class="form-group col-md-3">
+          <label>Documento</label>
+          <input class="form-control" placeholder="Ingrese un documento" id="documento_usuario" name="documento_usuario" [(ngModel)]="usuario.dni">
+          <p class="help-block" style="display: none;">Example block-level help text here.</p>
+        </div> 
+        <div class="form-group col-md-3">
+          <label>Tipo de Usuario (perfil)</label>
+          <select class="form-control" id="perfil_usuario" name="perfil_usuario" [(ngModel)]="usuario.idTipoUsuario"> 
+            <option value="">--Seleccione--</option>
+            <option *ngFor="let item of listTipoUsuario" [value]="item.id">{{ item.nombre }}</option>
+          </select>
+          <p class="help-block" style="display: none;">Example block-level help text here.</p>
+        </div>
+        <div class="form-group col-md-3">
+          <label>Rol Usuario</label>
+          <select class="form-control" id="rol_usuario" name="rol_usuario" [(ngModel)]="usuario.idRol">
+            <option value="">--Seleccione--</option>
+            <option *ngFor="let item of listRol" [value]="item.id">{{ item.nombre }}</option> 
+          </select>
+          <p class="help-block" style="display: none;">Example block-level help text here.</p>
+        </div> 
+        <div class="form-group col-md-3">
+          <label>Usuario</label>
+          <input class="form-control" placeholder="Ingrese un Usuario" id="username_usuario" name="username_usuario" [(ngModel)]="usuario.usuario">
+          <p class="help-block" style="display: none;">Example block-level help text here.</p>
+        </div> 
+        <div class="form-group col-md-3">
+          <label>Contraseña</label>
+          <input class="form-control" placeholder="Ingrese una contraseña" id="contrasena_usuario" name="contrasena_usuario" [(ngModel)]="usuario.clave">
+          <p class="help-block" style="display: none;">Example block-level help text here.</p>
+        </div> 
+        <div class="form-group col-md-3">
+          <label>Codigo barra del Trabajador</label>
+          <input class="form-control" placeholder="Ingrese el codigo del trabajador" id="codigo_usuario" name="codigo_usuario" [(ngModel)]="usuario.codigoUsuario">
+          <p class="help-block" style="display: none;">Example block-level help text here.</p>
+        </div> 
+        <div class="form-group col-md-8">
+          <label id="barcode_image"><img src="" id="barcode_image_bar"></label>
+        </div> 
+      </div> 
+</div>
+<div mat-dialog-actions>
+  <button mat-button class="btn btn-sm btn-primary" (click)="save()">
+    Grabar
+  </button>
+  <button mat-button mat-dialog-close>Cerrar</button>
+</div>
+ 

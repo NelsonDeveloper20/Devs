@@ -1,0 +1,24 @@
+<ngx-spinner
+  bdColor="rgba(255, 255, 255, 1)"
+  size="medium"
+  color="#0D7ABD"
+  type="ball-beat"
+  [fullScreen]="true"
+  ><p style="color: black">Loading...</p></ngx-spinner>
+<h2 mat-dialog-title *ngIf="IdProducto">Modificar Producto {{TipoProducto}}</h2>
+<h2 mat-dialog-title *ngIf="!IdProducto">Registrar Producto {{TipoProducto}}</h2>
+
+<div mat-dialog-content style="max-width: 1114px !important;"> 
+  <div class="panel-body">
+    <!--{{JsonItemHijo | json}}
+    <hr>
+    {{jsonProductoItemDelHijo | json }}-->
+    <app-form-producto [JsonItemHijo]="JsonItemHijo" (JsonProuctoDelHijo)="onProductoActualizado($event)"></app-form-producto>
+</div>
+</div>
+<div mat-dialog-actions> 
+  <button mat-button class="btn btn-sm btn-primary" (click)="save()">
+    Grabar
+  </button>
+  <button mat-button (click)="close()">Cerrar</button>
+</div>

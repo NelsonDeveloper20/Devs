@@ -1,0 +1,77 @@
+<ngx-spinner
+  bdColor="rgba(255, 255, 255, 1)"
+  size="medium"
+  color="#0D7ABD"
+  type="ball-beat"
+  [fullScreen]="true"
+  ><p style="color: black">Loading...</p></ngx-spinner>
+  
+  <style>
+    .example-containerambiente {
+  height: 414px;
+  /*overflow: auto;*/
+}
+  </style>
+<h2 mat-dialog-title>Agregar Proyecto</h2>
+<div mat-dialog-content> 
+  <div class="panel-body">
+    
+        <mat-form-field style="    width: 50%;">
+        <input matInput placeholder="Nombre del Proyecto" [(ngModel)]="nombreProyecto" />
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="guardarProyecto()">Guardar</button>
+      <!-- Tabla para mostrar la lista de proyectos -->      
+      <div class="table-responsive">
+        <section class="example-containerambiente" tabindex="0">
+     <!-- Tabla para mostrar la lista de proyectos -->
+<mat-table [dataSource]="proyectos" matSort class="table text-black">
+    <!-- ID Column -->
+    <ng-container matColumnDef="id">
+      <mat-header-cell *matHeaderCellDef mat-sort-header sticky>ID</mat-header-cell>
+      <mat-cell *matCellDef="let proyecto">{{ proyecto.id }}</mat-cell>
+    </ng-container>
+  
+    <!-- Nombre Column -->
+    <ng-container matColumnDef="nombre">
+      <mat-header-cell *matHeaderCellDef mat-sort-header sticky>Nombre</mat-header-cell>
+      <mat-cell *matCellDef="let proyecto">
+        <span *ngIf="proyecto.id !== proyectoEditandoId">{{ proyecto.nombre }}</span>
+        <!--<input *ngIf="proyecto.id === proyectoEditandoId" matInput [value]="proyecto.nombre" (input)="proyectoEditado = $event.target.value" />-->
+        <input *ngIf="proyecto.id === proyectoEditandoId" class="form-control" matInput [value]="proyectoEditado" (input)="onInputChange($event)" />
+      </mat-cell>
+    </ng-container>
+  
+    <!-- Acción Column -->
+    <ng-container matColumnDef="accion">
+      <mat-header-cell *matHeaderCellDef sticky>Acción</mat-header-cell>
+      <mat-cell *matCellDef="let proyecto">
+        <ng-container *ngIf="proyecto.id !== proyectoEditandoId">
+          <button mat-icon-button (click)="editarProyecto(proyecto.id)">
+            <mat-icon>edit</mat-icon>
+          </button>
+        </ng-container>
+        <ng-container *ngIf="proyecto.id === proyectoEditandoId">
+          <button mat-icon-button color="primary" (click)="guardarCambiosProyecto(proyecto.id)">
+            <mat-icon>done</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="cancelarEdicion()">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </ng-container>
+      </mat-cell>
+    </ng-container>
+  
+    <mat-header-row *matHeaderRowDef="columnas;sticky: true"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: columnas;"></mat-row>
+  </mat-table>
+</section></div>
+
+</div>
+</div>
+<div mat-dialog-actions> 
+  <button mat-button class="btn btn-sm btn-primary" (click)="save()" style="min-width: 580px;
+  visibility: hidden;">
+    Grabar
+  </button>
+  <button mat-button (click)="close()">Cerrar</button>
+</div>

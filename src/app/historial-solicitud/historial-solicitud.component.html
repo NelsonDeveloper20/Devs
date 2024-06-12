@@ -1,0 +1,247 @@
+<ngx-spinner bdColor="rgba(255, 255, 255, 1)" size="medium" color="#0D7ABD" type="ball-beat" [fullScreen]="true">
+  <p style="color: black">Loading...</p>
+</ngx-spinner>
+<style>
+  .vacios_ {
+    color: #e51717;
+    font-weight: 600;
+  }
+
+  .mat-fab-extended {
+
+    border-radius: 5px !important;
+    width: auto;
+    height: auto;
+    padding: 0 16px;
+    min-width: 64px;
+    min-height: 36px;
+    font-size: 14px;
+    text-transform: uppercase;
+  }
+
+  .mat-fab-extended span {
+    margin-left: 8px;
+  }
+
+  .mat-form-field--inline {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .mat-form-field--inline .mat-form-field {
+    display: inline-block;
+    width: 100%;
+    vertical-align: middle;
+  }
+
+  .mat-form-field--inline .mat-form-field:nth-child(1) {
+    margin-right: 25px;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+</style>
+<div class="">
+  <div class="card-header card-header-warning" style="  margin-top: 60px;  width: 9%;
+padding-top: 0px;">
+  </div>
+  <div class="main-content">
+    <div class="container-fluid">
+      <div class="col-lg-12">
+        <div class="row">
+          <div class="col-lg-2">
+            <mat-form-field appearance="outline" style="width: 100%;">
+              <mat-label [style.color]="'black'"  style="font-size: 17px">Fecha Inicio</mat-label>
+              <input class="form-input" matInput [matDatepicker]="picker" [(ngModel)]="FechaInicio" />
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-lg-2">
+            <mat-form-field appearance="outline" style="width: 100%;">
+              <mat-label [style.color]="'black'"  style="font-size: 17px">Fecha Fin</mat-label>
+              <input class="form-input" matInput [matDatepicker]="pickern" [(ngModel)]="FechaFin" />
+              <mat-datepicker-toggle matSuffix [for]="pickern"></mat-datepicker-toggle>
+              <mat-datepicker #pickern></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+
+          <div class="col-lg-3">
+            <mat-form-field appearance="outline" style="width: 100%;">
+              <mat-label [style.color]="'black'"  style="font-size: 17px">Cliente:</mat-label>
+              <mat-select [(value)]="ClienteSelect">
+                <mat-select-trigger>
+                  {{ ClienteSelect || '---Todos---' }}
+                </mat-select-trigger>
+                <input matInput [formControl]="searchControlCliente" placeholder="Buscar" class="search-input" />
+                <mat-option value="Todos">---Todos---</mat-option>
+                <mat-option *ngFor="let item of filteredClientes" [value]="item.clienteRazonSocial">
+                  {{ item.clienteRazonSocial }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="col-lg-3">
+            <mat-form-field appearance="outline" style="width: 100%;">
+              <mat-label [style.color]="'black'"  style="font-size: 17px">Creado Por:</mat-label>
+              <mat-select [(value)]="AprobadoPor">
+                <mat-select-trigger>
+                  {{ AprobadoPor?.nombre || '---Todos---' }}
+                </mat-select-trigger>
+                <input matInput [formControl]="searchControl" placeholder="Buscar" class="search-input" />
+                <mat-option value="Todos">---Todos---</mat-option>
+                <mat-option *ngFor="let item of filteredUsuarios" [value]="item">
+                  {{ item.nombre }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-lg-2">
+            <mat-form-field appearance="outline" style="width: 100%;">
+              <mat-label [style.color]="'black'"  style="font-size: 17px">Estado:</mat-label>
+              <mat-select [(value)]="EstadoSolicitud">
+                <mat-option value="Seleccione"> ---Seleccione--- </mat-option>
+                <mat-option value="Inicio Solicitud">Inicio Solicitud</mat-option>
+                <mat-option value="Registrado">Registrado</mat-option>
+                <mat-option value="evision ADV">Revision ADV</mat-option>
+                <mat-option value="Aprobaciones">Aprobaciones por Jefe</mat-option>
+                <mat-option value="Revision Contabilidad">Revision Contabilidad</mat-option>
+                <mat-option value="Validacion ADV">Validacion ADV</mat-option>
+                <mat-option value="Rechazado Jefatura">Rechazado Jefatura</mat-option>
+                <mat-option value="Rechazado Contabilidad">Rechazado Contabilidad</mat-option>
+                <mat-option value="Aplicado Tesoreria">Aplicado Tesoreria</mat-option>
+                <mat-option value="Observado Tesoreria">Observado Tesoreria</mat-option>
+
+                <!--'Registrado'
+Revision ADV'
+'Aprobaciones'
+'Revision Contabilidad'
+"Validacion ADV"
+"Rechazado Jefatura"
+"Rechazado Contabilidad"
+"Aplicado Tesoreria"
+"Observado Tesoreria"-->
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="col-lg-2">
+            <button mat-fab class="mat-fab-extended" color="primary" (click)="getHistorialSolicitud()">
+              <mat-icon>search</mat-icon>
+              <span>Buscar</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+      <div class="col-lg-12" style="margin-top: 10px;">
+        <div class="mat-elevation-z4">
+          <mat-form-field style="left: 2%;">
+            <input matInput placeholder="Buscar" (keyup)="buscar($event)">
+          </mat-form-field>
+          <table mat-table [dataSource]="dataSource">
+
+            <!-- Position Column -->
+            <!-- Position Column -->
+            <ng-container matColumnDef="IdSolicitud">
+              <th mat-header-cell *matHeaderCellDef> Id Solicitud </th>
+              <td mat-cell *matCellDef="let element"> {{element.idSolicitud }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="cliente">
+              <th mat-header-cell *matHeaderCellDef> Cliente </th>
+              <td mat-cell *matCellDef="let element"> {{element.solicitud}} </td>
+            </ng-container>
+
+            <!-- Name Column -->
+            <ng-container matColumnDef="Estado">
+              <th mat-header-cell *matHeaderCellDef> Estado </th>
+              <td mat-cell *matCellDef="let element"> {{element.estadoSolicitud}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="SubEstado">
+              <th mat-header-cell *matHeaderCellDef> Sub Estado </th>
+              <td mat-cell *matCellDef="let element"> {{element.subEstado}} </td>
+            </ng-container>
+            <ng-container matColumnDef="Motivo">
+              <th mat-header-cell *matHeaderCellDef> Motivo </th>
+              <td mat-cell *matCellDef="let element"> {{element.motivo}} </td>
+            </ng-container>
+            <ng-container matColumnDef="Comentario">
+              <th mat-header-cell *matHeaderCellDef> Comentario </th>
+              <td mat-cell *matCellDef="let element"> {{element.comentario}} </td>
+            </ng-container>
+
+            <!-- Weight Column -->
+            <ng-container matColumnDef="SolicitudFec">
+              <th mat-header-cell *matHeaderCellDef> Solicitud Creada </th>
+              <td mat-cell *matCellDef="let element"> {{element.fechaCreacion | date: 'dd/MM/yyyy hh:mm'}} </td>
+            </ng-container>
+
+            <!-- Symbol Column -->
+            <ng-container matColumnDef="Usuario">
+              <th mat-header-cell *matHeaderCellDef> Creado Por </th>
+              <td mat-cell *matCellDef="let element">
+                {{element.usuario}}
+
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+
+          <!-- <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons aria-label="Select page of periodic elements"> -->
+          <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons aria-label="Select page of periodic elements">
+          </mat-paginator>
+        </div>
+        <br>
+        <div class="col-lg-12" style="height: 100px;">
+
+        </div>
+      </div>
+      
+      <div class="col-lg-1" style="margin: 9px; display: none;" >
+        <button mat-raised-button color="accent" style="color: white;" (click)="exportToExcel()"
+          *ngIf="solicitud.length>0">
+          <mat-icon>archive</mat-icon>
+          Exportar excel
+        </button>
+      </div>
+      <table id="tableToExcel" style="display: none;">
+        <thead>
+          <tr>
+            <th>idSolicitud</th>
+            <th>solicitud</th>
+            <th>estadoSolicitud</th>
+            <th>subEstado</th>
+            <th>motivo</th>
+            <th>comentario</th>
+            <th>fechaCreacion</th>
+            <th>usuario</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let element of solicitud">
+            <td>{{ element.idSolicitud }}</td>
+            <td>{{ element.solicitud }}</td>
+            <td>{{ element.estadoSolicitud }}</td>
+            <td>{{ element.subEstado }}</td>
+            <td>{{ element.motivo }}</td>
+            <td>{{ element.comentario }}</td>
+            <td>{{element.fechaCreacion | date: 'dd/MM/yyyy hh:mm'}} </td>
+            <td>{{ element.usuario }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>

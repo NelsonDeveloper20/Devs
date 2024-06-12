@@ -1,0 +1,13 @@
+.btn-primary {
+    background-color: #0869c1 !important;
+    border-color: #6c757d;
+}
+
+.card-category{
+    margin: 18px !important;
+}
+
+.bg-light {
+    background-color: #ffffff !important;
+    box-shadow: 0px 0px 13px 0px rgb(82 63 105 / 5%);
+}

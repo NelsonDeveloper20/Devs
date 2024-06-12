@@ -1,0 +1,780 @@
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatAccordion } from '@angular/material/expansion';
+import { ProductosDialogComponent } from './productos-dialog/productos-dialog.component';
+import { Toaster } from 'ngx-toast-notifications';
+import { Router } from '@angular/router';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { ITblOrdenProduccion, TblOrdenProduccion } from '../services/models/Tbl_OrdenProduccion.model';
+import { OrdenproduccionService } from '../services/ordenproduccion.service';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { IApiResponse } from '../services/service.model';
+import Swal from 'sweetalert2';
+import { Observable, of, throwError } from 'rxjs';
+import { FormControl } from '@angular/forms';
+import { catchError, debounceTime, distinctUntilChanged, filter, map, startWith, switchMap, tap } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
+import { ProyectoDialogComponent } from './proyecto-dialog/proyecto-dialog.component';
+import { ProyectoService } from '../services/proyecto.service';
+import { ComunicacionService } from '../shared/comunicacion.service';
+import { LayoutComponent } from '../layout/layout.component';
+export interface ListasModel {
+  isSelected: boolean;
+  id: number;
+  descripcion: string; 
+  valor: string;
+  isEdit: boolean;
+}
+@Component({
+  selector: 'app-registro-cotizacions',
+  templateUrl: './registro-cotizacions.component.html',
+  styleUrls: ['./registro-cotizacions.component.css']
+})
+export class RegistroCotizacionsComponent implements OnInit {
+  @ViewChild(MatAccordion) accordion: MatAccordion;
+  cotizacionNumber: string;
+  tipoCliente: string="";
+  total: string;
+  nombreProyecto: string;
+  destino: string="";
+  tipoOperacion: string="";
+  ruc: string;
+  cliente: string;
+  fechaSap: Date;
+  matriz: string;
+  subNivel: string;
+  constructor(
+    private http: HttpClient,
+    private dialog: MatDialog,
+    private toaster: Toaster,private router: Router,   
+    private spinner: NgxSpinnerService,
+    private _OrdenService: OrdenproduccionService,
+    private _proyectoService: ProyectoService,
+
+    private comunicacionService: ComunicacionService
+  ) {  
+    this.filteredStates = this.stateCtrl.valueChanges
+      .pipe(
+        startWith(''),
+        debounceTime(300),
+        distinctUntilChanged(),
+        filter(value => value.length >= 4),
+        tap(() => this.isRequesting = true), // Filtrar solo cuando se ingresen al menos 3 caracteres
+        switchMap(value => this.obtenerOrdenes(value)),
+        catchError(error => { 
+          //console.error('Error:', error);
+          this.toaster.open({
+            text: "Ocurio un error:"+error.message,
+            caption: 'Mensaje',
+            type: 'warning',
+            position: 'top-right',
+            //duration: 4000
+          });
+          return [];
+        }),
+        tap(() => this.isRequesting = false)
+      );
+   }
+   
+  @ViewChild(LayoutComponent) layoutComponent: LayoutComponent;
+   valor: string = 'algunValor';
+   GenerarLayout(cotizacionGrupo:any) {
+    if (this.layoutComponent) {
+      this.layoutComponent.ejecutarAccionConParametro(cotizacionGrupo);
+    }
+  }
+   Productos: any=[];
+   listarProductosSisgecoAndDcBlinds(){  //BOTON CARGAR
+    this.spinner.show();
+    this._OrdenService
+      .ListarProductoSisgeco_DC( this.selectedState.numero)
+      .subscribe(
+        (response) => {
+          this.Productos=response; 
+          this.spinner.hide();
+          
+    this.listarAmbientes(this.selectedState.numero);
+        },
+        () => {
+          this.spinner.hide();
+        }
+      );
+   }
+  ngOnInit(): void {
+    try{
+    this.ListarProyecto();
+    this.listas();
+    }catch(ex){      
+    }
+  }
+  getRowSpan(index: number): number {
+    if (index === 0 || 
+        this.Productos[index].cotizacionGrupo !== this.Productos[index - 1].cotizacionGrupo ||
+        this.Productos[index].tipo !== "Producto") {
+      let count = 1;
+      if (!this.Productos[index].cotizacionGrupo || this.Productos[index].tipo !== "Producto") {
+        return 0;
+      }
+      for (let i = index + 1; i < this.Productos.length; i++) {
+        if (this.Productos[i].cotizacionGrupo === this.Productos[index].cotizacionGrupo &&
+            this.Productos[i].tipo === "Producto") {
+          count++;
+        } else {
+          break;
+        }
+      }
+      return count;
+    }
+    return 0;
+  }
+  /*
+  getRowSpan(index: number): number {
+    if (index === 0 || this.Productos[index].cotizacionGrupo !== this.Productos[index - 1].cotizacionGrupo) {
+      let count = 1;
+      if (!this.Productos[index].cotizacionGrupo) {
+        return 0;
+      }
+      for (let i = index + 1; i < this.Productos.length; i++) {
+        if (this.Productos[i].cotizacionGrupo === this.Productos[index].cotizacionGrupo) {
+          count++;
+        } else {
+          break;
+        }
+      }
+      return count;
+    }
+    return 0;
+  }*/
+  listProyecto:any[]=[];
+  ListarProyecto(){
+    this.spinner.show();
+    this._proyectoService
+      .ListarProyecto()
+      .subscribe(
+        (response) => { 
+          if(response){
+            this.listProyecto = response;
+          }
+          this.spinner.hide();
+        },
+        () => {
+          this.spinner.hide();
+        }
+      );
+   }
+  archivo:any;
+  onFileSelected(event: any) {
+    const selectedFile = event.target.files[0];
+    this.archivo=selectedFile; 
+    // Puedes realizar más acciones con el archivo seleccionado aquí, como cargarlo a un servicio o procesarlo.
+  } 
+  descargarArchivo(nombre: string) {
+    this.spinner.show();
+    this._OrdenService.DescargarArchivo(nombre).subscribe(
+      (blob: Blob) => {
+        this.spinner.hide();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = nombre; // Especificar el nombre del archivo
+        document.body.appendChild(a);
+        a.click();
+
+        // Limpieza
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      },
+      (error) => {
+        this.spinner.hide();
+        console.error('Error al descargar el archivo:', error);
+      }
+    );
+  }
+   listarOrdenPorCotizacion(numCotizacion:any){
+    this.spinner.show();
+    this._OrdenService
+      .ListarOrdenPorNumero( numCotizacion)
+      .subscribe(
+        (response) => {
+          if(response){
+            if(response.length>0){
+              this.Orden = response[0]; 
+            }
+          }
+          this.spinner.hide();
+        },
+        () => {
+          this.spinner.hide();
+        }
+      );
+   }
+   listTipoCliente:any=[];
+   listDestino:any=[];
+   listTipoOperacion:any=[];
+   listas(){
+    this.spinner.show(); 
+    this._OrdenService.listas('TipoCliente').subscribe(
+      (res: any) => {
+        if(res){
+          this.listTipoCliente = res;
+        }
+        this.checkSpinner();
+      },
+      (error) => {
+        console.error("Error al obtener lista de tipo cliente:", error);
+        this.checkSpinner();
+      }
+    );
+  
+    this._OrdenService.listas('Destino').subscribe(
+      (res: any) => { 
+        if(res){
+          this.listDestino = res;
+        }
+        this.checkSpinner();
+      },
+      (error) => {
+        console.error("Error al obtener lista de destinos:", error);
+        this.checkSpinner();
+      }
+    );
+  
+    this._OrdenService.listas('TipoOperacion').subscribe(
+      (res: any) => { 
+        if(res){
+          this.listTipoOperacion = res;
+        }
+        this.checkSpinner();
+      },
+      (error) => {
+        console.error("Error al obtener lista de tipo de operación:", error);
+        this.checkSpinner();
+      }
+    );
+    
+    this.spinner.hide();
+  } 
+  checkSpinner() {
+    // Verifica si todas las solicitudes han sido completadas antes de ocultar el spinner
+    if (this.listTipoCliente && this.listDestino && this.listTipoOperacion && this.listProyecto) {
+      this.spinner.hide();
+    }
+  }
+  //Orden: ITblOrdenProduccion={};
+  Orden: ITblOrdenProduccion = {} as ITblOrdenProduccion;
+  Guardar(){
+    if (!this.selectedState.numero){ // || !this.tipoCliente || !this.total || !this.nombreProyecto || !this.destino || !this.tipoOperacion || !this.ruc || !this.cliente || !this.fechaSap || !this.matriz || !this.subNivel) {
+     this.toaster.open({
+    text: "Por favor, complete todos los campos antes de guardar.",
+    caption: 'Mensaje',
+    type: 'warning',
+    position: 'top-right',
+    //duration: 4000
+  });
+      
+      return; 
+  }
+   this.Orden.idUsuarioCreacion="1";
+  this.spinner.show();
+  this._OrdenService.RegistrarOrden(this.Orden,  this.archivo)
+    .subscribe({
+      next: data => {
+        if (data.status == 200) { 
+const respuesta = data.json.respuesta;
+const idOrden = data.json.idOrden;
+switch(respuesta){
+  case "Ok":
+    this.Orden.id=idOrden.toString();
+    Swal.fire({
+      title: 'Mensaje',
+      text: 'Operacion realizada correctamente',
+      icon: 'success',
+      confirmButtonText: 'Aceptar',
+      allowOutsideClick: false
+    });
+    break;
+  case "Ya existe":
+    Swal.fire({
+      title: 'Mensaje',
+      text: 'Ya existe la cotizacion '+this.Orden.numeroCotizacion,
+      icon: 'warning',
+      confirmButtonText: 'Aceptar',
+      allowOutsideClick: false
+    });
+    break;
+  default:
+    ;
+}
+
+      /*    let artcl = JSON.parse(JSON.stringify(data));
+       console.log(artcl);
+        Swal.fire({
+      title: 'Mensaje',
+      text: 'Operacion realizada correctamente',
+      icon: 'success',
+      confirmButtonText: 'Aceptar',
+      allowOutsideClick: false
+    });.then((result) => {
+      if (result.isConfirmed) {
+      this.listarOrdenPorCotizacion(this.cotizacionNumber);
+      }
+    });*/
+          this.spinner.hide();
+        } else {
+          this.spinner.hide();
+          this.toaster.open({
+            text: "Ocurrio un error, ingrese los datos correctamente",
+            caption: 'Mensaje',
+            type: 'warning',
+            position: 'bottom-right',
+            //duration: 4000
+          });
+        }
+      },
+      error: error => {
+        this.spinner.hide();
+        var errorMessage = error.message;
+        console.error('There was an error!', error);
+        this.toaster.open({
+          text: errorMessage,
+          caption: 'Ocurrio un error',
+          type: 'danger',
+          // duration: 994000
+        });
+      }
+    });
+
+  
+  }
+  TblAmbiente: any[] = [];
+  indice: string;
+  ambiente: string;
+  numProd: string; 
+AgregarAmbiente() { 
+  
+   
+  if (!this.selectedState?.numero){ // || !this.tipoCliente || !this.total || !this.nombreProyecto || !this.destino || !this.tipoOperacion || !this.ruc || !this.cliente || !this.fechaSap || !this.matriz || !this.subNivel) {
+    this.toaster.open({
+   text: "Por favor, selecciona la cotizacion",
+   caption: 'Mensaje',
+   type: 'warning',
+   position: 'top-right',
+   //duration: 4000
+ });
+     
+     return; 
+   }
+  // Verificar si alguno de los campos está vacío
+  if (!this.indice || !this.ambiente || !this.numProd) {
+      // Mostrar mensaje de error       
+      this.toaster.open({
+        text: "Por favor, complete todos los campos antes de agregar.",
+        caption: 'Mensaje',
+        type: 'warning',
+        position: 'top-right',
+        //duration: 4000
+      }); 
+      return; // Detener la ejecución del método si algún campo está vacío
+  }
+
+  // Verificar si el índice ya existe en el arreglo
+  const indiceExistente = this.TblAmbiente.some(item => item.indice === this.indice);
+  if (indiceExistente) {
+      // Mostrar mensaje de error si el índice ya existe
+      this.toaster.open({
+        text: "El índice ya existe. Por favor, ingrese un índice único.",
+        caption: 'Mensaje',
+        type: 'warning',
+        position: 'top-right',
+        //duration: 4000
+      }); 
+      return; // Detener la ejecución del método si el índice ya existe
+  }
+  // Si todos los campos están completos y el índice no existe, agregar el ambiente al arreglo
+  /*this.TblAmbiente.push({
+      indice: this.indice,
+      ambiente: this.ambiente,
+      numProd: this.numProd
+  });*/
+  this.spinner.show();
+  this._OrdenService.GuardarAmbiente(this.selectedState.numero, this.indice,this.ambiente,this.numProd)
+    .subscribe({
+      next: data => {
+        if (data.status == 200) {
+          let artcl: IApiResponse = JSON.parse(JSON.stringify(data)); 
+          this.indice = "";
+          this.ambiente = "";
+          this.numProd = "";
+          this.listarAmbientes(this.selectedState.numero);
+          this.spinner.hide();
+        } else {
+          this.spinner.hide();
+          this.toaster.open({
+            text: "Ocurrio un error",
+            caption: 'Mensaje',
+            type: 'warning',
+            position: 'bottom-right',
+            //duration: 4000
+          });
+        }
+      },
+      error: error => { 
+        this.spinner.hide();
+        var errorMessage = error.message;
+        console.error('There was an error!', error);
+        this.toaster.open({
+          text: errorMessage,
+          caption: 'Ocurrio un error',
+          type: 'danger',
+          // duration: 994000
+        });
+      }
+    });
+  // Limpiar los campos después de agregar el ambiente
+
+}
+  eliminarAmbiente(indice: any) {
+  //this.TblAmbiente.splice(index, 1);
+  this.spinner.show();
+  this._OrdenService.EliminarAmbiente(indice)
+    .subscribe({
+      next: data => {
+        if (data.status == 200) {
+          let artcl: IApiResponse = JSON.parse(JSON.stringify(data));
+          this.toaster.open({
+            text: "Ambiente eliminado",
+            caption: 'Mensaje',
+            type: 'success',
+            position: 'bottom-right',
+            //duration: 4000
+          });          
+          this.listarAmbientes(this.selectedState.numero);
+          this.spinner.hide();
+        } else {
+          this.spinner.hide();
+          this.toaster.open({
+            text: "Ocurrio un error",
+            caption: 'Mensaje',
+            type: 'warning',
+            position: 'bottom-right',
+            //duration: 4000
+          });
+        }
+      },
+      error: error => {
+        this.spinner.hide();
+        var errorMessage = error.message;
+        console.error('There was an error!', error);
+        this.toaster.open({
+          text: errorMessage,
+          caption: 'Ocurrio un error',
+          type: 'danger',
+          // duration: 994000
+        });
+      }
+    });
+  }
+  listarAmbientes(numerocotizacion:any){ 
+   this.spinner.show();
+   this._OrdenService
+     .listarAmbiente(numerocotizacion)
+     .subscribe(
+       (response) => { 
+          this.TblAmbiente=response;  
+         this.spinner.hide();
+       },
+       () => {
+         this.spinner.hide();
+       }
+     );
+  }
+  atras(){
+    
+    this.router.navigate(['/SolicitudPendiente']);
+    }
+  
+  openRegisterProd(producto:any): void {    
+    if(this.itemCopiado){ 
+      var codigoProductoCopiado=this.itemCopiado.codigoProducto.slice(0, 5);// Salida: PRTRS
+      var codigoProducto=producto.codigoProducto.slice(0, 5);// Salida: PRTRS
+      if(codigoProductoCopiado==codigoProducto){
+        this.itemCopiado.id="";
+        this.itemCopiado.codigoProducto=producto.codigoProducto;
+        this.itemCopiado.linea=producto.linea;
+        this.itemCopiado.nombreProducto=producto.nombreProducto;
+        this.itemCopiado.unidadMedida=producto.unidadMedida;
+        this.itemCopiado.alto=producto.alto;
+        this.itemCopiado.ancho=producto.ancho;
+        this.itemCopiado.familia=producto.familia;
+        this.itemCopiado.subFamilia=producto.subFamilia;
+        this.itemCopiado.precio=producto.precio;
+        this.itemCopiado.precioInc=producto.precioInc;
+        this.itemCopiado.igv=producto.igv;
+        this.itemCopiado.lote=producto.lote; 
+        producto=this.itemCopiado;
+        this.itemCopiado=null;
+
+      }else{        
+        this.toaster.open({
+          text: "El producto debe ser igual al que fue copiado",
+          caption: 'Mensaje',
+          type: 'warning',
+          position: 'bottom-right',
+          //duration: 4000
+        });
+      return;
+      }
+    }
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true; 
+    dialogConfig.panelClass = 'custom-dialog-container';
+    //const cadenaCompleta = 'PRTRS0054'; 
+    const dataToSend = { 
+      producto: producto,
+      Cotizacion: this.selectedState.numero, 
+      CodigoSisgeco:this.selectedState.numdocref,
+      ambiente:this.TblAmbiente
+    };
+    dialogConfig.data = dataToSend;
+    /*
+    const dialogRef = this.dialog.open(ExportDialogComponent, {
+      width: '650px', // Ancho del popup
+      data: { name: 'Angular' } // Datos opcionales que puedes pasar al popup
+    });*/
+    dialogConfig.width ='1104px';
+    const dialogRef = this.dialog.open(ProductosDialogComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe({
+      next: data => {   
+       if (data) {
+          this.listarProductosSisgecoAndDcBlinds();
+      } 
+    },
+    error: error => { 
+        var errorMessage = error.message;
+        console.error('There was an error!', error); 
+        this.toaster.open({
+          text: errorMessage,
+          caption: 'Ocurrio un error',
+          type: 'danger',
+        });
+      }
+    });
+  }
+  
+  openEditProd(producto:any): void {    
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true; 
+    dialogConfig.panelClass = 'custom-dialog-container';
+    //const cadenaCompleta = 'PRTRS0054'; 
+    const dataToSend = { 
+      producto: producto,
+      Cotizacion: this.selectedState.numero, 
+      CodigoSisgeco:this.selectedState.numdocref,
+      ambiente:this.TblAmbiente
+    };
+    dialogConfig.data = dataToSend;
+    const dialogRef = this.dialog.open(ProductosDialogComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe({
+      next: data => {   
+       if (data) {
+          this.listarProductosSisgecoAndDcBlinds();
+      } 
+    },
+    error: error => { 
+        var errorMessage = error.message;
+        console.error('There was an error!', error); 
+        this.toaster.open({
+          text: errorMessage,
+          caption: 'Ocurrio un error',
+          type: 'danger',
+        });
+      }
+    });
+  }
+    capitalizeKeys(obj: any): any {
+    if (typeof obj !== 'object' || obj === null) {
+      return obj;
+    }
+  
+    if (Array.isArray(obj)) {
+      return obj.map(item => this.capitalizeKeys(item));
+    }
+  
+    const newObj: any = {};
+    
+    Object.keys(obj).forEach(key => {
+      const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
+      newObj[capitalizedKey] = this.capitalizeKeys(obj[key]);
+    });
+  
+    return newObj;
+  }
+  itemCopiado: any = null;
+  CopiarAtributo(item: any) {
+    this.itemCopiado = item;
+    this.toaster.open({
+      text: item.codigoProducto + "Copiado",
+      caption: 'Mensaje',
+      type: 'success',
+      position: 'bottom-right',
+      //duration: 4000
+    }); 
+  }  
+  CancelarCopiado() {
+    this.itemCopiado = null;  
+  }
+
+  RegistrarProductoComponente(data){ 
+    const capitalizedJson = this.capitalizeKeys(data);
+    this.spinner.show(); 
+    this._OrdenService.RegistrarDetalleOrdenProduccionComponente(capitalizedJson,"Componente")
+      .subscribe({
+        next: response => {
+          if (response.status == 200) { 
+  const respuesta = response.json.respuesta;
+  const id = response.json.id;
+  switch(respuesta){
+    case "Ok": 
+      Swal.fire({
+        title: 'Mensaje',
+        text: 'Operacion realizada correctamente',
+        icon: 'success',
+        confirmButtonText: 'Aceptar',
+        allowOutsideClick: false
+      }); 
+      this.listarProductosSisgecoAndDcBlinds();
+      break;
+    case "Ya existe":
+      Swal.fire({
+        title: 'Mensaje',
+        text: 'Ya existe la cotizacion ',
+        icon: 'warning',
+        confirmButtonText: 'Aceptar',
+        allowOutsideClick: false
+      });
+      break;
+    default:
+      ;
+       } 
+            this.spinner.hide();
+          } else {
+            this.spinner.hide();
+            this.toaster.open({
+              text: "Ocurrio un error",
+              caption: 'Mensaje',
+              type: 'warning',
+              position: 'bottom-right',
+              //duration: 4000
+            });
+          }
+        },
+        error: error => {
+          this.spinner.hide();
+          var errorMessage = error.message;
+          console.error('There was an error!', error);
+          this.toaster.open({
+            text: errorMessage,
+            caption: 'Ocurrio un error',
+            type: 'danger',
+            // duration: 994000
+          });
+        }
+      });
+
+   }
+  openRegisterProyecto(): void {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+
+    const dialogRef = this.dialog.open(ProyectoDialogComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe({
+      next: data => {   
+       if (data) { 
+        this.ListarProyecto();
+        /*
+        this.toaster.open({
+          text: `Proyecto agregado ${data.correo}.`,
+          caption: 'Mensaje',
+          type: 'success',
+          position:'bottom-right'
+        });*/
+  
+      } 
+    },
+    error: error => { 
+        var errorMessage = error.message;
+        console.error('There was an error!', error); 
+        this.toaster.open({
+          text: errorMessage,
+          caption: 'Ocurrio un error',
+          type: 'danger',
+        });
+      }
+    });
+  }
+  //BUSQUEDA DINAMICA
+   
+   stateCtrl = new FormControl();
+   filteredStates: Observable<any[]>;
+   selectedState: any;
+   isRequesting = false;
+   obtenerOrdenes(value: string): Observable<any[]> {
+   
+    return this._OrdenService.obtenerOrdenesPorNumero(value)
+      .pipe(
+        catchError(error => {
+          catchError(this.handleError)
+          return [];
+        })
+      );
+  }
+
+  onSelectState(state: any) {
+    this.Orden.id="";
+    this.Orden.numeroCotizacion =state.numero;
+    this.Orden.codigoSisgeco=state.numdocref;
+    this.Orden.numdoCref =state.numdocref;
+    this.Orden.rucCliente=state.ruc;
+    this.Orden.cliente=state.cliente;
+    this.Orden.total=state.total;
+    this.Orden.fechaCotizacion=state.fecha_cotizacion;
+    this.Orden.fechaVenta=state.fechaVenta;
+    this.Orden.tipoMoneda=state.tipomoneda;
+    this.Orden.tipoCambio=state.tipocambio;
+    this.Orden.subTotal =state.subtotal;
+    this.Orden.monto=state.monto;
+    this.Orden.codigoVendedor=state.codvendedor;
+    this.Orden.nombreVendedor=state.nomVendedor;
+    this.Orden.distrito=state.distrito;
+    this.Orden.provincia=state.provincia;
+    this.Orden.departamento=state.departamento;
+    this.Orden.observacion=state.observacion;
+    this.Orden.observacion=state.observacion2;
+    this.Orden.totalIgv=state.totalIGV;
+    this.Orden.direccion=state.direccion;
+    this.Orden.telefono=state.telefono;
+    //this.Orden.pa=state.Pase; 
+    this.selectedState = state;
+    this.Productos=[];
+    this.listarAmbientes(this.selectedState.numero);
+
+    this.listarOrdenPorCotizacion(this.Orden.numeroCotizacion);
+  } 
+  handleError(error: HttpErrorResponse) {
+    if (error.error instanceof ErrorEvent) {
+      // Error del lado del cliente
+      console.error('Ocurrió un error:', error.error.message);
+    } else {
+      // Error del lado del servidor
+      console.error(`Código de error ${error.status}, ` + `body: ${error.error}`);
+    }
+    // Retorna un observable con un mensaje de error
+    return throwError('Hubo un problema al obtener los datos. Por favor, intenta de nuevo más tarde.');
+  }
+}
+

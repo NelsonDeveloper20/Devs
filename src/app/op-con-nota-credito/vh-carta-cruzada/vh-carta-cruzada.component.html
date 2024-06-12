@@ -1,0 +1,578 @@
+<ngx-spinner bdColor="rgba(255, 255, 255, 1)" size="medium" color="#0D7ABD" type="ball-beat" [fullScreen]="true">
+  <p style="color: black">Loading...</p>
+</ngx-spinner>
+<style>
+  .mat-fab-extended {
+
+    border-radius: 5px !important;
+    width: auto;
+    height: auto;
+    padding: 0 16px;
+    min-width: 64px;
+    min-height: 36px;
+    font-size: 14px;
+    text-transform: uppercase;
+  }
+
+  .mat-fab-extended span {
+    margin-left: 8px;
+  }
+
+  .mat-form-field--inline {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .mat-form-field--inline .mat-form-field {
+    display: inline-block;
+    width: 100%;
+    vertical-align: middle;
+  }
+
+  .mat-form-field--inline .mat-form-field:nth-child(1) {
+    margin-right: 25px;
+  }
+
+  .mat-step-header {
+    pointer-events: none !important;
+  }
+
+  .mat-horizontal-stepper-header {
+    pointer-events: none !important;
+
+  }
+
+
+  .mat-horizontal-stepper-header-container {
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    pointer-events: none !important;
+  }
+
+  .mat-horizontal-stepper-header {
+
+    pointer-events: none !important;
+  }
+
+  .mat-stepper-header {
+    pointer-events: none !important;
+  }
+</style>
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="col-lg-12">
+
+      <div class="row">
+        <div class="col-lg-12 col-md-6 col-sm-6">
+          <div class="card card-stats">
+            <div class="">
+              <div class="">
+                <h4 style="margin: 11px;
+                font-family: 'Roboto';">{{tituloFormulario}}</h4>
+                <h4 *ngIf="itemsolicitud" style="font-weight: 600; margin: 11px;">Sol. Nº: <span style="color: #E40421;">{{itemsolicitud?.id}}</span></h4>
+
+
+                <mat-stepper class="disable-click" [selectedIndex]="activeStepIndex" [linear]="isLinear"
+                  class="horizontal-stepper">
+
+                  <mat-step [stepControl]="firstFormGroup" [editable]="isEditable">
+                    <ng-template matStepLabel>
+                      <div style="text-transform: uppercase; font-weight: bold; color: black;">Inicio Solicitud </div>
+                      <div *ngIf="getHistorialByStatus('Registrado')" style="color: black;">Fecha: {{
+                        getHistorialByStatus('Registrado')?.fechaCreacion | date:'dd/MM/yyyy HH:mm:ss' }}<br>
+                        Usuario: {{ getHistorialByStatus('Registrado')?.usuario[0].nombre }}</div>
+                    </ng-template>
+                    <br>
+                    <div class="row" style="    font-size: 14px;    margin-left: 12px;">
+                      <div class="col-lg-5">
+                        <app-solicitudes-form-cartacruzada [user]="user" (dataChanged)="onDataChangeduser($event)"></app-solicitudes-form-cartacruzada>
+                      </div>
+                      <div class="col-lg-7">
+                        <div class="col-lg-12">
+                          <h3>Documentos Adjuntos:</h3>
+                        </div>
+                        <app-files [EstadoSolicitud]="EstadoSolicitud" [filasData]="filasData"
+                          [filasDatasaved]="filasDatasaved" (dataChanged)="onDataChanged($event)"></app-files>
+                      </div>
+                    </div>
+                    <div class="col-lg-12">
+                      <div class="row">
+
+                        <div class="col-lg-12">
+                          <button mat-fab class="mat-fab-extended" *ngIf="AccionVisible" color="primary"
+                            style="margin: 9px;background: #212121;" (click)="RegistrarSolicitud()">
+                            <mat-icon>save</mat-icon>
+                            <span>Guardar</span>
+                          </button>
+                          <button mat-fab class="mat-fab-extended" *ngIf="AccionVisible && paso1Enviar" color="primary"
+                            (click)="Envio('paso1')" style="margin: 9px;">
+                            <mat-icon>send</mat-icon>
+                            <span>Enviar</span>
+                          </button>
+
+                          <button mat-fab class="mat-fab-extended" color="primary"
+                            style="margin: 9px;background: #E40421;" (click)="volver()">
+                            <mat-icon>reply_all</mat-icon>
+                            <span>Regresar</span>
+                          </button>
+                        </div>
+                      </div>
+
+                    </div>
+                    <div style="display: none;">
+                      <button mat-button matStepperNext class="btn btn-primary">Siguiente</button>
+                    </div>
+                  </mat-step>
+
+                  <mat-step [stepControl]="firstFormGroup" [editable]="isEditable" *ngIf="mostrarADV()">
+                    <ng-template matStepLabel>
+                      <div style="text-transform: uppercase; font-weight: bold; color: black;">Revisado por ADV</div>
+                      <div *ngIf="getHistorialByStatus('Revision ADV') && EstadoSolicitud!=='Validacion ADV'"
+                        style="color: black;">Fecha: {{ getHistorialByStatus('Revision ADV')?.fechaCreacion |
+                        date:'dd/MM/yyyy HH:mm:ss' }}<br>
+                        Usuario: {{ getHistorialByStatus('Revision ADV')?.usuario[0].nombre }}</div>
+                      <div *ngIf="getHistorialByStatus('Validacion ADV') && EstadoSolicitud=='Validacion ADV'"
+                        style="color: black;">
+                        Fecha: {{ getHistorialByStatus('Validacion ADV')?.fechaCreacion | date:'dd/MM/yyyy HH:mm:ss'
+                        }}<br>
+                        Usuario: {{ getHistorialByStatus('Validacion ADV')?.usuario[0].nombre }}</div>
+                    </ng-template>
+                    <br>
+                    <div class="row" style="    font-size: 14px;    margin-left: 12px;">
+                      <div class="col-lg-4">
+                        <app-solicitudes-form-cartacruzada [user]="user" (dataChanged)="onDataChangeduser($event)"></app-solicitudes-form-cartacruzada>
+
+                        <div class="" *ngIf="EstadoSolicitud=='Validacion ADV'">
+                          <div class="mat-form-field--inline">
+                            <mat-form-field appearance="outline" style="color:black !important;width:100%;">
+                              <mat-label [style.color]="'black'"  style="font-size: 17px">Comentario Contabilidad</mat-label>
+                              <textarea matInput [(ngModel)]="itemsolicitud.comentarioContabilidad" style="color:black;"
+                                readonly name="comentarioContabilidad"></textarea>
+                            </mat-form-field>
+                          </div>
+                        </div>
+
+
+                      </div>
+                      <div class="col-lg-8">
+                        <div class="col-lg-12">
+                          <h3>Documentos Adjuntos:</h3>
+                        </div>
+                        <app-files [EstadoSolicitud]="EstadoSolicitud" [filasData]="filasData"
+                          [filasDatasaved]="filasDatasaved" (dataChanged)="onDataChanged($event)"></app-files>
+
+                          <br>
+                          <div class="" *ngIf="mRechazoMDevolucion">
+                            <div class="mat-form-field--inline">
+                              <mat-form-field appearance="outline" style="color:black !important;width:70%;">
+                                <mat-label [style.color]="'black'"  style="font-size: 17px">Motivo rechazo/Motivo devolución</mat-label>
+                                <textarea matInput [(ngModel)]="mRechazoMDevolucion" style="color:black;"  readonly name="mRechazoMDevolucion"></textarea>
+                              </mat-form-field>
+                            </div>
+                          </div>
+                        <div class="col-lg-5" style="margin-top: 150px;" *ngIf="EstadoSolicitud=='Validacion ADV'">
+                          <div class="col-lg-12">
+                            <label for="nroNotaCredito">Nº Nota Credito:</label>
+                            <input type="text" id="nroNotaCredito" class="form-control" [(ngModel)]="nroNotaCredito"
+                              [disabled]="EditAtribFinales" required>
+                          </div>
+                          <div class="col-lg-12">
+                            <label for="archivoNotaCredito">Archivo:</label>
+                            <input type="file" id="archivoNotaCredito" class="form-control"
+                              (change)="onArchivoSeleccionado($event)" required>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-12">
+                      <div class="row">
+
+                        <div class="col-lg-12" *ngIf="EstadoSolicitud=='Revision ADV'">
+
+                          <button mat-fab class="mat-fab-extended" *ngIf="AccionVisible" color="primary"
+                            style="margin: 9px;background: #212121;" (click)="RegistrarSolicitud()">
+                            <mat-icon>save</mat-icon>
+                            <span>Guardar</span>
+                          </button>
+                          <button mat-fab class="mat-fab-extended" *ngIf="AccionVisible" color="primary"
+                            style="background: #212121;margin: 9px;" (click)="Devolver('paso2')">
+                            <mat-icon>feedback</mat-icon>
+                            <span>Devolver</span>
+                          </button>
+
+                          <button mat-fab class="mat-fab-extended" *ngIf="AccionVisible" color="primary"
+                            style="margin: 9px;" (click)="Envio('paso2')">
+                            <mat-icon>send</mat-icon>
+                            <span>Enviar</span>
+                          </button>
+
+                          <button mat-fab class="mat-fab-extended" color="primary"
+                            style="margin: 9px;background: #E40421;" (click)="volver()">
+                            <mat-icon>reply_all</mat-icon>
+                            <span>Regresar</span>
+                          </button>
+                        </div>
+
+
+
+                        <div class="col-lg-12" *ngIf="EstadoSolicitud=='Validacion ADV'">
+
+                          <button mat-fab class="mat-fab-extended" color="primary"
+                            style="margin: 9px;background: #E40421;" (click)="volver()">
+                            <mat-icon>reply_all</mat-icon>
+                            <span>Regresar</span>
+                          </button>
+                          <button mat-fab class="mat-fab-extended" *ngIf="AccionVisible" color="primary"
+                            style="margin: 9px;" (click)="EnvioTesoreria()">
+                            <mat-icon>send</mat-icon>
+                            <span>Enviar a tesoreria</span>
+                          </button>
+
+                        </div>
+                      </div>
+
+                    </div>
+                  </mat-step>
+
+                  <mat-step [stepControl]="firstFormGroup" [editable]="isEditable">
+                    <ng-template matStepLabel>
+                      <div style="text-transform: uppercase; font-weight: bold; color: black;">Aprobado por Jefatura
+                      </div>
+                      <div *ngIf="getHistorialByStatus('Aprobaciones')" style="color: black;">
+                        Fecha: {{ getHistorialByStatus('Aprobaciones')?.fechaCreacion | date:'dd/MM/yyyy HH:mm:ss'
+                        }}<br>
+                        Usuario: {{ getHistorialByStatus('Aprobaciones')?.usuario[0].nombre }}</div>
+                    </ng-template>
+                    <br>
+                    <div class="row" style="    font-size: 14px;    margin-left: 12px;">
+                      <div class="col-lg-4">
+                        <app-solicitudes-form-cartacruzada [user]="user"
+                          (dataChanged)="onDataChangeduser($event)"></app-solicitudes-form-cartacruzada>
+                      </div>
+                      <div class="col-lg-8">
+                        <div class="col-lg-12">
+                          <h3>Documentos Adjuntos:</h3>
+                        </div>
+                        <app-files [EstadoSolicitud]="EstadoSolicitud" [filasData]="filasData"
+                          [filasDatasaved]="filasDatasaved" (dataChanged)="onDataChanged($event)"></app-files>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-12">
+                      <div class="row">
+
+                        <div class="col-lg-12">
+                          <button mat-fab class="mat-fab-extended" *ngIf="AccionVisible" color="primary"
+                            style="background: #212121;margin: 9px;" (click)="Devolver('paso3')">
+                            <mat-icon>feedback</mat-icon>
+                            <span>Devolver</span>
+                          </button>
+
+                          <button mat-fab class="mat-fab-extended" *ngIf="AccionVisible" color="primary"
+                            style="background: #E40421;margin: 9px;" (click)="Rechazar('paso3')">
+                            <mat-icon>report_off</mat-icon>
+                            <span>Rechazar</span>
+                          </button>
+                          <button mat-fab class="mat-fab-extended" *ngIf="AccionVisible" color="primary"
+                            style="margin: 9px;" (click)="Envio('paso3')">
+                            <mat-icon>check</mat-icon>
+                            <span>Aprobar</span>
+                          </button>
+
+                          <button mat-fab class="mat-fab-extended" color="primary"
+                            style="margin: 9px;background: #E40421;" (click)="volver()">
+                            <mat-icon>reply_all</mat-icon>
+                            <span>Regresar</span>
+                          </button>
+                        </div>
+                      </div>
+
+                    </div>
+                  </mat-step>
+
+                  <mat-step [stepControl]="firstFormGroup" [editable]="isEditable">
+                    <ng-template matStepLabel>
+                      <div style="text-transform: uppercase; font-weight: bold; color: black;">Cumplimiento</div>
+                      <div *ngIf="getHistorialByStatus('Cumplimiento')" style="color: black;">
+                        Fecha: {{ getHistorialByStatus('Cumplimiento')?.fechaCreacion | date:'dd/MM/yyyy HH:mm:ss'
+                        }}<br>
+                        Usuario: {{ getHistorialByStatus('Cumplimiento')?.usuario[0].nombre }}</div>
+                    </ng-template>
+                    <br>
+                    <div class="row" style="    font-size: 14px;    margin-left: 12px;">
+                      <div class="col-lg-4">
+                        <app-solicitudes-form-cartacruzada [user]="user"
+                          (dataChanged)="onDataChangeduser($event)"></app-solicitudes-form-cartacruzada>
+                      </div>
+                      <div class="col-lg-8">
+                        <div class="col-lg-12">
+                          <h3>Documentos Adjuntos:</h3>
+                        </div>
+                        <app-files [EstadoSolicitud]="EstadoSolicitud" [filasData]="filasData"
+                          [filasDatasaved]="filasDatasaved" (dataChanged)="onDataChanged($event)"></app-files>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-12">
+                      <div class="row">
+
+                        <div class="col-lg-12">
+                          <button mat-fab class="mat-fab-extended" *ngIf="AccionVisible" color="primary"
+                            style="background: #212121;margin: 9px;" (click)="Devolver('paso4')">
+                            <mat-icon>feedback</mat-icon>
+                            <span>Devolver</span>
+                          </button>
+
+                          <button mat-fab class="mat-fab-extended" *ngIf="AccionVisible" color="primary"
+                            style="background: #E40421;margin: 9px;" (click)="Rechazar('paso4')">
+                            <mat-icon>report_off</mat-icon>
+                            <span>Rechazar</span>
+                          </button>
+                          <button mat-fab class="mat-fab-extended" *ngIf="AccionVisible" color="primary"
+                            style="margin: 9px;" (click)="Envio('paso4')">
+                            <mat-icon>check</mat-icon>
+                            <span>Aprobar</span>
+                          </button>
+
+                          <button mat-fab class="mat-fab-extended" color="primary"
+                            style="margin: 9px;background: #E40421;" (click)="volver()">
+                            <mat-icon>reply_all</mat-icon>
+                            <span>Regresar</span>
+                          </button>
+                        </div>
+                      </div>
+
+                    </div>
+                  </mat-step>
+
+                  <mat-step [stepControl]="firstFormGroup" [editable]="isEditable">
+                    <ng-template matStepLabel>
+                      <div style="text-transform: uppercase; font-weight: bold; color: black;">{{TituloContabilidad}}
+                      </div>
+                      <div *ngIf="getHistorialByStatus('Revision Contabilidad')" style="color: black;">
+                        Fecha: {{ getHistorialByStatus('Revision Contabilidad')?.fechaCreacion | date:'dd/MM/yyyy
+                        HH:mm:ss' }}<br>
+                        Usuario: {{ getHistorialByStatus('Revision Contabilidad')?.usuario[0].nombre }}</div>
+                    </ng-template>
+                    <br>
+                    <div class="row" style="    font-size: 14px;    margin-left: 12px;">
+                      <div class="col-lg-4">
+                        <app-solicitudes-form-cartacruzada [user]="user"
+                          (dataChanged)="onDataChangeduser($event)"></app-solicitudes-form-cartacruzada>
+                      </div>
+                      <div class="col-lg-8">
+                        <div class="col-lg-12">
+                          <h3>Documentos Adjuntos:</h3>
+                        </div>
+                        <app-files [EstadoSolicitud]="EstadoSolicitud" [filasData]="filasData"
+                          [filasDatasaved]="filasDatasaved" (dataChanged)="onDataChanged($event)"></app-files>
+                          <br>
+                          <div class="">
+                            <div class="mat-form-field--inline">
+                              <mat-form-field appearance="outline" style="color:black !important;width:47%;">
+                                <mat-label [style.color]="'black'"  style="font-size: 17px">Motivo rechazo/Motivo devolución</mat-label>
+                                <textarea matInput [(ngModel)]="mRechazoMDevolucion" style="color:black;" readonly name="mRechazoMDevolucion"></textarea>
+                              </mat-form-field>
+                            </div>
+                          </div>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-12">
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <button mat-fab class="mat-fab-extended" *ngIf="AccionVisible" color="primary"
+                            style="background: #212121;margin: 9px;" (click)="Devolver('paso5')">
+                            <mat-icon>feedback</mat-icon>
+                            <span>Devolver</span>
+                          </button>
+                          <button mat-fab class="mat-fab-extended" *ngIf="AccionVisible" color="primary"
+                            style="background: #E40421;margin: 9px;" (click)="Rechazar('paso5')">
+                            <mat-icon>report_off</mat-icon>
+                            <span>Rechazar</span>
+                          </button>
+                          <button mat-fab class="mat-fab-extended" *ngIf="AccionVisible" color="primary"
+                            style="margin: 9px;" (click)="Envio('paso5')">
+                            <mat-icon>check</mat-icon>
+                            <span>Aprobar</span>
+                          </button>
+
+                          <button mat-fab class="mat-fab-extended" color="primary"
+                            style="margin: 9px;background: #E40421;" (click)="volver()">
+                            <mat-icon>reply_all</mat-icon>
+                            <span>Regresar</span>
+                          </button>
+
+                        </div>
+                      </div>
+
+                    </div>
+                  </mat-step>
+
+                  <mat-step [stepControl]="firstFormGroup" [editable]="isEditable">
+
+                    <ng-template matStepLabel>
+                      <div style="text-transform: uppercase; font-weight: bold; color: black;">Aprobado por Tesoreria
+                      </div>
+                      <div *ngIf="getHistorialByStatus('Revision Tesoreria') && EstadoSolicitud=='Revision Tesoreria'"
+                        style="color: black;">
+                        Fecha: {{ getHistorialByStatus('Revision Tesoreria')?.fechaCreacion | date:'dd/MM/yyyy HH:mm:ss'
+                        }}<br>
+                        Usuario: {{ getHistorialByStatus('Revision Tesoreria')?.usuario[0].nombre }}</div>
+                      <div *ngIf="getHistorialByStatus('Aplicado Tesoreria') && EstadoSolicitud=='Aplicado Tesoreria'"
+                        style="color: black;">
+                        Fecha: {{ getHistorialByStatus('Aplicado Tesoreria')?.fechaCreacion | date:'dd/MM/yyyy HH:mm:ss'
+                        }}<br>
+                        Usuario: {{ getHistorialByStatus('Aplicado Tesoreria')?.usuario[0].nombre }}</div>
+                    </ng-template>
+                    <br>
+                    <div class="row" style="    font-size: 14px;    margin-left: 12px;">
+                      <div class="col-lg-4">
+                        <app-solicitudes-form-cartacruzada [user]="user"
+                          (dataChanged)="onDataChangeduser($event)"></app-solicitudes-form-cartacruzada>
+
+                        <div class="" *ngIf="itemsolicitud">
+                          <div class="mat-form-field--inline">
+                            <mat-form-field appearance="outline" style="color:black !important;width:100%;">
+                              <mat-label [style.color]="'black'"  style="font-size: 17px">Comentario Contabilidad</mat-label>
+                              <textarea matInput [(ngModel)]="itemsolicitud.comentarioContabilidad" style="color:black;"
+                                readonly name="comentarioContabilidad"></textarea>
+                            </mat-form-field>
+                          </div>
+                        </div>
+
+                      </div>
+                      <div class="col-lg-8">
+                        <div class="col-lg-12">
+                          <h3>Documentos Adjuntos:</h3>
+                        </div>
+                        <app-files [EstadoSolicitud]="EstadoSolicitud" [filasData]="filasData"
+                          [filasDatasaved]="filasDatasaved" (dataChanged)="onDataChanged($event)"></app-files>
+
+
+                        <div class="row" style="margin-top: 150px;">
+                          <div class="col-lg-6" *ngIf="mRechazoMDevolucion">
+                            <div class="mat-form-field--inline">
+                              <mat-form-field appearance="outline" style="color:black !important;width:100%;">
+                                <mat-label [style.color]="'black'"  style="font-size: 17px">Motivo rechazo/Motivo devolución</mat-label>
+                                <textarea matInput [(ngModel)]="mRechazoMDevolucion" style="color:black;"  readonly name="mRechazoMDevolucion"></textarea>
+                              </mat-form-field>
+                            </div>
+                          </div>
+                          <div class="col-lg-6">
+                            <div class="col-lg-12">
+                              <label for="nroNotaCredito">Nº Nota Credito:</label>
+                              <input type="text" id="nroNotaCredito" class="form-control" [(ngModel)]="nroNotaCredito"
+                                [disabled]="EditAtribFinales" required>
+                            </div>
+                            <div class="col-lg-12">
+                              <label for="archivoNotaCredito">Archivo:</label>
+                              <input type="file" id="archivoNotaCredito" *ngIf="!nombrearchivoNotaCredito"
+                                class="form-control" (change)="onArchivoSeleccionado($event)" required>
+                              <p><b> Nombre del archivo:</b>&nbsp;&nbsp; {{ nombrearchivoNotaCredito }}</p>
+                              <button mat-mini-fab color="primary" *ngIf="nombrearchivoNotaCredito"
+                                (click)="descargararchivo(nombrearchivoNotaCredito)">
+                                <mat-icon>cloud_download</mat-icon>
+                              </button>
+                              <button mat-mini-fab color="primary" style="background: #6610f2; margin: 2px;"
+                                *ngIf="nombrearchivoNotaCredito" (click)="verarchivo(nombrearchivoNotaCredito)">
+                                <mat-icon>remove_red_eye</mat-icon>
+                              </button>
+                            </div>
+                          </div>
+                          <div class="col-lg-6">
+
+                            <div class="col-lg-12">
+                              <label>Fecha de aplicacion:</label>
+                              <mat-form-field appearance="outline" style="width: 100%;">
+                                <input class="form-input" matInput [disabled]="EditAtribFinales"
+                                  [matDatepicker]="picker" [(ngModel)]="fechaAplicacion" />
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+                              </mat-form-field>
+                            </div>
+                            <div class="col-lg-12">
+                              <label>Registro Contable:</label>
+                              <mat-form-field appearance="outline" style="color: black !important;    width: 100%;">
+                                <input matInput [(ngModel)]="numSap" [disabled]="EditAtribFinales" style="color:black;"
+                                  placeholder="Ingrese" required>
+                              </mat-form-field>
+                            </div>
+                            <div class="col-lg-12">
+                              <label for="archivoNotaCreditotesoreria">Archivo adjunto tesoreria</label>
+                              <input type="file" id="archivoNotaCreditotesoreria" class="form-control"
+                                (change)="onArchivoSeleccionadoTesoreria($event)"
+                                *ngIf="!itemsolicitud?.archivoTesoreria" [disabled]="EditAtribFinales" required>
+                              <p><b> Nombre del archivo:</b>&nbsp;&nbsp; {{ itemsolicitud?.archivoTesoreria }}</p>
+                              <button mat-mini-fab color="primary" *ngIf="itemsolicitud?.archivoTesoreria"
+                                (click)="descargararchivo(itemsolicitud?.archivoTesoreria)">
+                                <mat-icon>cloud_download</mat-icon>
+                              </button>
+                              <button mat-mini-fab color="primary" style="background: #6610f2; margin: 2px;"
+                                *ngIf="itemsolicitud?.archivoTesoreria"
+                                (click)="verarchivo(itemsolicitud?.archivoTesoreria)">
+                                <mat-icon>remove_red_eye</mat-icon>
+                              </button>
+                            </div>
+                          </div>
+
+                        </div>
+
+
+                      </div>
+                    </div>
+
+                    <div class="col-lg-12">
+                      <div class="row">
+
+
+                        <div class="col-lg-12">
+
+                          <button mat-fab class="mat-fab-extended" *ngIf="AccionVisible" color="primary"
+                            style="background: #212121;margin: 9px;" (click)="ObservarTesoreria()">
+                            <mat-icon>announcement</mat-icon>
+                            <span>Observar</span>
+                          </button>
+                          <button mat-fab class="mat-fab-extended" *ngIf="AccionVisible" color="primary"
+                            style="margin: 9px;" (click)="AplicarTesoreria()">
+                            <mat-icon>check_circle_outline</mat-icon>
+                            <span>Aplicar</span>
+                          </button>
+
+                          <button mat-fab class="mat-fab-extended" color="primary"
+                            style="margin: 9px;background: #E40421;" (click)="volver()">
+                            <mat-icon>reply_all</mat-icon>
+                            <span>Regresar</span>
+                          </button>
+                        </div>
+                      </div>
+
+                    </div>
+                  </mat-step>
+
+
+                </mat-stepper>
+              </div>
+            </div>
+            <!-- <div class="card-footer">
+                         <div class="stats">
+                           <button mat-raised-button type="submit" class="btn btn-danger">Seleccionar</button>
+                         </div>
+                     </div> -->
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!--  <h1>JSONSS</h1>
+   {{this.productForm.value | json}}  <br>
+   {{contenidocuentas.value | json}}
+   {{user | json}}-->

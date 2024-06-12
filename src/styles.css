@@ -1,0 +1,62 @@
+/* Tema oscuro específico */
+/* Tema oscuro específico */
+/*.dark-theme {
+     background-color: #000000;
+    color: #ffffff;
+}*/
+
+.dark-theme .container,
+.dark-theme .header,
+.dark-theme .sidenav,
+.dark-theme .btn-collapsed,
+.dark-theme .text-center,
+.dark-theme .colorthead,
+.dark-theme .sidenav-nav-item .sidenav-nav-link,
+.dark-theme .form-control,
+.dark-theme .modal-content,
+.dark-theme .mat-nav-list,
+.dark-theme .card-body {
+    background-color: #1f1f1f;
+    color: #ffffff;
+}
+
+.dark-theme .form-control:hover {
+    background-color: #4e4d4d;
+}
+
+.dark-theme .btn-brown {
+    background-color: #2f2f2f; /* Ejemplo de color marrón */
+    border-color: #2f2f2f;
+    border-radius: 20px;
+    color: #ffffff; /* Color del texto */
+}
+
+.dark-theme .btn-brown:hover {
+    background-color: #4e4d4d; /* Cambia el color al pasar el mouse */
+    border-color: #4e4d4d;
+}
+
+.dark-theme .menulogo {
+    background-color: #1f1f1f;
+    border-radius: 10px;
+}
+
+
+/* Estilos para mat-sidenav en tema oscuro */
+.dark-theme .dark-sidenav {
+    background-color: #1f1f1f; /* Cambia el color de fondo del sidenav */
+    color: #ffffff; /* Cambia el color del texto del sidenav */
+    /* Agrega cualquier otro estilo que desees */
+  }
+  /*
+   "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
+			  "./node_modules/bootstrap/dist/css/bootstrap.min.css",
+			  "./node_modules/perfect-scrollbar/css/perfect-scrollbar.css",
+              "./node_modules/ngx-lightbox/lightbox.css",
+              "./node_modules/metismenujs/dist/metismenujs.css",
+              "src/assets/vendor/owl-carousel/owl.carousel.css",
+              "src/assets/css/style.css",
+              "src/assets/css/dashboard.css",
+              "src/styles.css"
+            ],*/

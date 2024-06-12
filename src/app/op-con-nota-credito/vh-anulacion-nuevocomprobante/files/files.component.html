@@ -1,0 +1,171 @@
+<ngx-spinner bdColor="rgba(255, 255, 255, 1)" size="medium" color="#0D7ABD" type="ball-beat" [fullScreen]="true">
+  <p style="color: black">Loading...</p>
+</ngx-spinner>
+<style>
+  ::ng-deep .mat-file-input {
+    background-color: #f2f2f2;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px;
+  }
+
+  ::ng-deep .mat-file-input:hover {
+    background-color: #e6e6e6;
+    border-color: #999;
+  }
+
+  ::ng-deep .mat-file-input:focus {
+    outline: none;
+    border-color: #333;
+  }
+
+  .mat-header-cell.nombre-columna {
+    display: none;
+  }
+
+  .mat-header-row {
+    display: none;
+  }
+
+  input[type="file"] {
+    opacity: 0;
+    /* make transparent */
+    z-index: -1;
+    /* move under anything else */
+    position: absolute;
+    /* don't let it take up space */
+  }
+
+  input[type="file"]:focus+label {
+    outline: 2px solid;
+    /* example focus style */
+  }
+
+  .label-input {
+    background: #0000ff0d;
+    border-radius: 9px;
+    font-size: 17px;
+    margin: 9px;
+    padding: 6px;
+  }
+
+  .mat-column-texto {
+    width: 210px !important;
+  }
+
+  .mat-column-archivo {
+    width: 132px !important;
+  }
+
+  .mat-column-nombrearchivo {
+    width: 218px !important;
+  }
+
+  .mat-column-accion {
+    width: 100px !important;
+  }
+</style>
+<!--<input [(ngModel)]="childData">-->
+<!--<button (click)="sendData()">Enviar datos</button>-->
+<table mat-table [dataSource]="filasDatasaved" style="width: 100%;display: none;">
+  <ng-container matColumnDef="texto">
+    <th mat-header-cell *matHeaderCellDef class="mat-header-row">Texto</th>
+    <td mat-cell *matCellDef="let fila">
+      <input matInput [(ngModel)]="fila.texto" (change)="changeInput($event)">
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="archivo">
+    <th mat-header-cell *matHeaderCellDef class="mat-header-row">Archivo</th>
+    <td mat-cell *matCellDef="let fila">
+      <input type="file" (change)="onchengefile($event,fila)" id="file1{{fila.id}}" matFileInput>
+      <label for="file1{{fila.id}}" [ngClass]="{'disabled': !seletecFile}" class="label-input">Selec. archivo</label>
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="nombrearchivo">
+    <th mat-header-cell *matHeaderCellDef class="mat-header-row">Archivo</th>
+    <td mat-cell *matCellDef="let fila">
+      {{fila.nombrearchivo}}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="accion">
+    <th mat-header-cell *matHeaderCellDef class="mat-header-row">accion</th>
+    <td mat-cell *matCellDef="let fila">
+      <button mat-mini-fab color="warn" style="display: none;" (click)="removeFilesavedData(fila)">
+        <mat-icon>delete</mat-icon>
+      </button>
+      <button mat-mini-fab color="primary" style="background: #6610f2; margin: 2px;"
+        *ngIf="fila.nombrearchivo.length > 0" (click)="descargararchivo(fila)">
+        <mat-icon>cloud_download</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="['texto', 'archivo','nombrearchivo','accion']"></tr>
+  <tr mat-row *matRowDef="let fila; columns: ['texto', 'archivo','nombrearchivo','accion']"></tr>
+</table>
+
+<table mat-table [dataSource]="filasData" style="width: 100%;">
+  <ng-container matColumnDef="texto">
+    <th mat-header-cell *matHeaderCellDef class="nombre-columna">Texto</th>
+    <td mat-cell *matCellDef="let fila">
+      <input matInput [(ngModel)]="fila.texto" style="color: black;" *ngIf="fila.tipo!=='local'" [disabled]="!editCampo"
+        (change)="changeInput($event)">
+      <input matInput [(ngModel)]="fila.texto" style="color: black;" *ngIf="fila.tipo=='local'"
+        (change)="changeInput($event)">
+
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="archivo">
+    <th mat-header-cell *matHeaderCellDef class="nombre-columna">Archivo</th>
+    <td mat-cell *matCellDef="let fila; let i = index">
+      <input type="file" #fileInput (change)="onchengefile($event,fila)" id="file2{{i}}" matFileInput>
+      <label for="file2{{i}}" [ngClass]="{'disabled': !seletecFile}" class="label-input">Selec. archivo</label>
+    </td>
+    <!-- <td mat-cell *matCellDef="let fila">
+      <input type="file" #fileInput (change)="onchengefile($event,fila)" id="file2{{fila.id}}" matFileInput>
+      <label for="file2{{fila.id}}" [ngClass]="{'disabled': !seletecFile}" class="label-input">Selec. archivo</label>
+    </td> -->
+  </ng-container>
+  <ng-container matColumnDef="nombrearchivo">
+    <th mat-header-cell *matHeaderCellDef class="mat-header-row">Archivo</th>
+    <td mat-cell *matCellDef="let fila">
+      {{fila.nombrearchivo}}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="accion">
+    <th mat-header-cell *matHeaderCellDef class="mat-header-row">accion</th>
+    <td mat-cell *matCellDef="let fila">
+      <button mat-mini-fab color="warn" *ngIf="fila.tipo=='local'" (click)="removeFile(fila)">
+        <mat-icon>delete</mat-icon>
+      </button>
+      <button mat-mini-fab color="warn"
+        *ngIf="fila.nombrearchivo && fila.nombrearchivo.length > 0 && fila.tipo!=='local' && FilIsBD"
+        (click)="removeFileBd(fila)">
+        <mat-icon>delete_forever</mat-icon>
+      </button>
+      <button mat-mini-fab color="primary" style="margin: 2px;"
+        *ngIf="fila.nombrearchivo && fila.nombrearchivo.length > 0 && fila.tipo!=='local'"
+        (click)="descargararchivo(fila)">
+        <mat-icon>cloud_download</mat-icon>
+      </button>
+      <button mat-mini-fab color="primary" style="background: #6610f2; margin: 2px;"
+        *ngIf="fila.nombrearchivo && fila.nombrearchivo.length > 0 && fila.tipo!=='local'" (click)="verarchivo(fila)">
+        <mat-icon>remove_red_eye</mat-icon>
+      </button>
+
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="['texto', 'archivo','nombrearchivo','accion']"></tr>
+  <tr mat-row *matRowDef="let fila; columns: ['texto', 'archivo','nombrearchivo','accion']"></tr>
+</table>
+
+
+<a color="primary" (click)="agregarFila()" mat-button *ngIf="addFiles">
+  <span>Agregar</span>
+  <mat-icon>add_circle</mat-icon>
+</a>
+<!--<button (click)="cambiar()"> CAMBIAR DATOS</button>
+{{filasData | json}}
+-->

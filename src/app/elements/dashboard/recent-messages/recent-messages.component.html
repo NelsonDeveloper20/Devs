@@ -1,0 +1,23 @@
+<div class="card message-bx">
+    <div class="card-header border-0 d-sm-flex d-block pb-0">
+        <div>
+            <h4 class="fs-20 mb-0  text-black mb-sm-0 mb-2">Recent Messages</h4>
+        </div>
+        <a [routerLink]="['/admin/contacts']" class="btn btn-primary shadow-primary btn-rounded text-white">+ New Message</a>
+    </div>
+    <div class="card-body">
+        <div class="media mb-3 pb-3 border-bottom" *ngFor="let item of data">
+            <div class="image-bx mr-sm-4 mr-2">
+                <img src="{{item.image}}" alt="" class="rounded-circle img-1">
+                <span class="{{item.active_class}}"></span>
+            </div>
+            <div class="media-body d-sm-flex justify-content-between d-block align-items-center">
+                <div class="mr-sm-3 mr-0">
+                    <h6 class="fs-16 font-w600 mb-sm-2 mb-0"><a routerLink="/{{item.url}}" class="text-black">{{item.name}}</a></h6>
+                    <p class="text-black mb-1">{{item.dedescription}}</p>
+                    <span class="fs-14">{{item.time_ago}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,700 @@
+<ngx-spinner bdColor="rgba(255, 255, 255, 1)" size="medium" color="#0D7ABD" type="ball-beat" [fullScreen]="true">
+  <p style="color: black">Loading...</p>
+</ngx-spinner>
+<style>
+  .vacios_ {
+    color: #e51717;
+    font-weight: 600;
+  }
+
+  .mat-fab-extended {
+
+    border-radius: 5px !important;
+    width: auto;
+    height: auto;
+    padding: 0 16px;
+    min-width: 64px;
+    min-height: 36px;
+    font-size: 14px;
+    text-transform: uppercase;
+  }
+
+  .mat-fab-extended span {
+    margin-left: 8px;
+  }
+
+  .mat-form-field--inline {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .mat-form-field--inline .mat-form-field {
+    display: inline-block;
+    width: 100%;
+    vertical-align: middle;
+  }
+
+  .mat-form-field--inline .mat-form-field:nth-child(1) {
+    margin-right: 25px;
+  }
+
+  .long-text-column {
+    white-space: normal;
+    width: 300px !important;
+  }
+
+  .long-text-column2 {
+    white-space: normal;
+    width: 150px !important;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  } 
+</style>
+ <!--**********************************
+	Content body start
+***********************************-->
+<div class="content-body">
+	<div class="container-fluid">
+		
+		<div class="row page-titles mx-0"  style="padding: 0 !important;
+    background: transparent !important;
+    margin-bottom: 0 !important;
+    border-radius: 5px !important;
+    margin-top: -20px !important;">
+            <div class="col-sm-6 p-md-0">
+                <div class="welcome-text">
+                    <h4>Consultas!</h4>
+                    <p class="mb-0">Listado de consultas</p>
+                </div>
+            </div>
+            <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">App</a></li>
+                    <li class="breadcrumb-item active"><a href="javascript:void(0)">Lista</a></li>
+                </ol>
+            </div>
+        </div>
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card">
+					<div class="card-body">
+						<div class="table-responsive">
+							<table class="table table-sm mb-0 table-responsive-lg text-black">
+								<thead>
+									<tr>
+										<th class="align-middle">
+											<div class="custom-control custom-checkbox ml-1">
+												<input type="checkbox" class="custom-control-input" id="checkAll" (change)="checkUncheckAll($event)">
+												<label class="custom-control-label" for="checkAll"></label>
+											</div>
+										</th>
+										<th class="align-middle">Order</th>
+										<th class="align-middle pr-7">Date</th>
+										<th class="align-middle minw200">Ship To</th>
+										<th class="align-middle text-right">Status</th>
+										<th class="align-middle text-right">Amount</th>
+										<th class="no-sort"></th>
+									</tr>
+								</thead>
+								<tbody id="orders">
+									<tr class="btn-reveal-trigger">
+										<td class="py-2">
+											<div class="custom-control custom-checkbox checkbox-success">
+												<input type="checkbox" class="custom-control-input" id="checkbox">
+												<label class="custom-control-label" for="checkbox"></label>
+											</div>
+										</td>
+										<td class="py-2">
+											<a href="#">
+												<strong class="text-black">#181</strong></a> by <strong class="text-black">Ricky
+											Antony</strong><br /><a href="mailto:ricky@example.com">ricky@example.com</a></td>
+											<td class="py-2">20/04/2020</td>
+											<td class="py-2">Ricky Antony, 2392 Main Avenue, Penasauka, New Jersey 02149
+												<p class="mb-0 text-500">Via Flat Rate</p>
+											</td>
+											<td class="py-2 text-right"><span class="badge badge-success">Completed<span
+											class="ml-1 fa fa-check"></span></span>
+											</td>
+											<td class="py-2 text-right">$99
+											</td>
+											<td class="py-2 text-right">
+												<div class="dropdown dropdown-no-icon text-sans-serif" ngbDropdown>
+													<button class="btn btn-primary tp-btn-light sharp" type="button" id="order-dropdown-0" ngbDropdownToggle data-boundary="viewport" aria-haspopup="true" aria-expanded="false"><span><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><circle fill="#000000" cx="5" cy="12" r="2"></circle><circle fill="#000000" cx="12" cy="12" r="2"></circle><circle fill="#000000" cx="19" cy="12" r="2"></circle></g></svg></span></button>
+													<div class="dropdown-menu dropdown-menu-right border py-0" ngbDropdownMenu aria-labelledby="order-dropdown-0">
+														<div class="py-2"><a class="dropdown-item" href="javascript:void(0);">Completed</a><a class="dropdown-item" href="javascript:void(0);">Processing</a><a class="dropdown-item" href="javascript:void(0);">On Hold</a><a class="dropdown-item" href="javascript:void(0);">Pending</a>
+															<div class="dropdown-divider"></div><a class="dropdown-item text-danger" href="javascript:void(0);">Delete</a>
+														</div>
+													</div>
+												</div>
+											</td>
+									</tr>
+									<tr class="btn-reveal-trigger">
+										<td class="py-2">
+											<div class="custom-control custom-checkbox ">
+												<input type="checkbox" class="custom-control-input" id="checkbox1">
+												<label class="custom-control-label" for="checkbox1"></label>
+											</div>
+										</td>
+										<td class="py-2">
+											<a href="#">
+											<strong class="text-black">#182</strong></a> by <strong class="text-black">Kin Rossow</strong><br /><a href="mailto:kin@example.com">kin@example.com</a></td>
+											<td class="py-2">20/04/2020</td>
+											<td class="py-2">Kin Rossow, 1 Hollywood Blvd,Beverly Hills, California 90210
+												<p class="mb-0 text-500">Via Free Shipping
+												</p>
+											</td>
+											<td class="py-2 text-right"><span class="badge badge-primary">Processing<span
+											class="ml-1 fa fa-redo"></span></span>
+											</td>
+											<td class="py-2 text-right">$120
+											</td>
+											<td class="py-2 text-right">
+												<div class="dropdown dropdown-no-icon text-sans-serif" ngbDropdown>
+													<button class="btn btn-primary tp-btn-light sharp" type="button" id="order-dropdown-0" ngbDropdownToggle data-boundary="viewport" aria-haspopup="true" aria-expanded="false"><span><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><circle fill="#000000" cx="5" cy="12" r="2"></circle><circle fill="#000000" cx="12" cy="12" r="2"></circle><circle fill="#000000" cx="19" cy="12" r="2"></circle></g></svg></span></button>
+													<div class="dropdown-menu dropdown-menu-right border py-0" ngbDropdownMenu aria-labelledby="order-dropdown-0">
+														<div class="py-2"><a class="dropdown-item" href="javascript:void(0);">Completed</a><a class="dropdown-item" href="javascript:void(0);">Processing</a><a class="dropdown-item" href="javascript:void(0);">On Hold</a><a class="dropdown-item" href="javascript:void(0);">Pending</a>
+															<div class="dropdown-divider"></div><a class="dropdown-item text-danger" href="javascript:void(0);">Delete</a>
+														</div>
+													</div>
+												</div>
+											</td>
+									</tr>
+									<tr class="btn-reveal-trigger">
+										<td class="py-2">
+											<div class="custom-control custom-checkbox checkbox-secondary">
+												<input type="checkbox" class="custom-control-input" id="checkbox2">
+												<label class="custom-control-label" for="checkbox2"></label>
+											</div>
+										</td>
+										<td class="py-2">
+											<a href="#">
+												<strong class="text-black">#183</strong></a> by <strong class="text-black">Merry
+											Diana</strong><br /><a href="mailto:merry@example.com">merry@example.com</a></td>
+											<td class="py-2">30/04/2020</td>
+											<td class="py-2">Merry Diana, 1 Infinite Loop, Cupertino, California 90210
+												<p class="mb-0 text-500">Via Link Road</p>
+											</td>
+											<td class="py-2 text-right"><span class="badge badge-secondary">On
+											Hold<span class="ml-1 fa fa-ban"></span></span>
+											</td>
+											<td class="py-2 text-right">$70
+											</td>
+											<td class="py-2 text-right">
+												<div class="dropdown dropdown-no-icon text-sans-serif" ngbDropdown>
+													<button class="btn btn-primary tp-btn-light sharp" type="button" id="order-dropdown-0" ngbDropdownToggle data-boundary="viewport" aria-haspopup="true" aria-expanded="false"><span><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><circle fill="#000000" cx="5" cy="12" r="2"></circle><circle fill="#000000" cx="12" cy="12" r="2"></circle><circle fill="#000000" cx="19" cy="12" r="2"></circle></g></svg></span></button>
+													<div class="dropdown-menu dropdown-menu-right border py-0" ngbDropdownMenu aria-labelledby="order-dropdown-0">
+														<div class="py-2"><a class="dropdown-item" href="javascript:void(0);">Completed</a><a class="dropdown-item" href="javascript:void(0);">Processing</a><a class="dropdown-item" href="javascript:void(0);">On Hold</a><a class="dropdown-item" href="javascript:void(0);">Pending</a>
+															<div class="dropdown-divider"></div><a class="dropdown-item text-danger" href="javascript:void(0);">Delete</a>
+														</div>
+													</div>
+												</div>
+											</td>
+									</tr>
+									<tr class="btn-reveal-trigger">
+										<td class="py-2">
+											<div class="custom-control custom-checkbox  checkbox-warning">
+												<input type="checkbox" class="custom-control-input" id="checkbox3">
+												<label class="custom-control-label" for="checkbox3"></label>
+											</div>
+										</td>
+										<td class="py-2">
+											<a href="#">
+												<strong class="text-black">#184</strong></a> by <strong class="text-black">Bucky
+											Robert</strong><br /><a href="mailto:bucky@example.com">bucky@example.com</a></td>
+											<td class="py-2">30/04/2020</td>
+											<td class="py-2">Bucky Robert, 1 Infinite Loop, Cupertino, California 90210
+												<p class="mb-0 text-500">Via Free Shipping</p>
+											</td>
+											<td class="py-2 text-right"><span class="badge badge-warning">Pending<span
+											class="ml-1 fas fa-stream"></span></span>
+											</td>
+											<td class="py-2 text-right">$92
+											</td>
+											<td class="py-2 text-right">
+												<div class="dropdown dropdown-no-icon text-sans-serif" ngbDropdown>
+													<button class="btn btn-primary tp-btn-light sharp" type="button" id="order-dropdown-0" ngbDropdownToggle data-boundary="viewport" aria-haspopup="true" aria-expanded="false"><span><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><circle fill="#000000" cx="5" cy="12" r="2"></circle><circle fill="#000000" cx="12" cy="12" r="2"></circle><circle fill="#000000" cx="19" cy="12" r="2"></circle></g></svg></span></button>
+													<div class="dropdown-menu dropdown-menu-right border py-0" ngbDropdownMenu aria-labelledby="order-dropdown-0">
+														<div class="py-2"><a class="dropdown-item" href="javascript:void(0);">Completed</a><a class="dropdown-item" href="javascript:void(0);">Processing</a><a class="dropdown-item" href="javascript:void(0);">On Hold</a><a class="dropdown-item" href="javascript:void(0);">Pending</a>
+															<div class="dropdown-divider"></div><a class="dropdown-item text-danger" href="javascript:void(0);">Delete</a>
+														</div>
+													</div>
+												</div>
+											</td>
+									</tr>
+									<tr class="btn-reveal-trigger">
+										<td class="py-2">
+											<div class="custom-control custom-checkbox checkbox-secondary">
+												<input type="checkbox" class="custom-control-input" id="checkbox4">
+												<label class="custom-control-label" for="checkbox4"></label>
+											</div>
+										</td>
+										<td class="py-2">
+											<a href="#">
+												<strong class="text-black">#185</strong></a> by <strong class="text-black">Rocky
+											Zampa</strong><br /><a href="mailto:rocky@example.com">rocky@example.com</a></td>
+											<td class="py-2">30/04/2020</td>
+											<td class="py-2">Rocky Zampa, 1 Infinite Loop, Cupertino, California 90210
+												<p class="mb-0 text-500">Via Free Road</p>
+											</td>
+											<td class="py-2 text-right"><span class="badge badge-secondary">On
+											Hold<span class="ml-1 fa fa-ban"></span></span>
+											</td>
+											<td class="py-2 text-right">$120
+											</td>
+											<td class="py-2 text-right">
+												<div class="dropdown dropdown-no-icon text-sans-serif" ngbDropdown>
+													<button class="btn btn-primary tp-btn-light sharp" type="button" id="order-dropdown-0" ngbDropdownToggle data-boundary="viewport" aria-haspopup="true" aria-expanded="false"><span><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><circle fill="#000000" cx="5" cy="12" r="2"></circle><circle fill="#000000" cx="12" cy="12" r="2"></circle><circle fill="#000000" cx="19" cy="12" r="2"></circle></g></svg></span></button>
+													<div class="dropdown-menu dropdown-menu-right border py-0" ngbDropdownMenu aria-labelledby="order-dropdown-0">
+														<div class="py-2"><a class="dropdown-item" href="javascript:void(0);">Completed</a><a class="dropdown-item" href="javascript:void(0);">Processing</a><a class="dropdown-item" href="javascript:void(0);">On Hold</a><a class="dropdown-item" href="javascript:void(0);">Pending</a>
+															<div class="dropdown-divider"></div><a class="dropdown-item text-danger" href="javascript:void(0);">Delete</a>
+														</div>
+													</div>
+												</div>
+											</td>
+									</tr>
+									<tr class="btn-reveal-trigger">
+										<td class="py-2">
+											<div class="custom-control custom-checkbox ">
+												<input type="checkbox" class="custom-control-input" id="checkbox5">
+												<label class="custom-control-label" for="checkbox5"></label>
+											</div>
+										</td>
+										<td class="py-2">
+											<a href="#">
+											<strong class="text-black">#186</strong></a> by <strong class="text-black">Ricky John</strong><br /><a href="mailto:ricky@example.com">ricky@example.com</a></td>
+											<td class="py-2">30/04/2020</td>
+											<td class="py-2">Ricky John, 1 Infinite Loop, Cupertino, California 90210
+												<p class="mb-0 text-500">Via Free Shipping</p>
+											</td>
+											<td class="py-2 text-right"><span class="badge badge-primary">Processing<span
+											class="ml-1 fa fa-redo"></span></span>
+											</td>
+											<td class="py-2 text-right">$145
+											</td>
+											<td class="py-2 text-right">
+												<div class="dropdown dropdown-no-icon text-sans-serif" ngbDropdown>
+													<button class="btn btn-primary tp-btn-light sharp" type="button" id="order-dropdown-0" ngbDropdownToggle data-boundary="viewport" aria-haspopup="true" aria-expanded="false"><span><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><circle fill="#000000" cx="5" cy="12" r="2"></circle><circle fill="#000000" cx="12" cy="12" r="2"></circle><circle fill="#000000" cx="19" cy="12" r="2"></circle></g></svg></span></button>
+													<div class="dropdown-menu dropdown-menu-right border py-0" ngbDropdownMenu aria-labelledby="order-dropdown-0">
+														<div class="py-2"><a class="dropdown-item" href="javascript:void(0);">Completed</a><a class="dropdown-item" href="javascript:void(0);">Processing</a><a class="dropdown-item" href="javascript:void(0);">On Hold</a><a class="dropdown-item" href="javascript:void(0);">Pending</a>
+															<div class="dropdown-divider"></div><a class="dropdown-item text-danger" href="javascript:void(0);">Delete</a>
+														</div>
+													</div>
+												</div>
+											</td>
+									</tr>
+									<tr class="btn-reveal-trigger">
+										<td class="py-2">
+											<div class="custom-control custom-checkbox checkbox-success">
+												<input type="checkbox" class="custom-control-input" id="checkbox6">
+												<label class="custom-control-label" for="checkbox6"></label>
+											</div>
+										</td>
+										<td class="py-2">
+											<a href="#">
+												<strong class="text-black">#187</strong></a> by <strong class="text-black">Cristofer
+											Henric</strong><br /><a href="mailto:cristofer@example.com">cristofer@example.com</a>
+										</td>
+										<td class="py-2">30/04/2020</td>
+										<td class="py-2">Cristofer Henric, 1 Infinite Loop, Cupertino, California 90210
+											<p class="mb-0 text-500">Via Flat Rate
+											</p>
+										</td>
+										<td class="py-2 text-right"><span class="badge badge-success">Completed<span
+										class="ml-1 fa fa-check"></span></span>
+										</td>
+										<td class="py-2 text-right">$55
+										</td>
+										<td class="py-2 text-right">
+												<div class="dropdown dropdown-no-icon text-sans-serif" ngbDropdown>
+													<button class="btn btn-primary tp-btn-light sharp" type="button" id="order-dropdown-0" ngbDropdownToggle data-boundary="viewport" aria-haspopup="true" aria-expanded="false"><span><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><circle fill="#000000" cx="5" cy="12" r="2"></circle><circle fill="#000000" cx="12" cy="12" r="2"></circle><circle fill="#000000" cx="19" cy="12" r="2"></circle></g></svg></span></button>
+													<div class="dropdown-menu dropdown-menu-right border py-0" ngbDropdownMenu aria-labelledby="order-dropdown-0">
+														<div class="py-2"><a class="dropdown-item" href="javascript:void(0);">Completed</a><a class="dropdown-item" href="javascript:void(0);">Processing</a><a class="dropdown-item" href="javascript:void(0);">On Hold</a><a class="dropdown-item" href="javascript:void(0);">Pending</a>
+															<div class="dropdown-divider"></div><a class="dropdown-item text-danger" href="javascript:void(0);">Delete</a>
+														</div>
+													</div>
+												</div>
+											</td>
+									</tr>
+									<tr class="btn-reveal-trigger">
+										<td class="py-2">
+											<div class="custom-control custom-checkbox checkbox-secondary">
+												<input type="checkbox" class="custom-control-input" id="checkbox7">
+												<label class="custom-control-label" for="checkbox7"></label>
+											</div>
+										</td>
+										<td class="py-2">
+											<a href="#">
+											<strong class="text-black">#188</strong></a> by <strong class="text-black">Brate Lee</strong><br /><a href="mailto:lee@example.com">lee@example.com</a></td>
+											<td class="py-2">29/04/2020</td>
+											<td class="py-2">Brate Lee, 1 Infinite Loop, Cupertino, California 90210
+												<p class="mb-0 text-500">Via Link Road</p>
+											</td>
+											<td class="py-2 text-right"><span class="badge badge-secondary">On
+											Hold<span class="ml-1 fa fa-ban"></span></span>
+											</td>
+											<td class="py-2 text-right">$90
+											</td>
+											<td class="py-2 text-right">
+												<div class="dropdown dropdown-no-icon text-sans-serif" ngbDropdown>
+													<button class="btn btn-primary tp-btn-light sharp" type="button" id="order-dropdown-0" ngbDropdownToggle data-boundary="viewport" aria-haspopup="true" aria-expanded="false"><span><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><circle fill="#000000" cx="5" cy="12" r="2"></circle><circle fill="#000000" cx="12" cy="12" r="2"></circle><circle fill="#000000" cx="19" cy="12" r="2"></circle></g></svg></span></button>
+													<div class="dropdown-menu dropdown-menu-right border py-0" ngbDropdownMenu aria-labelledby="order-dropdown-0">
+														<div class="py-2"><a class="dropdown-item" href="javascript:void(0);">Completed</a><a class="dropdown-item" href="javascript:void(0);">Processing</a><a class="dropdown-item" href="javascript:void(0);">On Hold</a><a class="dropdown-item" href="javascript:void(0);">Pending</a>
+															<div class="dropdown-divider"></div><a class="dropdown-item text-danger" href="javascript:void(0);">Delete</a>
+														</div>
+													</div>
+												</div>
+											</td>
+									</tr>
+									<tr class="btn-reveal-trigger">
+										<td class="py-2">
+											<div class="custom-control custom-checkbox ">
+												<input type="checkbox" class="custom-control-input" id="checkbox8">
+												<label class="custom-control-label" for="checkbox8"></label>
+											</div>
+										</td>
+										<td class="py-2">
+											<a href="#">
+												<strong class="text-black">#189</strong></a> by <strong class="text-black">Thomas
+											Stephenson</strong><br /><a href="mailto:Stephenson@example.com">Stephenson@example.com</a>
+										</td>
+										<td class="py-2">29/04/2020</td>
+										<td class="py-2">Thomas Stephenson, 116 Ballifeary Road, Bamff
+											<p class="mb-0 text-500">Via Flat Rate</p>
+										</td>
+										<td class="py-2 text-right"><span class="badge badge-primary">Processing<span
+										class="ml-1 fa fa-redo"></span></span>
+										</td>
+										<td class="py-2 text-right">$52
+										</td>
+										<td class="py-2 text-right">
+												<div class="dropdown dropdown-no-icon text-sans-serif" ngbDropdown>
+													<button class="btn btn-primary tp-btn-light sharp" type="button" id="order-dropdown-0" ngbDropdownToggle data-boundary="viewport" aria-haspopup="true" aria-expanded="false"><span><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><circle fill="#000000" cx="5" cy="12" r="2"></circle><circle fill="#000000" cx="12" cy="12" r="2"></circle><circle fill="#000000" cx="19" cy="12" r="2"></circle></g></svg></span></button>
+													<div class="dropdown-menu dropdown-menu-right border py-0" ngbDropdownMenu aria-labelledby="order-dropdown-0">
+														<div class="py-2"><a class="dropdown-item" href="javascript:void(0);">Completed</a><a class="dropdown-item" href="javascript:void(0);">Processing</a><a class="dropdown-item" href="javascript:void(0);">On Hold</a><a class="dropdown-item" href="javascript:void(0);">Pending</a>
+															<div class="dropdown-divider"></div><a class="dropdown-item text-danger" href="javascript:void(0);">Delete</a>
+														</div>
+													</div>
+												</div>
+											</td>
+									</tr>
+									<tr class="btn-reveal-trigger">
+										<td class="py-2">
+											<div class="custom-control custom-checkbox checkbox-success">
+												<input type="checkbox" class="custom-control-input" id="checkbox9">
+												<label class="custom-control-label" for="checkbox9"></label>
+											</div>
+										</td>
+										<td class="py-2">
+											<a href="#">
+											<strong class="text-black">#190</strong></a> by <strong class="text-black">Evie Singh</strong><br /><a href="mailto:eviewsing@example.com">eviewsing@example.com</a>
+										</td>
+										<td class="py-2">29/04/2020</td>
+										<td class="py-2">Evie Singh, 54 Castledore Road, Tunstead
+											<p class="mb-0 text-500">Via Flat Rate</p>
+										</td>
+										<td class="py-2 text-right"><span class="badge badge-success">Completed<span
+										class="ml-1 fa fa-check"></span></span>
+										</td>
+										<td class="py-2 text-right">$90
+										</td>
+										<td class="py-2 text-right">
+												<div class="dropdown dropdown-no-icon text-sans-serif" ngbDropdown>
+													<button class="btn btn-primary tp-btn-light sharp" type="button" id="order-dropdown-0" ngbDropdownToggle data-boundary="viewport" aria-haspopup="true" aria-expanded="false"><span><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><circle fill="#000000" cx="5" cy="12" r="2"></circle><circle fill="#000000" cx="12" cy="12" r="2"></circle><circle fill="#000000" cx="19" cy="12" r="2"></circle></g></svg></span></button>
+													<div class="dropdown-menu dropdown-menu-right border py-0" ngbDropdownMenu aria-labelledby="order-dropdown-0">
+														<div class="py-2"><a class="dropdown-item" href="javascript:void(0);">Completed</a><a class="dropdown-item" href="javascript:void(0);">Processing</a><a class="dropdown-item" href="javascript:void(0);">On Hold</a><a class="dropdown-item" href="javascript:void(0);">Pending</a>
+															<div class="dropdown-divider"></div><a class="dropdown-item text-danger" href="javascript:void(0);">Delete</a>
+														</div>
+													</div>
+												</div>
+											</td>
+									</tr>
+									<tr class="btn-reveal-trigger">
+										<td class="py-2">
+											<div class="custom-control custom-checkbox checkbox-success">
+												<input type="checkbox" class="custom-control-input" id="checkbox10">
+												<label class="custom-control-label" for="checkbox10"></label>
+											</div>
+										</td>
+										<td class="py-2">
+											<a href="#">
+												<strong class="text-black">#191</strong></a> by <strong class="text-black">David
+											Peters</strong><br /><a href="mailto:peter@example.com">peter@example.com</a></td>
+											<td class="py-2">29/04/2020</td>
+											<td class="py-2">David Peters, Rhyd Y Groes, Rhosgoch, LL66 0AT
+												<p class="mb-0 text-500">Via Link Road</p>
+											</td>
+											<td class="py-2 text-right"><span class="badge badge-success">Completed<span
+											class="ml-1 fa fa-check"></span></span>
+											</td>
+											<td class="py-2 text-right">$69
+											</td>
+											<td class="py-2 text-right">
+												<div class="dropdown dropdown-no-icon text-sans-serif" ngbDropdown>
+													<button class="btn btn-primary tp-btn-light sharp" type="button" id="order-dropdown-0" ngbDropdownToggle data-boundary="viewport" aria-haspopup="true" aria-expanded="false"><span><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><circle fill="#000000" cx="5" cy="12" r="2"></circle><circle fill="#000000" cx="12" cy="12" r="2"></circle><circle fill="#000000" cx="19" cy="12" r="2"></circle></g></svg></span></button>
+													<div class="dropdown-menu dropdown-menu-right border py-0" ngbDropdownMenu aria-labelledby="order-dropdown-0">
+														<div class="py-2"><a class="dropdown-item" href="javascript:void(0);">Completed</a><a class="dropdown-item" href="javascript:void(0);">Processing</a><a class="dropdown-item" href="javascript:void(0);">On Hold</a><a class="dropdown-item" href="javascript:void(0);">Pending</a>
+															<div class="dropdown-divider"></div><a class="dropdown-item text-danger" href="javascript:void(0);">Delete</a>
+														</div>
+													</div>
+												</div>
+											</td>
+									</tr>
+									<tr class="btn-reveal-trigger">
+										<td class="py-2">
+											<div class="custom-control custom-checkbox ">
+												<input type="checkbox" class="custom-control-input" id="checkbox11">
+												<label class="custom-control-label" for="checkbox11"></label>
+											</div>
+										</td>
+										<td class="py-2">
+											<a href="#">
+												<strong class="text-black">#192</strong></a> by <strong class="text-black">Jennifer
+											Johnson</strong><br /><a href="mailto:jennifer@example.com">jennifer@example.com</a></td>
+											<td class="py-2">28/04/2020</td>
+											<td class="py-2">Jennifer Johnson, Rhyd Y Groes, Rhosgoch, LL66 0AT
+												<p class="mb-0 text-500">Via Flat Rate</p>
+											</td>
+											<td class="py-2 text-right"><span class="badge badge-primary">Processing<span
+											class="ml-1 fa fa-redo"></span></span>
+											</td>
+											<td class="py-2 text-right">$112
+											</td>
+											<td class="py-2 text-right">
+												<div class="dropdown dropdown-no-icon text-sans-serif" ngbDropdown>
+													<button class="btn btn-primary tp-btn-light sharp" type="button" id="order-dropdown-0" ngbDropdownToggle data-boundary="viewport" aria-haspopup="true" aria-expanded="false"><span><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><circle fill="#000000" cx="5" cy="12" r="2"></circle><circle fill="#000000" cx="12" cy="12" r="2"></circle><circle fill="#000000" cx="19" cy="12" r="2"></circle></g></svg></span></button>
+													<div class="dropdown-menu dropdown-menu-right border py-0" ngbDropdownMenu aria-labelledby="order-dropdown-0">
+														<div class="py-2"><a class="dropdown-item" href="javascript:void(0);">Completed</a><a class="dropdown-item" href="javascript:void(0);">Processing</a><a class="dropdown-item" href="javascript:void(0);">On Hold</a><a class="dropdown-item" href="javascript:void(0);">Pending</a>
+															<div class="dropdown-divider"></div><a class="dropdown-item text-danger" href="javascript:void(0);">Delete</a>
+														</div>
+													</div>
+												</div>
+											</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--**********************************
+	Content body end
+***********************************-->
+<div class="" style=" display: none;">
+  <div class="card-header card-header-warning" style="  margin-top: 60px;  width: 9%;
+padding-top: 0px;">
+  </div>
+  <div class="main-content">
+    <div class="container-fluid">
+      <div class="col-lg-12">
+        <div class="row">
+          <div class="col-lg-2">
+            <mat-form-field appearance="outline" style="width: 100%;">
+              <mat-label [style.color]="'black'"  style="font-size: 17px">Fecha Inicio</mat-label>
+              <input class="form-input" matInput [matDatepicker]="picker" [(ngModel)]="FechaInicio" />
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-lg-2">
+            <mat-form-field appearance="outline" style="width: 100%;">
+              <mat-label [style.color]="'black'"  style="font-size: 17px">Fecha Fin</mat-label>
+              <input class="form-input" matInput [matDatepicker]="pickern" [(ngModel)]="FechaFin" />
+              <mat-datepicker-toggle matSuffix [for]="pickern"></mat-datepicker-toggle>
+              <mat-datepicker #pickern></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+          <div class="col-lg-2">
+            <mat-form-field appearance="outline" style="width: 100%;">
+              <mat-label [style.color]="'black'"  style="font-size: 17px">Cliente:</mat-label>
+              <mat-select [(value)]="ClienteSelect">
+                <mat-select-trigger>
+                  {{ ClienteSelect || '---Todos---' }}
+                </mat-select-trigger>
+                <input matInput [formControl]="searchControlCliente" placeholder="Buscar" class="search-input" />
+                <mat-option value="Todos">---Todos---</mat-option>
+                <mat-option *ngFor="let item of filteredClientes" [value]="item.clienteRazonSocial">
+                  {{ item.clienteRazonSocial }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+          </div>
+          <div class="col-lg-2">
+            <mat-form-field appearance="outline" style="width: 100%;">
+              <mat-label [style.color]="'black'"  style="font-size: 17px">Aprobado Por:</mat-label>
+              <mat-select [(value)]="AprobadoPor">
+                <mat-select-trigger>
+                  {{ AprobadoPor?.nombre || '---Todos---' }}
+                </mat-select-trigger>
+                <input matInput [formControl]="searchControl" placeholder="Buscar" class="search-input" />
+                <mat-option value="Todos">---Todos---</mat-option>
+                <mat-option *ngFor="let item of filteredUsuarios" [value]="item">
+                  {{ item.nombre }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="col-lg-2">
+            <mat-form-field appearance="outline" style="width: 100%;">
+              <mat-label [style.color]="'black'"  style="font-size: 17px">Estado:</mat-label>
+              <mat-select [(value)]="EstadoSolicitud">
+                <mat-option value="Todos"> ---Todos--- </mat-option>
+                <mat-option value="Registrado">Registrado</mat-option>
+                <mat-option value="Revision ADV">Revision ADV</mat-option>
+                <mat-option value="Finalizado por ADV">Finalizado por ADV</mat-option>
+                <mat-option value="Aprobaciones">Aprobaciones</mat-option>
+                <mat-option value="Rechazado Jefatura">Rechazado Jefatura</mat-option>
+                <mat-option value="Revision Contabilidad">Revision Contabilidad</mat-option>
+                <mat-option value="Validacion ADV">Validacion ADV</mat-option>
+                <mat-option value="Rechazado Contabilidad">Rechazado Contabilidad</mat-option>
+                <mat-option value="Revision Tesoreria">Revision Tesoreria</mat-option>
+                <mat-option value="Aplicado Tesoreria">Aplicado Tesoreria</mat-option>
+                <mat-option value="Observado Tesoreria">Observado Tesoreria</mat-option>
+                <mat-option value="Revision Jefatura">Revision Jefatura</mat-option>
+                <mat-option value="Revision Cumplimiento">Revision Cumplimiento</mat-option>
+                <mat-option value="Rechazado Cumplimiento">Rechazado Cumplimiento</mat-option>
+                <mat-option value="Rechazado Gerencia">Rechazado Gerencia</mat-option>
+                <mat-option value="Revisado Conforme SAP">Revisado Conforme SAP</mat-option>
+
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+
+          <div class="col-lg-2">
+            <mat-form-field appearance="outline" style="width: 100%;">
+              <mat-label [style.color]="'black'"  style="font-size: 17px">Estado General:</mat-label>
+              <mat-select [(value)]="Otro">
+                <mat-option value=""> ---Todos--- </mat-option>
+                <mat-option value="proceso">En Proceso</mat-option>
+                <mat-option value="finalizado">Finalizado</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="col-lg-2 mb-4">
+            <button mat-fab class="mat-fab-extended" color="primary" (click)="getSolicitud()">
+              <mat-icon>search</mat-icon>
+              <span>Buscar</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+      <div class="col-lg-12">
+        <div class="mat-elevation-z2">
+           
+          <mat-form-field style="left: 2%;">
+            <input matInput placeholder="Buscar" (keyup)="buscar($event)">
+          </mat-form-field>
+          <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+
+            <!-- Position Column -->
+            <ng-container matColumnDef="ID">
+              <th mat-header-cell *matHeaderCellDef  mat-sort-header (click)="sortData('ID')"> &nbsp;ID&nbsp;&nbsp; &nbsp;</th>
+              <td mat-cell *matCellDef="let element"> &nbsp;&nbsp;{{element.id}} &nbsp;&nbsp;&nbsp;&nbsp;</td>
+            </ng-container>
+
+            <!-- Position Column -->
+            <ng-container matColumnDef="TipoSoli">
+              <th mat-header-cell *matHeaderCellDef> Tipo Solicitud </th>
+              <td mat-cell *matCellDef="let element" > {{element.tipoSolicitud[0].descripcion}}
+                Nº {{element.id}} </td>
+            </ng-container>
+            <ng-container matColumnDef="Cliente">
+              <th mat-header-cell *matHeaderCellDef> Cliente </th>
+              <td mat-cell *matCellDef="let element"  > {{element.dniClienteRuc}} -
+                {{element.clienteRazonSocial}} </td>
+
+            </ng-container>
+
+            <!-- Name Column -->
+            <ng-container matColumnDef="Estado">
+              <th mat-header-cell *matHeaderCellDef> Estado </th>
+              <td mat-cell *matCellDef="let element"> {{element.estadoSolicitud}} </td>
+            </ng-container>
+            <ng-container matColumnDef="SolicitudCreada">
+              <th mat-header-cell *matHeaderCellDef> Solicitud Creada </th>
+              <td mat-cell *matCellDef="let element"> {{element.fechaCreacion | date: 'dd/MM/yyyy hh:mm'}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="Aprobador">
+              <th mat-header-cell *matHeaderCellDef> Creado Por </th>
+              <td mat-cell *matCellDef="let element">
+                {{element.usuario[0].nombre}}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="RechazadoPor">
+              <th mat-header-cell *matHeaderCellDef> Rechazado Por </th>
+              <td mat-cell *matCellDef="let element">
+                <span *ngIf="element.motivo">
+                  {{ element.usuarioModifica[0].nombre }}
+                </span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="Motivo">
+              <th mat-header-cell *matHeaderCellDef> Motivo Rechazo</th>
+              <td mat-cell *matCellDef="let element"> {{element.motivo}} </td>
+            </ng-container>
+            <!-- Weight Column -->
+            <ng-container matColumnDef="Unidad">
+              <th mat-header-cell *matHeaderCellDef> Unidad </th>
+              <td mat-cell *matCellDef="let element"> {{element.unidadNegocios[0].descripcion}} </td>
+            </ng-container>
+            <!-- Symbol Column -->
+            <ng-container matColumnDef="Sede">
+              <th mat-header-cell *matHeaderCellDef> Tienda </th>
+              <td mat-cell *matCellDef="let element"> {{element.sede[0].descripcion}} </td>
+            </ng-container>
+            <ng-container matColumnDef="Accion">
+              <th mat-header-cell *matHeaderCellDef> Accion </th>
+              <td mat-cell *matCellDef="let element">
+                <button mat-mini-fab color="primary" [ngStyle]="{
+            'background-color': getColorForEstado(element.estadoSolicitud)
+          }" (click)="SendAdvDatos(element)">
+                  <!--
+             [disabled]="
+          element.estadoSolicitud === 'Rechazado Jefatura' ||
+          element.estadoSolicitud === 'Rechazado Contabilidad' ||
+          element.estadoSolicitud === 'Aplicado Tesoreria' ||
+          element.estadoSolicitud === 'Observado Tesoreria' ||
+          element.estadoSolicitud === 'Rechazado Cumplimiento' ||
+          element.estadoSolicitud === 'Rechazado Gerencia' ||
+          element.estadoSolicitud === 'Revisado Conforme SAP'"
+            -->
+                  <mat-icon>view_list</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            
+          </table>
+
+          <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons aria-label="Select page of periodic elements">
+            <!-- <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons aria-label="Select page of periodic elements"> -->
+          </mat-paginator>
+        </div>
+        <br>
+        <div class="col-lg-12" style="height: 100px;">
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

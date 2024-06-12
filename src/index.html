@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="keywords" content="" />
+  <meta name="author" content="DexignZone" />
+  <meta name="robots" content="" />
+  <meta name="description" content="Grupo Pana S.A. " />
+  <meta property="og:title" content="Grupo Pana S.A. " />
+  <meta property="og:description" content="Grupo Pana S.A. " />
+  <meta property="og:image" content="" />
+  <meta name="format-detection" content="telephone=no">
+  <title>DC-Blinds</title>
+  <base href="/"> 
+
+  <script src="assets\vendor\jquery\jquery.min.js"></script>
+  <link rel="icon" href="assets/images/GP.ico" type="image/x-icon" />
+  <link rel="shortcut icon" type="image/x-icon" href="assets/images/icon.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://code.highcharts.com/modules/contextmenu.js"></script>
+
+  <style>    
+  .mat-header-cell, .mat-cell {
+  white-space: nowrap; /* Evita que el texto se envuelva */
+  overflow: hidden; /* Oculta el texto que excede el ancho de la celda */
+  text-overflow: ellipsis; /* Muestra puntos suspensivos (...) cuando el texto se corta */
+}
+/*th, td {
+  white-space: nowrap;
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+}*/
+::-webkit-scrollbar {
+     width: 6px;
+     height: 6px;
+  background-color: #f5f5f5;
+}
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #f5f5f5;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 15px;
+   /* -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+    background:rgb(164, 168, 254);*/
+
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #28272a89;
+} 
+  .content-body {
+margin-left: 0.563rem !important;
+}
+    .titleh{
+      font: 485 1px/17px Roboto, "Helvetica Neue", sans-serif; 
+      font-size: 15px !important;
+    }
+   .input-group-text { 
+      border-radius: 0px !important;
+  }
+      .btn-primary {
+      color: #fff !important;
+      background-color: #1266f1 !important;
+  } 
+  .md-button {
+    padding: 0 6px 0 6px;
+    margin: 6px 8px 6px 8px;
+    min-width: 88px;
+    border-radius: 3px;
+    font-size: 14px;
+    text-align: center;
+    text-transform: uppercase;
+    text-decoration:none;
+    border: none;
+    outline: none;
+  } 
+   
+      .mat-drawer { 
+      position: fixed !important;
+      }
+      .mat-drawer.mat-drawer-side { 
+      box-shadow: 0px 0px 13px 0px rgb(23 23 24 / 14%) !important;
+  }
+    
+    .form-select {
+        display: block;
+        width: 100%;
+        padding: 0.375rem 2.25rem 0.375rem 0.75rem;
+        -moz-padding-start: calc(0.75rem - 3px);
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #212529;
+        background-color: #fff;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 16px 12px;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+    .card {
+      border-radius: 10px !important;
+      box-shadow: 0px 0px 13px 0px rgb(23 23 24 / 10%) !important;
+  }
+    .card-header{
+    height: 5px !important;
+    }
+    .form-control{
+      border-radius: 6px !important;
+      border: 1px solid #e6e0e0 !important;
+    }
+  .scroll-divproceso{
+    border: 1px solid #cecdcd !important;
+  }
+  .btn-success{
+    color: white !important;
+      background-color: #43DC80 !important;
+  }.btn-danger {
+      color: #fff !important;
+      background-color: #0c0b0b !important;
+      border-color: #f2170c !important;
+  } 
+/*
+.parent {
+  font-size: 12px !important;  
+}*/
+
+/* Establecer el contenedor como un grid con desplazamiento horizontal */
+.horizontal-stepper {
+  display: grid !important;
+  overflow-x: auto !important;
+  width: 100% !important;
+}
+
+  .mat-step-header .mat-step-icon { 
+    background: #B8122B !important;
+    width: 29px !important;
+    height: 29px !important;
+}
+.mat-step-header .mat-step-icon-selected{
+    background-color:#E40421 !important;
+    color: #fff;
+    width: 29px !important;
+    height: 29px !important;
+}
+.btn-primary{
+  background: #B8122B !important;
+    box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 0%), 0px 6px 10px 0px rgba(0, 0, 0, .14), 0px 1px 18px 0px rgba(0, 0, 0, .12);
+    border: 1px solid #B8122B !important;
+    border-radius: 6px !important;
+    color: white !important;height: 49px !important;
+}
+.btn-success{
+  background: #43DC80 !important;
+    box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 0%), 0px 6px 10px 0px rgba(0, 0, 0, .14), 0px 1px 18px 0px rgba(0, 0, 0, .12);
+    border: 1px solid #43DC80 !important;
+    border-radius: 6px !important;
+    color: white !important;height: 49px !important;
+
+}
+.mat-form-field {
+    height: 50px   !important;
+}
+.form-control { 
+    height: 50px !important;
+}
+.mat-flat-button{
+  height: 49px !important;
+}
+
+.table thead th { 
+    text-align: start !important;
+    background-color: #ffffff !important;
+    padding: 12px 9px !important; 
+} 
+.table th, .table td {
+    padding: 12px 9px !important; 
+}
+.example-containerss {
+  height: 550px;
+  /*overflow: auto;*/
+}
+.primary {
+    background-color: #B8122B !important;
+}
+.mat-fab.mat-primary, .mat-mini-fab.mat-primary, .mat-badge-content {
+    background-color: #B8122B !important;
+}
+.mat-flat-button.mat-primary, .mat-raised-button.mat-primary, .mat-fab.mat-primary, .mat-mini-fab.mat-primary, .mat-badge-content {
+    background-color: #B8122B !important;
+}
+.mat-flat-button.mat-primary, .mat-raised-button.mat-primary, .mat-fab.mat-primary, .mat-mini-fab.mat-primary, .mat-badge-content {
+    background-color: #B8122B !important;
+}
+ 
+.btn-primary-azul {
+    background: #1266F1 !important;
+    box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 0%), 0px 6px 10px 0px rgba(0, 0, 0, .14), 0px 1px 18px 0px rgba(0, 0, 0, .12);
+    border: 1px solid #b8122b05 !important;
+    border-radius: 6px !important;
+    color: white !important;
+    /* height: 100% !important; */
+}
+    </style>
+</head>
+<body data-typography="poppins"
+      data-theme-version="light"
+      data-layout="vertical"
+      data-nav-headerbg="color_8"
+      data-headerbg="color_1"
+      data-sidebar-style="full"
+      data-sibebarbg="color_8"
+      data-sidebar-position="fixed"
+      data-header-position="fixed"
+      data-container="wide"
+      direction="ltr"
+      data-primary="color_11"
+>
+  <app-root> 
+  </app-root>
+  <app-redirect></app-redirect> 
+</body>
+<script src="assets/imprimible.js"></script>
+</html>

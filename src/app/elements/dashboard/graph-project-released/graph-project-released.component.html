@@ -1,0 +1,36 @@
+<div class="card">	
+    <div class="card-header border-0">
+        <h4 class="fs-16 text-black font-w500">Project Released</h4>
+        <div class="d-flex align-items-center">
+            <svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1.90735e-06 0.499999L7 7.5L14 0.5" fill="#FF6746"/>
+            </svg>
+            <span class="fs-28 font-w600 ml-2 text-black">4%</span>
+        </div>
+    </div>
+    <div class="card-body text-center pb-0 p-0">
+        <div id="widgetChart2" class="dashboard-chart">
+                
+             <apx-chart
+                [series]="chartOptions.series"
+                [chart]="chartOptions.chart"
+                [xaxis]="chartOptions.xaxis"
+                [stroke]="chartOptions.stroke"
+                [dataLabels]="chartOptions.dataLabels"
+                [yaxis]="chartOptions.yaxis"
+                [labels]="chartOptions.labels"
+                [legend]="chartOptions.legend"
+                [title]="chartOptions.title"
+                [subtitle]="chartOptions.subtitle"
+                [colors]="chartOptions.colors"
+                [markers]="chartOptions.markers"
+                [states]="chartOptions.states"
+                [grid]="chartOptions.grid"
+                [fill]="chartOptions.fill"
+                [tooltip]="chartOptions.tooltip"
+            ></apx-chart>    
+                
+            
+        </div>
+    </div>
+</div>

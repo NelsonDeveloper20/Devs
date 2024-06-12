@@ -1,0 +1,24 @@
+<div class="card kanbanPreview-bx">
+    <div class="card-body">
+        <div class="sub-card bg-secondary d-flex text-white">
+            <div class="mr-auto pr-2">
+                <h4 class="fs-20 mb-0 font-w600 text-white">Quick To-Do List</h4>
+                <span class="fs-14 op6 font-w200">Lorem ipsum dolor sit amet</span>
+            </div>
+            <a [routerLink]="['/admin/contacts']" class="plus-icon"><i class="fa fa-plus" aria-hidden="true"></i></a>
+        </div>
+        <div class="sub-card" *ngFor="let item of data">
+            <span class="text-warning sub-title fs-14">{{item.post}}</span>
+            <p class="font-w500"><a routerLink="/{{item.url}}" class="text-black">{{item.description}}</a></p>
+            <div class="row justify-content-between align-items-center">
+                <div class="col-6">
+                    <span>{{item.date}}</span>
+                </div>
+                <ul class="users col-6">
+                    <li *ngFor="let userImage of item.user_images " ><img src="{{userImage.image}}" alt=""></li>
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</div>

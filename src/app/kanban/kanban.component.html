@@ -1,0 +1,18 @@
+<div class="content-body">
+ 
+    <div class="container-fluid">
+ 
+          <mat-toolbar  class="card p-0">
+			  <div class="card-body py-3 justify-content-between d-flex align-items-center">
+				<h4 class="mat-h2 card-title">Kanban Board</h4>
+				<app-dialog (emitText)="addColumn($event)" question="Add new column">
+				  <button mat-raised-button color="primary">
+					New Column
+				  </button>
+				</app-dialog>
+			  </div>
+            </mat-toolbar>
+
+        <app-board></app-board>
+    </div>
+</div>	

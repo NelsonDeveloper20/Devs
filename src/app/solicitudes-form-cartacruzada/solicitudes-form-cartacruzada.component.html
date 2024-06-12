@@ -1,0 +1,289 @@
+<ngx-spinner bdColor="rgba(255, 255, 255, 1)" size="medium" color="#0D7ABD" type="ball-beat" [fullScreen]="true">
+  <p style="color: black">Loading...</p>
+</ngx-spinner>
+<form [formGroup]="firstFormGroup">
+  <div class="row">
+
+    <div class="col-lg-6">
+      <div class="row">
+
+        <div class="col-lg-12">
+          <div class="mat-form-field--inline">
+            <mat-form-field appearance="outline" style="color: black !important;    width: 100%;">
+              <mat-label [style.color]="'black'"  style="font-size: 17px">NRO SAP</mat-label>
+              <input matInput [(ngModel)]="user.nrosap" placeholder="Ingrese" formControlName="nroSap" required>
+              <button *ngIf="disabledSearchApi" mat-button matSuffix mat-stroked-button aria-label="search"
+                (click)="buscarApi()">
+                <mat-icon>search</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="col-lg-12" *ngIf="visiblecomprobanteOrigen">
+          <div class="mat-form-field--inline">
+            <mat-form-field appearance="outline" style="color: black !important;    width: 100%;">
+              <mat-label [style.color]="'black'"  style="font-size: 17px">Comprobante Origen</mat-label>
+              <input matInput [(ngModel)]="user.comprobanteOrigen" style="color:black;" placeholder="Ingrese"
+                formControlName="comprobanteOrigen" required>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-lg-12">
+          <div class="mat-form-field--inline">
+            <mat-form-field appearance="outline" style="width: 100%;">
+              <mat-label [style.color]="'black'"  style="font-size: 17px">Tipo de carta</mat-label>
+              <mat-select [(ngModel)]="user.tipoCarta" (ngModelChange)="changeInput($event)"
+                formControlName="tipoCarta">
+                <mat-option value="Seleccione"> ---Seleccione--- </mat-option>
+                <mat-option value="Carta Cruzada">Carta Cruzada</mat-option>
+                <mat-option value="C.A por depósito en efectivo">C.A por depósito en efectivo</mat-option>
+                <mat-option value="C.A por error en depósito">C.A por error en depósito</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+
+        <div class="col-lg-12">
+          <div class="mat-form-field--inline">
+            <mat-form-field appearance="outline" style="color: black !important;    width: 100%;">
+              <mat-label [style.color]="'black'"  style="font-size: 17px">DNI Cliente Realiza</mat-label>
+              <input matInput [(ngModel)]="user.dniclienteRealiza" style="color:black;" placeholder="Ingrese"
+                formControlName="dniclienteRealiza" required>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="col-lg-12">
+          <div class="mat-form-field--inline">
+            <mat-form-field appearance="outline" style="color: black !important;    width: 100%;">
+              <mat-label [style.color]="'black'"  style="font-size: 17px">Cliente Realiza </mat-label>
+              <input matInput [(ngModel)]="user.clienteRaliza" style="color:black;" placeholder="Ingrese"
+                formControlName="clienteRaliza" required>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-lg-12">
+          <div class="mat-form-field--inline">
+            <mat-form-field appearance="outline" style="color: black !important;    width: 100%;">
+              <mat-label [style.color]="'black'"  style="font-size: 17px">Dni Cliente Recibe </mat-label>
+              <input matInput [(ngModel)]="user.dniclienteruc" style="color:black;" placeholder="Ingrese"
+                formControlName="dniClienteRuc" required>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="col-lg-12">
+          <div class="mat-form-field--inline">
+            <mat-form-field appearance="outline" style="color: black !important;    width: 100%;">
+              <mat-label [style.color]="'black'"  style="font-size: 17px">Cliente Recibe </mat-label>
+              <input matInput [(ngModel)]="user.clienterazonsocial" style="color:black;" placeholder="Ingrese"
+                formControlName="clienteRazonSocial" required>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="col-lg-12">
+          <div class="mat-form-field--inline">
+            <mat-form-field appearance="outline" style="color: black !important;    width: 100%;">
+              <mat-label [style.color]="'black'"  style="font-size: 17px">Solicitante</mat-label>
+              <input matInput [(ngModel)]="user.solicitante" style="color:black;" placeholder="Ingrese"
+                formControlName="solicitante" required>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!--<div class="col-lg-12">
+      <div class="mat-form-field--inline">
+        <mat-form-field appearance="outline"  style="color: black !important;    width: 100%;">
+          <mat-label [style.color]="'black'"  style="font-size: 17px">Fecha</mat-label>
+          <input  matInput [(ngModel)]="user.fechsolicitud" style="color:black;"  placeholder="Ingrese" formControlName="fechaSolicitud" required>
+        </mat-form-field>
+      </div>
+  </div>-->
+
+        <div class="col-lg-12">
+          <mat-form-field appearance="outline" style="width: 100%;">
+            <mat-label [style.color]="'black'"  style="font-size: 17px">Fecha</mat-label>
+            <input class="form-input" matInput [matDatepicker]="pickern" style="color:black;"
+              [(ngModel)]="user.fechsolicitud" formControlName="fechsolicitud" />
+            <mat-datepicker-toggle matSuffix [for]="pickern"></mat-datepicker-toggle>
+            <mat-datepicker #pickern></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <div class="col-lg-12">
+          <div class="mat-form-field--inline">
+            <mat-form-field appearance="outline" style="width: 100%;">
+              <mat-label [style.color]="'black'"  style="font-size: 17px">Vinculo</mat-label>
+              <mat-select [(ngModel)]="user.vinculo" (change)="changeInput($event)" formControlName="vinculo">
+                <mat-option value="Seleccione"> ---Seleccione--- </mat-option>
+                <mat-option *ngFor="let option of listsVinculo" [value]="option.descripcion">{{ option.descripcion
+                }}</mat-option>
+
+                <!--<mat-option value="Empresa a Persona Natural">Empresa a Persona Natural</mat-option>
+                <mat-option value="Persona Natural a Empresa">Persona Natural a Empresa</mat-option>
+                <mat-option value="Persona Natural a Persona Natural">Persona Natural a Persona Natural</mat-option>
+                <mat-option value="Empresa a Empresa">Empresa a Empresa</mat-option>-->
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="col-lg-12">
+          <div class="mat-form-field--inline">
+            <mat-form-field appearance="outline" style="color: black !important;    width: 100%;">
+              <mat-label [style.color]="'black'"  style="font-size: 17px">Importe</mat-label>
+              <input matInput (change)="changeInput($event)" [(ngModel)]="user.importe" style="color:black;"
+                placeholder="Ingrese" formControlName="importe" required>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="row">
+
+        <div class="col-lg-12">
+          <div class="mat-form-field--inline">
+            <!--<mat-form-field appearance="outline"  style="color: black !important;    width: 100%;">
+                    <mat-label [style.color]="'black'"  style="font-size: 17px">Moneda</mat-label>
+                    <input  matInput (change)="changeInput($event)"  [(ngModel)]="user.moneda" style="color:black;" placeholder="Ingrese" formControlName="moneda" required>
+                  </mat-form-field> -->
+            <mat-form-field appearance="outline" style="width: 100%;">
+              <mat-label [style.color]="'black'"  style="font-size: 17px">Moneda</mat-label>
+              <mat-select [(ngModel)]="user.moneda" (change)="changeInput($event)" formControlName="moneda"
+                style="color:black;">
+                <mat-option value="Seleccione"> ---Seleccione--- </mat-option>
+                <mat-option value="US$">US$</mat-option>
+                <mat-option value="S/">S/</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="col-lg-12">
+          <div class="mat-form-field--inline">
+            <mat-form-field appearance="outline" style="width: 100%;">
+              <mat-label [style.color]="'black'"  style="font-size: 17px">Banco</mat-label>
+              <!--<mat-select   [(ngModel)]="user.banco"    (change)="changeInput($event)"  formControlName="banco">
+                  <mat-option   value="Seleccione">  ---Seleccione---        </mat-option>
+                  <mat-option   value="Interbank">Interbank</mat-option>
+                  <mat-option   value="BCP">BCP</mat-option>
+                  <mat-option   value="BBVA">BBVA</mat-option>
+                </mat-select>-->
+
+              <mat-select [(ngModel)]="user.banco" (change)="changeInput($event)" formControlName="banco">
+                <mat-option value="Seleccione">---Seleccione---</mat-option>
+                <mat-option *ngFor="let option of listsBanco" [value]="option.descripcion">{{ option.descripcion
+                  }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+
+        <!--<div class="col-lg-12">
+              <div class="mat-form-field--inline">
+                  <mat-form-field appearance="outline"  style="color: black !important;    width: 100%;">
+                    <mat-label [style.color]="'black'"  style="font-size: 17px">Forma Pago</mat-label>
+                    <input  matInput [(ngModel)]="user.formaPago" style="color:black;"    placeholder="Ingrese" formControlName="formaPago" required>
+                  </mat-form-field>
+              </div>
+             </div>-->
+        <div class="col-lg-12">
+          <div class="mat-form-field--inline">
+            <mat-form-field appearance="outline" style="width: 100%;">
+              <mat-label [style.color]="'black'"  style="font-size: 17px">Forma Pago</mat-label>
+              <mat-select [(ngModel)]="user.formaPago" (change)="changeInput($event)" formControlName="formaPago">
+                <mat-option value="Seleccione"> ---Seleccione--- </mat-option>
+                <mat-option *ngFor="let option of listsFormaPago" [value]="option.descripcion">{{ option.descripcion
+                  }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-lg-12">
+          <div class="mat-form-field--inline">
+            <mat-form-field appearance="outline" style="color: black !important;    width: 100%;">
+              <mat-label [style.color]="'black'"  style="font-size: 17px">Numero de Operacion</mat-label>
+              <input matInput [(ngModel)]="user.numOperacion" style="color:black;" placeholder="Ingrese"
+                formControlName="numOperacion" required>
+            </mat-form-field>
+          </div>
+        </div>
+
+
+        <div class="col-lg-12">
+          <div class="mat-form-field--inline">
+            <mat-form-field appearance="outline" style="color: black !important;    width: 100%;">
+              <mat-label [style.color]="'black'"  style="font-size: 17px">Unidad Negocio</mat-label>
+              <input matInput [(ngModel)]="user.unidadnegocio" style="color:black;" placeholder="Ingrese"
+                formControlName="unidadNegocio" required>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-lg-12">
+          <div class="mat-form-field--inline">
+            <mat-form-field appearance="outline" style="color: black !important;    width: 100%;">
+              <mat-label [style.color]="'black'"  style="font-size: 17px">Tienda</mat-label>
+              <input matInput [(ngModel)]="user.tienda" style="color:black;" placeholder="Ingrese"
+                formControlName="tienda" required>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-lg-12">
+
+          <div class="mat-form-field--inline">
+            <mat-form-field appearance="outline" style="color: black !important;    width: 100%;">
+              <mat-label [style.color]="'black'"  style="font-size: 17px">Centro Costo</mat-label>
+              <input matInput [(ngModel)]="user.centrocosto" style="color:black;" placeholder="Ingrese"
+                formControlName="centroCosto" required>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-lg-12" *ngIf="visublecomentario">
+
+          <div class="mat-form-field--inline">
+            <mat-form-field appearance="outline" style="color: black !important;    width: 100%;">
+              <mat-label [style.color]="'black'"  style="font-size: 17px">Comentario</mat-label>
+              <textarea matInput [(ngModel)]="user.comentario"
+                placeholder="Escribe comentario" formControlName="comentario"></textarea>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-lg-12" *ngIf="visibletipo">
+          <div class="mat-form-field--inline">
+            <!-- <mat-radio-group [(ngModel)]="user.tipo" formControlName="tipo" (change)="changeInput($event)">
+                     <mat-radio-button style="margin: 11px;" value="Aplicacion de documento">Aplicación de documento</mat-radio-button>
+                     </mat-radio-group>-->
+
+            <!--<mat-radio-group [(ngModel)]="user.tipo" formControlName="tipo" (change)="changeInput($event)">
+                  <mat-radio-button *ngFor="let tipo of tiposD" style="margin: 11px;" [value]="tipo">{{ tipo }}</mat-radio-button>
+                </mat-radio-group>-->
+
+
+            <!--<mat-checkbox *ngFor="let tipo of tiposD" style="margin: 11px;">
+                  <input type="checkbox" [value]="tipo" (change)="changeInputchek($event)">
+                  {{ tipo }}
+                </mat-checkbox>
+                   <br>-->
+
+            <!-- {{user | json}} -->
+            <div *ngFor="let shoe of tiposD">
+              <mat-checkbox [checked]="selectedItem === shoe" [disabled]="disableAplication"
+                (change)="onCheckboxChange(selectedItem === shoe ? '' : shoe)">
+                {{ shoe }}
+              </mat-checkbox>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</form>

@@ -1,0 +1,105 @@
+<!--**********************************
+	Content body start
+***********************************-->
+
+<div class="content-body">
+	<div class="container-fluid">
+		<div class="row page-titles mx-0">
+            <div class="col-sm-6 p-md-0">
+                <div class="welcome-text">
+                    <h4>Mantenimiento Perfiles</h4> 
+                </div>
+            </div>
+            <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+                <ol class="breadcrumb">
+                    
+                </ol>
+            </div>
+        </div>
+		<!-- row --> 
+		<div class="row">
+			<div class="col-xl-12">
+				 
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                
+							<div class="comment-respond" id="respond"> 
+								<div class="comment-form" id="commentform">
+									<div class="row"> 
+										<div class="col-lg-3">
+											<div class="form-group">
+												<label for="author" class="text-black font-w600">Nombre <span class="required">*</span></label>
+												<input type="text" class="form-control" value="" name="ingrese nombre perfil" placeholder="" id="author" [(ngModel)]="EdicionPerfil.nombre">
+											</div>
+										</div>
+                    
+										<div class="col-lg-5">
+											<div class="form-group">
+												<label for="author" class="text-black font-w600">Descripción <span class="required">*</span></label>
+												<input type="text" class="form-control" value="" name="ingrese descripcion" placeholder="" id="author"  [(ngModel)]="EdicionPerfil.descripcion">
+											</div>
+										</div>
+										<div class="col-lg-1">			
+                                            <br>								
+												<button mat-flat-button    class="btn btn-primary"   (click)="Guardar()"  *ngIf="EdicionPerfil.id"> Modificar</button>
+												<button mat-flat-button    class="btn btn-primary"   (click)="Guardar()"  *ngIf="!EdicionPerfil.id"> Guardar</button>
+										</div> 
+										<div class="col-lg-1">			
+                      <br>
+												<button  mat-flat-button   class="btn btn-primary"  (click)="Cancelar()" *ngIf="EdicionPerfil.id">Cancelar</button>
+										</div> 
+									</div>
+								</div>
+							</div>
+
+                                <div class="table-responsive"> 
+                                  <table  class="table table-sm mb-0 text-black">
+                                      <thead>
+                                      <tr>
+                                      <th class="align-middle minw200">#ID</th>
+                                      <th class="align-middle minw200">Nombre</th>
+                                      <th class="align-middle minw200">Descripción</th>
+                                      <th class="align-middle minw200">Editar</th>        
+                                      <th class="align-middle minw200">Asignar Módulos</th>        
+                                      <th class="align-middle minw200">Eliminar</th>                       
+                                      </tr>
+                                      </thead>
+                                      <tbody id="detalle_data">
+                                        <tr role="row" class="odd" *ngFor="let item of ListPerfil">
+                                          <td class="center sorting_1" style="font-weight: 100;">{{ item.id }}</td>
+                                          <td class="center" style="font-weight: 100;">{{ item.nombre }}</td>
+                                          <td class="center" style="font-weight: 100;">{{ item.descripcion }}</td>
+                                          <td class="center" style="    width: 9px;">
+                                            <button class="btn btn-primary tp-btn-light sharp" style="margin: 5px;" (click)="editar(item)">
+                                              <mat-icon>edit</mat-icon>
+                                            </button>
+                                          </td>
+                                          <td class="center" style="    width: 170px !important;text-align: center;">
+                                            <button class="btn btn-primary tp-btn-light sharp" style="margin: 5px;"
+                                            (click)="OpenAsignarUsuario(item)">
+                                              <mat-icon>view_quilt</mat-icon>
+                                            </button> 
+                                          </td>
+                                          <td class="center"> 
+                                            <button class="btn btn-primary tp-btn-light sharp" (click)="EliminarPerfil(item.id)">
+                                              <mat-icon>delete</mat-icon>
+                                            </button>
+                                          </td>
+                                        </tr>
+                                        
+                                      </tbody>
+                                      </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--**********************************
+	Content body end
+***********************************-->

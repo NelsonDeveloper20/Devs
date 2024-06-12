@@ -1,0 +1,315 @@
+ 
+
+  <!--<router-outlet></router-outlet> 
+background: rgb(242 246 252 / 72%);  -->
+<ngx-spinner
+bdColor="rgba(255, 255, 255, 1)"
+size="medium"
+color="#0D7ABD"
+type="ball-beat"
+[fullScreen]="true"
+><p style="color: black">Loading...</p></ngx-spinner>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+ <style>
+  .mat-mdc-form-field + .mat-mdc-form-field {
+    margin-left: 8px;
+  }
+  /* CHILDS*/
+  .titulo{
+    margin: 1rem 0;
+    padding-left: 1rem;
+    background-color: #ccc;
+  }
+  
+  .mab-1{
+    margin-bottom: 1rem;
+    padding-left: 1rem;
+  }
+  .par-1{
+  padding-right: 1rem;
+  }
+  .campo {
+    display: flex;
+    margin-bottom: 1rem;
+  }
+  
+  .campo label {
+    flex-basis: 8rem;
+  }
+  .campo input[type="text"],
+  .campo input[type="email"],
+  .campo input[type="tel"],
+  .campo input[type="date"],
+  .campo textarea,
+  .campo select {
+    flex: 0.5;
+  }
+  
+  .campo input[type="file"]{
+    margin-right: 1rem;
+  }
+  
+  
+  .barra-progreso{
+  width: 30%;
+  }
+  .formulario fieldset {
+  border: 1px solid black;
+  margin-bottom: 2rem;
+  }
+  .formulario legend {
+  background-color: #ccc;
+  width: 100%;
+  text-align: left;
+  color: white;
+  font-weight: 200;
+  text-transform: uppercase;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  }
+  
+  ::ng-deep .material-tooltip {
+  white-space: pre-line;
+  background-color: #B8122B !important;
+  font-size: 40px !important;
+  }
+  /*gggggggggg*/
+  .file-input {
+  display: none;
+  }
+  
+  .myform-wrapper {
+  margin: 50px;
+  width: 350px;
+  }
+  .mat-form-field {
+      width: 100%;
+  }
+  
+  .mat-toolbar-single-row {
+      height: auto !important;
+      background: transparent;
+  
+     
+  }
+  /*  button {
+    width: 30%;
+  }*/
+  
+  #fileUpload {
+  position: absolute;
+  z-index: 9;
+  opacity: 0;
+  height: 100%;
+  width: 100%;
+  left: 0px;
+  top: 0px;
+  cursor: pointer;
+  }
+  
+  .example-form {
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+  }
+  
+  .example-full-width {
+  width: 100%;
+  }
+  .btn-primary {
+  background-color: #0869c1;
+  border-color: #6c757d;
+  }
+  
+  
+  .card-category{
+  margin: 18px !important;
+  }
+  
+  .bg-light {
+  background-color: #ffffff !important;
+  box-shadow: 0px 0px 13px 0px rgb(82 63 105 / 5%);
+  }
+  fieldset {
+  padding: 20px;
+  border: solid 1px #c7c7c7c7;
+  }
+  fieldset legend {
+  color: #011b39e8;
+  } 
+  /*MENU*/
+  .example-container {
+  height: 500px;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  }
+  .example-sidenav-content {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  }
+  .example-sidenav {
+  user-select: none;
+  }
+  .full-width {
+  width: 100%;
+  }
+  .menu-button {
+  transition: 300ms ease-in-out;
+  transform: rotate(0deg);
+  }
+  .menu-button.rotated {
+  transform: rotate(180deg);
+  }
+  .submenu {
+  overflow-y: hidden;
+  transition: transform 300ms ease;
+  transform: scaleY(0);
+  transform-origin: top;
+  padding-left: 30px;
+  }
+  .submenu.expanded {
+  transform: scaleY(1);
+  }
+  .vacios_{
+    color: #e51717;font-weight: 600;
+  }
+  .mat-tab-body-content {
+    /* height: 100%; */
+    overflow: hidden !important;
+} .mat-form-field-infix {
+    display: block;
+    position: relative;
+    flex: auto;
+    min-width: 0;
+    width: 100% !important;
+}
+.foother{
+  border-bottom: 2px solid #d1d0d0 !important;
+}
+ 
+ </style>
+<mat-sidenav-container autosize style="     background: #d3d3d314;;  box-shadow: 0px 0px 20px 11px rgb(82 63 105 / 1%);
+border: 0px;"> 
+
+<mat-sidenav style="    box-shadow: 0px 0px 20px 11px rgb(82 63 105 / 1%);
+border: 0px;
+left: 2%;
+    border-radius: 21px;
+    margin-top: 11px;
+    margin-bottom: 11px;
+" #sidenav class="example-sidenav" mode="side" opened="true" (mouseenter)="mouseenter()" (mouseleave)="mouseleave()">
+  <mat-nav-list>
+     
+ <app-nav-header
+ [isUserLogged]="isUserLoggedIn"
+ *ngIf="isUserLoggedIn"></app-nav-header> 
+  </mat-nav-list>
+  
+  <mat-nav-list>
+</mat-nav-list>
+<div style="top: 100% !important;
+position: sticky;
+height: 5px;
+background: #cd112c;"  
+ *ngIf="isUserLoggedIn"></div>
+</mat-sidenav>
+
+
+<div    class="example-sidenav-content" style="    display: contents !important;">
+ 
+<div class="main-content" >
+<div class="container-fluid">    
+ <!-- END --> 
+ <div class="page-holder align-items-center py-4 bg-gray-100 vh-100" *ngIf="!isUserLoggedIn">
+  <div class="container">
+    <div class="row align-items-center" style="background-image: url(../../assets/fondo6.png);
+    width: 90%;
+    background-size: auto;
+     width: 90%;   min-height: 471px;
+    /*background: #FF8000;*/
+    border-radius: 10px !important;
+    box-shadow: -5px 12px 20px 20px rgb(0 0 0 / 4%) !important;
+    position: relative;">
+      
+      <!-- register --> 
+     <div class="col-lg-6 col-xl-5 ms-xl-auto px-lg-4 text-center text-primary" style="position: relative; z-index: 1;">
+      <img class="" style="width: 276px;
+      position: absolute;
+      left: 33%;
+      margin-top: -60px;" [src]="rutaImagen" alt="" >
+ 
+      <p class="lead text-muted"></p>
+    </div>
+      <div class="col-lg-6 px-lg-4" style="position: absolute; top: 50%; left: 70%;
+      width: 451px; transform: translate(-50%, -50%); z-index: 2;">
+        <div class="card">
+          <div class="card-header px-lg-5"  style="display: none;">
+            
+            <div class="card-heading text-primary">Login</div>
+          </div>
+          <div class="card-body p-lg-5">
+            <div style=" text-align: center;">
+           <img src="https://tractocamiones.pe/wp-content/uploads/2020/11/Logo-png.png" style=" display: none;   width: 122px;
+           height: 114px;
+           padding: 9px;
+           border-radius: 50%;
+           background-color: #fff;
+           box-shadow: 0px 0px 10px 5px rgb(0 0 0 / 5%);">
+          </div> 
+          <br> 
+            <!--<h3 class="mb-4">SISTEMA DE FLUJOS DE TRABAJO GRUPO PANA 🧾</h3>--> 
+            
+              <div class="form-group">
+                <label for="username">Usuario</label>
+                <input type="text"    class="form-control"   [(ngModel)]="username">
+              </div>
+        
+              <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input type="password"    class="form-control"   [(ngModel)]="password">
+              </div>
+        
+              <button class="btn btn-primary" style="background-color: #B8122B !important;
+              border-radius: 9px;
+              width: 100%;
+              border: solid;" type="button"  (click)="login()" >Iniciar Sesión</button>
+            
+          </div>
+          <div class="card-footer px-lg-5 py-lg-4">
+            <div class="text-sm text-muted">¿No tienes una cuenta? <a  >Registtrarse</a>.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+ <router-outlet *ngIf="!isIframe"></router-outlet> 
+ 
+ <mat-toolbar class="mat-elevation-z4" color="primary" style="display: none;">
+  <a href="/" class="title">AzureTeach.Net</a>
+<div class="toolbar-spacer"></div>
+  <span style="padding:10px;">Welcome {{userName}}!</span>
+  <a mat-button 
+  [routerLink]="['/Profiles']" >Profile</a> 
+   <mat-list-item   class="parent" [routerLink]="['/Profiles']">
+    <span class="full-width"  >Inmobiliaria</span>
+    <mat-icon mat-list-icon>insert_chart_outlined</mat-icon>
+   </mat-list-item>
+
+  <a mat-button [routerLink]="['reports']">Reports</a>
+  <button mat-raised-button *ngIf="!isUserLoggedIn" (click)="login()">Login</button>
+  <button mat-raised-button *ngIf="isUserLoggedIn" (click)="logout()">Logout</button>
+</mat-toolbar> 
+<!-- para cuerpo --> 
+</div>
+</div>
+</div>
+
+</mat-sidenav-container>
+   <!-- END -->
+<app-switcher></app-switcher>
+   
+  
+

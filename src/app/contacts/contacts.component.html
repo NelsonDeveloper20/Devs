@@ -1,0 +1,208 @@
+<div class="content-body">
+    <!-- row -->
+    <div class="container-fluid">
+        <div class="project-nav">
+            <div class="card-action card-tabs  mr-auto">
+            <ul class="nav nav-tabs style-2" ngbNav #nav="ngbNav" role="tablist">
+                    <li class="nav-item" ngbNavItem="navpills-1">
+                        <a class="nav-link" data-toggle="tab" href="#navpills-1" aria-expanded="false" ngbNavLink>
+                            All Contacs <span class="badge badge-primary shadow-primary">154</span>
+                        </a>
+                        <ng-template ngbNavContent>
+                        
+                            <div class="tab-pane fade show active" id="navpills-1" >
+                                <div class="row dz-scroll  loadmore-content searchable-items list" id="allContactListContent">
+                                    <div class="items items-header-section">
+                                    </div>
+                                    
+                                    <div class="col-xl-3 col-xxl-4 col-lg-4 col-md-6 col-sm-6 items" *ngFor="let item of allContacts; index as i;">
+                                        <div class="card contact-bx item-content">
+                                            <div class="card-header border-0">
+                                                <div class="action-dropdown">
+                                                    <div class="dropdown dropdown-no-icon" ngbDropdown>
+                                                        <a href="javascript:void(0);" data-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
+                                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z" stroke="#575757" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                <path d="M12 6C12.5523 6 13 5.55228 13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6Z" stroke="#575757" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                <path d="M12 20C12.5523 20 13 19.5523 13 19C13 18.4477 12.5523 18 12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20Z" stroke="#575757" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                            </svg>
+                                                        </a>
+                                                        <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
+                                                            <a class="dropdown-item edit" href="javascript:void(0);"   (click)="openEditpopup(i, 'all')">Edit</a>
+                                                            <a class="dropdown-item delete" href="javascript:void(0);"  (click)="deleteContact(i, 'all')">Delete</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card-body user-profile">
+                                                <div class="image-bx">
+                                                    <img src="{{item.image}}" data-src="{{item.image}}" alt="" class="rounded-circle">
+                                                    <span class="active"></span>
+                                                </div>
+                                                <div class="media-body user-meta-info">
+                                                    <h6 class="fs-20 font-w500 my-1"><a routerLink="{{item.url}}" class="text-black user-name" data-name="Alan Green">{{item.name}}</a></h6>
+                                                    <p class="fs-14 mb-3 user-work" data-occupation="UI Designer">{{item.post}}</p>
+                                                    <ul>
+                                                        <li><a href="javascript:void(0);"><i class="fa fa-phone" aria-hidden="true"></i></a></li>
+                                                        <li><a routerLink="/{{item.message_url}}"><i class="las la-sms"></i></a></li>
+                                                        <li><a href="javascript:void(0);"><i class="fa fa-video-camera" aria-hidden="true"></i></a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    
+  
+                                
+                                
+                                </div>
+                                <div class="row">
+                                    <div class="col-xl-12 d-flex justify-content-center">
+                                        <a href="javascript:void(0);" class="btn btn-outline-primary dz-load-more" id="allContactList" (click)="add_contact('all')">Load More
+                                            <i class="fa fa-refresh dz-loadmore-icon" [ngClass]="{'d-none': !toggleLoadMore, '': toggleLoadMore}" ></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                        </ng-template>
+                    </li>
+                    
+                    
+                    <li class="nav-item" ngbNavItem="navpills-2">
+                        <a class="nav-link" data-toggle="tab" href="#navpills-2" aria-expanded="false" ngbNavLink>
+                            Pending Invitation <span class="badge shadow-warning  badge-warning">6</span>
+                        </a>
+                        <ng-template ngbNavContent>
+                            <div class="tab-pane" id="navpills-2">
+                                <div class="row dz-scroll loadmore-content" id="pendingListContent">
+                                    <div class="items items-header-section">
+                                    </div>
+                                    <div class="col-xl-3 col-xxl-4 col-lg-4 col-md-6 col-sm-6 items" *ngFor="let item of pendingContacts; index as i">
+                                        <div class="card contact-bx item-content">
+                                            <div class="card-header border-0">
+                                                <div class="action-dropdown">
+                                                    <div class="dropdown dropdown-no-icon" ngbDropdown>
+                                                        <a href="javascript:void(0);" data-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
+                                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z" stroke="#575757" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                <path d="M12 6C12.5523 6 13 5.55228 13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6Z" stroke="#575757" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                <path d="M12 20C12.5523 20 13 19.5523 13 19C13 18.4477 12.5523 18 12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20Z" stroke="#575757" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                            </svg>
+                                                        </a>
+                                                        <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
+                                                            <a class="dropdown-item edit" href="javascript:void(0);" (click)="openEditpopup(i, 'pending')">Edit</a>
+                                                            <a class="dropdown-item delete deletethis-{{i}}" href="javascript:void(0);" (click)="deleteContact(i, 'pending')">Delete</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card-body user-profile">
+                                                <div class="image-bx">
+                                                    <img src="{{item.image}}" data-src="{{item.image}}" alt="" class="rounded-circle">
+                                                    <span class="active"></span>
+                                                </div>
+                                                <div class="media-body user-meta-info">
+                                                    <h6 class="fs-20 font-w500 my-1"><a routerLink="{{item.url}}" class="text-black user-name" data-name="Alan Green">{{item.name}}</a></h6>
+                                                    <p class="fs-14 mb-3 user-work" data-occupation="UI Designer">{{item.post}}</p>
+                                                    <ul>
+                                                        <li><a href="javascript:void(0);"><i class="fa fa-phone" aria-hidden="true"></i></a></li>
+                                                        <li><a routerLink="/{{item.message_url}}"><i class="las la-sms"></i></a></li>
+                                                        <li><a href="javascript:void(0);"><i class="fa fa-video-camera" aria-hidden="true"></i></a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xl-12 d-flex justify-content-center">
+                                        <a href="javascript:void(0);" class="btn btn-outline-primary dz-load-more" id="pendingList"  (click)="add_contact('pending')">Load More
+                                            <i class="fa fa-refresh dz-loadmore-icon" [ngClass]="{'d-none': !toggleLoadMore, '': toggleLoadMore}" ></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                        
+                        </ng-template>
+                    </li>
+            </ul>
+
+            </div>
+            
+            
+            <div class="d-flex align-items-center">
+                <a href="javascript:void(0);" id="btn-add-contact"  class="btn btn-primary rounded text-white" (click)="open(addContactModal)">+ New Contacts</a>
+                <div class="switch">
+                    <a href="javascript:void(0);" class="mx-4  view-list active-view">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3.99976 7H19.9998C20.7954 7 21.5585 6.68393 22.1211 6.12132C22.6837 5.55871 22.9998 4.79565 22.9998 4C22.9998 3.20435 22.6837 2.44129 22.1211 1.87868C21.5585 1.31607 20.7954 1 19.9998 1H3.99976C3.20411 1 2.44104 1.31607 1.87844 1.87868C1.31583 2.44129 0.999756 3.20435 0.999756 4C0.999756 4.79565 1.31583 5.55871 1.87844 6.12132C2.44104 6.68393 3.20411 7 3.99976 7Z" fill="#CBCBCB"/>
+                            <path d="M19.9998 9H3.99976C3.20411 9 2.44104 9.31607 1.87844 9.87868C1.31583 10.4413 0.999756 11.2044 0.999756 12C0.999756 12.7956 1.31583 13.5587 1.87844 14.1213C2.44104 14.6839 3.20411 15 3.99976 15H19.9998C20.7954 15 21.5585 14.6839 22.1211 14.1213C22.6837 13.5587 22.9998 12.7956 22.9998 12C22.9998 11.2044 22.6837 10.4413 22.1211 9.87868C21.5585 9.31607 20.7954 9 19.9998 9Z" fill="#CBCBCB"/>
+                            <path d="M19.9998 17H3.99976C3.20411 17 2.44104 17.3161 1.87844 17.8787C1.31583 18.4413 0.999756 19.2044 0.999756 20C0.999756 20.7956 1.31583 21.5587 1.87844 22.1213C2.44104 22.6839 3.20411 23 3.99976 23H19.9998C20.7954 23 21.5585 22.6839 22.1211 22.1213C22.6837 21.5587 22.9998 20.7956 22.9998 20C22.9998 19.2044 22.6837 18.4413 22.1211 17.8787C21.5585 17.3161 20.7954 17 19.9998 17Z" fill="#CBCBCB"/>
+                        </svg>
+                    </a>
+                    <a href="javascript:void(0);" class=" view-grid">
+                        <svg class="primary-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8 1H4C2.34315 1 1 2.34315 1 4V8C1 9.65685 2.34315 11 4 11H8C9.65685 11 11 9.65685 11 8V4C11 2.34315 9.65685 1 8 1Z" fill="#43DC80"/>
+                            <path d="M20 1H16C14.3431 1 13 2.34315 13 4V8C13 9.65685 14.3431 11 16 11H20C21.6569 11 23 9.65685 23 8V4C23 2.34315 21.6569 1 20 1Z" fill="#43DC80"/>
+                            <path d="M8 13H4C2.34315 13 1 14.3431 1 16V20C1 21.6569 2.34315 23 4 23H8C9.65685 23 11 21.6569 11 20V16C11 14.3431 9.65685 13 8 13Z" fill="#43DC80"/>
+                            <path d="M20 13H16C14.3431 13 13 14.3431 13 16V20C13 21.6569 14.3431 23 16 23H20C21.6569 23 23 21.6569 23 20V16C23 14.3431 21.6569 13 20 13Z" fill="#43DC80"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <ng-template #addContactModal let-modal>
+            <div class="modal-header">
+                <h5 class="modal-title">Add Contact</h5>
+                <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+                <form id="addContactModalTitle" (ngSubmit)="onSubmit(contactForm)" #contactForm="ngForm">
+                    <div class="modal-body">
+                            <div class="image-placeholder">
+                                <div class="avatar-edit">
+                                    <input type="file" id="imageUpload" accept=".png, .jpg, .jpeg" #file (change)="preview(file.files)" [(ngModel)]="c_file"   name="c_file">
+                                    <label for="imageUpload"></label>
+                                    <span style="color:red;" *ngIf="message">{{message}}</span>
+                                </div>
+                                <!-- <img [src]="imgURL" height="200" *ngIf="imgURL">aaaa -->
+                                <div class="avatar-preview">
+                                    <div id="imagePreview" style="background-image: url('{{imgURL}}');"></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="text-black font-w500">Name</label>
+                                <div class="contact-name">
+                                
+                                    <input type="text" id="c-name" class="form-control" placeholder="Name" [(ngModel)]="c_name" name="c_name" #propertyName="ngModel" required>
+                                    <span class="error-block text-danger fs-12" *ngIf="!propertyName.valid && propertyName.touched">Please  fill name</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="text-black font-w500">Occupation</label>
+                                <div class="contact-occupation">
+                                    <input type="text" id="c-occupation" class="form-control" placeholder="Occupation" [(ngModel)]="c_occupation" name="c_occupation" #propertyOccuption="ngModel" required>
+                                    <span class="error-block text-danger fs-12" *ngIf="!propertyOccuption.valid && propertyOccuption.touched">Please  fill occuption</span>
+                                    
+                                </div>
+                            </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="hidden" id="c-index" class="form-control" placeholder="c_index" name="c_index" [(ngModel)]="c_index" >
+                        <input type="hidden" id="c-contact_type" class="form-control" placeholder="c_contact_type" name="c_contact_type" [(ngModel)]="c_contact_type" >
+                        
+                        <a href="javascript:void(0);" class="btn btn-danger" data-dismiss="modal" (click)="modal.dismiss('Cross click')">Discard</a>
+                        <button id="btn-edit" type="submit" class="float-left btn btn-primary" [disabled]="!contactForm.valid">Save</button>
+                    </div>
+            </form>
+        </ng-template>
+        
+        <div [ngbNavOutlet]="nav" class=""></div>
+         
+    </div>
+</div>

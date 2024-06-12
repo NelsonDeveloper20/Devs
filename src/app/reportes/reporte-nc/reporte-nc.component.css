@@ -1,0 +1,11 @@
+/*tooltip nelson*/
+.example-tooltip-red { 
+    background: #3d64f3;
+    text-transform: uppercase;
+    font-family: inherit;
+    color: white;
+    font-size: 12px;
+    padding: 9px;
+    border-radius: 9px !important;
+    font-weight: 600;
+  }

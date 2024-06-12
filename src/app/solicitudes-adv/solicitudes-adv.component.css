@@ -1,0 +1,37 @@
+/*@import '~@angular/material/prebuilt-themes/indigo-pink.css';*/
+table {
+    width: 100%;
+  }
+
+ /*
+.mat-header-cell, .mat-cell {
+  font-size: 15px;  
+}*/
+ 
+   
+  /* Estilo para la cabecera de la tabla */
+.mat-header-cell {
+  background-color: #f5f5f5; /* Color de fondo de la cabecera */
+  color: #333; /* Color del texto de la cabecera */ 
+  text-align: center; /* Alineación del texto en la cabecera */
+  font-size: 14px;  
+  white-space: nowrap;
+}
+
+/* Estilo para las celdas de las filas de la tabla */
+.mat-cell {
+  text-align: start; /* Alineación del texto en las filas */
+  vertical-align: middle; /* Alineación vertical al centro */
+  border-bottom: 1px solid #e0e0e0; /* Línea divisoria entre filas */
+}
+
+/* Estilo para las filas pares */
+.mat-row:nth-child(even) {
+  background-color: #ffffff; /* Color de fondo de las filas pares */
+}
+
+/* Estilo para las filas impares */
+.mat-row:nth-child(odd) {
+  background-color: #ffffff; /* Color de fondo de las filas impares */
+}
+ 

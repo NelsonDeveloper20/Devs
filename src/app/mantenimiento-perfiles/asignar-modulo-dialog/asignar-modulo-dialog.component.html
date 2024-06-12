@@ -1,0 +1,57 @@
+
+
+
+
+<ngx-spinner
+  bdColor="rgba(255, 255, 255, 1)"
+  size="medium"
+  color="#0D7ABD"
+  type="ball-beat"
+  [fullScreen]="true"
+  ><p style="color: black">Loading...</p></ngx-spinner>
+<h2 mat-dialog-title>Asignar Modulo al Perfil  <b>{{Nombre}}</b></h2>
+
+<div mat-dialog-content style="max-width: 1114px !important;"> 
+  <div class="col-lmd-12 panel-body">
+<table mat-table [dataSource]="dataSource" class="table table-sm mb-0 text-black" style="width: 100% !important;">
+
+    <!-- IdModulo Column -->
+    <ng-container matColumnDef="IdModulo">
+      <th mat-header-cell *matHeaderCellDef> ID Modulo </th>
+      <td mat-cell *matCellDef="let element"> {{element.idModulo}} </td>
+    </ng-container>
+  
+    <!-- Modulo Column -->
+    <ng-container matColumnDef="Modulo">
+      <th mat-header-cell *matHeaderCellDef> Modulo </th>
+      <td mat-cell *matCellDef="let element"> {{element.modulo}} </td>
+    </ng-container>
+  
+    <!-- Asignado Column -->
+    <ng-container matColumnDef="Asignado">
+      <th mat-header-cell *matHeaderCellDef> Asignado </th>
+      <td mat-cell *matCellDef="let element">
+        <mat-checkbox [checked]="isAssigned(element.asignado)" 
+        (change)="toggleAssigned(element)"
+        
+        ></mat-checkbox>
+      </td>
+    </ng-container>
+  
+    <!-- FechaAsignado Column -->
+    <ng-container matColumnDef="FechaAsignado">
+      <th mat-header-cell *matHeaderCellDef> Fecha Asignado </th>
+      <td mat-cell *matCellDef="let element"> {{element.fechaAsignado}} </td>
+    </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>
+</div>
+<div mat-dialog-actions> 
+  <button mat-button class="btn btn-sm btn-primary" (click)="save()">
+    Grabar
+  </button>
+  <button mat-button (click)="close()">Cerrar</button>
+</div>

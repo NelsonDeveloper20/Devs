@@ -1,0 +1,342 @@
+
+<ngx-spinner bdColor="rgba(255, 255, 255, 1)" size="medium" color="#0D7ABD" type="ball-beat" [fullScreen]="true">
+    <p style="color: black">Loading...</p>
+</ngx-spinner>
+
+  <style>
+    .example-containerambiente {
+  height: 210px;
+  /*overflow: auto;*/
+}
+
+.example-tableprod {
+  max-height: 514px !important;
+  /*overflow: auto;*/
+}
+  </style>
+<!--**********************************
+	Content body start
+***********************************-->
+<div class="content-body">
+	<div class="container-fluid">
+		<div class="row page-titles mx-0">
+            <div class="col-sm-6 p-md-0">
+                <div class="welcome-text">
+                    <h4>Planificación de producción</h4> 
+                </div>
+            </div>
+            <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+                <ol class="breadcrumb">
+                  
+                  <button mat-icon-button (click)="atras()">
+                    <mat-icon>keyboard_backspace</mat-icon>Atras
+                  </button> 
+                </ol>
+            </div>
+        </div>
+		<div class="row">
+			<div class="col-xl-12">
+				<div class="card">
+					<div class="card-body">
+						<div class="row"> 
+              <div class="needs-validation">
+                <div class="row col-lg-12">
+                  <div class="col-lg-8">
+                    <!--{{Orden | json}}-->
+                  <div class="row">
+                      <div class="col-lg-4 mb-3">
+                          <label for="username">Buscar por Nº Cotizacion</label>
+                          <div class="input-group">                              
+                        <input   class="form-control"
+                        placeholder="Número de Orden"
+                        aria-label="Número de Orden"
+                        [matAutocomplete]="auto"
+                        [formControl]="stateCtrl">
+                 <mat-autocomplete #auto="matAutocomplete">
+                  
+                    <mat-option *ngFor="let state of filteredStates | async" [value]="state.numero" (click)="onSelectState(state)"> 
+                     <span>OP: <b>{{state.numero}}</b></span>  
+                   </mat-option> 
+                   
+                   <!-- Muestra otras propiedades de la orden de producción según sea necesario -->
+                 </mat-autocomplete>
+                              <div class="input-group-prepend" *ngIf="isRequesting">
+                                <img src="https://digital.olivesoftware.com/olive/odn/pbdnpalmbeachlife/Styles/Images/loading.gif" style="
+                                width: 48px; height: 48px;">
+                              </div>
+                          </div>
+                      </div> 
+                      <div class="col-lg-4 mb-3">
+                          <label for="state">Tipo Cliente</label> 
+                            <select class="d-block default-select form-control selectpicker w-100" id="state" required [(ngModel)]="Orden.idTipoCliente">
+                                <option value="">--Seleccione--</option>
+                                <option *ngFor="let proyecto of listTipoCliente" [value]="proyecto.id">{{ proyecto.nombre }}</option>
+                            </select>
+                      </div>
+              
+                      <div class="col-lg-4 mb-3">
+                          <label for="zip">Total</label>
+                          <input type="text" class="form-control" id="zip" placeholder="ingrese total" required disabled [(ngModel)]="Orden.total"/>
+                      </div>
+                      <div class="col-lg-4 mb-3">
+                          <label for="state">Nombre proyecto</label>
+                          <div class="input-group"> 
+                            <select class="d-block default-select form-control selectpicker w-100" id="state" required [(ngModel)]="Orden.idProyecto">
+                                <option value="">--Seleccione--</option>
+                                <option *ngFor="let proyecto of listProyecto" [value]="proyecto.id">{{ proyecto.nombre }}</option>
+                            </select>
+                              <button mat-fab color="primary" style="position: absolute; right: 3%;" (click)="openRegisterProyecto()">
+                                  <mat-icon>add_box</mat-icon>
+                              </button>
+                          </div>
+                      </div>
+              
+                      <div class="col-lg-4 mb-3">
+                          <label for="state">Destino</label> 
+                          <select class="d-block default-select form-control selectpicker w-100" id="state" required [(ngModel)]="Orden.idDestino">
+                            <option value="">--Seleccione--</option>
+                            <option *ngFor="let proyecto of listDestino" [value]="proyecto.id">{{ proyecto.nombre }}</option>
+                        </select>
+                      </div>
+                      <div class="col-lg-4 mb-3">
+                          <label for="state">Tipo Operación</label> 
+                          <select class="d-block default-select form-control selectpicker w-100" id="state" required [(ngModel)]="Orden.idTipoPeracion">
+                            <option value="">--Seleccione--</option>
+                            <option *ngFor="let proyecto of listTipoOperacion" [value]="proyecto.id">{{ proyecto.nombre }}</option>
+                        </select>
+                      </div>
+                      <div class="col-lg-4 mb-3">
+                          <label for="zip">Ruc</label>
+                          <input type="text" class="form-control" id="zip" placeholder="ingrese ruc" required disabled [(ngModel)]="Orden.rucCliente"/>
+                      </div>
+                      <div class="col-lg-4 mb-3">
+                          <label for="zip">Cliente</label>
+                          <input type="text" class="form-control" id="zip" placeholder="ingrese nombre del cliente" required disabled [(ngModel)]="Orden.cliente"/>
+                      </div>
+                      <div class="col-lg-4 mb-3">
+                          <label for="zip">Fecha Sap</label>
+                          <mat-form-field appearance="outline" style="width: 100%;">
+                              <input class="form-input" matInput [matDatepicker]="picker" [(ngModel)]="Orden.fechaSap"/>
+                              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                              <mat-datepicker #picker></mat-datepicker>
+                          </mat-form-field>
+                      </div>
+                      <!--<div class="col-lg-4 mb-3">
+                          <label for="zip">Fecha Inicio</label>
+                          <mat-form-field appearance="outline" style="width: 100%;">
+                              <input class="form-input" matInput [matDatepicker]="pickern" />
+                              <mat-datepicker-toggle matSuffix [for]="pickern"></mat-datepicker-toggle>
+                              <mat-datepicker #pickern></mat-datepicker>
+                          </mat-form-field>
+                      </div>-->
+                      <div class="col-lg-4 mb-3">
+                          <mat-label>Subir Archivo</mat-label> <br />
+                          <input type="file" (change)="onFileSelected($event)" style="height: 50% !important; padding: 12px; border: 1px solid #d2d2e1; border-radius: 7px; margin: 8px; width: 100%;" />
+                          <a title="Descargar archivo" style="color: #252bee;
+                          padding: 12px;
+                          font-weight: 600;
+                          font-size: 15px;
+                          text-decoration: underline;
+                          cursor: pointer;" (click)="descargarArchivo(Orden.archivo)" *ngIf="Orden.archivo">{{Orden.archivo}}  <mat-icon>cloud_download</mat-icon></a>
+                      </div>
+              
+                      <div class="col-lg-3">
+                          <label for="state">Matriz</label>
+                          <select class="d-block default-select form-control selectpicker w-100" id="state" required [(ngModel)]="Orden.matriz">
+                              <option value="">--Seleccione--</option>
+                              <option>Matriz</option>
+                              <option>Sun Nivel</option>
+                          </select>
+                      </div>
+                      <div class="col-lg-3">
+                          <label for="state">Sub Nivel</label>
+                          <select class="d-block default-select form-control selectpicker w-100" id="state" required [(ngModel)]="Orden.subMatriz">
+                              <option value="">--Seleccione--</option>
+                              <option>Si</option>
+                              <option>No</option>
+                          </select>
+                      </div>
+                  </div>
+              </div>
+              
+                    <div class="col-lg-4">
+                        <h4>Ambiente</h4>  
+                              <div class="row">
+                              <div class="col-lg-4 mb-3">
+                                  <label for="indice">Indice</label>
+                                  <input type="number" class="form-control" id="indice" placeholder="0" required [(ngModel)]="indice" name="indice" />
+                              </div>
+                              <div class="col-lg-4 mb-3">
+                                  <label for="ambiente">Ambiente</label>
+                                  <input type="text" class="form-control" id="ambiente" placeholder="Ejemplo.." required [(ngModel)]="ambiente" name="ambiente" />
+                              </div>
+                              <div class="col-lg-4 mb-3">
+                                  <label for="numProd">Nº Prod</label>
+                                  <input type="number" class="form-control" id="numProd" placeholder="0" required [(ngModel)]="numProd" name="numProd" />
+                              </div>
+                              <div class="col-lg-4">
+                                  <button mat-flat-button color="primary" class="btn btn-primary" (click)="AgregarAmbiente()" 
+                                  [disabled]="!Orden.id" >Agregar</button>
+                              </div>
+                          </div> 
+                                    <hr />
+                                    <div class="row">
+                                        <div class="card" style="width: 100%;"> 
+                                                <div class="table-responsive">
+                                                  <section class="example-containerambiente" tabindex="0">
+                                                  <table style="width: 100%;" class="table text-black">
+                                                  <thead class="sticky-top">
+                                                      <tr>
+                                                          <th class="align-middle">Indice</th>
+                                                          <th class="align-middle pr-7">Ambiente</th>
+                                                          <th class="align-middle minw200">Nº Prod</th>
+                                                          <th class="align-middle minw200">Acción</th>
+                                                          <th class="no-sort"></th>
+                                                      </tr>
+                                                  </thead>
+                                                  <tbody id="orders">
+                                                      <tr class="btn-reveal-trigger" *ngFor="let item of TblAmbiente; let i = index">
+                                                          <td class="py-2">
+                                                                <strong class="text-black">{{item.indice}} </strong> 
+                                                          </td>
+                                                          <td class="py-2">{{item.ambiente}}</td>
+                                                          <td class="py-2">{{item.cantidadProducto}}</td>
+                                                          <td class="py-2">
+                                                              <button mat-mini-fab color="primary" aria-label="Example icon button with a menu icon" (click)="eliminarAmbiente(item.id)">
+                                                                  <mat-icon>delete</mat-icon>
+                                                              </button>
+                                                          </td>
+                                                      </tr>
+                                                  </tbody>
+                                              </table>
+                                            </section> 
+                                            </div>
+                                        </div>
+                                    </div>  
+                    </div>
+                </div>
+            
+                <hr class="mb-4" />
+                <div class="text-left mt-4 mb-2">
+                    <button class="btn btn-primary btn-sl-sm mr-2" type="button" (click)="Guardar()" *ngIf="!Orden.id">
+                        <span class="mr-2"><i class="fa fa-floppy-o"></i></span>Guardar
+                    </button>
+                    <button class="btn btn-primary btn-sl-sm mr-2" type="button" (click)="Guardar()" *ngIf="Orden.id">
+                        <span class="mr-2"><i class="fa fa-pencil-square-o"></i></span>Modificar
+                    </button>
+                    <button class="btn btn-primary btn-sl-sm mr-2" type="button" (click)="listarProductosSisgecoAndDcBlinds()">
+                        <span class="mr-2"><i class="fa fa-upload" aria-hidden="true"></i></span>Cargar Sisgeco
+                    </button> 
+                </div>
+            </div>
+              
+						</div>
+            <hr>
+            
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card">
+					<div class="card-body">
+						<div class="table-responsive">
+                            
+                            <section class="example-tableprod" tabindex="0">
+							<table class="table table-sm mb-0 table-responsive-lg text-black">
+								<thead class="sticky-top">
+									<tr> 
+										<th class="align-middle">Central</th>
+										<th class="align-middle pr-7">Indice Agrupacion</th>
+										<th class="align-middle minw200">Index</th>
+										<th class="align-middle minw200">ID Producto</th>
+										<th class="align-middle">Nombre Producto</th>
+										<th class="align-middle">Grupo Cotizacion</th>                    
+										<th class="align-middle">Guardar</th>
+										<th class="align-middle minw200">Editar</th> 
+										<th class="align-middle minw200">Copiar</th> 
+										<th class="align-middle minw200">Guardado</th>  
+										<th class="align-middle minw200">Layout</th>  
+									</tr>  
+
+								</thead>
+								<tbody id="orders"> 
+									<tr *ngFor="let itemproducto of Productos; let i = index " class="btn-reveal-trigger">
+                                        <td class="py-2"><strong class="text-black"># {{itemproducto.id}} </strong></td>
+                                        <td class="py-2">{{itemproducto.existe}}</td>
+                                        <td class="py-2">{{itemproducto.indiceAgrupacion}}</td>
+                                        <td class="py-2">{{ itemproducto.codigoProducto }}</td>
+                                        <td class="py-2">{{ itemproducto.nombreProducto }}</td>
+                                        <td class="py-2">{{ itemproducto.cotizacionGrupo }}</td>
+                                        <td class="py-2">
+                                          <button *ngIf="itemproducto.pase !== 'PASDIRECCT'"
+                                                  class="btn btn-primary tp-btn-light sharp" 
+                                                  type="button"
+                                                  (click)="openRegisterProd(itemproducto)" 
+                                                  [disabled]="itemproducto.existe === 'SI' || !Orden.id">
+                                            <mat-icon>note_add</mat-icon>
+                                          </button>
+                                          <button *ngIf="itemproducto.pase === 'PASDIRECCT'"
+                                                  class="btn btn-primary tp-btn-light sharp" 
+                                                  type="button"
+                                                  (click)="RegistrarProductoComponente(itemproducto)" 
+                                                  [disabled]="itemproducto.existe === 'SI' || itemproducto.estadoOp !== '1' || !Orden.id">
+                                            <mat-icon>save</mat-icon>
+                                          </button>
+                                        </td>
+                                        <td class="py-2">
+                                          <button class="btn btn-primary tp-btn-light sharp" type="button" 
+                                          (click)="openEditProd(itemproducto)"
+                                          [disabled]="itemproducto.estadoOp !== '1' || !Orden.id"
+                                          >
+                                            <mat-icon>edit</mat-icon>
+                                          </button>
+                                        </td>
+                                        <td class="py-2">
+                                          <button class="btn btn-primary tp-btn-light sharp" type="button" (click)="CopiarAtributo(itemproducto)" 
+                                          *ngIf="itemCopiado !== itemproducto"
+                                          [disabled]="!Orden.id"
+                                          >
+                                            <mat-icon>file_copy</mat-icon>
+                                          </button>
+                                          <button class="btn btn-primary tp-btn-light sharp" type="button" (click)="CancelarCopiado()" *ngIf="itemCopiado === itemproducto">
+                                            <mat-icon>cancel</mat-icon>
+                                          </button>
+                                        </td>
+                                        <td class="py-2">
+                                          <button mat-icon-button *ngIf="itemproducto.existe=='SI'" style="background: #0fc10f;
+                                          color: white;
+                                          box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 4%), 0px 6px 10px 0px rgba(0, 0, 0, .14), 0px 1px 18px 0px rgba(0, 0, 0, .12);">
+                                             <mat-icon >check_circle</mat-icon>
+                                          </button>
+                                          <button mat-icon-button *ngIf="itemproducto.existe=='NO'" style="background: #a2aca2;
+                                          color: white;
+                                          box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 4%), 0px 6px 10px 0px rgba(0, 0, 0, .14), 0px 1px 18px 0px rgba(0, 0, 0, .12);">
+                                            <mat-icon *ngIf="itemproducto.existe=='NO'">not_interested</mat-icon> 
+                                          </button>
+                                        </td> 
+                                        <td *ngIf="getRowSpan(i) > 0" [attr.rowspan]="getRowSpan(i)">
+                                          
+                    <button class="btn btn-primary-azul tp-btn-light sharp" title="Generar PDF Layout" type="button" (click)="GenerarLayout(itemproducto.cotizacionGrupo)">
+                      <mat-icon>apps</mat-icon> 
+                  </button> 
+                                         </td>
+                                      </tr>
+
+								</tbody>
+							</table>
+                            </section>
+                            <div style="display: none;">
+                              <app-layout></app-layout>
+                            </div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--**********************************
+	Content body end
+***********************************-->

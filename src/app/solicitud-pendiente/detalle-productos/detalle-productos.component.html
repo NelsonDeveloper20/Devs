@@ -1,0 +1,62 @@
+<ngx-spinner
+  bdColor="rgba(255, 255, 255, 1)"
+  size="medium"
+  color="#0D7ABD"
+  type="ball-beat"
+  [fullScreen]="true"
+  ><p style="color: black">Loading...</p></ngx-spinner>
+  
+  <style>
+    .example-containerambiente {
+  height: 414px;
+  /*overflow: auto;*/
+}
+  </style>
+<h2 mat-dialog-title>Detalle - Productos/Componentes</h2>
+<div mat-dialog-content> 
+  <div class="panel-body">
+    
+      
+    <div class="card" style="width: 100%;"> 
+        <div class="table-responsive">
+          <section class="example-containerambiente" tabindex="0">
+          <table style="width: 100%;" class="table text-black">
+          <thead class="sticky-top">
+              <tr>
+                  <th class="align-middle">#ID</th>
+                  <th class="align-middle pr-7">Producto</th>
+                  <th class="align-middle minw200">Nombre Producto</th>
+                  <th class="align-middle minw200">Alto</th>
+                  <th class="align-middle minw200">Ancho</th>
+                  <th class="align-middle minw200">Unidad Medida</th>
+                  <th class="align-middle minw200">Cantidad</th>
+                  <th class="align-middle minw200">Acción</th>
+                  <th class="no-sort"></th>
+              </tr>
+          </thead>
+          <tbody id="orders">
+              <tr class="btn-reveal-trigger" *ngFor="let item of listProductos"> 
+                  <td class="py-2">{{item.id}}</td>
+                  <td class="py-2">{{item.codigoProducto}}</td>
+                  <td class="py-2">{{item.nombreProducto}}</td>
+                  <td class="py-2">{{item.alto}}</td>
+                  <td class="py-2">{{item.ancho}}</td>
+                  <td class="py-2">{{item.unidadMedida}}</td>
+                  <td class="py-2">{{item.cantidad}}</td>
+                  <td class="py-2">
+                      <button mat-mini-fab color="primary" aria-label="Example icon button with a menu icon"
+                         *ngIf="validarPrt(item.codigoProducto)" (click)="openRegisterProd(item)">
+                          <mat-icon>assignment</mat-icon>
+                      </button>
+                  </td>
+              </tr>
+          </tbody>
+      </table>
+    </section> 
+    </div>
+</div>
+</div>
+</div>
+<div mat-dialog-actions>  
+  <button mat-button (click)="close()">Cerrar</button>
+</div>

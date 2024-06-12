@@ -1,0 +1,43 @@
+.form-control {
+    border-radius: 5px !important;
+}
+.btn-primary {
+    background-color: #0869c1 !important;
+    border-color: #6c757d;
+}
+.btn-suscess {
+    background-color: #08c14f !important;
+    border-color: #6c757d;
+    color: white;
+}
+
+.card-category{
+    margin: 18px !important;
+}
+
+.bg-light {
+    background-color: #ffffff !important;
+    box-shadow: 0px 0px 13px 0px rgb(82 63 105 / 5%);
+}
+fieldset {
+    padding: 20px;
+    border: solid 1px #c7c7c7c7;
+}
+fieldset legend {
+    color: #011b39e8;
+} 
+ .mat-form-field--inline {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.mat-form-field--inline .mat-form-field {
+    display: inline-block;
+    width: 100%;
+    vertical-align: middle;
+}
+ 
+    .mat-form-field--inline .mat-form-field:nth-child(1) {
+        margin-right: 25px;
+    } 

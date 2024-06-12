@@ -1,0 +1,280 @@
+import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { Toaster } from 'ngx-toast-notifications';
+import { NavigationExtras, Router } from '@angular/router'; 
+import { IUsersResponse, Solicitud, Solicitud2, SolicitudReporteResponse, Usuario } from 'src/app/services/request.model';
+import { RequestService } from 'src/app/services/request.service';
+import * as XLSX from 'xlsx'; 
+
+import { environment } from 'src/environments/environment'; 
+import { HttpClient } from '@angular/common/http';
+import * as moment from 'moment';
+import { OperacionesConstruccionService } from 'src/app/services/operacionesconstruccion.service';
+import Swal from 'sweetalert2';
+import { OrdenproduccionGrupoService } from 'src/app/services/ordenproducciongrupo.service';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { DetalleProductosComponent } from 'src/app/solicitud-pendiente/detalle-productos/detalle-productos.component';
+export interface ElementoTabla {
+  cotizacion: number;
+  codOp: string;
+  nombreProyecto: string;
+  estadoOp: string;
+  tipoOperacion: string;
+  ruc: string;
+  nombreCliente: string;
+  fechaCreacion: string;
+  fechaFin: string;
+  id: number; // Asegúrate de ajustar el tipo de dato según corresponda
+}
+
+@Component({
+  selector: 'app-reporte-nc',
+  templateUrl: './reporte-nc.component.html',
+  styleUrls: ['./reporte-nc.component.css'],
+  encapsulation: ViewEncapsulation.None, //TOOLTIP
+})
+export class ReporteNCComponent implements OnInit {
+  displayedColumns: string[] = ['cotizacion', 'codOp', 'OpGrupo','nombreProyecto', 'estadoOp', 'tipoOperacion', 'ruc', 'nombreCliente', 'fechaCreacion', 'fechaFin', 'acciones', 'estado'];
+  ELEMENT_DATA= [
+    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
+    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
+    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
+    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
+    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
+    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
+    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
+    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
+    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
+    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
+    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
+    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
+    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
+    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
+    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
+    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
+    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
+    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
+    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
+    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
+    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
+    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
+    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
+    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
+    // Agrega más elementos según sea necesario
+  ];
+  dataSource=new MatTableDataSource<any>();//this.ELEMENT_DATA
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+  } 
+  verProduccionProd(id: number) {
+    // Implementa la lógica para ver la producción del producto según el ID proporcionado
+    console.log('Ver producción del producto con ID:', id);
+  }
+ 
+  estaciones(){
+    
+    this.router.navigate(['/Estacion-Trabajo']);
+    } 
+
+  solicitud: Array<SolicitudReporteResponse> = [];
+  clientes: Array<Solicitud2> = [];
+  private urlBase: string; 
+  constructor(
+    private router: Router,
+    private toaster: Toaster,
+    private spinner: NgxSpinnerService,
+    private requestService: RequestService, private http: HttpClient,
+    private _service: OperacionesConstruccionService,
+    private ordenproduccionGrupoService: OrdenproduccionGrupoService,
+    private dialog: MatDialog,
+  ) { 
+    this.urlBase = `${environment.baseUrl}/api/listas`; 
+  }
+ 
+  ListOP:any=[];
+  Fecha:Date=new Date();
+  ListarOp() {
+    const fecInicio = moment(this.Fecha, 'DD/MM/YYYY').format(
+      'YYYY-MM-DD'
+    ); 
+    
+    this.spinner.show();
+    this._service.ListarOperacionesConstruccion(fecInicio).subscribe(
+      (data: any) => {
+        if (data && data.status === 200) { 
+          this.ListOP = data.json;
+          this.spinner.hide(); 
+          //this.groupData();           
+      this.dataSource = new MatTableDataSource<any>(this.ListOP);
+        } else {
+          this.spinner.hide();
+          console.error('Error: No se pudo obtener datos.');
+        }
+      },
+      (error: any) => {
+        this.spinner.hide();
+        console.error('Error al obtener datos:', error);
+        // Aquí podrías mostrar un mensaje de error al usuario
+      }
+    );
+  }
+
+  
+  ngOnInit(): void {  
+    this.ListarOp();
+  }  
+
+  ListGrupos:any  =[];
+  EnviarGrupoMasivo(){ 
+    if(this.ListGrupos.length === 0){
+      this.toaster.open({
+        text: "Debe seleccionar cotizaciones que desee enviar",
+        caption: 'Mensaje',
+        type: 'danger',
+        // duration: 994000
+      });
+      return;
+    }
+
+    Swal.fire({
+      allowOutsideClick: false,
+      title: "¿Desea Enviar?",
+      html: `¿Esta seguro de enviar a Pendiente Venta?`,
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonText: 'Si, Enviar',
+      cancelButtonText: 'Cancelar',
+    })
+      .then((result) => {
+        if (result.isConfirmed) { 
+          
+    const jsonData = JSON.stringify(this.ListGrupos);
+    console.log(jsonData);
+    this.spinner.show();
+    this.ordenproduccionGrupoService.CambiarEstadoGrupo("Venta",jsonData)
+      .subscribe({
+        next: response => {
+          this.spinner.hide();
+          if (response.status == 200) { 
+                const respuesta = response.json.respuesta;
+                const id = response.json.id; 
+                Swal.fire({
+                title: 'Mensaje',
+                text: 'Operacion realizada correctamente',
+                icon: 'success',
+                confirmButtonText: 'Aceptar',
+                allowOutsideClick: false
+                }); 
+               this.ListarOp();
+            }else{
+              this.toaster.open({
+                text: "Ocurrio un error al enviar",
+                caption: 'Mensaje',
+                type: 'danger',
+                // duration: 994000
+              });
+            }
+        },
+        error: error => {
+          this.spinner.hide();
+          var errorMessage = error.message;
+          console.error('There was an error!', error);
+          this.toaster.open({
+            text: errorMessage,
+            caption: 'Ocurrio un error',
+            type: 'danger',
+            // duration: 994000
+          });
+        }
+      });
+        }else{
+          this.ListGrupos=[];
+        }
+      });
+  } 
+  EnviarAOperaciones(item:any){
+    const userDataString = JSON.parse(localStorage.getItem('UserLog'));     
+    this.ListGrupos.push({
+      id:item.id,
+      usuarioId:userDataString.id
+    });
+    this.EnviarGrupoMasivo();
+  }
+  
+  AbrirPopupDetalleProducto(item,grupo:any){
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;  
+    const dataToSend = {  
+      CotizacionGrupo: grupo,  
+      Cotizacion: item.numeroCotizacion, 
+      CodigoSisgeco:item.codigoSisgeco
+    };
+    dialogConfig.data = dataToSend; 
+    dialogConfig.width ='804px';
+    const dialogRef = this.dialog.open(DetalleProductosComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe({
+      next: data => {   
+       
+    },
+    error: error => { 
+        var errorMessage = error.message;
+        console.error('There was an error!', error); 
+        this.toaster.open({
+          text: errorMessage,
+          caption: 'Ocurrio un error',
+          type: 'danger',
+        });
+      }
+    });
+  }
+  /*
+  getSolicitud() {
+    var idUser = localStorage.getItem('ByUser');
+    const fecInicio = moment(this.FechaInicio, 'DD/MM/YYYY').format(
+      'YYYY-MM-DD'
+    );
+    const fecFin = moment(this.FechaFin, 'DD/MM/YYYY').format('YYYY-MM-DD'); 
+    /////
+    var inputDate1 = this.FechaInicioCierre;
+    var formattedDate1 = moment(inputDate1, 'DD/MM/YYYY');
+    if (formattedDate1.isValid()) {
+      var _FechaInicioCierre = formattedDate1.format('YYYY-MM-DD');
+
+    } else {
+      var _FechaInicioCierre = "";
+    }
+
+    /////
+    var inputDate2 = this.FechaFinCierre;
+    var formattedDate2 = moment(inputDate2, 'DD/MM/YYYY');
+    if (formattedDate2.isValid()) {
+      var _FechaFinCierre = formattedDate2.format('YYYY-MM-DD');
+
+    } else {
+      var _FechaFinCierre = "";
+    }
+
+
+ 
+  } */
+  //usuario: Array<User> = [];
+  usuario: Usuario[] = [];
+  getuser() {
+    this.spinner.show();
+    this.requestService.getusuarios().subscribe(
+      (response: IUsersResponse) => {
+        this.spinner.hide();
+        this.usuario = response;
+      },
+      () => {
+        this.spinner.hide();
+      }
+    );
+  } 
+}
+

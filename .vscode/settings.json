@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/29368333-74c0-491a-a79d-dbf0854ca31f/AppServices/subscriptions/29368333-74c0-491a-a79d-dbf0854ca31f/resourceGroups/GRP_Besco_Portal/providers/Microsoft.Web/sites/portalbesco",
+    "appService.deploySubpath": "dist\\fasto"
+}

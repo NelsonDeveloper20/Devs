@@ -1,0 +1,57 @@
+<div style="margin:auto;width:60%">
+    <div>
+        <h1 style="text-align: center;">User Information</h1>
+        <div>
+            <div style="display: inline-block;">
+                <ul style="max-width: 50vw;">
+                    <div></div>
+                    <li>
+                        <div class="list-item-title">User Name:</div>
+                        <div class="list-item-content">
+                            {{profile?.userPrincipalName}}
+                        </div>
+                    </li>
+                    <div ></div>
+                    <li>
+                        <div class="list-item-title">First Name:</div>
+                        <div class="list-item-content">
+                            {{profile?.givenName}}
+                        </div>
+                    </li>
+                    <div ></div>
+                    <li>
+                        <div class="list-item-title">Last Name:</div>
+                        <div class="list-item-content">
+                            {{profile?.surname}}
+                        </div>
+                    </li><div ></div>
+                    <li>
+                        <div class="list-item-title">Job Title:</div>
+                        <div class="list-item-content">
+                            {{profile?.jobTitle}}
+                        </div>
+                    </li><div ></div>
+                    <li>
+                        <div class="list-item-title">Phone Number:</div>
+                        <div class="list-item-content">
+                            {{profile?.mobilePhone}}
+                        </div>
+                    </li><div ></div>
+                    <li>
+                        <div class="list-item-title">Email:</div>
+                        <div class="list-item-content">
+                            {{profile?.mail}}
+                        </div>
+                    </li>
+                    </ul>
+            </div>
+            <div style="display: inline-block;">
+            <div>
+                <div>
+                   <img [src]="profilePic" height="250px" width="250px"/>
+                </div>
+            </div> 
+            </div>
+        </div>
+    </div>
+</div>

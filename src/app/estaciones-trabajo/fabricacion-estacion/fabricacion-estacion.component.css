@@ -1,0 +1,45 @@
+
+  /**/
+  /* workflow-stepper.component.css */
+mat-horizontal-stepper {
+    background-color: transparent;
+  }
+  
+  .step-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .step-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #666;
+    margin-top: 8px;
+  }
+  
+  .step-subtitle {
+    font-size: 14px;
+    color: #aaa;
+  }
+  
+  .step-content {
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  mat-icon {
+    font-size: 48px;
+     /* color de icono */    
+    z-index: 1;
+  }
+  
+  .mat-step-header {
+    padding: 24px 0;
+  }
+  
+  .mat-horizontal-stepper-header-container {
+    justify-content: space-between;
+  }
+  /*ULTIMO*/ 

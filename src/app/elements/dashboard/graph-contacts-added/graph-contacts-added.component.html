@@ -1,0 +1,22 @@
+<div class="card">
+    <div class="card-body text-center d-flex align-items-center justify-content-between">
+        <div class="d-inline-block position-relative donut-chart">
+            
+            <apx-chart
+                [series]="chartOptions.series"
+                [chart]="chartOptions.chart"
+                [plotOptions]="chartOptions.plotOptions"
+                [labels]="chartOptions.labels"
+                [fill]="chartOptions.fill"
+                [stroke]="chartOptions.stroke"
+                [responsive]="chartOptions.responsive"
+            ></apx-chart>
+            
+            
+        </div>
+        <div>
+            <h2 class="fs-28 font-w600 mb-0 text-right text-black">567</h2>
+            <p class="mb-0 fs-14 font-w400 text-black">Contacts Added</p>
+        </div>
+    </div>
+</div>

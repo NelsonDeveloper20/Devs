@@ -1,0 +1,213 @@
+
+
+<div *ngIf="isUserLoggedIn">
+     
+  <div class="center">
+      <h1 class="center" style="color:blue"> Welcome to AzureTeach.Net!</h1>
+  </div> 
+</div>
+
+
+
+<mat-sidenav style="    box-shadow: 0px 0px 20px 11px rgb(82 63 105 / 1%); 
+border: 0px;" #sidenav class="example-sidenav" mode="side" opened="true" (mouseenter)="mouseenter()" (mouseleave)="mouseleave()"
+class="dark-sidenav"
+>
+
+  <mat-nav-list>
+     
+      <!-- Brand -->
+      <mat-list-item  class="parent">
+      <button mat-icon-button *ngIf="!isExpanded" (click)="isExpanded = !isExpanded" style="    color: black;">
+        <mat-icon>menu</mat-icon></button>
+        <button mat-icon-button *ngIf="isExpanded" (click)="isExpanded = !isExpanded" style="    color: black;">
+          <mat-icon>arrow_back</mat-icon></button>
+
+    </mat-list-item>
+      <mat-list-item  class="parent">
+        
+      
+        <ul   *ngIf="!isExpanded" class="navbar-nav header-right"> 
+     
+          <li 
+          class="nav-item dropdown header-profile dropdown-menu-right dropdown-no-icon"
+          ngbDropdown
+        >
+          <a style="margin-left: 2px !important;
+          padding-left: 0px !important;"
+            class="nav-link"
+            href="javascript:void(0);"
+            role="button"
+            data-toggle="dropdown"
+            ngbDropdownToggle
+          > 
+           
+      <img  *ngIf="!isExpanded"
+      src="https://cdn.icon-icons.com/icons2/1879/PNG/512/iconfinder-4-avatar-2754580_120522.png"
+     style="width: 39px;"
+      alt=""
+    /> 
+    <div *ngIf="!isExpanded">
+      <div class="header-info" *ngIf="isShowing">
+        <span>  nn RR</span>
+        <small>AAD</small>             
+      </div>
+
+    </div>
+    <a class="nav-link"  *ngIf="isShowing" ><mat-icon matBadge="5">notifications</mat-icon></a> 
+       </a>
+       </li></ul>
+      
+
+        <ul   *ngIf="isExpanded" class="navbar-nav header-right"> 
+     
+          <li 
+              class="nav-item dropdown header-profile dropdown-menu-right dropdown-no-icon"
+              ngbDropdown
+            >
+              <a style="margin-left: 2px !important;
+              padding-left: 0px !important;"
+                class="nav-link"
+                href="javascript:void(0);"
+                role="button"
+                data-toggle="dropdown"
+                ngbDropdownToggle
+              > 
+               
+             
+                <img  
+                  src="https://cdn.icon-icons.com/icons2/1879/PNG/512/iconfinder-4-avatar-2754580_120522.png"
+                  style="width: 64px; height: auto;"
+                  alt=""
+                />
+                <div class="header-info">
+                  <span>Neelson </span>
+                  <small>AAD</small>                       
+                </div>
+                <a class="nav-link"  ><mat-icon matBadge="5">notifications</mat-icon></a> 
+              </a>
+              <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu> 
+                <a [routerLink]="['/Home-main']" class="dropdown-item ai-icon">
+                  <svg
+                    id="icon-inbox"
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="text-success"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+                    ></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                  </svg>
+                  <span class="ml-2">Inicio</span>
+                </a>
+                <a class="dropdown-item ai-icon">
+                  <button  [routerLink]="['/']" 
+                    style="background-color: transparent; border: 0px"
+                  >
+                    <svg
+                      id="icon-logout"
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="text-danger"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"  
+                    >
+                      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                      <polyline points="16 17 21 12 16 7"></polyline>
+                      <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    <span class="ml-2">Cerrar Sesión </span>
+                  </button>
+                </a>
+              </div>
+            </li>
+        </ul>
+      </mat-list-item>
+  <hr>
+
+    <mat-list-item (click)="showSubmenu = !showSubmenu" class="parent">
+      <span class="full-width" *ngIf="isExpanded || isShowing">Parent Menu</span>
+      <mat-icon mat-list-icon>home</mat-icon>
+      <mat-icon class="menu-button" [ngClass]="{'rotated' : showSubmenu}" *ngIf="isExpanded || isShowing">expand_more</mat-icon>
+    </mat-list-item>
+    <div  class="submenu" [ngClass]="{'expanded' : showSubmenu}" *ngIf="showSubmenu">
+      <a mat-list-item href="...">Submenu Item 1</a>
+      <a mat-list-item href="...">Submenu Item 2</a>
+      <mat-list-item (click)="showSubSubMenu = !showSubSubMenu" class="parent">
+        <span class="full-width" *ngIf="isExpanded || isShowing">Nested Menu</span>
+        <mat-icon class="menu-button" [ngClass]="{'rotated' : showSubSubMenu}" *ngIf="isExpanded || isShowing">expand_more</mat-icon>
+      </mat-list-item>
+      <div class="submenu" [ngClass]="{'expanded' : showSubSubMenu}"  *ngIf="showSubSubMenu">
+        <mat-list-item>SubSubmenu Item 1</mat-list-item>
+        <mat-list-item>SubSubmenu Item 2</mat-list-item>
+      </div>
+    </div>
+
+    <mat-list-item (click)="showSubmenu = !showSubmenu" class="parent">
+      <span class="full-width" *ngIf="isExpanded || isShowing">Usuario</span>
+      <mat-icon mat-list-icon>group</mat-icon>
+    </mat-list-item>
+
+    <mat-list-item (click)="showSubmenu = !showSubmenu" class="parent">
+      <span class="full-width" *ngIf="isExpanded || isShowing">Registros</span>
+      <mat-icon mat-list-icon>drive_eta</mat-icon>
+     </mat-list-item>
+
+    <mat-list-item (click)="showSubmenu = !showSubmenu" class="parent">
+      <span class="full-width" *ngIf="isExpanded || isShowing">Reporte</span>
+      <mat-icon mat-list-icon>polymer</mat-icon>
+     </mat-list-item>
+
+    <mat-list-item (click)="showSubmenu = !showSubmenu" class="parent">
+      <span class="full-width" *ngIf="isExpanded || isShowing">Documento</span>
+      <mat-icon mat-list-icon>receipt</mat-icon>
+     </mat-list-item>
+
+  </mat-nav-list>
+  
+  <mat-nav-list>
+</mat-nav-list>
+</mat-sidenav>
+<!-- 
+<div id="main-wrapper" [ngClass]="{'menu-toggle': sharedService.hamburgerClass, '': !sharedService.hamburgerClass}"  class="show" >
+            
+            
+     
+    <app-nav-header></app-nav-header>
+    <app-header></app-header>
+    <app-navigation></app-navigation> 
+    
+    <div class="content-body">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xl-12 col-lg-12">
+    
+                    <div class="card">
+                        <div class="card-header">
+ 
+                        </div>
+                        
+                    </div>
+    
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <app-footer></app-footer>
+</div>-->
+<app-switcher></app-switcher>

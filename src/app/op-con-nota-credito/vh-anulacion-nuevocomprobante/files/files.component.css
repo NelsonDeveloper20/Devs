@@ -1,0 +1,4 @@
+label.disabled {
+    opacity: 0.5; /* Reduce la opacidad para simular el efecto de deshabilitado */
+    pointer-events: none; /* Evita que se pueda hacer clic en el label */
+  }

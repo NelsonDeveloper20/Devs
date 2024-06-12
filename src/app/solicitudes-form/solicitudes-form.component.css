@@ -1,0 +1,3 @@
+.disabled-select .mat-select-value-text {
+    color: rgb(206, 11, 11); /* Estilo para el texto del mat-select deshabilitado */
+  }

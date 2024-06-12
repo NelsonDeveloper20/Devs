@@ -1,0 +1,123 @@
+<!--**********************************
+	Content body start
+***********************************-->
+<div class="content-body">
+	<div class="container-fluid">
+		<div class="row page-titles mx-0">
+            <div class="col-sm-6 p-md-0">
+                <div class="welcome-text">
+                    <h4>Administración de Estaciones de Trabajo</h4> 
+                </div>
+            </div>
+            <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+                <ol class="breadcrumb">
+                    
+                    <button mat-icon-button (click)="atras()">
+                        <mat-icon>keyboard_backspace</mat-icon>Atras
+                      </button>
+                </ol>
+            </div>
+        </div>
+		<!-- row -->
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="profile card card-body px-3 pt-3 pb-0">
+					<div class="profile-head">
+						<div class="photo-content">
+							<div class="cover-photo" style="background: url(https://dossierdearquitectura.com/imgPosts/5e17a69a08aea.jpg);
+                            background-size: inherit;
+                            background-position: right;
+                            min-height: 250px;
+                            width: 100%;"></div>
+						</div>
+						<div class="profile-info"> 
+							<div class="profile-details">
+								<div class="profile-name px-3 pt-2">
+									<h4 class="text-primary mb-0">Estaciones de trabajo</h4>
+									<p>Estaciones de trabajo</p>
+								</div> 
+								<div class="dropdown dropdown-no-icon ml-auto" ngbDropdown>
+									<a (click)="openEstation()" style="width: 222%;
+                                    position: relative;
+                                    right: 108%;" class="btn btn-primary sharp" >
+                                        Empezar <mat-icon> directions_run</mat-icon></a> 
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xl-4"> 
+					<div class="card">
+                        <div class="card-body">
+                            <div class="profile-blog">
+                                <h5 class="text-primary d-inline">Estacion 1</h5><a href="javascript:void()" class="pull-right f-s-16">--</a>
+                                <img src="assets/images/estaciones/estacion1.png" alt="" class="img-fluid mt-4 mb-4 w-100">
+                                <h4><a [routerLink]="['/admin/post-details']" class="text-black">Corte de Perfileria</a></h4>
+                            </div>
+                        </div>
+                    </div>  
+			</div>  
+			<div class="col-xl-4"> 
+					<div class="card">
+                        <div class="card-body">
+                            <div class="profile-blog">
+                                <h5 class="text-primary d-inline">Estacion 2</h5><a href="javascript:void()" class="pull-right f-s-16">--</a>
+                                <img src="assets/images/estaciones/estacion3.png" alt="" class="img-fluid mt-4 mb-4 w-100">
+                                <h4><a [routerLink]="['/admin/post-details']" class="text-black">Corte de Tela</a></h4>
+                            </div>
+                        </div>
+                    </div>  
+			</div> 
+			<div class="col-xl-4"> 
+					<div class="card">
+                        <div class="card-body">
+                            <div class="profile-blog">
+                                <h5 class="text-primary d-inline">Estacion 3</h5><a href="javascript:void()" class="pull-right f-s-16">--</a>
+                                <img src="assets/images/estaciones/estacion4.png" alt="" class="img-fluid mt-4 mb-4 w-100">
+                                <h4><a [routerLink]="['/admin/post-details']" class="text-black">Ensamble 1</a></h4>
+                            </div>
+                        </div>
+                    </div>  
+			</div> 
+			<div class="col-xl-4"> 
+					<div class="card">
+                        <div class="card-body">
+                            <div class="profile-blog">
+                                <h5 class="text-primary d-inline">Estacion 4</h5><a href="javascript:void()" class="pull-right f-s-16">--</a>
+                                <img src="assets/images/estaciones/estacion5.png" alt="" class="img-fluid mt-4 mb-4 w-100">
+                                <h4><a [routerLink]="['/admin/post-details']" class="text-black">Ensamble 2</a></h4>
+                            </div>
+                        </div>
+                    </div>  
+			</div>  
+			<div class="col-xl-4"> 
+					<div class="card">
+                        <div class="card-body">
+                            <div class="profile-blog">
+                                <h5 class="text-primary d-inline">Estación 5</h5><a href="javascript:void()" class="pull-right f-s-16">--</a>
+                                <img src="assets/images/estaciones/estacion6.png" alt="" class="img-fluid mt-4 mb-4 w-100">
+                                <h4><a [routerLink]="['/admin/post-details']" class="text-black">Control Calidad</a></h4>
+                            </div>
+                        </div>
+                    </div>  
+			</div>
+			<div class="col-xl-4"> 
+					<div class="card">
+                        <div class="card-body">
+                            <div class="profile-blog">
+                                <h5 class="text-primary d-inline">Estación 6</h5><a href="javascript:void()" class="pull-right f-s-16">--</a>
+                                <img src="assets/images/estaciones/estacion7.png" alt="" class="img-fluid mt-4 mb-4 w-100">
+                                <h4><a [routerLink]="['/admin/post-details']" class="text-black">Distribución</a></h4>
+                            </div>
+                        </div>
+                    </div>  
+			</div>
+		</div>
+	</div>
+</div>
+<!--**********************************
+	Content body end
+***********************************-->

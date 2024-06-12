@@ -1,0 +1,85 @@
+  
+  <ngx-spinner
+  bdColor="rgba(255, 255, 255, 1)"
+  size="medium"
+  color="#0D7ABD"
+  type="ball-beat"
+  [fullScreen]="true"
+  ><p style="color: black">Loading...</p></ngx-spinner>
+<h2 mat-dialog-title>Estación de Trabajo</h2>
+<div mat-dialog-content> 
+  <div class="panel-body" style="min-height: 236px;">
+    <button mat-raised-button (click)="isEditable = !isEditable" style="display: none;">
+        {{!isEditable ? 'Enable edit mode' : 'Disable edit mode'}}
+      </button>
+      
+      <mat-stepper linear #stepper>
+        <mat-step [stepControl]="firstFormGroup" [editable]="isEditable">
+          <form [formGroup]="firstFormGroup" style="padding: 38px !important; ">
+            <ng-template matStepLabel>Número de usuario</ng-template>
+            <mat-form-field style="width: 100%;">
+              <mat-label>Scanee el número de usuario</mat-label>
+              <input matInput formControlName="firstCtrl" placeholder="12345" required>
+            </mat-form-field>
+            <br>
+            <div>
+              <button mat-button   (click)="validarYAvanzar()">Siguiente</button>
+            </div>
+          </form>
+        </mat-step>
+        <mat-step [stepControl]="secondFormGroup" [editable]="isEditable">
+          <form [formGroup]="secondFormGroup">
+            <ng-template matStepLabel>Número de maquinaria</ng-template>
+            <mat-form-field style="width: 100%;">
+              <mat-label>Ingresa el número de maquinaria</mat-label>
+              <input matInput formControlName="secondCtrl" placeholder="123456"
+                     required>
+            </mat-form-field><br>
+            <div>
+              <button mat-button matStepperPrevious>Atras</button>
+              <button mat-button  (click)="validarYAvanzar()">Siguiente</button>
+            </div>
+          </form>
+        </mat-step>
+        
+        <mat-step [stepControl]="treeFormGroup" [editable]="isEditable">
+            <form [formGroup]="treeFormGroup">
+              <ng-template matStepLabel>Número de cotización</ng-template>
+              <mat-form-field style="width: 100%;">
+                <mat-label>Ingresa el número de cotización</mat-label>
+                <input matInput formControlName="treeCtrl" placeholder="123456"
+                       required>
+              </mat-form-field><br>
+              <div>
+                <button mat-button matStepperPrevious>Atras</button>
+                <!--<button mat-button matStepperNext>Ingresar</button>-->
+              </div>
+            </form>
+          </mat-step> 
+      </mat-stepper>
+</div>
+<div style="display: none;">
+
+  <div *ngIf="DataUsuario">
+    <p>Datos del usuario:</p>
+    <p>{{ DataUsuario | json }}</p>
+  </div>
+  <div *ngIf="DataEstacion">
+    <p>Datos del DataEstacion:</p>
+    <p>{{ DataEstacion | json }}</p>
+  </div>
+  <div *ngIf="DataCotizacion">
+    <p>Datos del DataCotizacion:</p>
+    <p>{{ DataCotizacion | json }}</p>
+  </div>
+</div>
+
+</div>
+<div mat-dialog-actions style="display: contents !important;"> 
+  <!-- *ngIf="firstFormGroup.valid && secondFormGroup.valid && treeFormGroup.valid"-->
+  <button mat-button class="btn btn-sm btn-primary" (click)="save()" style="float: right;" 
+  >
+    Ingresar
+  </button>
+  <button mat-button (click)="close()">Cerrar</button>
+</div>
