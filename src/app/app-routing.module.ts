@@ -51,6 +51,7 @@ import { LineaProduccionComponent } from './linea-produccion/linea-produccion.co
 import { LayoutComponent } from './layout/layout.component';
 import { MantOpComponent } from './mant-op/mant-op.component';
 import { MantenimientoComponentesComponent } from './mantenimiento-componentes/mantenimiento-componentes.component';
+import { SupervisionOpComponent } from './supervision-op/supervision-op.component';
  //END API AZURE
 const routes: Routes = [
   {
@@ -188,6 +189,10 @@ component:HistorialSolicitudComponent
     path:'Op-Construccion',
     component:ReporteNCComponent
   }, 
+  {
+path:'Supervision',
+component:SupervisionOpComponent
+  },
   {
     path:'Mantenimiento-OP',
     component:MantOpComponent

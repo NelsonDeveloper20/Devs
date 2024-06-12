@@ -266,6 +266,7 @@ import { MantOpComponent } from './mant-op/mant-op.component';
 import { AsignarModuloDialogComponent } from './mantenimiento-perfiles/asignar-modulo-dialog/asignar-modulo-dialog.component';
 import { MantenimientoComponentesComponent } from './mantenimiento-componentes/mantenimiento-componentes.component';
 import { DetalleProductosComponent } from './solicitud-pendiente/detalle-productos/detalle-productos.component';
+import { SupervisionOpComponent } from './supervision-op/supervision-op.component';
 //IMPORT 
 
 @NgModule({
@@ -395,7 +396,7 @@ import { DetalleProductosComponent } from './solicitud-pendiente/detalle-product
          FilesEpdpComponent, FormularioEpdpComponent, PagoExcesoComponent,
           PagoEpdpParcialComponent, ModalFormsComponent, ParametrosComponent,
            ModalUnidadComponent, SolicitudPendienteComponent, ReporteNCComponent,
-            CartaSnCruzadaComponent, SolFormSnCartacruzadaComponent, VentasComponent, RegistroCotizacionComponent, RegistroCotizacionsComponent, ProductosDialogComponent, EstacionesTrabajoComponent, ScanestacionDialogComponent, FabricacionEstacionComponent, MonitoreoProduccionComponent, MantenimientoPerfilesComponent, LineaProduccionComponent, FormProductoComponent, ProyectoDialogComponent, LayoutComponent, MantOpComponent, AsignarModuloDialogComponent, MantenimientoComponentesComponent, DetalleProductosComponent,  
+            CartaSnCruzadaComponent, SolFormSnCartacruzadaComponent, VentasComponent, RegistroCotizacionComponent, RegistroCotizacionsComponent, ProductosDialogComponent, EstacionesTrabajoComponent, ScanestacionDialogComponent, FabricacionEstacionComponent, MonitoreoProduccionComponent, MantenimientoPerfilesComponent, LineaProduccionComponent, FormProductoComponent, ProyectoDialogComponent, LayoutComponent, MantOpComponent, AsignarModuloDialogComponent, MantenimientoComponentesComponent, DetalleProductosComponent, SupervisionOpComponent,  
   ],
   imports: [  
     
