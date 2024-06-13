@@ -31,6 +31,8 @@
   <button (click)="guardarCambios()">Guardar Cambios</button>
 </div> 
 <hr> 
+
+ 
 <form id="formularionuevoDetalleOP" action="#" method="post" class="col-lg-12" >									
     <div class="row">
         <input class="form-control" type="text"  id="Id" name="Id" readonly style="display: none;"> 
@@ -115,7 +117,7 @@
 
    <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['tela'].visible !== 0"  id="reg_cont_tela" >
        <label>Tela <span *ngIf="objConfiguracionAtributos[TipoProducto]['tela'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control form-control-chosen-tela"  id="tela" name="CodigoTela" (change)="ChangeTela($event)" [required]="objConfiguracionAtributos[TipoProducto]['tela'].required === 1">
+       <select   class="form-control"  id="tela" name="CodigoTela" (change)="ChangeTela($event)" [required]="objConfiguracionAtributos[TipoProducto]['tela'].required === 1">
         <option *ngFor="let opcion of CboTela" [value]="opcion.codigo">{{ opcion.nombre }}</option>
        </select>       
        <input class="form-control" type="text"  id="Tela" name="Tela" readonly style="display: none;" *ngIf="objConfiguracionAtributos[TipoProducto]['tela'].visible !== 0">  
@@ -135,7 +137,7 @@
        <label>Tubo <span *ngIf="objConfiguracionAtributos[TipoProducto]['tubo'].required === 1"  class="requerid_css">*</span></label>
        <select class="form-control"  id="nomb_tubo" name="CodigoTubo"  [required]="objConfiguracionAtributos[TipoProducto]['tubo'].required === 1" (change)="ChangeTubo($event)">	
         <option *ngFor="let opcion of CboNombreTubo" [value]="opcion.codigo">{{ opcion.nombre }}</option>		                        	
-       </select>
+       </select> 
        <input class="form-control" type="text"  id="NombreTubo" name="NombreTubo" readonly style="display: none;" *ngIf="objConfiguracionAtributos[TipoProducto]['tubo'].visible !== 0">  
    </div>
        

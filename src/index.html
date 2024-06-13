@@ -12,8 +12,7 @@
   <meta property="og:image" content="" />
   <meta name="format-detection" content="telephone=no">
   <title>DC-Blinds</title>
-  <base href="/"> 
-
+  <base href="/">  
   <script src="assets\vendor\jquery\jquery.min.js"></script>
   <link rel="icon" href="assets/images/GP.ico" type="image/x-icon" />
   <link rel="shortcut icon" type="image/x-icon" href="assets/images/icon.png" />
@@ -23,9 +22,22 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
   <script src="https://cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <script src="https://code.highcharts.com/modules/contextmenu.js"></script>
+
+ <script src="https://code.jquery.com/jquery-1.11.0.js"></script>
+  <script type="text/javascript" src="https://rawgit.com/select2/select2/master/dist/js/select2.js"></script>
+<link rel="stylesheet" type="text/css" href="https://rawgit.com/select2/select2/master/dist/css/select2.min.css">
 
   <style>    
+  .select2-container {
+    z-index: 9999 !important; /* Ajusta este valor según sea necesario para estar por encima del z-index del diálogo */
+    border-radius: 3px;
+}
+.select2-container--default .select2-selection--single {
+    border-radius: 4px !important;
+    border: 1px solid #E8E8E8;
+    height: 49px !important;
+    background: #fff;
+}
   .mat-header-cell, .mat-cell {
   white-space: nowrap; /* Evita que el texto se envuelva */
   overflow: hidden; /* Oculta el texto que excede el ancho de la celda */
@@ -229,9 +241,41 @@ margin-left: 0.563rem !important;
       direction="ltr"
       data-primary="color_11"
 >
+<!--
+<h1>NNN</h1>
+<select id="example"  style="width: 300px">
+  <option value="JAN">January</option>
+  <option value="FEB">February</option>
+  <option value="MAR">March</option>
+  <option value="APR">April</option>
+  <option value="MAY">May</option>
+  <option value="JUN">June</option>
+  <option value="JUL">July</option>
+  <option value="AUG">August</option>
+  <option value="SEP">September</option>
+  <option value="OCT">October</option>
+  <option value="NOV">November</option>
+  <option value="DEC">December</option>
+</select> -->
   <app-root> 
   </app-root>
   <app-redirect></app-redirect> 
 </body>
-<script src="assets/imprimible.js"></script>
+<!--<script>
+  $('#example').select2({
+    placeholder: 'Select a month'
+}); 
+
+$('#tela').select2({
+    placeholder: 'Select a month'
+}); 
+
+$('#nomb_tubo').select2({
+    placeholder: 'Select a month'
+}); 
+
+$('#example').select2({
+    placeholder: 'Select a month'
+}); 
+</script>-->
 </html>

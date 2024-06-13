@@ -3,6 +3,7 @@ import { ObjConfigs } from '../configuration';
 import { ProductoService } from '../services/productoservice';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ITblDetalleOrdenProduccion } from '../services/models/TBL_DetalleOrdenProduccion.model';
+declare var $: any; // Declara la variable $ para usar jQuery
 export interface IAgregarUsuarioRequest {
   nombre?:string;
   correo?: string;
@@ -73,6 +74,8 @@ export class FormProductoComponent implements OnInit {
   }
    IdProducto:string="";
     ngOnInit(): void {      
+
+
     this.TipoProducto=this.JsonItemHijo.tipo; 
     this.IdProducto=this.JsonItemHijo.producto.id;
     
@@ -162,7 +165,20 @@ case "SoporteCentral": (element as HTMLSelectElement).value = values.soporteCent
 case "TipoSoporteCentral": (element as HTMLSelectElement).value = values.tipoSoporteCentral;  break;
 case "Caida": (element as HTMLSelectElement).value = values.caida;  break;
 case "Accionamiento": (element as HTMLSelectElement).value = values.accionamiento;  break;
-case "CodigoTubo": (element as HTMLSelectElement).value = values.codigoTubo;  break;
+case "CodigoTubo": (element as HTMLSelectElement).value = values.codigoTubo; 
+ /*
+$('#nomb_tubo').select2({
+  placeholder: 'Select a month',
+  // Callback después de que Select2 se haya inicializado completamente
+  }).on('select2:open', function() {
+    // Establecer el valor después de que Select2 se haya abierto
+    $('#tela').val(values.codigoTubo).trigger('change.select2');
+  });
+  */
+  $('#nomb_tubo').select2({
+    placeholder: '--Seleccione--'
+  });  
+break;
 case "Mando": (element as HTMLSelectElement).value = values.mando;  break;
 case "TipoMecanismo": (element as HTMLSelectElement).value = values.tipoMecanismo;  break;
 case "ModeloMecanismo": (element as HTMLSelectElement).value = values.modeloMecanismo;  break;
@@ -191,7 +207,22 @@ case "CodigoControl": (element as HTMLSelectElement).value = values.codigoContro
 case "CodigoSwitch": (element as HTMLSelectElement).value = values.codigoSwitch;  break;
 case "LlevaBaston": (element as HTMLSelectElement).value = values.llevaBaston;  break;
 case "MandoAdaptador": (element as HTMLSelectElement).value = values.mandoAdaptador;  break;
-case "CodigoMotor": (element as HTMLSelectElement).value = values.codigoMotor;  break;
+case "CodigoMotor": (element as HTMLSelectElement).value = values.codigoMotor; 
+ /*
+$('#nomb_motor').select2({
+  placeholder: 'Select a month',
+  // Callback después de que Select2 se haya inicializado completamente
+  }).on('select2:open', function() {
+    // Establecer el valor después de que Select2 se haya abierto
+    $('#nomb_motor').val(values.codigoMotor).trigger('change.select2');
+  });*/
+
+  $('#nomb_motor').select2({
+    placeholder: '--Seleccione--'
+  });  
+  
+
+break;
 //::::::::::::::::::::::::::::::::::::...INPUTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 case "Familia": (element as HTMLInputElement).value = values.familia;  break;
 case "SubFamilia": (element as HTMLInputElement).value = values.subFamilia;  break;
@@ -200,7 +231,21 @@ case "PrecioInc": (element as HTMLInputElement).value = values.precioInc;  break
 case "Igv": (element as HTMLInputElement).value = values.igv;  break;
 case "Lote": (element as HTMLInputElement).value = values.lote;  break;
 
-case "Tela": (element as HTMLInputElement).value = values.tela;  break;
+case "Tela": (element as HTMLInputElement).value = values.tela;
+/*
+$('#tela').select2({
+  placeholder: 'Select a month',
+  // Callback después de que Select2 se haya inicializado completamente
+  }).on('select2:open', function() {
+    // Establecer el valor después de que Select2 se haya abierto
+    $('#tela').val(values.tela).trigger('change.select2');
+  });*/
+  
+  $('#tela').select2({
+    placeholder: '--Seleccione--'
+  });  
+  
+break;
 case "NombreTubo": (element as HTMLInputElement).value = values.nombreTubo;  break;
 case "Cadena": (element as HTMLInputElement).value = values.cadena;  break;
 case "Riel": (element as HTMLInputElement).value = values.riel;  break;
@@ -218,8 +263,18 @@ case "CodigoProducto":(element as HTMLInputElement).value = values.codigoProduct
 case "NombreProducto":(element as HTMLInputElement).value = values.nombreProducto; break;
 case "UnidadMedida":(element as HTMLInputElement).value = values.unidadMedida; break;
 case "Cantidad":(element as HTMLInputElement).value = values.cantidad; break;
-case "FechaProduccion":(element as HTMLInputElement).value = '2024-05-04'; break;
-case "FechaEntrega":(element as HTMLInputElement).value = '2024-05-04'; break;
+case "FechaProduccion":(element as HTMLInputElement).value = values.fechaProduccion; break;
+case "FechaEntrega":(element as HTMLInputElement).value = values.fechaEntrega;
+/* // Obtener la fecha actual
+const fechaActual = new Date();
+// Obtener los componentes de la fecha (día, mes y año)
+const dia = fechaActual.getDate().toString().padStart(2, '0'); // Asegura que el día tenga dos dígitos
+const mes = (fechaActual.getMonth() + 1).toString().padStart(2, '0'); // Asegura que el mes tenga dos dígitos (los meses en JavaScript son base cero)
+const año = fechaActual.getFullYear();
+// Crear la cadena de fecha en el formato deseado (por ejemplo, 'YYYY-MM-DD')
+const fechaFormateada = `${año}-${mes}-${dia}`;
+console.log(fechaFormateada); // Salida: 'YYYY-MM-DD'*/
+break;
 case "Nota":(element as HTMLInputElement).value = values.nota; break;
 case "Ancho":(element as HTMLInputElement).value = values.ancho; break;
 case "Alto":(element as HTMLInputElement).value = values.alto; break;
@@ -360,6 +415,14 @@ break;
   }
   //ESTE METODO OBTIENE DE TODOS LOS CAMPOS VISIBLES 
     obtener(): void {    
+      // Obtener el formulario por su ID
+/*const formulario = document.getElementById('formularionuevoDetalleOP') as HTMLFormElement;
+// Obtener el valor seleccionado del select por su nombre
+const valorSeleccionado = formulario['CodigoTela'].value;
+const valorSeleccionado2 = formulario['CodigoTubo'].value;
+console.log(valorSeleccionado);
+console.log(valorSeleccionado2);
+*/
   // Seleccionar todos los elementos del formulario
   const formElements = document.querySelectorAll('#formularionuevoDetalleOP input, #formularionuevoDetalleOP select, #formularionuevoDetalleOP textarea');
   // Iterar sobre los elementos del formulario
@@ -370,7 +433,31 @@ break;
           const attributeName = element.getAttribute('name');
           const attributeValue = element.value; // Puedes usar .value para input, select y textarea  
           // Almacenar el nombre del atributo y su valor en el objeto
-          this.attributosProducto[attributeName] = attributeValue;
+          //this.attributosProducto[attributeName] = attributeValue;
+
+              // Verificar si es un elemento select
+            if (element instanceof HTMLSelectElement && (attributeName=="CodigoTela" || attributeName=="CodigoTubo" || attributeName=="CodigoMotor") ) {
+
+              const formulario = document.getElementById('formularionuevoDetalleOP') as HTMLFormElement;
+              var valor="";
+              switch(attributeName){
+                case 'CodigoTela':
+                  valor = formulario['CodigoTubo'].value;
+                  break;
+                case 'CodigoTubo':
+                  valor = formulario['CodigoTubo'].value;
+                  break;
+                case 'CodigoMotor':
+                  valor = formulario['CodigoTubo'].value;
+                  break;
+              }
+              // Almacenar el nombre del atributo y su valor en el objeto
+              this.attributosProducto[attributeName] = attributeValue;
+          } else {             
+              
+              // Almacenar el nombre del atributo y su valor en el objeto
+              this.attributosProducto[attributeName] = attributeValue;
+          }
       }
   });
   
@@ -414,6 +501,7 @@ CboTela=[{codigo:0,nombre:"--Seleccione--"}];listarCboTela(codsubfamilia){
       this.spinner.hide();
     }
   );  
+ 
 }
 
 ChangeTela(event: any): void {
