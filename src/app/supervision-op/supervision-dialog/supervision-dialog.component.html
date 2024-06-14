@@ -1,0 +1,42 @@
+<ngx-spinner
+  bdColor="rgba(255, 255, 255, 1)"
+  size="medium"
+  color="#0D7ABD"
+  type="ball-beat"
+  [fullScreen]="true"
+  ><p style="color: black">Loading...</p></ngx-spinner>
+  
+  <style>
+    .example-containerambiente {
+  height: 414px;
+  /*overflow: auto;*/
+}
+  </style>
+<h2 mat-dialog-title>Confirmar Aprobación  OP <b> {{cotizacion}}</b>  Grupo: <b>{{grupo}}</b> </h2>
+<div mat-dialog-content> 
+  <div class="panel-body">
+     
+    <div class="col-lg-12">
+        <div class="row" style="margin: 18px;">
+
+            <div class="form-group col-lg-6">
+                <label>Turno </label>
+                <select class="form-control"    [(ngModel)]="turno">               
+                  <option value="Mañana">Mañana</option>
+                  <option value="Tarde">Tarde</option>
+                </select>
+            </div> 
+            <div class="form-group col-lg-6">
+                <label>Fecha Producción </label>
+                <input type="date" class="form-control" [(ngModel)]="fechaProduccion" (ngModelChange)="formattedFechaProduccion = formatDate(fechaProduccion)">
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div mat-dialog-actions> 
+  <button mat-button class="btn btn-sm btn-primary" (click)="save()"  >
+    Aceptar
+  </button>
+  <button mat-button (click)="close()">Cerrar</button>
+</div>

@@ -267,6 +267,8 @@ import { AsignarModuloDialogComponent } from './mantenimiento-perfiles/asignar-m
 import { MantenimientoComponentesComponent } from './mantenimiento-componentes/mantenimiento-componentes.component';
 import { DetalleProductosComponent } from './solicitud-pendiente/detalle-productos/detalle-productos.component';
 import { SupervisionOpComponent } from './supervision-op/supervision-op.component';
+import { SupervisionDialogComponent } from './supervision-op/supervision-dialog/supervision-dialog.component';
+import { DatePipe } from '@angular/common';
 //IMPORT 
 
 @NgModule({
@@ -396,7 +398,7 @@ import { SupervisionOpComponent } from './supervision-op/supervision-op.componen
          FilesEpdpComponent, FormularioEpdpComponent, PagoExcesoComponent,
           PagoEpdpParcialComponent, ModalFormsComponent, ParametrosComponent,
            ModalUnidadComponent, SolicitudPendienteComponent, ReporteNCComponent,
-            CartaSnCruzadaComponent, SolFormSnCartacruzadaComponent, VentasComponent, RegistroCotizacionComponent, RegistroCotizacionsComponent, ProductosDialogComponent, EstacionesTrabajoComponent, ScanestacionDialogComponent, FabricacionEstacionComponent, MonitoreoProduccionComponent, MantenimientoPerfilesComponent, LineaProduccionComponent, FormProductoComponent, ProyectoDialogComponent, LayoutComponent, MantOpComponent, AsignarModuloDialogComponent, MantenimientoComponentesComponent, DetalleProductosComponent, SupervisionOpComponent,  
+            CartaSnCruzadaComponent, SolFormSnCartacruzadaComponent, VentasComponent, RegistroCotizacionComponent, RegistroCotizacionsComponent, ProductosDialogComponent, EstacionesTrabajoComponent, ScanestacionDialogComponent, FabricacionEstacionComponent, MonitoreoProduccionComponent, MantenimientoPerfilesComponent, LineaProduccionComponent, FormProductoComponent, ProyectoDialogComponent, LayoutComponent, MantOpComponent, AsignarModuloDialogComponent, MantenimientoComponentesComponent, DetalleProductosComponent, SupervisionOpComponent, SupervisionDialogComponent,  
   ],
   imports: [  
     
@@ -502,6 +504,7 @@ import { SupervisionOpComponent } from './supervision-op/supervision-op.componen
   ),
   ],
   providers: [  
+    DatePipe,
    //azure
     { 
       provide: HTTP_INTERCEPTORS,
