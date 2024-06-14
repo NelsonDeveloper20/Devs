@@ -6,6 +6,8 @@ import * as moment from 'moment';
 import Swal from 'sweetalert2';
 import { Toaster } from 'ngx-toast-notifications';
 import { SupervisionService } from '../services/supervision.service';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { SupervisionDialogComponent } from './supervision-dialog/supervision-dialog.component';
 
 @Component({
   selector: 'app-supervision-op',
@@ -13,9 +15,10 @@ import { SupervisionService } from '../services/supervision.service';
   styleUrls: ['./supervision-op.component.css']
 })
 export class SupervisionOpComponent implements OnInit {
-  displayedColumns: string[] = ['cotizacion', 'codOp', 'grupo','fechasolicitud','vendedor','destrito', 'fechaCreacion','acciones'];
+  displayedColumns: string[] = ['cotizacion', 'codOp', 'grupo','fechasolicitud','vendedor','destrito','fechaCreacion','aprobar','rechazar'];
   dataSource=new MatTableDataSource<any>();//this.ELEMENT_DATA
   constructor(
+    private dialog: MatDialog,
     private toaster: Toaster, 
     private spinner: NgxSpinnerService,
     private _service: SupervisionService
@@ -109,4 +112,43 @@ Swal.fire(
     */
 
    }
+
+   
+ 
+  AbriConfirmacion(item:any){
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;  
+    const dataToSend = {  
+      turno: item.turno,   
+      fechaProduccion: item.fechaProduccion,
+      cotizacion: item.numeroCotizacion,
+      grupo: item.cotizacionGrupo
+    };
+    dialogConfig.data = dataToSend; 
+    dialogConfig.width ='804px';
+    const dialogRef = this.dialog.open(SupervisionDialogComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe({
+      next: data => {   
+       if(data){
+        this.toaster.open({
+          text: "Grupo Aprobado",
+          caption: 'Mensaje',
+          type: 'success',
+          position: 'bottom-right',
+          //duration: 4000
+        });  
+       }
+    },
+    error: error => { 
+        var errorMessage = error.message;
+        console.error('There was an error!', error); 
+        this.toaster.open({
+          text: errorMessage,
+          caption: 'Ocurrio un error',
+          type: 'danger',
+        });
+      }
+    });
+  }
 }
