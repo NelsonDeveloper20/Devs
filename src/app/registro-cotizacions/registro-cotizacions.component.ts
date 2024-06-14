@@ -18,6 +18,7 @@ import { ProyectoDialogComponent } from './proyecto-dialog/proyecto-dialog.compo
 import { ProyectoService } from '../services/proyecto.service';
 import { ComunicacionService } from '../shared/comunicacion.service';
 import { LayoutComponent } from '../layout/layout.component';
+import { OrdenproduccionGrupoService } from '../services/ordenproducciongrupo.service';
 export interface ListasModel {
   isSelected: boolean;
   id: number;
@@ -50,7 +51,7 @@ export class RegistroCotizacionsComponent implements OnInit {
     private spinner: NgxSpinnerService,
     private _OrdenService: OrdenproduccionService,
     private _proyectoService: ProyectoService,
-
+    private ordenproduccionGrupoService: OrdenproduccionGrupoService,
     private comunicacionService: ComunicacionService
   ) {  
     this.filteredStates = this.stateCtrl.valueChanges
@@ -90,7 +91,22 @@ export class RegistroCotizacionsComponent implements OnInit {
       .ListarProductoSisgeco_DC( this.selectedState.numero)
       .subscribe(
         (response) => {
+          var index_count=0;
           this.Productos=response; 
+          this.Productos.forEach(item=> 
+            {
+            if(item.id==""){                                         
+              /*var cod_prod=item.codigoProducto.substring(0,5);
+              if(cod_prod=='PRTRS' || cod_prod=='PRTSH'){
+                  index_count++;
+                  item.index=index_count
+                }*/
+                index_count++;
+                item.indexDetalle=index_count
+            }
+          }
+
+          )
           this.spinner.hide();
           
     this.listarAmbientes(this.selectedState.numero);
@@ -127,24 +143,74 @@ export class RegistroCotizacionsComponent implements OnInit {
     }
     return 0;
   }
-  /*
-  getRowSpan(index: number): number {
-    if (index === 0 || this.Productos[index].cotizacionGrupo !== this.Productos[index - 1].cotizacionGrupo) {
-      let count = 1;
-      if (!this.Productos[index].cotizacionGrupo) {
-        return 0;
-      }
-      for (let i = index + 1; i < this.Productos.length; i++) {
-        if (this.Productos[i].cotizacionGrupo === this.Productos[index].cotizacionGrupo) {
-          count++;
-        } else {
-          break;
+
+  AplicarCentral(id: any, event: any) {
+    let valor = "";
+    if (event.checked == true) {
+      valor = "SI";
+    } else {
+      valor = "NO";
+    } 
+    this.spinner.show();
+    this.ordenproduccionGrupoService.AplicarCentral(id,valor)
+      .subscribe({
+        next: response => {
+          this.spinner.hide();
+          if (response.status == 200) { 
+                const respuesta = response.json.respuesta;
+                if(respuesta=="OK"){
+
+              /*  Swal.fire({
+                title: 'Mensaje',
+                text: 'Operacion realizada correctamente',
+                icon: 'success',
+                confirmButtonText: 'Aceptar',
+                allowOutsideClick: false
+                }); */
+               
+                let artcl: IApiResponse = JSON.parse(JSON.stringify(response));
+                this.toaster.open({
+                  text: "Ambiente eliminado",
+                  caption: 'Mensaje',
+                  type: 'success',
+                  position: 'bottom-right',
+                  //duration: 4000
+                });     
+                }else{
+                  this.toaster.open({
+                    text: "No se puede aplicar",
+                    caption: 'Mensaje',
+                    type: 'danger',
+                    // duration: 994000
+                  }); 
+
+                }    
+                              
+                
+            }else{
+              this.toaster.open({
+                text: "Ocurrio un error al enviar",
+                caption: 'Mensaje',
+                type: 'danger',
+                // duration: 994000
+              }); 
+            }
+        },
+        error: error => {
+          this.spinner.hide();
+          var errorMessage = error.message;
+          console.error('There was an error!', error);
+          this.toaster.open({
+            text: errorMessage,
+            caption: 'Ocurrio un error',
+            type: 'danger',
+            // duration: 994000
+          });
         }
-      }
-      return count;
-    }
-    return 0;
-  }*/
+      });
+
+  }
+ 
   listProyecto:any[]=[];
   ListarProyecto(){
     this.spinner.show();
@@ -537,11 +603,7 @@ AgregarAmbiente() {
       ambiente:this.TblAmbiente
     };
     dialogConfig.data = dataToSend;
-    /*
-    const dialogRef = this.dialog.open(ExportDialogComponent, {
-      width: '650px', // Ancho del popup
-      data: { name: 'Angular' } // Datos opcionales que puedes pasar al popup
-    });*/
+   
     dialogConfig.width ='1104px';
     const dialogRef = this.dialog.open(ProductosDialogComponent, dialogConfig);
     dialogRef.afterClosed().subscribe({
@@ -563,6 +625,8 @@ AgregarAmbiente() {
   }
   
   openEditProd(producto:any): void {    
+    console.log("EDICION");
+    console.log(producto);
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true; 
@@ -758,6 +822,7 @@ AgregarAmbiente() {
     this.Orden.totalIgv=state.totalIGV;
     this.Orden.direccion=state.direccion;
     this.Orden.telefono=state.telefono;
+    this.Orden.archivo=state.archivo;
     //this.Orden.pa=state.Pase; 
     this.selectedState = state;
     this.Productos=[];

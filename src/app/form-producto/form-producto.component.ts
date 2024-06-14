@@ -156,7 +156,10 @@ export class FormProductoComponent implements OnInit {
            
           switch (attributeName) {
           //::::::::::::::::::::::::::::::::::::...COMBOS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-case "IndiceAgrupacion": (element as HTMLSelectElement).value = values.IndiceAgrupacion;  break;
+case "Index": (element as HTMLSelectElement).value = values.index;  break;
+case "IndiceAgrupacion": (element as HTMLSelectElement).value = values.indiceAgrupacion;  break;
+case "IdTbl_Ambiente": (element as HTMLSelectElement).value = values.idTbl_Ambiente;  break;
+
 case "Ambiente": (element as HTMLSelectElement).value = values.ambiente;  break;
 case "Turno":  (element as HTMLSelectElement).value = values.turno; 
 break;
@@ -166,18 +169,14 @@ case "TipoSoporteCentral": (element as HTMLSelectElement).value = values.tipoSop
 case "Caida": (element as HTMLSelectElement).value = values.caida;  break;
 case "Accionamiento": (element as HTMLSelectElement).value = values.accionamiento;  break;
 case "CodigoTubo": (element as HTMLSelectElement).value = values.codigoTubo; 
- /*
-$('#nomb_tubo').select2({
-  placeholder: 'Select a month',
-  // Callback después de que Select2 se haya inicializado completamente
-  }).on('select2:open', function() {
-    // Establecer el valor después de que Select2 se haya abierto
-    $('#tela').val(values.codigoTubo).trigger('change.select2');
-  });
-  */
+ 
   $('#nomb_tubo').select2({
     placeholder: '--Seleccione--'
   });  
+
+  $('#nomb_tubo').on('change', (event) => {
+    this.ChangeTubo(event);
+  }); 
 break;
 case "Mando": (element as HTMLSelectElement).value = values.mando;  break;
 case "TipoMecanismo": (element as HTMLSelectElement).value = values.tipoMecanismo;  break;
@@ -208,19 +207,13 @@ case "CodigoSwitch": (element as HTMLSelectElement).value = values.codigoSwitch;
 case "LlevaBaston": (element as HTMLSelectElement).value = values.llevaBaston;  break;
 case "MandoAdaptador": (element as HTMLSelectElement).value = values.mandoAdaptador;  break;
 case "CodigoMotor": (element as HTMLSelectElement).value = values.codigoMotor; 
- /*
-$('#nomb_motor').select2({
-  placeholder: 'Select a month',
-  // Callback después de que Select2 se haya inicializado completamente
-  }).on('select2:open', function() {
-    // Establecer el valor después de que Select2 se haya abierto
-    $('#nomb_motor').val(values.codigoMotor).trigger('change.select2');
-  });*/
 
   $('#nomb_motor').select2({
     placeholder: '--Seleccione--'
-  });  
-  
+  });   
+  $('#nomb_motor').on('change', (event) => {
+    this.cancheCbopNombreMotor(event);
+  }); 
 
 break;
 //::::::::::::::::::::::::::::::::::::...INPUTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -232,19 +225,13 @@ case "Igv": (element as HTMLInputElement).value = values.igv;  break;
 case "Lote": (element as HTMLInputElement).value = values.lote;  break;
 
 case "Tela": (element as HTMLInputElement).value = values.tela;
-/*
-$('#tela').select2({
-  placeholder: 'Select a month',
-  // Callback después de que Select2 se haya inicializado completamente
-  }).on('select2:open', function() {
-    // Establecer el valor después de que Select2 se haya abierto
-    $('#tela').val(values.tela).trigger('change.select2');
-  });*/
-  
+
   $('#tela').select2({
     placeholder: '--Seleccione--'
   });  
-  
+  $('#tela').on('change', (event) => {
+    this.ChangeTela(event);
+  });
 break;
 case "NombreTubo": (element as HTMLInputElement).value = values.nombreTubo;  break;
 case "Cadena": (element as HTMLInputElement).value = values.cadena;  break;
@@ -263,17 +250,24 @@ case "CodigoProducto":(element as HTMLInputElement).value = values.codigoProduct
 case "NombreProducto":(element as HTMLInputElement).value = values.nombreProducto; break;
 case "UnidadMedida":(element as HTMLInputElement).value = values.unidadMedida; break;
 case "Cantidad":(element as HTMLInputElement).value = values.cantidad; break;
-case "FechaProduccion":(element as HTMLInputElement).value = values.fechaProduccion; break;
-case "FechaEntrega":(element as HTMLInputElement).value = values.fechaEntrega;
-/* // Obtener la fecha actual
-const fechaActual = new Date();
-// Obtener los componentes de la fecha (día, mes y año)
-const dia = fechaActual.getDate().toString().padStart(2, '0'); // Asegura que el día tenga dos dígitos
-const mes = (fechaActual.getMonth() + 1).toString().padStart(2, '0'); // Asegura que el mes tenga dos dígitos (los meses en JavaScript son base cero)
-const año = fechaActual.getFullYear();
-// Crear la cadena de fecha en el formato deseado (por ejemplo, 'YYYY-MM-DD')
-const fechaFormateada = `${año}-${mes}-${dia}`;
-console.log(fechaFormateada); // Salida: 'YYYY-MM-DD'*/
+case "FechaProduccion": 
+const fechaString = values.fechaProduccion; 
+var fechaFormateada=fechaString;
+if(this.JsonItemHijo.producto.id==!""){
+  const partes = fechaString.split("/");
+  // Reorganizar las partes para que estén en el orden deseado (año-mes-día)
+    fechaFormateada = `${partes[2].split(" ")[0]}-${partes[1]}-${partes[0]}`;
+}
+  (element as HTMLInputElement).value = fechaFormateada; break;
+case "FechaEntrega": 
+const fechaString2 = values.fechaEntrega;
+var fechaFormateada2=fechaString2;
+if(this.JsonItemHijo.producto.id==!""){ //APLICAR SOLO PARA PRODUCTOS EXISTENTES 
+const partes2 = fechaString2.split("/");
+// Reorganizar las partes para que estén en el orden deseado (año-mes-día)
+  fechaFormateada2 = `${partes2[2].split(" ")[0]}-${partes2[1]}-${partes2[0]}`;
+}
+  (element as HTMLInputElement).value = fechaFormateada2; 
 break;
 case "Nota":(element as HTMLInputElement).value = values.nota; break;
 case "Ancho":(element as HTMLInputElement).value = values.ancho; break;
@@ -414,15 +408,7 @@ break;
     return rptAlturaCadena;
   }
   //ESTE METODO OBTIENE DE TODOS LOS CAMPOS VISIBLES 
-    obtener(): void {    
-      // Obtener el formulario por su ID
-/*const formulario = document.getElementById('formularionuevoDetalleOP') as HTMLFormElement;
-// Obtener el valor seleccionado del select por su nombre
-const valorSeleccionado = formulario['CodigoTela'].value;
-const valorSeleccionado2 = formulario['CodigoTubo'].value;
-console.log(valorSeleccionado);
-console.log(valorSeleccionado2);
-*/
+    obtener(): void {   
   // Seleccionar todos los elementos del formulario
   const formElements = document.querySelectorAll('#formularionuevoDetalleOP input, #formularionuevoDetalleOP select, #formularionuevoDetalleOP textarea');
   // Iterar sobre los elementos del formulario
@@ -454,7 +440,21 @@ console.log(valorSeleccionado2);
               // Almacenar el nombre del atributo y su valor en el objeto
               this.attributosProducto[attributeName] = attributeValue;
           } else {             
-              
+            if(this.JsonItemHijo.producto.id==""){
+
+              switch(attributeName){
+                case "Ancho":
+                var  tubo_medida=parseFloat(attributeValue) - 0.025;
+                this.attributosProducto["TuboMedida"] = tubo_medida.toString();
+                var  tela_medida=parseFloat(tubo_medida.toString()) - 0.001;
+                this.attributosProducto["TelaMedida"] = tela_medida.toString(); 
+                    break;
+                case "Alto":
+                var  altura_medida=altura_medida = parseFloat(attributeValue) + 0.20;                
+                this.attributosProducto["AlturaMedida"] = altura_medida.toString();
+                  break;
+              } 
+            }
               // Almacenar el nombre del atributo y su valor en el objeto
               this.attributosProducto[attributeName] = attributeValue;
           }
@@ -504,7 +504,7 @@ CboTela=[{codigo:0,nombre:"--Seleccione--"}];listarCboTela(codsubfamilia){
  
 }
 
-ChangeTela(event: any): void {
+ChangeTela(event: any): void { 
   const value = event.target.value;  
   const Tela = document.getElementById("Tela") as HTMLInputElement ;
   const item = this.CboTela.find(element => element.codigo === value);
@@ -1451,6 +1451,7 @@ case "CodigoMotor":this.listarCboMotor(tipoProducto);break;
             break;
             }
       }
+
   });
   
   this.spinner.hide();
@@ -1465,6 +1466,25 @@ case "CodigoMotor":this.listarCboMotor(tipoProducto);break;
         }
       }, 3000);
   
+      $('#tela').select2({
+        placeholder: '--Seleccione--'
+      });  
+      $('#tela').on('change', (event) => {
+        this.ChangeTela(event);
+      });
+      $('#nomb_motor').select2({
+        placeholder: '--Seleccione--'
+      });   
+      $('#nomb_motor').on('change', (event) => {
+        this.cancheCbopNombreMotor(event);
+      }); 
+      $('#nomb_tubo').select2({
+        placeholder: '--Seleccione--'
+      });  
+    
+      $('#nomb_tubo').on('change', (event) => {
+        this.ChangeTubo(event);
+      });     
     }
 
     //#endregion
