@@ -101,7 +101,10 @@ export class RegistroCotizacionsComponent implements OnInit {
                   item.index=index_count
                 }*/
                 index_count++;
-                item.indexDetalle=index_count
+                item.indexDetalle=index_count.toString();
+            }
+            if(item.pase=="" && item.id!=="" && item.codigoProducto.substring(0,3)!=="PRT"){       //componentes ya guardados        
+              item.pase='PASDIRECCT';
             }
           }
 
@@ -724,8 +727,9 @@ AgregarAmbiente() {
             this.spinner.hide();
           } else {
             this.spinner.hide();
+            console.log(response);
             this.toaster.open({
-              text: "Ocurrio un error",
+              text: "Ocurrio un error: "+response.json.respuesta,
               caption: 'Mensaje',
               type: 'warning',
               position: 'bottom-right',
@@ -735,6 +739,7 @@ AgregarAmbiente() {
         },
         error: error => {
           this.spinner.hide();
+          console.log(error);
           var errorMessage = error.message;
           console.error('There was an error!', error);
           this.toaster.open({

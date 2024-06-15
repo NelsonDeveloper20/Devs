@@ -271,7 +271,7 @@
                                         <td class="py-2">{{ itemproducto.codigoProducto }}</td>
                                         <td class="py-2">{{ itemproducto.nombreProducto }}</td>
                                         <td class="py-2">{{ itemproducto.cotizacionGrupo }}</td>
-                                        <td class="py-2">
+                                        <td class="py-2"> 
                                           <button *ngIf="itemproducto.pase !== 'PASDIRECCT'"
                                                   class="btn btn-primary tp-btn-light sharp" 
                                                   type="button"
@@ -283,14 +283,14 @@
                                                   class="btn btn-primary tp-btn-light sharp" 
                                                   type="button"
                                                   (click)="RegistrarProductoComponente(itemproducto)" 
-                                                  [disabled]="itemproducto.existe === 'SI' || itemproducto.estadoOp !== '1' || !Orden.id">
+                                                  [disabled]="itemproducto.existe === 'SI' || itemproducto.estadoOp !== '2' || !Orden.id">
                                             <mat-icon>save</mat-icon>
                                           </button>
                                         </td>
                                         <td class="py-2">
                                           <button class="btn btn-primary tp-btn-light sharp" type="button" 
                                           (click)="openEditProd(itemproducto)"
-                                          [disabled]="itemproducto.estadoOp !== '1' || !Orden.id  || itemproducto.id==''"
+                                          [disabled]="itemproducto.estadoOp !== '2' || !Orden.id  || itemproducto.id=='' || itemproducto.pase === 'PASDIRECCT'"
                                           >
                                             <mat-icon>edit</mat-icon>
                                           </button>
