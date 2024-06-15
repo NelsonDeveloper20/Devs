@@ -3,6 +3,7 @@ import { ObjConfigs } from '../configuration';
 import { ProductoService } from '../services/productoservice';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ITblDetalleOrdenProduccion } from '../services/models/TBL_DetalleOrdenProduccion.model';
+import { DatePipe } from '@angular/common';
 declare var $: any; // Declara la variable $ para usar jQuery
 export interface IAgregarUsuarioRequest {
   nombre?:string;
@@ -54,7 +55,7 @@ export class FormProductoComponent implements OnInit {
   attributosProducto = {};// Objeto que contendrá los datos del formulario 
   objConfiguracionAtributos:ConfiguracionAtributos=ObjConfigs;
   TipoProducto:string=""; 
-  constructor(
+  constructor(private datePipe: DatePipe,
     private spinner: NgxSpinnerService,
     private _productoService: ProductoService) {
     
@@ -77,36 +78,17 @@ export class FormProductoComponent implements OnInit {
 
 
     this.TipoProducto=this.JsonItemHijo.tipo; 
-    this.IdProducto=this.JsonItemHijo.producto.id;
-    
-      
-      if(this.JsonItemHijo.producto.id!=""){
-        
-        //this.ObtenerProductoPorID(this.IdProducto);      
-               
-        //this.spinner.show();
-        //setTimeout(() => {          
-        //this.spinner.hide();
-          this.TblAmbiente=this.JsonItemHijo.ambiente; 
-          /*this.CargarItemsCombos(this.JsonItemHijo.producto);
-          this.setFormValues(this.JsonItemHijo.producto);*/
-        //}, 3000);
-      }else{
-        //this.spinner.show();
-        //setTimeout(() => {          
-        //this.spinner.hide();
-          // Llamar al método después del tiempo de espera           
-          this.TblAmbiente=this.JsonItemHijo.ambiente; 
-          /*this.CargarItemsCombos(this.JsonItemHijo.producto);
-          this.setFormValues(this.JsonItemHijo.producto);
-        }, 3000);*/
+    this.IdProducto=this.JsonItemHijo.producto.id;   
+    this.TblAmbiente=this.JsonItemHijo.ambiente; 
+     
+      if(this.JsonItemHijo.producto.id!="" && this.JsonItemHijo.producto.escuadra=="SI"){        
+        this.ObtenerEcuadra(this.IdProducto);   
       }
     }
     ngAfterViewInit() {
       // Llamar al método para asignar valores después de que se haya renderizado completamente el HTML 
       this.spinner.show();          
-        this.CargarItemsCombos(this.JsonItemHijo.producto);     
-      
+        this.CargarItemsCombos(this.JsonItemHijo.producto);   
       this.spinner.hide();
 
     }
@@ -114,25 +96,32 @@ export class FormProductoComponent implements OnInit {
       this.CargarItemsCombos(this.JsonItemHijo.producto);
     }
     set2(){
-
       this.setFormValues(this.JsonItemHijo.producto);
     }
   // Método para detectar los cambios en los campos del formulario y emitir la salida de datos
   onInputChange() {
     this.obtener();
   }
-  
-  Producto: ITblDetalleOrdenProduccion={};
-  ObtenerProductoPorID(id:any){
+   
+  ObtenerEcuadra(id:any){
+    console.log("OBTENIENDOOO");
     this.spinner.show();
     this._productoService
-      .ObtenerProductoPorId(id)
+      .obtenerEscuadra(id)
       .subscribe(
         (response) => { 
           if(response){  
             if(response.length>0){
-              this.Producto = response[0];               
-              this.setFormValues(this.Producto);
+              var data = response;   
+              this.TblEscuadraItems=[];        
+              data.forEach(item=>{
+                this.TblEscuadraItems.push(
+                  {Id:item.id, Codigo:item.codigo,Descripcion:item.descripcion,Cantidad:item.cantidad } 
+                );
+              });
+               
+      
+
             }
           }
           this.spinner.hide();
@@ -142,7 +131,7 @@ export class FormProductoComponent implements OnInit {
         }
       );
    }
-  //ESTE METODO ASIGNA VALORES A TODOS LOS FORMULARIOS QUE SE MUESTRA
+ //#region ASIGNA VALORES A TODOS LOS FORMULARIOS QUE SE MUESTRA
    setFormValues(values:any) {
   // Seleccionar todos los elementos del formulario
   const formElements = document.querySelectorAll('#formularionuevoDetalleOP input, #formularionuevoDetalleOP select, #formularionuevoDetalleOP textarea');
@@ -252,20 +241,16 @@ case "UnidadMedida":(element as HTMLInputElement).value = values.unidadMedida; b
 case "Cantidad":(element as HTMLInputElement).value = values.cantidad; break;
 case "FechaProduccion": 
 const fechaString = values.fechaProduccion; 
-var fechaFormateada=fechaString;
-if(this.JsonItemHijo.producto.id==!""){
-  const partes = fechaString.split("/");
-  // Reorganizar las partes para que estén en el orden deseado (año-mes-día)
-    fechaFormateada = `${partes[2].split(" ")[0]}-${partes[1]}-${partes[0]}`;
+var fechaFormateada=fechaString; 
+if(  this.JsonItemHijo.producto.id!==""){  
+      fechaFormateada =this.formatearFecha(fechaString); 
 }
   (element as HTMLInputElement).value = fechaFormateada; break;
 case "FechaEntrega": 
 const fechaString2 = values.fechaEntrega;
-var fechaFormateada2=fechaString2;
-if(this.JsonItemHijo.producto.id==!""){ //APLICAR SOLO PARA PRODUCTOS EXISTENTES 
-const partes2 = fechaString2.split("/");
-// Reorganizar las partes para que estén en el orden deseado (año-mes-día)
-  fechaFormateada2 = `${partes2[2].split(" ")[0]}-${partes2[1]}-${partes2[0]}`;
+var fechaFormateada2=fechaString2; 
+if(this.JsonItemHijo.producto.id!==""){
+    fechaFormateada2 =this.formatearFecha(fechaString2); 
 }
   (element as HTMLInputElement).value = fechaFormateada2; 
 break;
@@ -305,7 +290,24 @@ break;
             
         }
       }
-  });
+  }); 
+  if(  this.JsonItemHijo.producto.id !=="" && values.escuadra !==""){     
+  this.labelPosition = values.escuadra; 
+  this.escuadraVisible = values.escuadra === "SI" ? true : false;
+  }else{
+    this.labelPosition =  "NO";
+  }
+  }
+  //#endregion
+  formatearFecha(fechainicial) {
+    // Dividir la fecha y la hora
+    const [datePart, timePart] = fechainicial.split(' ');
+    // Dividir la fecha en día, mes y año
+    const [day, month, year] = datePart.split('/');
+    // Crear un nuevo objeto Date
+    const date = new Date(Number(year), Number(month) - 1, Number(day));
+    // Formatear la fecha a 'yyyy-MM-dd'
+    return this.datePipe.transform(date, 'yyyy-MM-dd');
   }
     // Método para verificar si el valor está dentro del rango
     range(value: number, min: number, max: number, inclusive: boolean): boolean {
@@ -407,7 +409,7 @@ break;
 
     return rptAlturaCadena;
   }
-  //ESTE METODO OBTIENE DE TODOS LOS CAMPOS VISIBLES 
+  //#region   OBTIENE DE TODOS LOS CAMPOS VISIBLES 
     obtener(): void {   
   // Seleccionar todos los elementos del formulario
   const formElements = document.querySelectorAll('#formularionuevoDetalleOP input, #formularionuevoDetalleOP select, #formularionuevoDetalleOP textarea');
@@ -460,14 +462,9 @@ break;
           }
       }
   });
-  
-      const request: IAgregarUsuarioRequest = {
-      nombre: "",
-      correo: "", 
-      usuario:"",
-      idUnidadNegocio:"",
-    };
-      //this.dialogRef.close(request); 
+   
+    const userDataString = JSON.parse(localStorage.getItem('UserLog'));   
+    this.attributosProducto["IdUsuarioCrea"] = userDataString.id.toString();
     var itemsEcuadra=[];
     if(this.escuadraVisible==true){
       itemsEcuadra=  this.TblEscuadraItems;
@@ -478,7 +475,7 @@ break;
     );
 
     }
-    
+    //#endregion
     obtenerarticulos(tipo, subfamilia) {
       return this._productoService.ObtenerArticulo(tipo, subfamilia);
     }
@@ -1488,7 +1485,7 @@ case "CodigoMotor":this.listarCboMotor(tipoProducto);break;
     }
 
     //#endregion
-    labelPosition:boolean=false;
+    labelPosition:string="NO";
     //#region  MANTENIMIENTO ESCUADRA
     escuadraVisible: boolean = false;
     defaultDescription: string = "ESCUADRA (L) 6x14x2.5cm x 2.5mm - WHITE";
@@ -1500,7 +1497,7 @@ case "CodigoMotor":this.listarCboMotor(tipoProducto);break;
     TblEscuadraItems=[
       {Id:1, Codigo:"ACCRS00000505",Descripcion:"ESCUADRA (L) 6x14x2.5cm x 2.5mm - WHITE",Cantidad:"" }
     ];
-    chengeescuadra(event: string) {
+    chengeescuadra(event: string) { 
       this.escuadraVisible = event  === 'SI';
     }
    

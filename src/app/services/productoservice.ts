@@ -16,10 +16,13 @@ export class ProductoService {
     this.urlBase = `${environment.baseUrl}/api/`; 
   }
 
-  ObtenerProductoPorId(id:any): Observable<any>{
+  obtenerEscuadra(id:any): Observable<any>{
     return this.http.get(`${this.urlBase}Producto?id=`+id); 
   }
-    
+    /*
+  ObtenerProductoPorId(id:any): Observable<any>{
+    return this.http.get(`${this.urlBase}Producto?id=`+id); 
+  }*/
     GuardarProyecto(nombre:any ): Observable<IApiResponse>{  
         return this.http.post<IApiResponse>(  this.urlBase + 'Proyecto?nombreProyecto='+nombre,   {}   );
     }

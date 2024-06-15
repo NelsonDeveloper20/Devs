@@ -342,7 +342,10 @@ export class RegistroCotizacionsComponent implements OnInit {
       
       return; 
   }
-   this.Orden.idUsuarioCreacion="1";
+  
+  const userDataString = JSON.parse(localStorage.getItem('UserLog'));   
+  var idUser= userDataString.id.toString();
+   this.Orden.idUsuarioCreacion=idUser.toString();
   this.spinner.show();
   this._OrdenService.RegistrarOrden(this.Orden,  this.archivo)
     .subscribe({
@@ -634,6 +637,7 @@ AgregarAmbiente() {
     dialogConfig.autoFocus = true; 
     dialogConfig.panelClass = 'custom-dialog-container';
     //const cadenaCompleta = 'PRTRS0054'; 
+    
     const dataToSend = { 
       producto: producto,
       Cotizacion: this.selectedState.numero, 
