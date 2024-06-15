@@ -42,7 +42,6 @@ export class RegistroCotizacionsComponent implements OnInit {
   ruc: string;
   cliente: string;
   fechaSap: Date;
-  matriz: string;
   subNivel: string;
   constructor(
     private http: HttpClient,
@@ -329,7 +328,7 @@ export class RegistroCotizacionsComponent implements OnInit {
   //Orden: ITblOrdenProduccion={};
   Orden: ITblOrdenProduccion = {} as ITblOrdenProduccion;
   Guardar(){
-    if (!this.selectedState.numero){ // || !this.tipoCliente || !this.total || !this.nombreProyecto || !this.destino || !this.tipoOperacion || !this.ruc || !this.cliente || !this.fechaSap || !this.matriz || !this.subNivel) {
+    if (!this.selectedState.numero){ 
      this.toaster.open({
     text: "Por favor, complete todos los campos antes de guardar.",
     caption: 'Mensaje',
@@ -419,7 +418,7 @@ switch(respuesta){
 AgregarAmbiente() { 
   
    
-  if (!this.selectedState?.numero){ // || !this.tipoCliente || !this.total || !this.nombreProyecto || !this.destino || !this.tipoOperacion || !this.ruc || !this.cliente || !this.fechaSap || !this.matriz || !this.subNivel) {
+  if (!this.selectedState?.numero){ 
     this.toaster.open({
    text: "Por favor, selecciona la cotizacion",
    caption: 'Mensaje',

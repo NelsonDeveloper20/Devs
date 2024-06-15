@@ -26,8 +26,8 @@ export type ITblOrdenProduccion = {
     idDestino?: string;
     idTipoPeracion?: string;
     idProyecto?: string;
-    matriz?: string;
-    subMatriz?: string;
+    nivel?: string;
+    subNivel?: string;
     codigoVendedor?: string;
     nombreVendedor?: string;
     idEstado?: string;
@@ -64,8 +64,8 @@ export interface TblOrdenProduccion {
     idDestino: string;
     idTipoPeracion: string;
     idProyecto: string;
-    matriz?: string;
-    subMatriz?: string;
+    nivel?: string;
+    subNivel?: string;
     codigoVendedor?: string;
     nombreVendedor?: string;
     idEstado: string;
