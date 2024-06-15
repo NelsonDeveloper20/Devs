@@ -108,6 +108,35 @@ private toaster: Toaster,
         }
   
         }
+        if(lowerKey=="IdTbl_Ambiente".toLowerCase() && value==""){
+          this.toaster.open({
+            text: "el dato Indice Agrupado es obligatorio",
+            caption: 'Mensaje',
+            type: 'danger',
+          });
+            validacion++;
+        }else if(lowerKey=="FechaProduccion".toLowerCase() && value==""){
+          this.toaster.open({
+            text: "el dato "+lowerKey+ " es obligatorio",
+            caption: 'Mensaje',
+            type: 'danger',
+          });
+            validacion++;
+        }else if(lowerKey=="FechaEntrega".toLowerCase() && value==""){
+          this.toaster.open({
+            text: "el dato "+lowerKey+ " es obligatorio",
+            caption: 'Mensaje',
+            type: 'danger',
+          });
+            validacion++;
+        }else if(lowerKey=="Turno".toLowerCase() && value.toString().replace("--Seleccione--","")==""){
+          this.toaster.open({
+            text: "el dato "+lowerKey+ " es obligatorio",
+            caption: 'Mensaje',
+            type: 'danger',
+          });
+            validacion++;
+        }
       });
       if(validacion==0){
         this.RegistrarProducto(this.jsonProductoItemDelHijo);
@@ -122,8 +151,7 @@ private toaster: Toaster,
    RegistrarProducto(data){
     //this.dialogRef.close(this.jsonProductoItemDelHijo);
     data.Formulario.NumeroCotizacion =  this.Cotizacion;
-    data.Formulario.CodigoSisgeco = this.CodigoSisgeco;
-    // Y así sucesivamente... 
+    data.Formulario.CodigoSisgeco = this.CodigoSisgeco; 
     
     console.log(JSON.stringify(data));
     this.spinner.show(); 

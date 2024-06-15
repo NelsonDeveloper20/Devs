@@ -83,6 +83,13 @@ export class FormProductoComponent implements OnInit {
      
       if(this.JsonItemHijo.producto.id!="" && this.JsonItemHijo.producto.escuadra=="SI"){        
         this.ObtenerEcuadra(this.IdProducto);   
+    this.labelPosition = this.JsonItemHijo.producto.escuadra; 
+    this.escuadraVisible = this.JsonItemHijo.producto.escuadra === "SI" ? true : false; 
+
+      }else{
+        this.escuadraVisible=false;
+        this.labelPosition =  "NO";
+
       }
     }
     ngAfterViewInit() {
@@ -110,16 +117,22 @@ export class FormProductoComponent implements OnInit {
       .obtenerEscuadra(id)
       .subscribe(
         (response) => { 
+          console.log("OBTIENE");
+          console.log(response);
           if(response){  
+console.log("entra");
             if(response.length>0){
               var data = response;   
-              this.TblEscuadraItems=[];        
+              this.TblEscuadraItems=[];   
+              var ids=0;     
               data.forEach(item=>{
+                ids++;
                 this.TblEscuadraItems.push(
-                  {Id:item.id, Codigo:item.codigo,Descripcion:item.descripcion,Cantidad:item.cantidad } 
+                  {Id:ids, Codigo:item.codigo,Descripcion:item.descripcion,Cantidad:item.cantidad } 
                 );
               });
-               
+               console.log("llenado");
+               console.log(this.TblEscuadraItems);
       
 
             }
@@ -291,12 +304,6 @@ break;
         }
       }
   }); 
-  if(  this.JsonItemHijo.producto.id !=="" && values.escuadra !==""){     
-  this.labelPosition = values.escuadra; 
-  this.escuadraVisible = values.escuadra === "SI" ? true : false;
-  }else{
-    this.labelPosition =  "NO";
-  }
   }
   //#endregion
   formatearFecha(fechainicial) {
@@ -1499,6 +1506,11 @@ case "CodigoMotor":this.listarCboMotor(tipoProducto);break;
     ];
     chengeescuadra(event: string) { 
       this.escuadraVisible = event  === 'SI';
+      if(event=="NO"){
+        this.TblEscuadraItems=[
+          {Id:1, Codigo:"ACCRS00000505",Descripcion:"ESCUADRA (L) 6x14x2.5cm x 2.5mm - WHITE",Cantidad:"" }
+        ];
+      }
     }
    
     updateDescription(event: any, item: any) {
