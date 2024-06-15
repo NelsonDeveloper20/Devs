@@ -156,7 +156,7 @@ export class FormProductoComponent implements OnInit {
            
           switch (attributeName) {
           //::::::::::::::::::::::::::::::::::::...COMBOS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-case "Index": (element as HTMLSelectElement).value = values.index;  break;
+case "IndexDetalle": (element as HTMLSelectElement).value = values.indexDetalle;  break;
 case "IndiceAgrupacion": (element as HTMLSelectElement).value = values.indiceAgrupacion;  break;
 case "IdTbl_Ambiente": (element as HTMLSelectElement).value = values.idTbl_Ambiente;  break;
 
