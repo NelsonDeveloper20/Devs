@@ -698,6 +698,10 @@ AgregarAmbiente() {
 
   RegistrarProductoComponente(data){ 
     const capitalizedJson = this.capitalizeKeys(data);
+    const userDataString = JSON.parse(localStorage.getItem('UserLog'));   
+    var idUser= userDataString.id.toString();
+    capitalizedJson["IdUsuarioCrea"]=idUser;
+    console.log(capitalizedJson);
     this.spinner.show(); 
     this._OrdenService.RegistrarDetalleOrdenProduccionComponente(capitalizedJson,"Componente")
       .subscribe({

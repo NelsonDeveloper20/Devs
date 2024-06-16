@@ -28,5 +28,9 @@ export class SupervisionService {
     return this.http.get<any>(`${this.urlBase}Supervision?numeroCotizacionGrupo=`+numeroCotizacionGrupo);
   }
    
+  AplicarAprobacion(item :any): Observable<IApiResponse> { 
+    const headers = { 'Content-Type': 'application/json-patch+json' };
+    return this.http.post<IApiResponse>(this.urlBase + 'Supervision',item,{ headers: headers });
+  }
 
 }

@@ -115,15 +115,18 @@ Swal.fire(
 
    
  
+ 
   AbriConfirmacion(item:any){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;  
     const dataToSend = {  
+      id:item.id,
       turno: item.turno,   
       fechaProduccion: item.fechaProduccion,
       cotizacion: item.numeroCotizacion,
-      grupo: item.cotizacionGrupo
+      grupo: item.cotizacionGrupo,
+      solicitante:item.idUsuarioCrea,
     };
     dialogConfig.data = dataToSend; 
     dialogConfig.width ='804px';
@@ -137,7 +140,8 @@ Swal.fire(
           type: 'success',
           position: 'bottom-right',
           //duration: 4000
-        });  
+        });   
+        this.ListarOp();
        }
     },
     error: error => { 
@@ -150,5 +154,82 @@ Swal.fire(
         });
       }
     });
+  }
+  AplicarRechazo(item:any){
+    const userDataString = JSON.parse(localStorage.getItem('UserLog'));   
+    var idUser= userDataString.id.toString();
+      var requests = { 
+          id:item.id,
+          CotizacionGrupo:item.cotizacionGrupo,
+          TurnoInicial:item.turno,
+          TurnoCambio:item.turno,
+          FechProdInicial:item.fechaProduccion,
+          FechaProdCambio:item.fechaProduccion,
+          IdUsuario:idUser,
+          IdUsuarioSolicita:item.idUsuarioCrea,
+          NumeroCotizacion:item.numeroCotizacion,
+          Estado:"Rechazado"
+  
+      }
+    Swal.fire({
+      allowOutsideClick: false,
+      title: "¿Desea Rechazar?",
+      html: `¿Esta seguro que desea rechazar el grupo?`,
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonText: 'Si, Rechazar',
+      cancelButtonText: 'Cancelar',
+    })
+      .then((result) => {
+        if (result.isConfirmed) {            
+    this.spinner.show();
+    this._service.AplicarAprobacion(requests)
+    .subscribe({
+      next: response => {
+        this.spinner.hide();
+        if (response.status == 200) { 
+              const respuesta = response.json.respuesta;
+              if(respuesta=="OK"){ 
+                this.toaster.open({
+                  text: "Grupo Rechazado",
+                  caption: 'Mensaje',
+                  type: 'success',
+                  position: 'bottom-right',
+                  //duration: 4000
+                });  
+                this.ListarOp();
+              }else{
+                this.toaster.open({
+                  text: respuesta,
+                  caption: 'Mensaje',
+                  type: 'danger',
+                  // duration: 994000
+                }); 
+              }    
+          }else{
+            this.toaster.open({
+              text: "Ocurrio un error al enviar",
+              caption: 'Mensaje',
+              type: 'danger',
+              // duration: 994000
+            }); 
+          }
+      },
+      error: error => {
+        this.spinner.hide();
+        var errorMessage = error.message;
+        console.error('There was an error!', error);
+        this.toaster.open({
+          text: errorMessage,
+          caption: 'Ocurrio un error',
+          type: 'danger',
+          // duration: 994000
+        });
+      }
+    });
+        }else{
+          
+        }
+      });
   }
 }
