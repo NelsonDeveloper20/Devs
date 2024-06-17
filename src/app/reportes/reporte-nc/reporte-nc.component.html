@@ -91,7 +91,12 @@
           <div class="row">
               <div class="col-lg-12">
                   <div class="card">
-                      <div class="card-body">
+                      <div class="card-body"> 
+                        <div class="example-button-row">  
+                          <button mat-flat-button color="accent"  style="    margin: 6px;" class="btn btn-primary" (click)="exportToExcel()">Exportar a Excel</button>
+                          <button mat-flat-button color="warn"  style="    margin: 6px;" class="btn btn-success" (click)="exportToPDF()">Exportar a PDF<mat-icon>picture_as_pdf</mat-icon></button> 
+                        </div>
+
                           <div class="table-responsive">
                 
               <section class="example-containerss" tabindex="0">

@@ -7,6 +7,7 @@ import { NavigationExtras, Router } from '@angular/router';
 import { IUsersResponse, Solicitud, Solicitud2, SolicitudReporteResponse, Usuario } from 'src/app/services/request.model';
 import { RequestService } from 'src/app/services/request.service';
 import * as XLSX from 'xlsx'; 
+  
 
 import { environment } from 'src/environments/environment'; 
 import { HttpClient } from '@angular/common/http';
@@ -16,6 +17,7 @@ import Swal from 'sweetalert2';
 import { OrdenproduccionGrupoService } from 'src/app/services/ordenproducciongrupo.service';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DetalleProductosComponent } from 'src/app/solicitud-pendiente/detalle-productos/detalle-productos.component';
+import jsPDF from 'jspdf';
 export interface ElementoTabla {
   cotizacion: number;
   codOp: string;
@@ -37,33 +39,7 @@ export interface ElementoTabla {
 })
 export class ReporteNCComponent implements OnInit {
   displayedColumns: string[] = ['cotizacion', 'codOp', 'OpGrupo','nombreProyecto', 'estadoOp', 'tipoOperacion', 'ruc', 'nombreCliente', 'fechaCreacion', 'fechaFin', 'acciones', 'estado'];
-  ELEMENT_DATA= [
-    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
-    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
-    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
-    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
-    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
-    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
-    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
-    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
-    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
-    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
-    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
-    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
-    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
-    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
-    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
-    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
-    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
-    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
-    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
-    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
-    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
-    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
-    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
-    {  cotizacion: 25418,  codOp: '025418',  nombreProyecto: 'Prueba PR',  estadoOp: 'Pendiente Operaciones',  tipoOperacion: 'Consumo Interno',  ruc: 'Finales',  nombreCliente: '20565641281',  fechaCreacion: '27-04-2024',  fechaFin: '27-04-2024',  id: 14625},
-    // Agrega más elementos según sea necesario
-  ];
+ 
   dataSource=new MatTableDataSource<any>();//this.ELEMENT_DATA
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -262,19 +238,43 @@ export class ReporteNCComponent implements OnInit {
 
  
   } */
-  //usuario: Array<User> = [];
-  usuario: Usuario[] = [];
-  getuser() {
-    this.spinner.show();
-    this.requestService.getusuarios().subscribe(
-      (response: IUsersResponse) => {
-        this.spinner.hide();
-        this.usuario = response;
-      },
-      () => {
-        this.spinner.hide();
-      }
-    );
-  } 
+    exportToExcel() {
+      const dataToExport = this.dataSource.data.map(row => ({
+        'N° Cotiz': row.numeroCotizacion,
+        'COD OP': row.codigoSisgeco,
+        'Grupo OP': row.cotizacionGrupo,
+        'Nombre Proyecto': row.nombreProyecto,
+        'Estado OP': row.estadoOp,
+        'Tipo de Operación': row.tipoOperacion,
+        'RUC': row.rucCliente,
+        'Nombre Cliente': row.nombreCliente,
+        'Fec. Creación OP': new Date(row.fechaCreacion).toLocaleDateString() + ' ' + new Date(row.fechaCreacion).toLocaleTimeString(),
+        'Fec. Producción': new Date(row.fechaProduccion).toLocaleDateString() + ' ' + new Date(row.fechaProduccion).toLocaleTimeString()
+      }));
+      const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(dataToExport);
+      const wb: XLSX.WorkBook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+      XLSX.writeFile(wb, 'DataSheet.xlsx');
+    }
+  
+    exportToPDF() {
+      const doc = new jsPDF();
+      const col = ['N° Cotiz', 'COD OP', 'Grupo OP', 'Nombre Proyecto', 'Estado OP', 'Tipo de Operación', 'RUC', 'Nombre Cliente', 'Fec. Creación OP', 'Fec. Producción'];
+      const rows = this.dataSource.data.map(row => [
+        row.numeroCotizacion,
+        row.codigoSisgeco,
+        row.cotizacionGrupo,
+        row.nombreProyecto,
+        row.estadoOp,
+        row.tipoOperacion,
+        row.rucCliente,
+        row.nombreCliente,
+        new Date(row.fechaCreacion).toLocaleDateString() + ' ' + new Date(row.fechaCreacion).toLocaleTimeString(),
+        new Date(row.fechaProduccion).toLocaleDateString() + ' ' + new Date(row.fechaProduccion).toLocaleTimeString()
+      ]);
+  
+      (doc as any).autoTable(col, rows);
+      doc.save('DataSheet.pdf');
+    }
 }
 
