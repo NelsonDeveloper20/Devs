@@ -52,36 +52,23 @@ export class LayoutComponent implements OnInit {
     console.log('Received ID:', this.id);
     // Puedes realizar más acciones con el id aquí
     //this.generarPDF2();
-  }
-  groupData(): void {
-    this.groups = _.countBy(this.DatosJson2, (val) => val.indiceAgrupacion);
-    this.arrayKeysGroups = Object.keys(this.groups);
-    console.log(this.groups);
-    console.log(this.arrayKeysGroups);
-  }
-  /*
-  groups2: any;
-  arrayKeysGroups2: string[];
-  groupData2(): void {
-    this.groups2 = this.DatosJson.reduce((acc, val) => {
-      acc[val.indiceAgrupacion] = (acc[val.indiceAgrupacion] || 0) + 1;
-      return acc;
-    }, {});
-    this.arrayKeysGroups2 = Object.keys(this.groups2);
-    console.log("SEGUNDO SIN INSLACION:==========>");
-    console.log(this.groups2);
-    console.log(this.arrayKeysGroups2);
-  }*/
- 
+  } 
   DatosJson2:any=[];
   ObtenerLayout(cotizacionGrupo: any) {
     this.spinner.show();
     this.ordenproduccionGrupoService.ObtenerLayout(cotizacionGrupo).subscribe(
       (data: any) => {
         if (data && data.status === 200) { 
+          console.log(data.json);
           this.DatosJson2 = data.json;
           this.spinner.hide(); 
           //this.groupData();
+          this.html='';         
+        this.countercentral=0;
+        this.counter=0;
+        this.totalPaGina=0;
+        this.paginas=0;
+          this.htmlCabezal = '';
           this.GenerarLayout();
         } else {
           this.spinner.hide();
@@ -140,8 +127,7 @@ export class LayoutComponent implements OnInit {
         window.open(url);
       });
   }
- 
-  hosstnamee: any;
+  
   //containerTable: any;
   cantElement: number = 7;
   cantSubArray: number; 
@@ -160,6 +146,7 @@ export class LayoutComponent implements OnInit {
 
   @ViewChild('layout') contenthtml: ElementRef;
   GenerarLayout() {  
+
     this.spinner.show();
 // Obtén el primer elemento del array, si es necesario
 const primerElemento = this.DatosJson2[0];
@@ -216,7 +203,7 @@ for (let i = 0; i < this.cantSubArray; i++) {
         //}
     }
 
-    // Asignar el HTML generado al elemento del DOM
+    // Asignar el HTML generado al elemento del DOM 
     this.contenthtml.nativeElement.innerHTML = this.html;
     this.spinner.hide();
     this.generarPDF2();
@@ -1206,187 +1193,5 @@ for (let i = 0; i < this.cantSubArray; i++) {
     return html;*/
   }
   //ENDS
-
- /*
-  DatosJson2 = [
-    {
-      tubos_f: 1.277,
-      tela_f: 1.276,
-      altura_f: 2.25,
-      id_detalle_op: 56982,
-      cliente: "JOSE CARLO FIGUEROA BARBA",
-      tipo: "Distribucion",
-      Cod_prod_sisgeco: "PRTRSB176",
-      Nombre_Producto_Sisgeco: "ROLLER SHADE II SCREEN 5% | CHALK",
-      unidad_medida: "MTK",
-      Familia: "PRT",
-      SubFamilia: "RS",
-      cantidad: 2.665,
-      alto_ini_sisgeco: 2.05,
-      ancho_ini_sisgeco: 1.3,
-      alto: 2.05,
-      ancho: 1.3,
-      altura_cadena: 3.2,
-      accionamiento: "Manual",
-      id_accionamiento: 1,
-      Nro_motores: 0,
-      Marca_Motor: "NULL",
-      Nom_Tubo: "TUBO DE ALUMINIO 38mm | 1-1\/2' (Grueso) : PALRS00000003",
-      Mando: "Izquierda",
-      indice_agrupacion: 1,
-      Ambiente: 1,
-      Turno: "Día",
-      fecha_produccion: "2024-01-09",
-      nota: "  ,  ,  ,  ,  ,  ,  ,  ,  ",
-      tela: "TELRS00000176",
-      nomb_tela: "TELA SCREEN (CH) 5% 3.0M - COLOR: CHALK : TELRS00000176",
-      mando_adaptador: "No",
-      lleva_baston: "No",
-      soport_central: 0,
-      soporteCentral: "No",
-      Tipo_Mec: "NULL",
-      Modelo_Mec: "NULL",
-      Riel: "CLASSIC",
-      Tipo_Instal: "TECHO",
-      Tipo_Cadena: "Plastico",
-      Cassete: "NULL",
-      Tipo_Sop_Central: "NULL",
-      Tipo_Caida: "ADENTRO",
-      Tipo_Superior: "NULL",
-      Lamina: "NULL",
-      Cadena_Inf: "NULL",
-      Mando_Cordon: "NULL",
-      Mando_Baston: "NULL",
-      Cruzeta: "NULL",
-      L_Baston: 0,
-      Apertura: "NULL",
-      Tubo_medida: 1.275,
-      Tela_medida: 1.274,
-      Altura_medida: 2.25,
-      numero_cotizacion: "023741",
-      cabezales: 0,
-      tipoToldo: 0,
-      direccion: "AV. VENEZUELA NRO. 2379 INT. 218 URB. CC. BELLAVISTA",
-      telefono: 5621115,
-      vendedor: "CRISTINA MUNOZ",
-      fecha_fabricacion: "2024-01-09",
-      central: "SI",
-      central_index: "SI",
-      index_detalle: 1,
-      area: 2.665,
-      Destino: "Entrega planta",
-      Tipo_OP: "Venta",
-      fecha_entrega: "2024-01-09",
-      fechaimpresion: "2024-05-23",
-      Escuadra: "NO",
-    },
-    {
-      tubos_f: 1.937,
-      tela_f: 1.936,
-      altura_f: 2.25,
-      id_detalle_op: 56983,
-      cliente: "JOSE CARLO FIGUEROA BARBA",
-      tipo: "Distribucion",
-      Cod_prod_sisgeco: "PRTRSB176",
-      Nombre_Producto_Sisgeco: "ROLLER SHADE II SCREEN 5% | CHALK",
-      unidad_medida: "MTK",
-      Familia: "PRT",
-      SubFamilia: "RS",
-      cantidad: 4.018,
-      alto_ini_sisgeco: 2.05,
-      ancho_ini_sisgeco: 1.96,
-      alto: 2.05,
-      ancho: 1.96,
-      altura_cadena: 3.2,
-      accionamiento: "Manual",
-      id_accionamiento: 1,
-      Nro_motores: 0,
-      Marca_Motor: "NULL",
-      Nom_Tubo: "TUBO DE ALUMINIO 38mm | 1-1\/2' (Grueso) : PALRS00000003",
-      Mando: "Derecha",
-      indice_agrupacion: 1,
-      Ambiente: 1,
-      Turno: "Día",
-      fecha_produccion: "2024-01-09",
-      nota: "  ,  ,  ,  ,  ,  ,  ,  ,  ",
-      tela: "TELRS00000176",
-      nomb_tela: "TELA SCREEN (CH) 5% 3.0M - COLOR: CHALK : TELRS00000176",
-      mando_adaptador: "No",
-      lleva_baston: "No",
-      soport_central: 0,
-      soporteCentral: "No",
-      Tipo_Mec: "NULL",
-      Modelo_Mec: "NULL",
-      Riel: "CLASSIC",
-      Tipo_Instal: "TECHO",
-      Tipo_Cadena: "Plastico",
-      Cassete: "NULL",
-      Tipo_Sop_Central: "NULL",
-      Tipo_Caida: "ADENTRO",
-      Tipo_Superior: "NULL",
-      Lamina: "NULL",
-      Cadena_Inf: "NULL",
-      Mando_Cordon: "NULL",
-      Mando_Baston: "NULL",
-      Cruzeta: "NULL",
-      L_Baston: 0,
-      Apertura: "NULL",
-      Tubo_medida: 1.935,
-      Tela_medida: 1.934,
-      Altura_medida: 2.25,
-      numero_cotizacion: "023741",
-      cabezales: 0,
-      tipoToldo: 0,
-      direccion: "AV. VENEZUELA NRO. 2379 INT. 218 URB. CC. BELLAVISTA",
-      telefono: 5621115,
-      vendedor: "CRISTINA MUNOZ",
-      fecha_fabricacion: "2024-01-09",
-      central: "NO",
-      central_index: "SI",
-      index_detalle: 2,
-      area: 4.018,
-      Destino: "Entrega planta",
-      Tipo_OP: "Venta",
-      fecha_entrega: "2024-01-09",
-      fechaimpresion: "2024-05-23",
-      Escuadra: "NO",
-    },
-  ];*/
 }
-
-/*
-
-  generarPDF() {
-    const options = {
-      // Nombre del archivo PDF resultante
-      filename: 'documento.pdf',  
-      // Opciones relacionadas con la calidad y tipo de las imágenes incrustadas
-      image: {
-          // Tipo de imagen (jpeg, png, etc.)
-          type: 'jpeg',
-          // Calidad de la imagen (valor entre 0 y 1)
-          quality: 0.98
-      },  
-      // Opciones específicas para la biblioteca html2canvas
-      html2canvas: {
-          // Escala de la página (afecta la resolución de la imagen)
-          scale: 2
-      },  
-      // Opciones específicas para la biblioteca jsPDF
-      jsPDF: {
-          // Unidad de medida para el documento PDF (in, mm, pt, etc.)
-          unit: 'in',
-          // Formato del papel (letter, a4, etc.)
-          format: 'a4',
-          // Orientación del papel (portrait para vertical, landscape para horizontal)
-          orientation: 'landscape'
-      }
-  };
-
-    const content = this.content.nativeElement;
-
-    html2pdf()
-      .from(content)
-      .set(options)
-      .outputPdf('dataurlnewwindow');
-  }*/
+ 

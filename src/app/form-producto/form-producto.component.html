@@ -119,7 +119,7 @@
    <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['tela'].visible !== 0"  id="reg_cont_tela" >
        <label>Tela <span *ngIf="objConfiguracionAtributos[TipoProducto]['tela'].required === 1"  class="requerid_css">*</span></label>
        <select   class="form-control"  id="tela" name="CodigoTela" (change)="ChangeTela($event)" [required]="objConfiguracionAtributos[TipoProducto]['tela'].required === 1">
-        <option *ngFor="let opcion of CboTela" [value]="opcion.codigo">{{ opcion.nombre }}</option>
+        <option *ngFor="let opcion of CboTela" [value]="opcion.codigo">{{ opcion.nombre }} : {{opcion.codigo}}</option>
        </select>       
        <input class="form-control" type="text"  id="Tela" name="Tela" readonly style="display: none;" *ngIf="objConfiguracionAtributos[TipoProducto]['tela'].visible !== 0">  
    </div>
@@ -137,7 +137,7 @@
    <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['tubo'].visible !== 0"  id="reg_cont_tubo" >
        <label>Tubo <span *ngIf="objConfiguracionAtributos[TipoProducto]['tubo'].required === 1"  class="requerid_css">*</span></label>
        <select class="form-control"  id="nomb_tubo" name="CodigoTubo"  [required]="objConfiguracionAtributos[TipoProducto]['tubo'].required === 1" (change)="ChangeTubo($event)">	
-        <option *ngFor="let opcion of CboNombreTubo" [value]="opcion.codigo">{{ opcion.nombre }}</option>		                        	
+        <option *ngFor="let opcion of CboNombreTubo" [value]="opcion.codigo">{{ opcion.nombre }} : {{opcion.codigo}}</option>		                        	
        </select> 
        <input class="form-control" type="text"  id="NombreTubo" name="NombreTubo" readonly style="display: none;" *ngIf="objConfiguracionAtributos[TipoProducto]['tubo'].visible !== 0">  
    </div>
@@ -185,7 +185,7 @@
    <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['nombreMotor'].visible !== 0"  id="reg_cont_nomb_motor" >
        <label>Motor</label>
        <select  class="form-control controlMotor form-control-chosen-nomb_motor"   id="nomb_motor" name="CodigoMotor"  (change)="cancheCbopNombreMotor($event)" >
-        <option *ngFor="let opcion of CboMotor" [value]="opcion.codigo">{{ opcion.nombre }}</option>
+        <option *ngFor="let opcion of CboMotor" [value]="opcion.codigo">{{ opcion.nombre }} : {{opcion.codigo}}</option>
     </select>
     <input class="form-control" type="text"  id="Motor" name="Motor" readonly style="display: none;" *ngIf="objConfiguracionAtributos[TipoProducto]['nombreMotor'].visible !== 0">  
    </div>  
@@ -218,8 +218,7 @@
        <select class="form-control" id="tipo_cadena" name="TipoCadena" (change)="listarCboCodigoCadena($event,'html')" [required]="objConfiguracionAtributos[TipoProducto]['tipoCadena'].required === 1">
        <option *ngFor="let opcion of CboTipoCadena" [value]="opcion.nombre">{{ opcion.nombre }}</option>
         </select>
-   </div>
-   
+   </div> 
    <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['codcadena'].visible !== 0"  id="edi_cont_CadenaCod_c">
    <label>Cod Cadena <span *ngIf="objConfiguracionAtributos[TipoProducto]['codcadena'].required === 1"  class="requerid_css">*</span></label>
    <select class="form-control" id="CadenaCod" name="CodigoCadena"  [required]="objConfiguracionAtributos[TipoProducto]['codcadena'].required === 1" (change)="ChangeCadena($event)"> 

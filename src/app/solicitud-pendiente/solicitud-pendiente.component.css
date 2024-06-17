@@ -19,3 +19,16 @@
   border-radius: 9px !important;
   font-weight: 600;
 }
+ 
+.search-input {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1 !important;
+  background-color: white  !important; /* Opcional: para asegurarse de que el campo de búsqueda esté sobre el contenido de la tabla */
+
+  
+  width: 100% !important;
+    padding: 8px !important;
+    border: 1px solid #ccc !important;
+    border-radius: 4px !important;
+}

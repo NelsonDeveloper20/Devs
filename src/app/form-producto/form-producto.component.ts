@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'; 
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core'; 
 import { ObjConfigs } from '../configuration';
 import { ProductoService } from '../services/productoservice';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -57,7 +57,9 @@ export class FormProductoComponent implements OnInit {
   TipoProducto:string=""; 
   constructor(private datePipe: DatePipe,
     private spinner: NgxSpinnerService,
-    private _productoService: ProductoService) {
+    private _productoService: ProductoService,private cdr: ChangeDetectorRef
+  
+  ) {
     
     this.tiposProducto = this.getTiposProducto(); 
   } 
@@ -144,7 +146,7 @@ console.log("entra");
         }
       );
    }
- //#region ASIGNA VALORES A TODOS LOS FORMULARIOS QUE SE MUESTRA
+ //#region ASIGNA VALORES A TODOS LOS FORMULARIOS QUE SE MUESTRA:::::::::::::::::::::::::::::::::::::::::::::::
    setFormValues(values:any) {
   // Seleccionar todos los elementos del formulario
   const formElements = document.querySelectorAll('#formularionuevoDetalleOP input, #formularionuevoDetalleOP select, #formularionuevoDetalleOP textarea');
@@ -158,19 +160,19 @@ console.log("entra");
            
           switch (attributeName) {
           //::::::::::::::::::::::::::::::::::::...COMBOS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-case "IndexDetalle": (element as HTMLSelectElement).value = values.indexDetalle;  break;
-case "IndiceAgrupacion": (element as HTMLSelectElement).value = values.indiceAgrupacion;  break;
+case "IndexDetalle": (element as HTMLSelectElement).value = element.value = values.indexDetalle ? values.indexDetalle : "0";  break;
+case "IndiceAgrupacion": (element as HTMLSelectElement).value =element.value = values.indiceAgrupacion ? values.indiceAgrupacion : "0";  break;
 case "IdTbl_Ambiente": (element as HTMLSelectElement).value = values.idTbl_Ambiente;  break;
 
-case "Ambiente": (element as HTMLSelectElement).value = values.ambiente;  break;
-case "Turno":  (element as HTMLSelectElement).value = values.turno; 
+case "Ambiente": (element as HTMLSelectElement).value = element.value = values.ambiente ? values.ambiente : "--Seleccione--";  break;
+case "Turno":  (element as HTMLSelectElement).value = element.value = values.turno ? values.turno : "--Seleccione--"; 
 break;
-case "CodigoTela": (element as HTMLSelectElement).value = values.codigoTela;  break;
-case "SoporteCentral": (element as HTMLSelectElement).value = values.soporteCentral;  break;
-case "TipoSoporteCentral": (element as HTMLSelectElement).value = values.tipoSoporteCentral;  break;
-case "Caida": (element as HTMLSelectElement).value = values.caida;  break;
-case "Accionamiento": (element as HTMLSelectElement).value = values.accionamiento;  break;
-case "CodigoTubo": (element as HTMLSelectElement).value = values.codigoTubo; 
+case "CodigoTela": (element as HTMLSelectElement).value = element.value = values.codigoTela ? values.codigoTela : "--Seleccione--";  break;
+case "SoporteCentral": (element as HTMLSelectElement).value = element.value = values.soporteCentral ? values.soporteCentral : "--Seleccione--";  break;
+case "TipoSoporteCentral": (element as HTMLSelectElement).value = element.value = values.tipoSoporteCentral ? values.tipoSoporteCentral : "--Seleccione--";  break;
+case "Caida": (element as HTMLSelectElement).value = element.value = values.caida ? values.caida : "--Seleccione--";  break;
+case "Accionamiento": (element as HTMLSelectElement).value = element.value = values.accionamiento ? values.accionamiento : "--Seleccione--";  break;
+case "CodigoTubo": (element as HTMLSelectElement).value = element.value = values.codigoTubo ? values.codigoTubo : "--Seleccione--"; 
  
   $('#nomb_tubo').select2({
     placeholder: '--Seleccione--'
@@ -180,35 +182,35 @@ case "CodigoTubo": (element as HTMLSelectElement).value = values.codigoTubo;
     this.ChangeTubo(event);
   }); 
 break;
-case "Mando": (element as HTMLSelectElement).value = values.mando;  break;
-case "TipoMecanismo": (element as HTMLSelectElement).value = values.tipoMecanismo;  break;
-case "ModeloMecanismo": (element as HTMLSelectElement).value = values.modeloMecanismo;  break;
-case "TipoCadena": (element as HTMLSelectElement).value = values.tipoCadena;  break;
-case "CodigoCadena": (element as HTMLSelectElement).value = values.codigoCadena;  break;
-case "TipoRiel": (element as HTMLSelectElement).value = values.tipoRiel;  break;
-case "TipoInstalacion": (element as HTMLSelectElement).value = values.tipoInstalacion;  break;
-case "CodigoRiel": (element as HTMLSelectElement).value = values.codigoRiel;  break;
-case "TipoCassete": (element as HTMLSelectElement).value = values.tipoCassete;  break;
-case "Lamina": (element as HTMLSelectElement).value = values.lamina;  break;
-case "Apertura": (element as HTMLSelectElement).value = values.apertura;  break;
-case "ViaRecogida": (element as HTMLSelectElement).value = values.viaRecogida;  break;
-case "TipoSuperior": (element as HTMLSelectElement).value = values.tipoSuperior;  break;
-case "CodigoBaston": (element as HTMLSelectElement).value = values.codigoBaston;  break; 
-case "NumeroVias": (element as HTMLSelectElement).value = values.numeroVias;  break;
-case "TipoCadenaInferior": (element as HTMLSelectElement).value = values.tipoCadenaInferior;  break;
-case "MandoCordon": (element as HTMLSelectElement).value = values.mandoCordon;  break;
-case "MandoBaston": (element as HTMLSelectElement).value = values.mandoBaston;  break;
-case "CodigoBastonVarrilla": (element as HTMLSelectElement).value = values.codigoBastonVarrilla;  break;
-case "Cabezal": (element as HTMLSelectElement).value = values.cabezal;  break;
-case "CodigoCordon": (element as HTMLSelectElement).value = values.codigoCordon;  break;
-case "CodigoCordonTipo2": (element as HTMLSelectElement).value = values.codigoCordonTipo2;  break;
-case "Cruzeta": (element as HTMLSelectElement).value = values.cruzeta;  break;
-case "Dispositivo": (element as HTMLSelectElement).value = values.dispositivo;  break;
-case "CodigoControl": (element as HTMLSelectElement).value = values.codigoControl;  break;
-case "CodigoSwitch": (element as HTMLSelectElement).value = values.codigoSwitch;  break;
-case "LlevaBaston": (element as HTMLSelectElement).value = values.llevaBaston;  break;
-case "MandoAdaptador": (element as HTMLSelectElement).value = values.mandoAdaptador;  break;
-case "CodigoMotor": (element as HTMLSelectElement).value = values.codigoMotor; 
+case "Mando":(element as HTMLSelectElement).value = element.value = values.mando ? values.mando : "--Seleccione--" ;  break;
+case "TipoMecanismo": (element as HTMLSelectElement).value = element.value = values.tipoMecanismo ? values.tipoMecanismo : "--Seleccione--";  break;
+case "ModeloMecanismo": (element as HTMLSelectElement).value = element.value = values.modeloMecanismo ? values.modeloMecanismo : "--Seleccione--";  break;
+case "TipoCadena": (element as HTMLSelectElement).value = element.value = values.tipoCadena ? values.tipoCadena : "--Seleccione--";  break;
+case "CodigoCadena": (element as HTMLSelectElement).value = element.value = values.codigoCadena ? values.codigoCadena : "--Seleccione--";  break;
+case "TipoRiel": (element as HTMLSelectElement).value = element.value = values.tipoRiel ? values.tipoRiel : "0";  break;
+case "TipoInstalacion": (element as HTMLSelectElement).value = element.value = values.tipoInstalacion ? values.tipoInstalacion : "--Seleccione--";  break;
+case "CodigoRiel": (element as HTMLSelectElement).value = element.value = values.codigoRiel ? values.codigoRiel : "0";  break;
+case "TipoCassete": (element as HTMLSelectElement).value = element.value = values.tipoCassete ? values.tipoCassete : "--Seleccione--";  break;
+case "Lamina": (element as HTMLSelectElement).value = element.value = values.lamina ? values.lamina : "--Seleccione--";  break;
+case "Apertura": (element as HTMLSelectElement).value = element.value = values.apertura ? values.apertura : "--Seleccione--";  break;
+case "ViaRecogida": (element as HTMLSelectElement).value = element.value = values.viaRecogida ? values.viaRecogida : "--Seleccione--";  break;
+case "TipoSuperior": (element as HTMLSelectElement).value = element.value = values.tipoSuperior ? values.tipoSuperior : "--Seleccione--";  break;
+case "CodigoBaston": (element as HTMLSelectElement).value = element.value = values.codigoBaston ? values.codigoBaston : "0";  break; 
+case "NumeroVias": (element as HTMLSelectElement).value = element.value = values.numeroVias ? values.numeroVias : "--Seleccione--";  break;
+case "TipoCadenaInferior": (element as HTMLSelectElement).value = element.value = values.tipoCadenaInferior ? values.tipoCadenaInferior : "--Seleccione--";  break;
+case "MandoCordon": (element as HTMLSelectElement).value = element.value = values.mandoCordon ? values.mandoCordon : "--Seleccione--";  break;
+case "MandoBaston": (element as HTMLSelectElement).value = element.value = values.mandoBaston ? values.mandoBaston : "--Seleccione--";  break;
+case "CodigoBastonVarrilla": (element as HTMLSelectElement).value = element.value = values.codigoBastonVarrilla ? values.codigoBastonVarrilla : "--Seleccione--";  break;
+case "Cabezal": (element as HTMLSelectElement).value = element.value = values.cabezal ? values.cabezal : "--Seleccione--";  break;
+case "CodigoCordon": (element as HTMLSelectElement).value = element.value = values.codigoCordon ? values.codigoCordon : "--Seleccione--";  break;
+case "CodigoCordonTipo2": (element as HTMLSelectElement).value = element.value = values.codigoCordonTipo2 ? values.codigoCordonTipo2 : "--Seleccione--";  break;
+case "Cruzeta": (element as HTMLSelectElement).value = element.value = values.cruzeta ? values.cruzeta : "--Seleccione--";  break;
+case "Dispositivo": (element as HTMLSelectElement).value = element.value = values.dispositivo ? values.dispositivo : "--Seleccione--";  break;
+case "CodigoControl": (element as HTMLSelectElement).value = element.value = values.codigoControl ? values.codigoControl : "--Seleccione--";  break;
+case "CodigoSwitch": (element as HTMLSelectElement).value = element.value = values.codigoSwitch ? values.codigoSwitch : "--Seleccione--";  break;
+case "LlevaBaston": (element as HTMLSelectElement).value = element.value = values.llevaBaston ? values.llevaBaston : "--Seleccione--";  break;
+case "MandoAdaptador": (element as HTMLSelectElement).value = element.value = values.mandoAdaptador ? values.mandoAdaptador : "--Seleccione--";  break;
+case "CodigoMotor": (element as HTMLSelectElement).value = element.value = values.codigoMotor ? values.codigoMotor : "--Seleccione--"; 
 
   $('#nomb_motor').select2({
     placeholder: '--Seleccione--'
@@ -304,6 +306,8 @@ break;
         }
       }
   }); 
+
+
   }
   //#endregion
   formatearFecha(fechainicial) {
@@ -437,13 +441,13 @@ break;
               var valor="";
               switch(attributeName){
                 case 'CodigoTela':
-                  valor = formulario['CodigoTubo'].value;
+                  valor = formulario['CodigoTela'].value;
                   break;
                 case 'CodigoTubo':
                   valor = formulario['CodigoTubo'].value;
                   break;
                 case 'CodigoMotor':
-                  valor = formulario['CodigoTubo'].value;
+                  valor = formulario['CodigoMotor'].value;
                   break;
               }
               // Almacenar el nombre del atributo y su valor en el objeto
@@ -487,6 +491,7 @@ break;
       return this._productoService.ObtenerArticulo(tipo, subfamilia);
     }
  
+
 //GUARDAR CODIGO Y NOMBRE
 CboTela=[{codigo:0,nombre:"--Seleccione--"}];listarCboTela(codsubfamilia){
   if(codsubfamilia=='CS'){ //cellular
@@ -563,7 +568,7 @@ changeIndiceAgrupacion(event: any): void {
   }
 }
 
-CboTurno=[{id:0,nombre:"--Seleccione--"}];listarCboTurno(){
+CboTurno:any[]=[{id:0,nombre:"--Seleccione--"}];listarCboTurno(){
   this.CboTurno=[
   {id:0,nombre:"--Seleccione--"},
   {id:1,nombre:"Mañana"},
@@ -640,264 +645,169 @@ CboAccionamiento=[{id:0,nombre:"--Seleccione--"}];listarCboAccionamiento(tipoPro
 //region ACCIONAMIENTO
 codProd: string = '';
 nomProducto: string = '';
-existeMotor(event: any,tipo:any) {
-  var valMotor ="";
-  if(tipo=="html"){
-    valMotor= event.target.value;// existeMotor
-  }else{
-    valMotor=event;
+existeMotor(event: any, tipo: any) {
+  let valMotor = "";
+  if (tipo == "html") {
+    valMotor = event.target.value;
+  } else {
+    valMotor = event;
+  }
+
+  let codProd = this.codProd;
+  let nomProducto = this.nomProducto.toUpperCase();
+
+  // MOTORIZED
+  if (valMotor == 'Motorizado' || valMotor == 'Manual + Motorizado') {
+    if (codProd == 'PRTPJ') {
+      this.objConfiguracionAtributos[this.TipoProducto]['baston'].visible = 0;
+    } else if (codProd == 'PRTTO') {
+      const element = document.getElementById("nom_producto") as HTMLInputElement;
+      let str = element.value.toUpperCase();
+      let valorsearch = 'M1';
+      let values = str.includes(valorsearch);
+      if (values) {
+        this.objConfiguracionAtributos[this.TipoProducto]['baston'].visible = 0;
+      } else {
+        if (valMotor == "Motorizado") {
+          this.objConfiguracionAtributos[this.TipoProducto]['baston'].visible = 0;
+        }
+      }
+    }
+
+    // Enable fields
+    this.setElementDisabled("num_motores", false);
+    this.setElementDisabled("nomb_motor", false);
+    this.setElementDisabled("marcamotor", false);
+    this.setElementDisabled("serie", false);
+
+    // Disable fields
+    this.setElementDisabled("tipoMecanismo", true);
+    this.setElementDisabled("modeloMecanismo", true);
+    if (codProd != 'PRTRM') {
+      this.setElementDisabled("tipo_cadena", true);
+    }
+    this.setElementDisabled("altura_cadena", true);
+
+    // Set visibility
+    this.objConfiguracionAtributos[this.TipoProducto]['tipoCadena'].visible = 1;
+
+  } else if (valMotor == "Manual") { // MANUAL
+    if (codProd == 'PRTPJ') {
+      this.objConfiguracionAtributos[this.TipoProducto]['baston'].visible = 1;
+    } else if (codProd == 'PRTTO') {
+      const element = document.getElementById("nom_producto") as HTMLInputElement;
+      let str = element.value.toUpperCase();
+      let valorsearch = 'M1';
+      let values = str.includes(valorsearch);
+      if (values) {
+        this.objConfiguracionAtributos[this.TipoProducto]['baston'].visible = 1;
+      } else {
+        this.objConfiguracionAtributos[this.TipoProducto]['baston'].visible = 1;
+      }
+    }
+
+    // Enable fields   FALSE // El elemento está habilitado, se puede interactuar con él y modificar su valor
+    this.setElementDisabled("tipoMecanismo", false);
+    this.setElementDisabled("modeloMecanismo", false);
+    this.setElementDisabled("altura_cadena", false);
+    if (codProd == 'PRTPH') {
+      this.setElementDisabled("tipo_cadena", false);
+      this.objConfiguracionAtributos[this.TipoProducto]['tipoCadena'].visible = 0;
+    } else if (['PRTCS', 'PRTRH', 'PRTRF'].includes(codProd)) {
+      this.setElementDisabled("tipo_cadena", false);
+    } else {
+      this.setElementDisabled("tipo_cadena", false);
+      this.objConfiguracionAtributos[this.TipoProducto]['tipoCadena'].visible = 1;
+      
+    }
+
+    // Disable fields   TRUE // El elemento está deshabilitado, no se puede interactuar con él
+    this.setElementDisabled("num_motores", true);
+    this.setElementDisabled("nomb_motor", true);
+    this.setElementDisabled("marcamotor", true);
+    this.setElementDisabled("serie", true);
+
+  } else { // Default handling
+    this.setElementDisabled("num_motores", false);
+    this.setElementDisabled("nomb_motor", false);
+    this.setElementDisabled("marcamotor", false);
+    this.setElementDisabled("serie", false);
+    this.setElementDisabled("tipoMecanismo", false);
+    this.setElementDisabled("modeloMecanismo", false);
+    this.setElementDisabled("tipo_cadena", true);
+    this.setElementDisabled("altura_cadena", false);
+
+    // Set height of chain calculation if applicable
+    const altura_cadena = document.getElementById("altura_cadena") as HTMLInputElement;
+    if (altura_cadena) {
+      let alturaCadena = this.JsonItemHijo.producto.alto;
+      const rptAlturaCadena = this.calcularAlturaCadena(this.TipoProducto, alturaCadena);
+      if (this.TipoProducto == "PRTCV" || this.TipoProducto == "PRTPH") {
+        altura_cadena.value = (rptAlturaCadena * 2).toFixed(3);
+      }
+      if (this.TipoProducto !== "PRTRF" && this.TipoProducto !== "PRTRH" && this.TipoProducto !== "PRTRM") {
+        if (this.TipoProducto.startsWith("PRTR")) {
+          altura_cadena.value = (rptAlturaCadena * 2).toFixed(3);
+        }
+      }
+    }
+  }
+  this.listarCboTipoCadena();
+  if(this.JsonItemHijo.producto.id!="" && this.JsonItemHijo.producto.tipoCadena){
+  const element = document.getElementById("tipo_cadena") as HTMLInputElement | HTMLSelectElement;
+    if (element) {  
+      element.value = this.JsonItemHijo.producto.tipoCadena;
+    }
   }
  
-  let codProd = this.codProd;
-  let nomProducto = this.nomProducto.toUpperCase(); 
-  if(valMotor == 'Motorizado' || valMotor =='Manual + Motorizado'){ // MOTORIZADO 
-    if(codProd=='PRTPJ'){               
-            this.objConfiguracionAtributos[this.TipoProducto]['baston'].visible=0;
-    } else  if(codProd=='PRTTO'){
-          const element = document.getElementById("nom_producto") as HTMLInputElement;// HTMLSelectElement; 
-            //element.value = value; 
-        var str =element.value.toUpperCase();
-        var valorsearch='M1';  
-        var values = str.includes(valorsearch);
-        if(values==true){ 
-        this.objConfiguracionAtributos[this.TipoProducto]['baston'].visible=0;
-        }else{
-            if(valMotor=="Motorizado"){ 
-            this.objConfiguracionAtributos[this.TipoProducto]['baston'].visible=0;
-            }
-        }
-    }
-    /********* HABLITAR  ************/
-    /*Numero Motores*/  
-    const num_motores = document.getElementById("num_motores") as HTMLInputElement ;
-    if(num_motores){
-      num_motores.value="";
-    num_motores.disabled = false; // El elemento está habilitado, se puede interactuar con él y modificar su valor
-  }
-    //element.setAttribute("disabled", "true"); 
-
-    /*Nombre Motor*/    
-    const nomb_motor = document.getElementById("nomb_motor") as HTMLInputElement ;
-    if(nomb_motor){
-    nomb_motor.disabled = false; // El elemento está habilitado, se puede interactuar con él y modificar su valor
-  }  
-    /*Marca Motor*/    
-    const marcamotor = document.getElementById("marcamotor") as HTMLInputElement ;
-    if(marcamotor){
-      marcamotor.value="";
-    marcamotor.disabled = false; // El elemento está habilitado, se puede interactuar con él y modificar su valor
-    }
-     
-    /*Serie*/
-    const serie = document.getElementById("serie") as HTMLInputElement ;
-    if(serie){
-      serie.disabled = false; // El elemento está habilitado, se puede interactuar con él y modificar su valor
-    }
-     
-    /************** DESABILITAR  ****************/
-    /*Tipo Mecan*/ 
-    const tipoMecanismo = document.getElementById('tipoMecanismo') as HTMLSelectElement;
-    if(tipoMecanismo){
-    tipoMecanismo.value = ''; 
-    tipoMecanismo.disabled = true; // El elemento está habilitado, se puede interactuar con él y modificar su valor
-    }
-    /*Modelo Mec*/ 
-    const modeloMecanismo = document.getElementById('modeloMecanismo') as HTMLSelectElement;
-    if(modeloMecanismo){
-    modeloMecanismo.value = ''; 
-    modeloMecanismo.disabled = true; // El elemento está habilitado, se puede interactuar con él y modificar su valor
-    }
-    /*Tipo Cadena*/
-    if(codProd=='PRTRM'){
-
-    }else{ 
-      
-    const modeloMecanismo = document.getElementById('tipo_cadena') as HTMLSelectElement;
-    if(modeloMecanismo){
-    modeloMecanismo.value = ''; 
-    modeloMecanismo.disabled = true; // El elemento está habilitado, se puede interactuar con él y modificar su valor
-    }
-      this.objConfiguracionAtributos[this.TipoProducto]['tipoCadena'].visible=1;
-
-    }
-    /*Altura Cadena*/ 
-    const altura_cadena = document.getElementById("altura_cadena") as HTMLInputElement ;
-    if(altura_cadena){
-    altura_cadena.value = ''; 
-    altura_cadena.disabled = true; // El elemento está deshabilitado, no se puede interactuar con él
-    }
-    }else if(valMotor == "Manual"){//MANUAL 
-    if(codProd=='PRTPJ'){
-         
-        this.objConfiguracionAtributos[this.TipoProducto]['baston'].visible=1;
-    }else if(codProd=='PRTTO'){
-          const element = document.getElementById("nom_producto") as HTMLInputElement;
-            var str = element.value.toUpperCase();
-            var valorsearch='M1';  
-            var values = str.includes(valorsearch);
-            if(values==true){  
-            this.objConfiguracionAtributos[this.TipoProducto]['baston'].visible=1;
-            }else{
-              this.objConfiguracionAtributos[this.TipoProducto]['baston'].visible=1; 
-            }
-    }
-        
-    /****** HABILITAR ********/ 
-    const tipoMecanismo = document.getElementById("tipoMecanismo") as HTMLSelectElement ;
-    if(tipoMecanismo){
-    tipoMecanismo.disabled = false; // El elemento está habilitado, se puede interactuar con él y modificar su valor
-    }
-    /*Nombre Motor*/
-    const modeloMecanismo = document.getElementById("modeloMecanismo") as HTMLSelectElement ;
-    if(modeloMecanismo){
-    modeloMecanismo.disabled = false; // El elemento está habilitado, se puede interactuar con él y modificar su valor
-    }
-
-    /*Marca Motor*/
-    //reg_cont_tipoCadena
-    if(codProd=='PRTCS' || codProd=='PRTRH'  || codProd=='PRTRF' ){
-       
-    }else{            
-    const tipo_cadena = document.getElementById("tipo_cadena") as HTMLSelectElement ;
-    if(tipo_cadena){
-    tipo_cadena.disabled = false; // El elemento está habilitado, se puede interactuar con él y modificar su valor
-    }
-    this.objConfiguracionAtributos[this.TipoProducto]['tipoCadena'].visible=0;
-    } 
-    
-    if(codProd=='PRTPH'){           
-      const tipo_cadena = document.getElementById("tipo_cadena") as HTMLSelectElement ;
-      if(tipo_cadena){
-      tipo_cadena.disabled = false; // El elemento está habilitado, se puede interactuar con él y modificar su valor
-      }
-    this.objConfiguracionAtributos[this.TipoProducto]['tipoCadena'].visible=0;
-    }
-    /*Altura Cadena*/ 
-    const altura_cadena = document.getElementById("altura_cadena") as HTMLInputElement ;
-    if(altura_cadena){
-    altura_cadena.disabled = false; // El elemento está habilitado, se puede interactuar con él y modificar su valor
-    }
-
-    /******** DESABILITAR  N***********/
-    /*Numero Motores*/
-    const num_motores = document.getElementById("num_motores") as HTMLInputElement ;
-    if(num_motores){
-      num_motores.value="";
-    num_motores.disabled = true; // El elemento está deshabilitado, no se puede interactuar con él 
-    }
-
-    /*Nombre Motor*/ 
-    const nomb_motor = document.getElementById("nomb_motor") as HTMLSelectElement ;
-    if(nomb_motor){
-      nomb_motor.value="";
-    nomb_motor.disabled = true; // El elemento está deshabilitado, no se puede interactuar con él
-    }
-    /*Marca Motor*/ 
-    const marcamotor = document.getElementById("marcamotor") as HTMLSelectElement ;
-    if(marcamotor){
-      marcamotor.value="";
-    marcamotor.disabled = true; // El elemento está deshabilitado, no se puede interactuar con él
-    }
-
-    /*Serie*/ 
-    const serie = document.getElementById("serie") as HTMLSelectElement ;
-    if(serie){
-    serie.disabled = true; // El elemento está deshabilitado, no se puede interactuar con él
-    }
-
-}else{ 
-
-    const num_motores = document.getElementById("num_motores") as HTMLInputElement ;
-    if(num_motores){
-    num_motores.disabled = false; // El elemento está habilitado, se puede interactuar con él y modificar su valor
-    }
-    /*Nombre Motor*/ 
-    const nomb_motor = document.getElementById("nomb_motor") as HTMLInputElement ;
-    if(nomb_motor){
-    nomb_motor.disabled = false; // El elemento está habilitado, se puede interactuar con él y modificar su valor
-    }
-    
-    /*Marca Motor*/ 
-    const marcamotor = document.getElementById("marcamotor") as HTMLInputElement ;
-    if(marcamotor){
-      marcamotor.value="";
-    marcamotor.disabled = false; // El elemento está habilitado, se puede interactuar con él y modificar su valor
-    }
-
-    /*Serie*/ 
-    const serie = document.getElementById("serie") as HTMLInputElement ;
-    if(serie){
-    serie.disabled = false; // El elemento está habilitado, se puede interactuar con él y modificar su valor
-    }
-    
-    const tipoMecanismo = document.getElementById("tipoMecanismo") as HTMLSelectElement ;
-    if(tipoMecanismo){
-    tipoMecanismo.disabled = false; // El elemento está habilitado, se puede interactuar con él y modificar su valor
-    }
-
-    /*Nombre Motor*/ 
-    const modeloMecanismo = document.getElementById("modeloMecanismo") as HTMLSelectElement ;
-    if(modeloMecanismo){
-    modeloMecanismo.disabled = false; // El elemento está habilitado, se puede interactuar con él y modificar su valor
-    }
-
-    if(codProd=='PRTCS' ||  codProd=='PRTRH'  || codProd=='PRTRF' ){
-    
-    }else{
-    /*Marca Motor*/
-    const tipo_cadena = document.getElementById("tipo_cadena") as HTMLInputElement ;
-    if(tipo_cadena){
-    tipo_cadena.disabled = true; // El elemento está deshabilitado, no se puede interactuar con él 
-    }
-    }
-    /*Altura Cadena*/ 
-    const altura_cadena = document.getElementById("altura_cadena") as HTMLInputElement ;
-    if(altura_cadena){
-    altura_cadena.disabled = false;  // El elemento está habilitado, se puede interactuar con él y modificar su valor
-
-
-    //CALCULO ALTURA DE CADENA
-    var alturaCadena = this.JsonItemHijo.producto.alto; 
-    // Lógica de cálculo
-    const rptAlturaCadena = this.calcularAlturaCadena(this.TipoProducto, alturaCadena);
-    console.log('Altura de Cadena:', rptAlturaCadena);
-    
-    if (this.TipoProducto == "PRTCV" || this.TipoProducto == "PRTPH") {
-      var altura_cadena2 = (rptAlturaCadena * 2);
-      altura_cadena.value = altura_cadena2.toFixed(3);
-    }    
-    if (this.TipoProducto !== "PRTRF" && this.TipoProducto !== "PRTRH" && this.TipoProducto !== "PRTRM") {
-      if (this.TipoProducto.substring(0, 4) == "PRTR") {
-        var altura_cadena2 = (rptAlturaCadena * 2);
-        altura_cadena.value = altura_cadena2.toFixed(3);
-      }
-    }
-
-    }
-
-    
-
 }
+
+private setElementDisabled(id: string, disabled: boolean) {
+  const element = document.getElementById(id) as HTMLInputElement | HTMLSelectElement;
+  if (element) {
+    element.disabled = disabled;
+    if (disabled) {
+      element.value = ''; // reset value if disabled
+    }
+  }
 }
  
 //endregion 
 //GUARDAR NOMBRE Y CODIGO
-CboNombreTubo=[{codigo:0,nombre:"--Seleccione--"}];listarCboNombreTubo(familia,tipoProducto){  
+CboNombreTubo=[{codigo:0,nombre:"--Seleccione--"}];
+listarCboNombreTubo(familia,tipoProducto){  
   this.CboNombreTubo=[{codigo:0,nombre:"--Seleccione--"}]; 
   this.spinner.show();  
   this.obtenerarticulos("Nombretubo", familia).subscribe(
     (response) => {
       if (response) {  
-      var data = response;
+      var data = response; 
       for (var i = 0; i < data.length; i++) {
-        if (
+        /*if (
           (tipoProducto === 'PRTRS' && !['PALRS00000001', 'PALRS00000002'].includes(data[i].codigo)) ||
           (tipoProducto === 'PRTRZ' && !['PALRS00000001', 'PALRS00000002'].includes(data[i].codigo)) ||
           (tipoProducto === 'PRTRS' && !['PALRS00000001', 'PALRS00000002', 'PALRS00000005', 'PALRZ00000026', 'PALRZ00000011'].includes(data[i].codigo))
         ) {
           this.CboNombreTubo.push(data[i]);
-        }
-      }
+        }*/
+          for (var i = 0; i < data.length; i++) {
+            if (tipoProducto === 'PRTRS') {
+              if (!['PALRS00000001', 'PALRS00000002'].includes(data[i].codigo)) {
+                this.CboNombreTubo.push(data[i]);
+              }
+            } else if (tipoProducto === 'PRTRZ') {
+              if (!['PALRS00000001', 'PALRS00000002'].includes(data[i].codigo)) {
+                this.CboNombreTubo.push(data[i]);
+              }
+            } else if (tipoProducto === 'PRTRS') {
+              if (!['PALRS00000001', 'PALRS00000002', 'PALRS00000005', 'PALRZ00000026', 'PALRZ00000011'].includes(data[i].codigo)) {
+                this.CboNombreTubo.push(data[i]);
+              }
+            } else {
+              this.CboNombreTubo.push(data[i]);
+            }
+          }
+      } 
       }
       this.spinner.hide();
     },
@@ -1412,7 +1322,8 @@ cancheCbopNombreMotor(event: any) {
           const attributeName = element.getAttribute('name');          
           switch (attributeName) {
             //::::::::::::::::::::::::::::::::::::...COMBOS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-case "IndiceAgrupacion":this.listarCboIndiceAgrupacion();break;
+case "IndiceAgrupacion":this.listarCboIndiceAgrupacion();(element as HTMLSelectElement).value = "0" ;
+break;
 case "Ambiente":this.listarCboAmbiente();break;
 case "Turno":this.listarCboTurno();break;
 case "SoporteCentral":this.listarCboSoporteCentral();break;
@@ -1459,17 +1370,17 @@ case "CodigoMotor":this.listarCboMotor(tipoProducto);break;
   });
   
   this.spinner.hide();
-  //asignar:
-  
+  //asignar:  
   this.spinner.show();
-      setTimeout(() => {            
-        this.spinner.hide();
-        this.setFormValues(this.JsonItemHijo.producto);
+      setTimeout(() => {       
+        this.spinner.show();  
+        this.setFormValues(this.JsonItemHijo.producto); 
         if(accionamiento=="SI"){
           this.existeMotor(values.accionamiento,"edit");
         }
+        this.spinner.hide();
       }, 3000);
-  
+      this.cdr.detectChanges();
       $('#tela').select2({
         placeholder: '--Seleccione--'
       });  

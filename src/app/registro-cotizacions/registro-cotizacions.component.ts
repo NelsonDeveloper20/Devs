@@ -565,6 +565,7 @@ AgregarAmbiente() {
     }
   
   openRegisterProd(producto:any): void {    
+    console.log(producto);
     if(this.itemCopiado){ 
       var codigoProductoCopiado=this.itemCopiado.codigoProducto.slice(0, 5);// Salida: PRTRS
       var codigoProducto=producto.codigoProducto.slice(0, 5);// Salida: PRTRS
