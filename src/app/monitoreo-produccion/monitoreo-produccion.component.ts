@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, OnInit, QueryList, ViewChildren, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Toaster } from 'ngx-toast-notifications';
@@ -6,7 +6,11 @@ import { MonitoreoService } from '../services/monitoreo.service';
 import * as moment from 'moment';
 import { ThemePalette } from '@angular/material/core';
 import { ProgressBarMode } from '@angular/material/progress-bar';
-
+import { MatTabChangeEvent } from '@angular/material/tabs';
+declare var $: any; // Declara la variable $ para usar jQuery
+import * as XLSX from 'xlsx';
+import Swal from 'sweetalert2';
+declare var $: any; // Declara la variable $ para usar jQuery
 @Component({
   selector: 'app-monitoreo-produccion',
   templateUrl: './monitoreo-produccion.component.html',
@@ -17,19 +21,9 @@ export class MonitoreoProduccionComponent implements OnInit {
   mode: ProgressBarMode = 'buffer';
   value = 50;
   bufferValue = 75;
-
-
   
   displayedColumns: string[] = ['expand', 'ruc', 'razonSocial', 'cotizacion', 'producto', 'codProducto', 'accionamiento', 'cantidad', 'cantProducto', 'estado', 'tipoOperacion', 'subtable'];
  
-toggleExpand(item: any) {
-  this.ListMonitoreoExplocion.forEach(data => {
-    if (data !== item) {
-      data.isExpand = false; // Cierra todos los elementos que no sean el seleccionado
-    }
-  });
-  item.isExpand = !item.isExpand; // Abre o cierra el elemento seleccionado
-}
   estaciones(){
     
     this.router.navigate(['/Estacion-Trabajo']);
@@ -42,29 +36,57 @@ toggleExpand(item: any) {
     private _service: MonitoreoService
   ) {  
   } 
-   
+ 
   ngOnInit(): void {  
-    this.ListarMonitoreoExplocion();
+    this.ListarMonitoreoExplocion();     
   }  
 showfilter=false; 
 cotizacion: string; 
 fechaInicio: Date;
 fechaFin: Date; 
+
+
+showfilter2=false; 
+cotizacion2: string; 
+fechaInicio2: Date;
+fechaFin2: Date; 
 showFilter(){
-this.showfilter=!this.showfilter;
-}
-buscarVenta() {
-  // Aquí puedes implementar la lógica para buscar la venta
-  // utilizando los datos del formulario
-  console.log('Buscar venta'); 
-  console.log('Cotización:', this.cotizacion); 
-  console.log('Fecha de Inicio:', this.fechaInicio);
-  console.log('Fecha de Fin:', this.fechaFin); 
-}
+  if(this.indexTab!=0){
+   this.showFilter2();
+  }else{
+    this.showfilter=!this.showfilter; 
+  }
 
+
+setTimeout(() => {       
+  $('#cboCotizacion1Select').select2({
+    placeholder: '--Seleccione--'
+  });         
+  $('#cboCotizacion2Select').select2({
+    placeholder: '--Seleccione--'
+  });   
+}, 1000);
+} 
+showFilter2(){
+this.showfilter2=!this.showfilter2; 
+
+setTimeout(() => { 
+  $('#cboCotizacion2Select').select2({
+    placeholder: '--Seleccione--'
+  });   
+}, 1000);
+} 
 Fecha:Date=new Date();
-
 //#region LISTAR PARA EXPLOCION
+
+toggleExpand(item: any) {
+  this.ListMonitoreoExplocion.forEach(data => {
+    if (data !== item) {
+      data.isExpand = false; // Cierra todos los elementos que no sean el seleccionado
+    }
+  });
+  item.isExpand = !item.isExpand; // Abre o cierra el elemento seleccionado
+}
 ListMonitoreoExplocion:any=[];
 ListarMonitoreoExplocion() {
   const fecInicio = moment(this.Fecha, 'DD/MM/YYYY').format(
@@ -89,6 +111,22 @@ ListarMonitoreoExplocion() {
       // Aquí podrías mostrar un mensaje de error al usuario
     }
   );
+}
+filterText: string = '';
+filteredList() {
+  if (!this.filterText) {
+    return this.ListMonitoreoExplocion;
+  }
+  return this.ListMonitoreoExplocion.filter(item => {
+    const keys = ['ruc', 'razonSocial', 'cotizacion', 'cotizacionGrupo', 'codigoProducto', 'nombreProducto', 'accionamiento', 'cantidad', 'cantidadProductos', 'estado'];
+    return keys.some(key => {
+      const value = item[key];
+      if (typeof value === 'string') {
+        return value.toLowerCase().includes(this.filterText.toLowerCase());
+      }
+      return false;
+    });
+  });
 }
 //#endregion
 
@@ -152,6 +190,311 @@ clonarComponente(item:any){
   this.ListComponenteProducto.push(item);*/
 }
 //#endregion
+isFilterButtonDisabled = false;
+indexTab=0;
+onTabChange(event: MatTabChangeEvent) {
+  this.indexTab=event.index;
+  console.log('Index: ' + event.index);
+  console.log('Tab Label: ' + event.tab.textLabel);
+  // Aquí puedes manejar la lógica que necesites con el índice o etiqueta de la pestaña seleccionada
+  if(event.index==2 || event.index==3){
+this.isFilterButtonDisabled=true;
+  }else{
+    this.isFilterButtonDisabled=false;
+  }
+}
+
+//#region  Carga
+
+files: any[] = []; 
+existearchivo:boolean=false;
+porCargar=true;
+  onFileDropped($event) {
+    this.porCargar=false;//archivo seleccionado
+    this.prepareFilesList($event);
+  } 
+  fileBrowseHandler(files:any) {
+    var value=files.target.files
+    this.prepareFilesList(value);
+  } 
+  deleteFile(index: number) {
+    this.files.splice(index, 1);
+    this.porCargar=true;
+    this.error=false;
+    this.existearchivo=false;
+  } 
+  uploadFilesSimulator(index: number) {
+    setTimeout(() => {
+      if (index === this.files.length) {
+        return;
+      } else {
+        
+    this.porCargar=false;//archivo seleccionado
+        const progressInterval = setInterval(() => {
+          if (this.files[index].progress === 100) {
+            clearInterval(progressInterval);
+            this.uploadFilesSimulator(index + 1);
+            this.mostrarVistaPrevia(this.files[0]);
+          } else {
+            this.files[index].progress += 25;
+          }
+        }, 200);
+      }
+    }, 1000);
+  } 
+  prepareFilesList(files: Array<any>) {
+    for (const item of files) {
+      item.progress = 0;
+      this.files.push(item);
+    }
+    this.uploadFilesSimulator(0);
+  } 
+  formatBytes(bytes:any, decimals:any) {
+    if (bytes === 0) {
+      return '0 Bytes';
+    }
+    const k = 1024;
+    const dm = decimals <= 0 ? 0 : decimals || 2;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+  }
+ 
+error: boolean = false;
+previewHeaders: string[] = [];
+previewData: any[] = [];
+mostrarVistaPrevia(file: any) { 
+  // Validar que el archivo sea Excel
+  if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+    const reader: FileReader = new FileReader();
+    reader.onload = (e: any) => {
+      const data = e.target.result;
+      const workbook: XLSX.WorkBook = XLSX.read(data, { type: 'binary' });
+      const sheetName: string = workbook.SheetNames[0]; // Nombre de la primera hoja
+      const worksheet: XLSX.WorkSheet = workbook.Sheets[sheetName];
+      // Convertir la primera tabla de la primera hoja en formato JSON
+      const jsonData: any[] = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+      // Mostrar vista previa
+      this.previewHeaders = jsonData[0] || [];
+      this.previewData = jsonData.slice(1); // Se excluye la primera fila de encabezados 
+
+      // Cabeceras esperadas
+      const expectedHeaders = [
+        'NOMBRE_PRODUCTO',
+        'COTIZACION',
+        'DESCRIP_COMPONENTE',
+        'COD_COMPONENTE',
+        'DESCRIPCION',
+        'COLOR',
+        'UNIDAD',
+        'CANTIDAD',
+        'MERMA',
+        'CODIGO_PRODUCTO'
+      ];
+
+      // Función de normalización
+      const normalize = (header: string) => header.trim().toUpperCase();
+
+      // Validar cabeceras
+      const validateHeaders = (headers: string[], expected: string[]): boolean => {
+        if (headers.length !== expected.length) {
+          console.log('Número de cabeceras no coincide. Esperado:', expected.length, 'Recibido:', headers.length);
+          return false;
+        }
+        for (let i = 0; i < headers.length; i++) {
+          if (normalize(headers[i]) !== normalize(expected[i])) {
+            console.log('Cabecera no coincide en la posición', i, 'Esperado:', normalize(expected[i]), 'Recibido:', normalize(headers[i]));
+            return false;
+          }
+        }
+        return true;
+      };
+
+      // Realizar la validación
+      this.error = !validateHeaders(this.previewHeaders, expectedHeaders);
+
+      if (this.error) {
+        console.error('Las cabeceras del archivo no son las esperadas.');
+        // Aquí puedes manejar el error adicionalmente, si es necesario
+      }
+
+      // Opcional: Logs para depuración
+      console.log('Cabeceras esperadas:', expectedHeaders);
+      console.log('Cabeceras recibidas:', this.previewHeaders);
+      this.existearchivo=true;
+    };
+    reader.readAsBinaryString(file);
+  } else {      
+    Swal.fire({
+      title: 'Advertencia',
+      text: 'Solo se pueden subir archivos Excel',
+      icon: 'warning',
+      confirmButtonText: 'Aceptar',
+      allowOutsideClick: false
+    }); 
+  }
+}
+  
+  descargarArchivo() {
+    this.spinner.show();
+    this._service.DescargarPlantilla().subscribe(
+      (blob: Blob) => {
+        this.spinner.hide();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = "Plantilla_Carga.xlsx"; // Especificar el nombre del archivo
+        document.body.appendChild(a);
+        a.click();
+
+        // Limpieza
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      },
+      (error) => {
+        this.spinner.hide();
+        console.error('Error al descargar el archivo:', error);
+      }
+    );
+  }
+
+  CargarPlantilla(){
+    Swal.fire({
+      title: '¿Cargar?',
+      text: '¿Deseas cargar el archivo?',
+      icon: 'question', // Cambié el icono a 'question' ya que estamos preguntando al usuario
+      showCancelButton: true,
+      confirmButtonText: 'Si, Cargar',
+      cancelButtonText: 'Cancelar',
+      allowOutsideClick: false
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Acción de carga del archivo, suponiendo que tienes una función para esto
+        //this.cargarArchivo();
+    
+        Swal.fire({
+          title: 'Mensaje',
+          text: 'Plantilla cargada correctamente',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+          allowOutsideClick: false
+        });
+        this.deleteFile(0);
+      }
+    });
+  }
+//#endregion
+
+//#region MANTENIMIENTO EXPLOCIÓN
+lisComponente: any[] = [
+  { codigo: 'ACCRS00000011', nombre: 'ACCRS00000011 : ADAPTADOR SL ROLLEASE 1-1/4 - COLOR:WHITE', color: "BLUE", unidad: "UNK" },
+  { codigo: 'ACCRS00000012', nombre: 'ACCRS00000012 : ADAPTADOR SL ROLLEASE 1-1/4 - COLOR:BROWN', color: "BLUE", unidad: "UNK" },
+  { codigo: 'ACCRS00000013', nombre: 'ACCRS00000013 : ADAPTADOR SL ROLLEASE 1-1/4 - COLOR:BLACK', color: "BLUE", unidad: "UNK" },
+  { codigo: 'ACCRS00000014', nombre: 'ACCRS00000014 : ADAPTADOR SL ROLLEASE 1-1/2 - COLOR:WHITE', color: "BLUE", unidad: "UNK" }
+];
+
+filteredListComponente = this.lisComponente;
+
+applyFilter(event: any) {
+  const valor = event.target.value;
+  this.filteredListComponente = this.lisComponente.filter(option => option.codigo.toLowerCase().includes(valor.toLowerCase()));
+}
+
+onNombreChange(event: any, element: any) {
+  const selectedOption = this.lisComponente.find(option => option.codigo === event.value);
+  if (selectedOption) {
+    element.componente = selectedOption.codigo;
+    element.descripcionComponente = selectedOption.nombre;
+    element.unidadMedida = selectedOption.unidad;
+    element.color = selectedOption.color;
+  }
+}
+componentes: Componente[] = [
+  {
+    idExplocion: 2696,
+    cotizacion: '008996',
+    producto: 'null',
+    componente: 'ACCRS00000013',
+    opciones: [ 
+    ],
+    descripcionComponente: 'null',
+    color: 'null',
+    unidadMedida: 'null',
+    cantidad: 5,
+    merma: 0,
+    codigoProducto: 'PRTRS',
+    tipoProducto: 'PRTRS-MANUAL',
+    codProducto: 'null',
+    accionamiento: 'null',
+    idDetalle: 622
+  },
+  {
+    idExplocion: 2696,
+    cotizacion: '008996',
+    producto: 'null',
+    componente: 'ACCRS00000014',
+    opciones: [ 
+    ],
+    descripcionComponente: 'null',
+    color: 'null',
+    unidadMedida: 'null',
+    cantidad: 5,
+    merma: 0,
+    codigoProducto: 'PRTRS',
+    tipoProducto: 'PRTRS-MANUAL',
+    codProducto: 'null',
+    accionamiento: 'null',
+    idDetalle: 622
+  }
+  // Otros componentes...
+];
+clonarComponenteMantenimiento(componente: Componente) {
+  const nuevoComponente = { ...componente, idExplocion: this.componentes.length + 1 };
+  this.componentes.push(nuevoComponente);
+}
+
+eliminarComponente(componente: Componente) {
+  this.componentes = this.componentes.filter(c => c !== componente);
+}
+
+nuevoComponente() {
+  const nuevoComponente: Componente = {
+    idExplocion: this.componentes.length + 1,
+    cotizacion: 'Nueva Cotizacion',
+    producto: 'Nuevo Producto',
+    componente: 'Nuevo Componente',
+    opciones: [],
+    descripcionComponente: '',
+    color: '',
+    unidadMedida: '',
+    cantidad: 0,
+    merma: 0,
+    codigoProducto: '',
+    tipoProducto: '',
+    codProducto: '',
+    accionamiento: '',
+    idDetalle: 0
+  };
+  this.componentes.push(nuevoComponente);
+}
+//#endregion
 
 }
 
+interface Componente {
+  idExplocion: number;
+  cotizacion: string;
+  producto: string;
+  componente: string;
+  opciones: { value: string, label: string }[];
+  descripcionComponente: string;
+  color: string;
+  unidadMedida: string;
+  cantidad: number;
+  merma: number;
+  codigoProducto: string;
+  tipoProducto: string;
+  codProducto: string;
+  accionamiento: string;
+  idDetalle: number;
+}

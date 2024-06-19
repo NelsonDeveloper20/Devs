@@ -38,8 +38,7 @@ export class SupervisionDialogComponent implements OnInit {
       this.grupo=data.grupo; 
       this.fechaProduccion = this.formatDate(this.fechaProduccion);  
       console.log(this.fechaProduccion);
-      this.turnoInicial = data.turno;   
-      this.fechaProduccionInicial= data.fechaProduccion;
+      this.turnoInicial = data.turno;    
       this.cotizacionInicial=data.cotizacion; 
       this.fechaProduccionInicial = this.formatDate(this.fechaProduccion); 
       this.solicitante=data.solicitante; 

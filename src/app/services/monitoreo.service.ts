@@ -23,26 +23,12 @@ export class MonitoreoService {
   ListarComponenteDelProducto(grupoCotizacion: any,id:any): Observable<any> {
     return this.http.get<any>(`${this.urlBase}Monitoreo/ListarComponenteProducto?grupoCotizacion=`+grupoCotizacion+"&id="+id);
   }
-  /*
-  ValidarEstacion(paso: any,dato:any): Observable<any> {
-    return this.http.get<any>(`${this.urlBase}OperacionesContruccion/Estacion?paso=`+paso+"&dato="+dato);
+  
+  
+  DescargarPlantilla(): Observable<any>{
+    return this.http.get(`${this.urlBase}Monitoreo/downloadPlantilla`, {
+      responseType: 'blob' // Especifica que esperas un blob
+    }); 
   }
   
-  ValidarLogin(usuario: any,contrasena:any): Observable<any> {
-    return this.http.get<any>(`${this.urlBase}Login?usuario=`+usuario+"&contrasena="+contrasena);
-  }
-
-  
-  ListarProductoXEstacionGrupo(grupoCotizacion: any,estacion: any): Observable<any> {
-    return this.http.get<any>(`${this.urlBase}OperacionesContruccion/ProductoEstacionPorEstacion?grupoCotizacion=`+grupoCotizacion+"&estacion="+estacion);
-  }
-  
-  ListarAvanceEstacion(grupoCotizacion: any): Observable<any> {
-    return this.http.get<any>(`${this.urlBase}OperacionesContruccion/AvanceEstacion?grupoCotizacion=`+grupoCotizacion);
-  }
-
-  InsertarEstacionProducto(data: any): Observable<IApiResponse> {
-    const headers = { 'Content-Type': 'application/json-patch+json' };
-    return this.http.post<IApiResponse>(this.urlBase + 'OperacionesContruccion', data, { headers: headers });
-  }*/
 }

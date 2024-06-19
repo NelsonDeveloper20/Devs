@@ -1,8 +1,7 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core'; 
 import { ObjConfigs } from '../configuration';
 import { ProductoService } from '../services/productoservice';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { ITblDetalleOrdenProduccion } from '../services/models/TBL_DetalleOrdenProduccion.model';
+import { NgxSpinnerService } from 'ngx-spinner'; 
 import { DatePipe } from '@angular/common';
 declare var $: any; // Declara la variable $ para usar jQuery
 export interface IAgregarUsuarioRequest {
@@ -1379,7 +1378,7 @@ case "CodigoMotor":this.listarCboMotor(tipoProducto);break;
           this.existeMotor(values.accionamiento,"edit");
         }
         this.spinner.hide();
-      }, 3000);
+      }, 2000);
       this.cdr.detectChanges();
       $('#tela').select2({
         placeholder: '--Seleccione--'

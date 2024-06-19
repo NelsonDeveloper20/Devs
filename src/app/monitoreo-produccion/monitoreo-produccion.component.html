@@ -1,173 +1,230 @@
-<ngx-spinner bdColor="rgba(255, 255, 255, 1)" size="medium" color="#0D7ABD" type="ball-beat" [fullScreen]="true">
-    <p style="color: black">Loading...</p>
-  </ngx-spinner> 
-  <style>
-    .table-container {
+<ngx-spinner bdColor="rgba(255, 255, 255, 1)" size="medium" color="#0D7ABD" type="ball-beat" [fullScreen]="true"
+>
+  <p style="color: black">Loading...</p>
+</ngx-spinner>
+<style>
+  .table-container {
     max-height: 570px; /* Ajusta la altura máxima según tus necesidades */
     overflow-x: auto; /* Agrega un scroll horizontal si es necesario */
     overflow-y: auto; /* Agrega un scroll vertical si es necesario */
-}
-  </style>
-  <div class="content-body">
-      <div class="container-fluid">
-          
-          <div class="row page-titles mx-0"  style="padding: 0 !important;
+  }
+
+  .search-input {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: white; /* Opcional: para asegurarse de que el campo de búsqueda esté sobre el contenido de la tabla */
+
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+</style>
+<div class="content-body">
+  <div class="container-fluid">
+    <div class="row page-titles mx-0" style="padding: 0 !important;
       background: transparent !important;
       margin-bottom: 0 !important;
       border-radius: 5px !important;
-      margin-top: -20px !important;">
-              <div class="col-sm-6 p-md-0">
-                  <div class="welcome-text">
-                      <h4>Monitoreo Producción</h4> 
-                  </div>
-              </div>
-              <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
-                  <ol class="breadcrumb">
-                                 
-  <mat-button-toggle-group name="ingredients" aria-label="Ingredients" multiple style="border-radius: 70px;
+      margin-top: -20px !important;"
+    >
+      <div class="col-sm-6 p-md-0">
+        <div class="welcome-text">
+          <h4>Monitoreo Producción</h4>
+        </div>
+      </div>
+      <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+        <ol class="breadcrumb">
+          <mat-button-toggle-group name="ingredients" aria-label="Ingredients" multiple style="border-radius: 70px;
   border: 3px solid #B8122B;font-weight: 500;
-  box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 0%), 0px 6px 10px 0px rgba(0, 0, 0, .14), 0px 1px 18px 0px rgba(0, 0, 0, .12);">
-    <mat-button-toggle value="flour" (click)="showFilter()">Filtro <mat-icon style="color: #B8122B;">filter_list</mat-icon></mat-button-toggle>
-    <mat-button-toggle value="eggs">Refrescar <mat-icon style="color: #B8122B;">autorenew</mat-icon ></mat-button-toggle> 
-  </mat-button-toggle-group>	
-                  </ol>
-              </div>
-          </div>
+  box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 0%), 0px 6px 10px 0px rgba(0, 0, 0, .14), 0px 1px 18px 0px rgba(0, 0, 0, .12);"
+          >
+            <mat-button-toggle value="flour" [disabled]="isFilterButtonDisabled" (click)="showFilter()"
+              >Filtro
+              <mat-icon style="color: #B8122B;"
+                >filter_list</mat-icon
+              ></mat-button-toggle
+            >
+            <mat-button-toggle value="eggs"
+              >Refrescar
+              <mat-icon style="color: #B8122B;"
+                >autorenew</mat-icon
+              ></mat-button-toggle
+            >
+          </mat-button-toggle-group>
+        </ol>
+      </div>
+    </div>
+
+    <mat-tab-group dynamicHeight (selectedTabChange)="onTabChange($event)">
+      <mat-tab label="Exploción">
+        <div class="example-small-box mat-elevation-z4">
+          <br />
           <div class="row">
-			
             <div class="col-lg-12" *ngIf="showfilter">
-                    
-                <div class="card">
-                    
-                    <div class="card-body">
-                    <div class="row"> 
+              <div class="card">
+                <div class="card-body">
+                  <div class="row">
                     <div class="form-group col-md-2">
-                        <label for="cboCotizacion">Cotizacion</label>
-                        <select class="form-control" id="cboCotizacion" name="cboCotizacion" [(ngModel)]="cotizacion"></select>
-                    </div>  
+                      <label for="cboCotizacion">Cotizacion</label>
+                      <select class="form-control" id="cboCotizacion1Select" name="cboCotizacion" [(ngModel)]="cotizacion"
+                      >
+                        <option value="JUL">July</option>
+                        <option value="AUG">August</option>
+                        <option value="SEP">September</option>
+                        <option value="OCT">October</option>
+                        <option value="NOV">November</option>
+                        <option value="DEC">December</option>
+                      </select>
+                    </div>
                     <div class="form-group col-md-2">
-                        <label for="txtfec_inicio_n">Fecha Inicio</label>
-                        <input type="date" class="form-control" placeholder="Ingrese los Nombres" id="txtfec_inicio_n" name="txtfec_inicio_n" [(ngModel)]="fechaInicio">
-                        <p class="help-block" style="display: none;">Example block-level help text here.</p>
-                    </div> 
+                      <label for="txtfec_inicio_n">Fecha Inicio</label>
+                      <input type="date" class="form-control" placeholder="Ingrese los Nombres" id="txtfec_inicio_n" name="txtfec_inicio_n" [(ngModel)]="fechaInicio"
+                      />
+                      <p class="help-block" style="display: none;">
+                        Example block-level help text here.
+                      </p>
+                    </div>
                     <div class="form-group col-md-2">
-                        <label for="txtfec_fin_n">Fecha Fin</label>
-                        <input type="date" class="form-control" placeholder="Ingrese el Apellido Paterno" id="txtfec_fin_n" name="txtfec_fin_n" [(ngModel)]="fechaFin">
-                        <p class="help-block" style="display: none;">Example block-level help text here.</p>
-                    </div>    
-                    <div class="form-group col-md-4"><br>
-                        
-                    <section> 
-                        <div class="example-button-row"> 
-                          <button mat-flat-button color="primary" style="    margin: 6px;" class="btn btn-primary" (click)="buscarVenta()">Buscar</button>
-                          <button mat-flat-button color="accent"  style="    margin: 6px;" class="btn btn-success">Exportar</button> 
+                      <label for="txtfec_fin_n">Fecha Fin</label>
+                      <input type="date" class="form-control" placeholder="Ingrese el Apellido Paterno" id="txtfec_fin_n" name="txtfec_fin_n" [(ngModel)]="fechaFin"
+                      />
+                      <p class="help-block" style="display: none;">
+                        Example block-level help text here.
+                      </p>
+                    </div>
+                    <div class="form-group col-md-4">
+                      <br />
+
+                      <section>
+                        <div class="example-button-row">
+                          <button mat-flat-button color="primary" style="    margin: 6px;" class="btn btn-primary" (click)="ListarMonitoreoExplocion()"
+                          >
+                            Buscar
+                          </button>
+                          <button mat-flat-button color="accent" style="    margin: 6px;" class="btn btn-success"
+                          >
+                            Exportar
+                          </button>
                         </div>
                       </section>
-                    </div> 
-                
-    
-                </div></div>
-    
+                    </div>
+                  </div>
                 </div>
-    </div>
-          </div> 
-
-          <mat-tab-group dynamicHeight>
-            <mat-tab label="Exploción">
-              <div class="example-small-box mat-elevation-z4">
-                <br>
+              </div>
+            </div>
+          </div>
           <div class="row">
             <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body"> 
-                        <div class="table-responsive"> 
-
-                          <section class="example-containerss" tabindex="0">
-                            <table  class="table table-sm mb-0 table-responsive-lg text-black">
-  <thead class="sticky-top">
-    <tr>
-      <th class="align-middle minw200">Accion</th> 
-      <th class="align-middle minw200">Ruc</th>
-      <th class="align-middle minw200">Razón Social</th>
-      <th class="align-middle minw200">Cotización</th> 
-      <th class="align-middle minw200">Grupo Cotización</th> 
-      <th class="align-middle minw200">Cod Producto</th>
-      <th class="align-middle minw200">Producto</th>
-      <th class="align-middle minw200">Accionamiento</th>
-      <th class="align-middle minw200">Cantidad</th>
-      <th class="align-middle minw200">Cant Producto</th>
-      <th class="align-middle minw200">Estado</th>
-      <th class="align-middle minw200">Tipo Operación</th> 
-    </tr>
-  </thead>
-  <tbody>
-    <ng-container *ngFor="let item of ListMonitoreoExplocion">
-      <tr>
-        <td (click)="toggleExpand(item)">
-            <button class="btn btn-primary tp-btn-light sharp"   *ngIf="!item.isExpand" (click)="ListarComponteProductoByGrupo(item.cotizacionGrupo)">
-                <mat-icon>expand_more</mat-icon>
-              </button>
-              <button class="btn btn-primary tp-btn-light sharp"  *ngIf="item.isExpand">
-                <mat-icon>expand_less</mat-icon>
-              </button> 
-        </td>       
-      <td>{{ item.ruc }}</td>
-      <td>{{ item.razonSocial }}</td>
-      <td>{{ item.cotizacion }}</td> 
-      <td>{{ item.cotizacionGrupo }}</td> 
-      <td>{{ item.codigoProducto }}</td>
-      <td>{{ item.nombreProducto }}</td>
-      <td>{{ item.accionamiento }}</td>
-      <td>{{ item.cantidad }}</td>
-      <td>{{ item.cantidadProductos }}</td>
-      <td>
-        <section class="example-section" *ngIf="item.estado=='Pendiente Venta'">
-          <mat-progress-bar
-              class="example-margin"
+              <div class="card">
+                <div class="card-body" style="margin-top: -19px;">
+                  <div class="col-lg-4" style="float: right;">
+                    <input type="text" [(ngModel)]="filterText" placeholder="Buscar..." class="form-control" step="height: 43px !important;"
+                    />
+                  </div>
+                  <div class="table-responsive">
+                    <section class="example-containerss" tabindex="0">
+                      <table class="table table-sm mb-0 table-responsive-lg">
+                        <thead class="sticky-top">
+                          <tr>
+                            <th>Accion</th>
+                            <th>Ruc</th>
+                            <th>Razón Social</th>
+                            <th>Cotización</th>
+                            <th style="white-space: nowrap">Cot. Grupo</th>
+                            <th>Cod Producto</th>
+                            <th>Producto</th>
+                            <th>Accionamiento</th>
+                            <th>Cantidad</th>
+                            <th style="white-space: nowrap">Cant. Producto</th>
+                            <th>Estado</th>
+                            <th style="white-space: nowrap">Tipo Operación</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <ng-container *ngFor="let item of filteredList()">
+                            <tr>
+                              <td (click)="toggleExpand(item)">
+                                <button class="btn btn-primary tp-btn-light sharp" *ngIf="!item.isExpand" (click)="ListarComponteProductoByGrupo(item.cotizacionGrupo)"
+                                >
+                                  <mat-icon>expand_more</mat-icon>
+                                </button>
+                                <button class="btn btn-primary tp-btn-light sharp" *ngIf="item.isExpand"
+                                >
+                                  <mat-icon>expand_less</mat-icon>
+                                </button>
+                              </td>
+                              <td>{{ item.ruc }}</td>
+                              <td>{{ item.razonSocial }}</td>
+                              <td>{{ item.cotizacion }}</td>
+                              <td>{{ item.cotizacionGrupo }}</td>
+                              <td>{{ item.codigoProducto }}</td>
+                              <td>{{ item.nombreProducto }}</td>
+                              <td>{{ item.accionamiento }}</td>
+                              <td>{{ item.cantidad }}</td>
+                              <td>{{ item.cantidadProductos }}</td>
+                              <td>
+                                <section class="example-section" *ngIf="item.estado=='Pendiente Venta'"
+                                >
+                                  <mat-progress-bar class="example-margin"
               color="warn"
               [mode]="mode"
-              value="15" 
-              [bufferValue]="bufferValue">
-          </mat-progress-bar>
-                <div style=" padding: 10px; color: black;"> {{ item.estado }} </div>
-        </section>
+              value="15" [bufferValue]="bufferValue"
+                                  >
+                                  </mat-progress-bar>
+                                  <div style=" padding: 10px; color: black;">
+                                    {{ item.estado }}
+                                  </div>
+                                </section>
 
-        <section class="example-section" *ngIf="item.estado=='Pendiente Operaciones'">
-          <mat-progress-bar
-              class="example-margin"
+                                <section class="example-section" *ngIf="item.estado=='Pendiente Operaciones'"
+                                >
+                                  <mat-progress-bar class="example-margin"
               color="warn"
               [mode]="mode"
               value="25"
-              [bufferValue]="bufferValue">
-          </mat-progress-bar>
-                <div style=" padding: 10px; color: black;"> {{ item.estado }} </div>
-        </section>
+              [bufferValue]="bufferValue"
+                                  >
+                                  </mat-progress-bar>
+                                  <div style=" padding: 10px; color: black;">
+                                    {{ item.estado }}
+                                  </div>
+                                </section>
 
-        <section class="example-section" *ngIf="item.estado=='En Construcción'">
-          <mat-progress-bar
-              class="example-margin"
+                                <section class="example-section" *ngIf="item.estado=='En Construcción'"
+                                >
+                                  <mat-progress-bar class="example-margin"
               color="accent"
               [mode]="mode"
-              value="40" 
-              [bufferValue]="bufferValue">
-          </mat-progress-bar>
-                <div style=" padding: 10px; color: black;"> {{ item.estado }} </div>
-        </section>
-        
-        <section class="example-section" *ngIf="item.estado=='Construcción Terminada'">
-          <mat-progress-bar
-              class="example-margin"
+              value="40" [bufferValue]="bufferValue"
+                                  >
+                                  </mat-progress-bar>
+                                  <div style=" padding: 10px; color: black;">
+                                    {{ item.estado }}
+                                  </div>
+                                </section>
+
+                                <section class="example-section" *ngIf="item.estado=='Construcción Terminada'"
+                                >
+                                  <mat-progress-bar class="example-margin"
               color="primary"
               [mode]="mode"
-              value="80" 
-              [bufferValue]="bufferValue">
-          </mat-progress-bar>
-                <div style="padding: 10px; color: black;"> {{ item.estado }} </div>
-        </section>
-        <section class="example-section" *ngIf="item.estado=='Terminado'"> 
-                <div style="padding: 10px; color: white;background: #07ff5e !important; "> {{ item.estado }} </div> 
-        </section>
-        <!--<section class="example-section" *ngIf="item.estado=='Terminado'">
+              value="80" [bufferValue]="bufferValue"
+                                  >
+                                  </mat-progress-bar>
+                                  <div style="padding: 10px; color: black;">
+                                    {{ item.estado }}
+                                  </div>
+                                </section>
+                                <section class="example-section" *ngIf="item.estado=='Terminado'"
+                                >
+                                  <div style="padding: 10px; color: white;background: #07ff5e !important; "
+                                  >
+                                    {{ item.estado }}
+                                  </div>
+                                </section>
+                                <!--<section class="example-section" *ngIf="item.estado=='Terminado'">
           <mat-progress-bar
               class="example-margin"
               color="success"
@@ -177,7 +234,7 @@
           </mat-progress-bar>
                 <div style="padding: 10px; color: black;"> {{ item.estado }} </div>
         </section>-->
-        <!--<section class="example-section" *ngIf="item.estado=='Finalizado'">
+                                <!--<section class="example-section" *ngIf="item.estado=='Finalizado'">
           <mat-progress-bar
               class="example-margin"
               color="success"
@@ -187,192 +244,503 @@
           </mat-progress-bar>
                 <div style=" padding: 10px; color: black;"> {{ item.estado }} </div>
         </section>-->
-        <!-- susces verde -->
-        </td>
-      <td> -- </td> 
-      </tr>
-      <tr *ngIf="item.isExpand">
-        <td colspan="13"> 
-          <div class="table-container">
-            <table  class="table table-responsive-lg mb-0 table-striped" id="dubcomponente">
-                <thead  class="sticky-top">
-                    <tr>
-                        <th class="align-middle minw200">Componente</th>
-                        <th class="align-middle minw200">Codigo</th>
-                        <th class="align-middle minw200">Descripcion</th>
-                        <th class="align-middle minw200">Color</th>
-                        <th class="align-middle minw200">Unidad Medida</th>
-                        <th class="align-middle minw200">Cantidad Utilizada</th>
-                        <th class="align-middle minw200">Merma</th>
-                        <th class="align-middle minw200">Accion</th> 
-                    </tr>
-                </thead>
-                <tbody id="id_tabla"></tbody>
-                <tbody>
-                    <tr *ngFor="let comp of ListComponenteProducto"> 
-                        <td  style="width: 124px !important;">{{comp.componente}}</td>
-                        <td style="width: 124px !important;">
-                            <select class="form-control input-sm"  [(ngModel)]="comp.codigo">
-                              <option [value]="comp.codigo">{{comp.codigo}} - {{comp.nombre}}</option>
-                                <!--<option value="PALCS00000002">PALCS00000002 : RIEL SUP/INF CORTINA CELULAR COLOR IVORY</option> -->
-                            </select> 
-                        </td>
-                        <td id="row-1" style="width: 302px !important;">{{comp.nombre}}</td>
-                        <td id="row-2" style="width: 182px !important;"></td>
-                        <td id="row-3" style="width: 362px !important;">0000</td>
-                        <td style="width: 124px !important;">
-                            <input type="text" class="form-control input-sm"  [(ngModel)]="comp.cantidad" /></td>
-                        <td style="width: 124px !important;">
-                            <input type="text" class="form-control input-sm"  [(ngModel)]="comp.merma" />
-                        </td>
-                        <td>     
-                          <div class="form-group" style="text-align: center;">
-                        <button class="btn btn-primary tp-btn-light sharp"  *ngIf="item.isExpand" (click)="clonarComponente(comp)" style="    margin: 9px;">
-                            <mat-icon>file_copy</mat-icon>
-                        </button>                        
-                        <button class="btn btn-primary tp-btn-light sharp"  *ngIf="item.isExpand && comp.agregado" (click)="eliminarItemAgregado(comp)">
-                            <mat-icon>remove_circle_outline</mat-icon>
-                        </button>
-                      </div>                        
-                        </td> 
-                    </tr>
-                    <tr>
-                        <td colspan="8" style="width: 124px !important;">
-                            <input
-                                type="button"
-                                class="btn btn-primary"
-                                value="Guardar Componentes" 
-                                (click)="guardarComponentes()"
-                            />
-                             
-                        <button class="btn btn-primary tp-btn-light sharp" style="float: right;" *ngIf="item.isExpand" (click)="agregarComponente()">
-                            <mat-icon>library_add</mat-icon>
-                          </button> 
-                        </td> 
-                    </tr>
-                </tbody>
-            </table> </div>
-            <div id="output"></div> 
-        </td>
-      </tr>
-    </ng-container>
-  </tbody>    
-</table> 
-</section> 
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-              </div>
-            </mat-tab>
-            <mat-tab label="Reporte Monitoreo">
-              <div class="example-large-box mat-elevation-z4">
-                <br>
-                <div class="row">
-                  <div class="col-lg-12">
-                      <div class="card">
-                          <div class="card-body">
-                              <div class="table-responsive"> 
-                                
-                          <section class="example-containerss" tabindex="0">
-                                <table  class="table table-sm mb-0 table-responsive-lg text-black">
+                                <!-- susces verde -->
+                              </td>
+                              <td>--</td>
+                            </tr>
+                            <tr *ngIf="item.isExpand">
+                              <td colspan="13">
+                                <div class="table-container">
+                                  <table class="table table-responsive-lg mb-0 table-striped" id="dubcomponente"
+                                  >
                                     <thead class="sticky-top">
-                                    <tr>
-                                    <th class="align-middle minw200">N Cotizacion</th>
-                                    <th class="align-middle minw200">Cod OP</th>
-                                    <th class="align-middle minw200">Ruc</th>
-                                    <th class="align-middle minw200">Nombre Cliente</th>
-                                    <th class="align-middle minw200">Nombre Proyecto</th>
-                                    <th class="align-middle minw200">Tpo Cliente</th>	 
-                                    <th class="align-middle minw200">Vendedor</th>	
-                                    <th class="align-middle minw200">Fec Produccion</th>
-                                    <th class="align-middle minw200">Observaciones</th>
-                                    <th class="align-middle minw200">Estado</th>
-                                    <th class="align-middle minw200">Id Producto</th>
-                                    <th class="align-middle minw200">Nombre Producto</th>
-                                    <th class="align-middle minw200">Unidad Medida</th>
-                                    <th class="align-middle minw200">Accionamiento</th>
-                                    <th class="align-middle minw200">Cant Productos</th>
-                                    <th class="align-middle minw200">Cantidad</th>
-                                    <th class="align-middle minw200">Fecha Produccion</th>
-                                    <th class="align-middle minw200">Fecha Entrega</th>
-                                    <th class="align-middle minw200">Tiempo X Minuto</th>
-                                    <th class="align-middle minw200">Nro de Motores</th>
-                                    <th class="align-middle minw200">Reproceso</th>
-                                    <th class="align-middle minw200">Cot. Principal</th>
-                                    <th class="align-middle minw200">Tipo Operacion</th>                        
-                                    </tr>
+                                      <tr>
+                                        <th>Componente</th>
+                                        <th>Codigo</th>
+                                        <th>Descripcion</th>
+                                        <th>Color</th>
+                                        <th>Unidad Medida</th>
+                                        <th>Cantidad Utilizada</th>
+                                        <th>Merma</th>
+                                        <th>Accion</th>
+                                      </tr>
                                     </thead>
-                                    <tbody id="detalle_data">
-                                        <tr>
-                                            <td>025429</td>
-                                            <td></td>
-                                            <td>20601056926</td>
-                                            <td>SJ GLASS SAC</td>
-                                            <td>DIST-025429</td>
-                                            <td>Distribucion</td>
-                                            <td>CRISTINA MUNOZ</td>		
-                                            <td></td>
-                                            <td></td>	
-                                            <td>Pendiente Venta</td>		  
-                                            <td>PRTRS0052</td>		  
-                                            <td>ROLLER SHADE BLACKOUT PLASTIFICADO | LINEN</td>		  
-                                            <td>MTK</td>		  		  
-                                            <td>Manual</td>	  
-                                            <td>1</td>		  
-                                            <td>1.729</td>		  
-                                            <td>2024-04-27</td>			  
-                                            <td>2024-04-27</td>		 		  
-                                            <td></td>		  	  
-                                            <td>0</td>		 		  
-                                            <td></td>		  	  
-                                            <td></td>		 	  
-                                            <td>Venta</td>		  	  
-                                            </tr>
+                                    <tbody id="id_tabla"></tbody>
+                                    <tbody>
+                                      <tr *ngFor="let comp of ListComponenteProducto"
+                                      >
+                                        <td style="width: 124px !important;">
+                                          {{ comp.componente }}
+                                        </td>
+                                        <td style="width: 124px !important;">
+                                          <select class="form-control input-sm" [(ngModel)]="comp.codigo"
+                                          >
+                                            <option [value]="comp.codigo">
+                                              {{ comp.codigo }} -
+                                              {{ comp.nombre }}
+                                            </option>
+                                            <!--<option value="PALCS00000002">PALCS00000002 : RIEL SUP/INF CORTINA CELULAR COLOR IVORY</option> -->
+                                          </select>
+                                        </td>
+                                        <td id="row-1" style="width: 302px !important;"
+                                        >
+                                          {{ comp.nombre }}
+                                        </td>
+                                        <td id="row-2" style="width: 182px !important;"
+                                        ></td>
+                                        <td id="row-3" style="width: 362px !important;"
+                                        >
+                                          0000
+                                        </td>
+                                        <td style="width: 124px !important;">
+                                          <input type="text" class="form-control input-sm" [(ngModel)]="comp.cantidad"
+                                          />
+                                        </td>
+                                        <td style="width: 124px !important;">
+                                          <input type="text" class="form-control input-sm" [(ngModel)]="comp.merma"
+                                          />
+                                        </td>
+                                        <td>
+                                          <div class="form-group" style="text-align: center;"
+                                          >
+                                            <button class="btn btn-primary tp-btn-light sharp" *ngIf="item.isExpand" (click)="clonarComponente(comp)" style="    margin: 9px;"
+                                            >
+                                              <mat-icon>file_copy</mat-icon>
+                                            </button>
+                                            <button class="btn btn-primary tp-btn-light sharp" *ngIf="item.isExpand && comp.agregado" (click)="eliminarItemAgregado(comp)"
+                                            >
+                                              <mat-icon
+                                                >remove_circle_outline</mat-icon
+                                              >
+                                            </button>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td colspan="8" style="width: 124px !important;"
+                                        >
+                                          <input type="button"
+                                class="btn btn-primary"
+                                value="Guardar Componentes" (click)="guardarComponentes()"
+                                          />
+
+                                          <button class="btn btn-primary tp-btn-light sharp" style="float: right;" *ngIf="item.isExpand" (click)="agregarComponente()"
+                                          >
+                                            <mat-icon>library_add</mat-icon>
+                                          </button>
+                                        </td>
+                                      </tr>
                                     </tbody>
-                                    </table>
-                                    </section>
-                              </div>
-                          </div>
-                      </div>
+                                  </table>
+                                </div>
+                                <div id="output"></div>
+                              </td>
+                            </tr>
+                          </ng-container>
+                        </tbody>
+                      </table>
+                    </section>
                   </div>
+                </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+      <mat-tab label="Reporte Monitoreo">
+        <div class="example-large-box mat-elevation-z4">
+          <br />
+          <div class="row">
+            <div class="col-lg-12" *ngIf="showfilter2">
+              <div class="card">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="form-group col-md-2">
+                      <label for="cboCotizacion2">Cotizacion</label>
+                      <select class="form-control" id="cboCotizacion2Select" name="cboCotizacion2" [(ngModel)]="cotizacion2"
+                      >
+                        <option value="JUL">July</option>
+                        <option value="AUG">August</option>
+                        <option value="SEP">September</option>
+                        <option value="OCT">October</option>
+                        <option value="NOV">November</option>
+                        <option value="DEC">December</option>
+                      </select>
+                    </div>
+                    <div class="form-group col-md-2">
+                      <label for="txtfec_inicio_n">Fecha Inicio</label>
+                      <input type="date" class="form-control" placeholder="Ingrese los Nombres" id="txtfec_inicio_n" name="txtfec_inicio_n" [(ngModel)]="fechaInicio2"
+                      />
+                      <p class="help-block" style="display: none;">
+                        Example block-level help text here.
+                      </p>
+                    </div>
+                    <div class="form-group col-md-2">
+                      <label for="txtfec_fin_n">Fecha Fin</label>
+                      <input type="date" class="form-control" placeholder="Ingrese el Apellido Paterno" id="txtfec_fin_n" name="txtfec_fin_n" [(ngModel)]="fechaFin2"
+                      />
+                      <p class="help-block" style="display: none;">
+                        Example block-level help text here.
+                      </p>
+                    </div>
+                    <div class="form-group col-md-4">
+                      <br />
+
+                      <section>
+                        <div class="example-button-row">
+                          <button mat-flat-button color="primary" style="    margin: 6px;" class="btn btn-primary" (click)="ListarMonitoreoExplocion()"
+                          >
+                            Buscar
+                          </button>
+                          <button mat-flat-button color="accent" style="    margin: 6px;" class="btn btn-success"
+                          >
+                            Exportar
+                          </button>
+                        </div>
+                      </section>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </mat-tab>
-            <mat-tab label="Mantenimiento Exploción">
-              <div class="example-large-box mat-elevation-z4">
-                <br>
-                <div class="row">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <section class="example-containerss" tabindex="0">
+                      <table class="table table-sm mb-0 table-responsive-lg">
+                        <thead class="sticky-top">
+                          <tr>
+                            <th style="white-space: nowrap">Cotizacion</th>
+                            <th style="white-space: nowrap">Cod OP</th>
+                            <th>Ruc</th>
+                            <th style="white-space: nowrap">Razon Social</th>
+                            <th style="white-space: nowrap">Nombre Proyecto</th>
+                            <th style="white-space: nowrap">Tpo Cliente</th>
+                            <th>Vendedor</th>
+                            <th style="white-space: nowrap">Fec. Producción</th>
+                            <th>Observaciones</th>
+                            <th>Estado</th>
+                            <th style="white-space: nowrap">Cod. Producto</th>
+                            <th style="white-space: nowrap">Nombre Producto</th>
+                            <th style="white-space: nowrap">Unidad Medida</th>
+                            <th>Accionamiento</th>
+                            <th style="white-space: nowrap">Cant. Productos</th>
+                            <th style="white-space: nowrap">Cantidad</th>
+                            <th style="white-space: nowrap">
+                              Fecha Producción
+                            </th>
+                            <th style="white-space: nowrap">Fecha Entrega</th>
+                            <th style="white-space: nowrap">Tiempo X Minuto</th>
+                            <th style="white-space: nowrap">Nro de Motores</th>
+                            <th style="white-space: nowrap">Reproceso</th>
+                            <th style="white-space: nowrap">Cot. Principal</th>
+                            <th style="white-space: nowrap">Tipo Operacion</th>
+                          </tr>
+                        </thead>
+                        <tbody id="detalle_data">
+                          <tr>
+                            <td>025429</td>
+                            <td></td>
+                            <td>20601056926</td>
+                            <td>SJ GLASS SAC</td>
+                            <td>DIST-025429</td>
+                            <td>Distribucion</td>
+                            <td>CRISTINA MUNOZ</td>
+                            <td></td>
+                            <td></td>
+                            <td>Pendiente Venta</td>
+                            <td>PRTRS0052</td>
+                            <td>ROLLER SHADE BLACKOUT PLASTIFICADO | LINEN</td>
+                            <td>MTK</td>
+                            <td>Manual</td>
+                            <td>1</td>
+                            <td>1.729</td>
+                            <td>2024-04-27</td>
+                            <td>2024-04-27</td>
+                            <td></td>
+                            <td>0</td>
+                            <td></td>
+                            <td></td>
+                            <td>Venta</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </section>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+      <mat-tab label="Mantenimiento Exploción">
+        <div class="example-large-box mat-elevation-z4">
+          <br />
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="form-group col-md-4">
+                      <label>Cotizacion</label>
+                      <input type="text" class="form-control" placeholder="Ingrese Cotizacion" id="txtCotizacionExplocion" name="txtCotizacionExplocion"
+                      />
+                    </div>
+                    <div class="form-group col-md-1">
+                      <label style="visibility: hidden;">Cotizacion</label
+                      ><br />
+                      <button onclick="getExplocionByCotizacion();" class="btn btn-primary"
+                      >
+                        Buscar
+                      </button>
+                    </div>
+                    <div class="form-group col-md-3" id="DivButonGuardar">
+                      <label style=" visibility: hidden;">Guardar</label><br />
+                      <button class="btn btn-success">
+                        Modificar Explosión
+                      </button>
+                    </div>
+                  </div>
+                  <div class="table-responsive">
+                    <section class="example-containerss" tabindex="0">
+                      <table class="table table-sm mb-0 table-responsive-lg">
+                        <thead class="sticky-top">
+                          <tr>
+                            <th>ID</th>
+                            <th>Cotizacion</th>
+                            <th>Producto</th>
+                            <th>Componente</th>
+                            <th>Cod.Componente</th>
+                            <th style="white-space: nowrap">
+                              Desc. Componente
+                            </th>
+                            <th>Color</th>
+                            <th style="white-space: nowrap">Unidad Medida</th>
+                            <th>Cantidad</th>
+                            <th>Merma</th>
+                            <th>Accion</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let componente of componentes">
+                            <td>
+                              <span>{{ componente.idExplocion }}</span>
+                            </td>
+                            <td>{{ componente.cotizacion }}</td>
+                            <td>{{ componente.producto }}</td>
+                            <td>{{ componente.componente }}</td>
+                            <td>
+                              <!--<select #selectElement class="form-control input-sm select2">
+                                        <option *ngFor="let opcion of componente.opciones" [value]="opcion.value">{{ opcion.label }}</option>
+                                      </select>-->
+                              <mat-form-field appearance="outline" style="width: 100%;"
+                              >
+                                <mat-select [(ngModel)]="componente.componente" placeholder="Buscar" style="width: 190px;" (selectionChange)="onNombreChange($event, componente)"
+                                >
+                                  <mat-select-trigger>
+                                    {{
+                                      componente.componente ||
+                                        '---Seleccione---'
+                                    }}
+                                  </mat-select-trigger>
+                                  <input matInput (keyup)="applyFilter($event)" placeholder="Buscar" class="search-input"
+                                  />
+                                  <mat-option value=""
+                                    >---Seleccione---</mat-option
+                                  >
+                                  <mat-option *ngFor="let item of filteredListComponente" [value]="item.codigo"
+                                  >
+                                    {{ item.codigo }} : {{ item.nombre }}
+                                  </mat-option>
+                                </mat-select>
+                              </mat-form-field>
+                            </td>
+                            <td>{{ componente.descripcionComponente }}</td>
+                            <td>{{ componente.color }}</td>
+                            <td>{{ componente.unidadMedida }}</td>
+                            <td>
+                              <input type="text" class="form-control" [value]="componente.cantidad" placeholder="Cantidad"
+                              />
+                            </td>
+                            <td>
+                              <input type="text" class="form-control" [value]="componente.merma" placeholder="Merma"
+                              />
+                            </td>
+                            <td>
+                              <button mat-flat-button class="btn btn-info" (click)="clonarComponenteMantenimiento(componente)"
+                              >
+                                Clonar
+                                <i class="fa fa-clone" aria-hidden="true"></i>
+                              </button>
+                              <button mat-flat-button class="btn btn-dark" (click)="eliminarComponente(componente)"
+                              >
+                                Eliminar
+                                <span class="glyphicon glyphicon-trash"></span>
+                              </button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </section>
+                  </div>
+
                   <div class="col-lg-12">
-                      <div class="card">
-                          <div class="card-body">
-                              <div class="table-responsive"> 
-                                  
-                              </div>
-                          </div>
-                      </div>
+                    <button mat-flat-button class="btn-success" (click)="nuevoComponente()" style="float: right; border-radius: 8px;"
+                    >
+                      Nuevo Componente<i class="fa fa-plus-circle fa-3" style="font-size: 200%;" aria-hidden="true"
+                      ></i>
+                    </button>
                   </div>
+                </div>
               </div>
-              </div>
-            </mat-tab>
-            <mat-tab label="Carga">
-              <div class="example-large-box mat-elevation-z4">
-                <br>
-                <div class="row">
-                  <div class="col-lg-12">
-                      <div class="card">
-                          <div class="card-body">
-                              <div class="table-responsive"> 
-                                  
-                              </div>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+      <mat-tab label="Carga">
+        <div class="example-large-box mat-elevation-z4">
+          <br />
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <div class="container" style="width: 100%; height: 100%;" appDnd (fileDropped)="onFileDropped($event)" *ngIf="porCargar"
+                    >
+                      <input type="file" #fileDropRef id="fileDropRef" multiple (change)="fileBrowseHandler($event)"
+                      />
+                      <svg xmlns="http://www.w3.org/2000/svg" width="63" height="64" viewBox="0 0 63 64"
+                      >
+                        <g fill="#3B454F" fill-rule="nonzero">
+                          <path d="M42.656 15.135a1.953 1.953 0 0 1-1.391-.578L31.5 4.795l-9.765 9.762a1.97 1.97 0 1 1-2.785-2.785L30.106.616a1.97 1.97 0 0 1 2.785 0l11.157 11.156a1.97 1.97 0 0 1-1.392 3.363z"
+                          />
+                          <path d="M31.5 36.791a1.97 1.97 0 0 1-1.969-1.969V2.01a1.97 1.97 0 0 1 3.938 0v32.812a1.97 1.97 0 0 1-1.969 1.969z"
+                          />
+                          <path d="M55.781 63.041H7.22A7.225 7.225 0 0 1 0 55.822V41.385a4.599 4.599 0 0 1 4.594-4.594h7.234a4.567 4.567 0 0 1 4.402 3.276l2.814 9.382a.658.658 0 0 0 .628.467h23.656a.658.658 0 0 0 .628-.467l2.814-9.385a4.572 4.572 0 0 1 4.402-3.273h7.234A4.599 4.599 0 0 1 63 41.385v14.437a7.225 7.225 0 0 1-7.219 7.219zM4.594 40.729a.656.656 0 0 0-.657.656v14.437a3.286 3.286 0 0 0 3.282 3.282H55.78a3.286 3.286 0 0 0 3.282-3.282V41.385a.656.656 0 0 0-.657-.656h-7.234a.65.65 0 0 0-.628.467L47.73 50.58a4.628 4.628 0 0 1-4.402 3.274H19.672a4.567 4.567 0 0 1-4.402-3.276l-2.814-9.382a.65.65 0 0 0-.628-.467H4.594z"
+                          />
+                        </g>
+                      </svg>
+
+                      <h3>Arrastre y suelte el archivo aquí</h3>
+                      <h3>O</h3>
+                      <label for="fileDropRef">Seleccione archivo</label>
+                    </div>
+                    <div class="col-lg-12" *ngIf="porCargar" style="text-align: center;">				
+                      <section> 
+                        <div class="example-button-row"> 
+                          <div   style=" 
+                          margin: 6px;
+                          color: blue;
+                          cursor: pointer;
+                          margin: 6px;" (click)="descargarArchivo()">Descargar Plantilla  <mat-icon>cloud_download</mat-icon></div> 
+                        </div>
+                        </section>
+                      </div> 
+                    <div class="files-list">
+                      <div class="single-file" *ngFor="let file of files; let i = index"
+                      >
+                        <div class="file-icon" style="width: 50px">
+                          <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                           x="0px" y="0px" viewBox="0 0 58 58" style="enable-background:new 0 0 58 58;" xml:space="preserve"
+                          >
+                            <polygon style="fill:#EDEADA;" points="51.5,14 37.5,0 6.5,0 6.5,58 51.5,58 "
+                            />
+                            <g>
+                              <path style="fill:#CEC9AE;"
+                                                d="M16.5,23h25c0.552,0,1-0.447,1-1s-0.448-1-1-1h-25c-0.552,0-1,0.447-1,1S15.948,23,16.5,23z"
+                              />
+                              <path style="fill:#CEC9AE;"
+                                                d="M16.5,15h10c0.552,0,1-0.447,1-1s-0.448-1-1-1h-10c-0.552,0-1,0.447-1,1S15.948,15,16.5,15z"
+                              />
+                              <path style="fill:#CEC9AE;"
+                                                d="M41.5,29h-25c-0.552,0-1,0.447-1,1s0.448,1,1,1h25c0.552,0,1-0.447,1-1S42.052,29,41.5,29z"
+                              />
+                              <path style="fill:#CEC9AE;"
+                                                d="M41.5,37h-25c-0.552,0-1,0.447-1,1s0.448,1,1,1h25c0.552,0,1-0.447,1-1S42.052,37,41.5,37z"
+                              />
+                              <path style="fill:#CEC9AE;"
+                                                d="M41.5,45h-25c-0.552,0-1,0.447-1,1s0.448,1,1,1h25c0.552,0,1-0.447,1-1S42.052,45,41.5,45z"
+                              />
+                            </g>
+                            <polygon style="fill:#CEC9AE;" points="37.5,0 37.5,14 51.5,14 "
+                            />
+                          </svg>
+                        </div>
+                        <div class="info">
+                          <h4 class="name">
+                            {{ file?.name }}
+                          </h4>
+                          <p class="size">
+                            {{ formatBytes(file?.size, 0) }}
+                          </p>
+                          <div class="progress-cont">
+                            <div class="progress" [style.width]="file?.progress + '%'"
+                            ></div>
                           </div>
+                        </div>
+
+                        <div class="delete" (click)="deleteFile(i)">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="18" viewBox="0 0 14 18"
+                          >
+                            <path fill="#B1B1B1" fill-rule="nonzero"
+                                              d="M1 16c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2H3c-1.1 0-2 .9-2 2v10zm3.17-7.83a.996.996 0 0 1 1.41 0L7 9.59l1.42-1.42a.996.996 0 1 1 1.41 1.41L8.41 11l1.42 1.42a.996.996 0 1 1-1.41 1.41L7 12.41l-1.42 1.42a.996.996 0 1 1-1.41-1.41L5.59 11 4.17 9.58a.996.996 0 0 1 0-1.41zM10.5 1L9.79.29C9.61.11 9.35 0 9.09 0H4.91c-.26 0-.52.11-.7.29L3.5 1H1c-.55 0-1 .45-1 1s.45 1 1 1h12c.55 0 1-.45 1-1s-.45-1-1-1h-2.5z"
+                            />
+                          </svg>
+                        </div>
                       </div>
+                    </div>
+                    <!-- Agregar la vista previa de la tabla aquí -->
+                    <div *ngIf="existearchivo">
+                      <div class="row">
+                        <div [ngClass]="{ 'col-lg-6': !error, 'col-lg-12': error }">
+                          <h3 *ngIf="!error">
+                            Vista previa de la carga - Total filas: {{ previewData.length }}
+                          </h3>
+                          <span *ngIf="error" style="color: red; font-weight: 700;">
+                            ERROR: Las cabeceras del archivo no son las esperadas. Por favor, verifica el archivo y vuelve a intentarlo.
+                          </span>
+                        </div>
+                        <div class="col-lg-6">
+                          <button mat-flat-button color="warn" style="float: right; margin: 6px;" class="btn-primary-azul" *ngIf="!error"
+                          (click)="CargarPlantilla()"
+                          >
+                            Realizar la carga <mat-icon>cloud_upload</mat-icon>
+                          </button>
+                        </div>
+                      </div>
+
+                      <div class="table-responsive">
+                        <section class="example-containerss" tabindex="0">
+                          <table class="table table-responsive-lg mb-0 table-striped"
+                          >
+                            <thead class="sticky-top">
+                              <tr>
+                                <th *ngFor="let header of previewHeaders">
+                                  {{ header }}
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let row of previewData">
+                                <td *ngFor="let cell of row">{{ cell }}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </section>
+                      </div>
+                    </div>
+                    <!-- Fin de la vista previa -->
+                    <!-- Resto de tu código -->
                   </div>
+                </div>
               </div>
-              </div>
-            </mat-tab>
-          </mat-tab-group>
-      </div>
-  </div> 
-  
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>

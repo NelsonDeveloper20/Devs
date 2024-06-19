@@ -126,42 +126,7 @@ import { CheckoutComponent } from './apps/shop/checkout/checkout.component';
 import { InvoiceComponent } from './apps/shop/invoice/invoice.component';
 import { EcomCustomersComponent } from './apps/shop/ecom-customers/ecom-customers.component';
    
-import { LightGalleryComponent } from './plugins/light-gallery/light-gallery.component';
-/*
-import { WidgetComponent } from './widget/widget.component';
-import { Timeline1Component } from './elements/widget/timeline1/timeline1.component';
-import { Timeline2Component } from './elements/widget/timeline2/timeline2.component';
-import { Notifications1Component } from './elements/widget/notifications1/notifications1.component';
-import { Notifications2Component } from './elements/widget/notifications2/notifications2.component';
-import { MessageComponent } from './elements/widget/message/message.component';
-import { TodolistComponent } from './elements/widget/todolist/todolist.component';
-import { PieChart1Component } from './elements/widget/charts/pie-chart1/pie-chart1.component';
-import { BarChart1Component } from './elements/widget/charts/bar-chart1/bar-chart1.component';
-import { BarChart2Component } from './elements/widget/charts/bar-chart2/bar-chart2.component';
-import { AreaChart1Component } from './elements/widget/charts/area-chart1/area-chart1.component';
-import { VisitorActivityComponent } from './elements/widget/visitor-activity/visitor-activity.component';
-import { VisitorActivityDayComponent } from './elements/widget/visitor-activity/visitor-activity-day/visitor-activity-day.component';
-import { VisitorActivityMonthComponent } from './elements/widget/visitor-activity/visitor-activity-month/visitor-activity-month.component';
-import { VisitorActivityYearComponent } from './elements/widget/visitor-activity/visitor-activity-year/visitor-activity-year.component';
-import { ChartjsActiveUsersComponent } from './elements/widget/charts/chartjs-active-users/chartjs-active-users.component';
-import { BloodPressureComponent } from './elements/widget/charts/blood-pressure/blood-pressure.component';
-import { HeartRateComponent } from './elements/widget/charts/heart-rate/heart-rate.component';
-import { GlucoseRateComponent } from './elements/widget/charts/glucose-rate/glucose-rate.component';
-import { ClolesterolComponent } from './elements/widget/charts/clolesterol/clolesterol.component';
-import { BarChart3Component } from './elements/widget/charts/bar-chart3/bar-chart3.component';
-import { AreaChart2Component } from './elements/widget/charts/area-chart2/area-chart2.component';
-import { BarChart4Component } from './elements/widget/charts/bar-chart4/bar-chart4.component';
-import { BarChart5Component } from './elements/widget/charts/bar-chart5/bar-chart5.component';
-import { AreaChart3Component } from './elements/widget/charts/area-chart3/area-chart3.component';
-import { BarChart6Component } from './elements/widget/charts/bar-chart6/bar-chart6.component';
-import { MarketNowComponent } from './elements/widget/charts/market-now/market-now.component';
-import { SalesAnalysisComponent } from './elements/widget/charts/sales-analysis/sales-analysis.component';
-import { TopProducts1Component } from './elements/widget/charts/top-products1/top-products1.component';
-import { TopProducts2Component } from './elements/widget/charts/top-products2/top-products2.component';
-import { WeeklySalesComponent } from './elements/widget/charts/weekly-sales/weekly-sales.component';
-import { SalesStatusComponent } from './elements/widget/charts/sales-status/sales-status.component';
-import { AllSales1Component } from './elements/widget/charts/all-sales1/all-sales1.component';
-import { AllSales2Component } from './elements/widget/charts/all-sales2/all-sales2.component';*/
+import { LightGalleryComponent } from './plugins/light-gallery/light-gallery.component'; 
 
 import { ElementsComponent } from './forms/elements/elements.component';
 import { FormValidateComponent } from './forms/form-validate/form-validate.component';
@@ -308,42 +273,7 @@ import { DatePipe } from '@angular/common';
     InvoiceComponent,
     EcomCustomersComponent,
   
-    LightGalleryComponent,
-/*
-    WidgetComponent,
-    Timeline1Component,
-    Timeline2Component,
-    Notifications1Component,
-    Notifications2Component,
-    MessageComponent,
-    TodolistComponent,
-    PieChart1Component,
-    BarChart1Component,
-    BarChart2Component,
-    AreaChart1Component,
-    VisitorActivityComponent,
-    VisitorActivityDayComponent,
-    VisitorActivityMonthComponent,
-    VisitorActivityYearComponent,
-    ChartjsActiveUsersComponent,
-    BloodPressureComponent,
-    HeartRateComponent,
-    GlucoseRateComponent,
-    ClolesterolComponent,
-    BarChart3Component,
-    AreaChart2Component,
-    BarChart4Component,
-    BarChart5Component,
-    AreaChart3Component,
-    BarChart6Component,
-    MarketNowComponent,
-    SalesAnalysisComponent,
-    TopProducts1Component,
-    TopProducts2Component,
-    WeeklySalesComponent,
-    SalesStatusComponent,
-    AllSales1Component,
-    AllSales2Component,*/
+    LightGalleryComponent, 
 
     ElementsComponent,
     FormValidateComponent,
