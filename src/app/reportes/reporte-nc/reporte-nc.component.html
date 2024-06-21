@@ -164,7 +164,7 @@
                                 <th mat-header-cell *matHeaderCellDef sticky>Estado</th>
                                 <td mat-cell *matCellDef="let element" class="center">
                                   <button class="btn btn-primary tp-btn-light sharp" (click)="EnviarAOperaciones(element)"
-                                  [disabled]="element.estadoOp !== 'Pendiente Operaciones'" style="font-size: 13px;" 
+                                  [disabled]="element.estadoOp !== 'Pendiente Operaciones'  " style="font-size: 13px;" 
                                   matTooltip="{{element.estadoDescripcion}}" 
                                   matTooltipClass="example-tooltip-red"
                                   >

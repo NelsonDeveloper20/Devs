@@ -188,7 +188,8 @@ export class ReporteNCComponent implements OnInit {
     const dataToSend = {  
       CotizacionGrupo: grupo,  
       Cotizacion: item.numeroCotizacion, 
-      CodigoSisgeco:item.codigoSisgeco
+      CodigoSisgeco:item.codigoSisgeco,
+      estado:item.estadoOp
     };
     dialogConfig.data = dataToSend; 
     dialogConfig.width ='804px';

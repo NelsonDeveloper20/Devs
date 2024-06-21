@@ -191,7 +191,8 @@ export class SolicitudPendienteComponent implements OnInit {
     const dataToSend = {  
       CotizacionGrupo: grupo,   
       Cotizacion: item.numeroCotizacion, 
-      CodigoSisgeco:item.codigoSisgeco
+      CodigoSisgeco:item.codigoSisgeco,
+      estado:item.estadoPedido
     };
     dialogConfig.data = dataToSend; 
     dialogConfig.width ='804px';

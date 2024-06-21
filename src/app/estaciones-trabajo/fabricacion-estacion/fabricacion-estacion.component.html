@@ -159,8 +159,7 @@
                                     <button class="btn btn-primary btn-sl-sm mr-2" style="    width: 100%;" type="button" (click)="start()" *ngIf="!isRunning">Iniciar <span class="mr-2" ><i class="fa fa-play"></i></span></button>
                                 </div> 
                                         
-                                <div class="p-0"> <br>
-                                  es {{guardarHabilitado}}
+                                <div class="p-0"> <br> 
                                     <!--<button class="btn btn-primary btn-sl-sm mr-2" type="button" style="    float: right;" >Guardar <span class="mr-2"><i class="fa fa-floppy-o"></i></span></button>-->
                                     <button class="btn btn-primary btn-sl-sm mr-2" type="button" style="float: right;" [disabled]="!guardarHabilitado" (click)="GuardarProduccion()">{{nombreBoton}} <span class="mr-2"><i class="fa fa-floppy-o"></i></span></button>
                                 </div>

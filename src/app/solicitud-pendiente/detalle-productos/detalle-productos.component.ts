@@ -15,6 +15,7 @@ export class DetalleProductosComponent implements OnInit {
   Grupo:String="";
   Cotizacion:String="";
   CodigoSisgeco:String="";
+  estado:string="";
   constructor(@Inject(MAT_DIALOG_DATA) public data: any,
   private dialog: MatDialog,
     private dialogRef: MatDialogRef<DetalleProductosComponent>,
@@ -23,7 +24,8 @@ export class DetalleProductosComponent implements OnInit {
     private _OrdenService: OrdenproduccionService, ) {
       this.Grupo = data.CotizacionGrupo;   
       this.Cotizacion= data.Cotizacion, 
-      this.CodigoSisgeco= data.CodigoSisgeco 
+      this.CodigoSisgeco= data.CodigoSisgeco ;
+      this.estado=data.estado;
      }
 
   ngOnInit(): void {
@@ -77,7 +79,8 @@ validarPrt(codigo:any){
         }
       );
    }
-  openRegisterProd(producto:any): void {    
+  openRegisterProd(producto:any): void {   
+    producto["estadoOp"]=this.estado; 
     console.log(producto);
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
