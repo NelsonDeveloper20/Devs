@@ -672,7 +672,7 @@ for (let i = 0; i < this.cantSubArray; i++) {
         "<td class='amarillo'>" + prods[i].nombreProducto + "</td>";
       html_escuadra +=
         "<td>" + 
-        prods[i].escruadraDet1 +
+        prods[i].escuadraDet +
         "</td>";
 
       if (
