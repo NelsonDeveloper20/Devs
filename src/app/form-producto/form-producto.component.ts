@@ -659,7 +659,6 @@ existeMotor(event: any, tipo: any) {
   // MOTORIZED
   if (valMotor == 'Motorizado' || valMotor == 'Manual + Motorizado') {
     
-    this.objConfiguracionAtributos[this.TipoProducto]['TipoCadena'].required = 0;
     if (codProd == 'PRTPJ') {
       this.objConfiguracionAtributos[this.TipoProducto]['baston'].visible = 0;
     } else if (codProd == 'PRTTO') {
@@ -692,6 +691,7 @@ existeMotor(event: any, tipo: any) {
 
     // Set visibility
     this.objConfiguracionAtributos[this.TipoProducto]['tipoCadena'].visible = 1;
+    this.objConfiguracionAtributos[this.TipoProducto]['tipoCadena'].required = 0;
 
   } else if (valMotor == "Manual") { // MANUAL
     if (codProd == 'PRTPJ') {

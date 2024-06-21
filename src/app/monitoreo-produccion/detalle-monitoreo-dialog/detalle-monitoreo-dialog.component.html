@@ -16,7 +16,7 @@
                         <th>Descripcion</th>
                         <th>Color</th>
                         <th>Unidad Medida</th>
-                        <th>Cantidad Utilizada</th>
+                        <th style="white-space: nowrap !important;">Cant. Utilizada</th>
                         <th>Merma</th>
                         <th><button class="btn btn-primary-azul tp-btn-light sharp" style="float: right;"
                             (click)="agregarComponente()">
@@ -68,7 +68,7 @@
                         <td style="width: 124px !important;">
                             <input type="text" class="form-control input-sm" [(ngModel)]="comp.merma" />
                         </td>
-                        <td style="    min-width: 118px !important;">
+                        <td style="    min-width: 118px;">
                             <div class="form-group" style="text-align: center;">
                                 <button class="btn btn-primary tp-btn-light sharp" (click)="clonarComponente(comp)"
                                     style="    margin: 9px;">
