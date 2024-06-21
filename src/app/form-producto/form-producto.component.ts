@@ -310,6 +310,7 @@ break;
   }
   //#endregion
   formatearFecha(fechainicial) {
+    console.log(fechainicial);
     // Dividir la fecha y la hora
     const [datePart, timePart] = fechainicial.split(' ');
     // Dividir la fecha en día, mes y año

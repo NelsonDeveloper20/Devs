@@ -78,7 +78,7 @@ validarPrt(codigo:any){
       );
    }
   openRegisterProd(producto:any): void {    
-    
+    console.log(producto);
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true; 
@@ -90,6 +90,7 @@ validarPrt(codigo:any){
       CodigoSisgeco:this.CodigoSisgeco,
       ambiente:this.TblAmbiente
     };
+     
     dialogConfig.data = dataToSend;
     /*
     const dialogRef = this.dialog.open(ExportDialogComponent, {
