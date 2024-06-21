@@ -1299,10 +1299,10 @@ cancheCbopNombreMotor(event: any) {
   if (inputElement) {
     inputElement.value = motorName;
   }
-  const Tela = document.getElementById("Motor") as HTMLInputElement ;
-  const item = this.CboTela.find(element => element.codigo === valorSeleccionado);
-  if (Tela && item) {
-    Tela.value = item.nombre; 
+  const Motor = document.getElementById("Motor") as HTMLInputElement ;
+  const item = this.CboMotor.find(element => element.codigo === valorSeleccionado); 
+  if (Motor && item) {
+    Motor.value = item.nombre; 
   }
 
   }

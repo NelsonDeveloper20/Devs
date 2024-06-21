@@ -143,7 +143,7 @@
    </div>
        
    <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['mando'].visible !== 0"  id="reg_cont_mando">
-       <label>Mando / Ubicacion. Motorrr <span *ngIf="objConfiguracionAtributos[TipoProducto]['mando'].required === 1"  class="requerid_css">*</span></label>
+       <label>Mando / Ubicacion. Motor <span *ngIf="objConfiguracionAtributos[TipoProducto]['mando'].required === 1"  class="requerid_css">*</span></label>
        <select class="form-control" id="mando" name="Mando"  [required]="objConfiguracionAtributos[TipoProducto]['mando'].required === 1">
         <option *ngFor="let opcion of CboMando" [value]="opcion.nombre">{{ opcion.nombre }}</option>
     </select>
