@@ -658,6 +658,8 @@ existeMotor(event: any, tipo: any) {
 
   // MOTORIZED
   if (valMotor == 'Motorizado' || valMotor == 'Manual + Motorizado') {
+    
+    this.objConfiguracionAtributos[this.TipoProducto]['TipoCadena'].required = 0;
     if (codProd == 'PRTPJ') {
       this.objConfiguracionAtributos[this.TipoProducto]['baston'].visible = 0;
     } else if (codProd == 'PRTTO') {

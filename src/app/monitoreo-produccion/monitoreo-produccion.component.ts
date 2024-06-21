@@ -10,6 +10,8 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 declare var $: any; // Declara la variable $ para usar jQuery
 import * as XLSX from 'xlsx';
 import Swal from 'sweetalert2';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { DetalleMonitoreoDialogComponent } from './detalle-monitoreo-dialog/detalle-monitoreo-dialog.component';
 declare var $: any; // Declara la variable $ para usar jQuery
 @Component({
   selector: 'app-monitoreo-produccion',
@@ -30,6 +32,7 @@ export class MonitoreoProduccionComponent implements OnInit {
     }
       
   constructor(
+    private dialog: MatDialog,
     private router: Router,
     private toaster: Toaster,
     private spinner: NgxSpinnerService, 
@@ -57,7 +60,6 @@ showFilter(){
     this.showfilter=!this.showfilter; 
   }
 
-
 setTimeout(() => {       
   $('#cboCotizacion1Select').select2({
     placeholder: '--Seleccione--'
@@ -76,6 +78,38 @@ setTimeout(() => {
   });   
 }, 1000);
 } 
+
+  //#region ABRIR EXPLOCIÓN
+
+  AbrirExplocionComponentes(item:any): void {   
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true; 
+    dialogConfig.panelClass = 'custom-dialog-container';
+    //const cadenaCompleta = 'PRTRS0054'; 
+     
+    dialogConfig.width ='1604px';
+    dialogConfig.data = item;
+    const dialogRef = this.dialog.open(DetalleMonitoreoDialogComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe({
+      next: data => {   
+       if (data) {
+           
+      } 
+    },
+    error: error => { 
+        var errorMessage = error.message;
+        console.error('There was an error!', error); 
+        this.toaster.open({
+          text: errorMessage,
+          caption: 'Ocurrio un error',
+          type: 'danger',
+        });
+      }
+    });
+  }
+  //#endregion
+
 Fecha:Date=new Date();
 //#region LISTAR PARA EXPLOCION
 

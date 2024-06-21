@@ -234,6 +234,7 @@ import { DetalleProductosComponent } from './solicitud-pendiente/detalle-product
 import { SupervisionOpComponent } from './supervision-op/supervision-op.component';
 import { SupervisionDialogComponent } from './supervision-op/supervision-dialog/supervision-dialog.component';
 import { DatePipe } from '@angular/common';
+import { DetalleMonitoreoDialogComponent } from './monitoreo-produccion/detalle-monitoreo-dialog/detalle-monitoreo-dialog.component';
 //IMPORT 
 
 @NgModule({
@@ -328,7 +329,7 @@ import { DatePipe } from '@angular/common';
          FilesEpdpComponent, FormularioEpdpComponent, PagoExcesoComponent,
           PagoEpdpParcialComponent, ModalFormsComponent, ParametrosComponent,
            ModalUnidadComponent, SolicitudPendienteComponent, ReporteNCComponent,
-            CartaSnCruzadaComponent, SolFormSnCartacruzadaComponent, VentasComponent, RegistroCotizacionComponent, RegistroCotizacionsComponent, ProductosDialogComponent, EstacionesTrabajoComponent, ScanestacionDialogComponent, FabricacionEstacionComponent, MonitoreoProduccionComponent, MantenimientoPerfilesComponent, LineaProduccionComponent, FormProductoComponent, ProyectoDialogComponent, LayoutComponent, MantOpComponent, AsignarModuloDialogComponent, MantenimientoComponentesComponent, DetalleProductosComponent, SupervisionOpComponent, SupervisionDialogComponent,  
+            CartaSnCruzadaComponent, SolFormSnCartacruzadaComponent, VentasComponent, RegistroCotizacionComponent, RegistroCotizacionsComponent, ProductosDialogComponent, EstacionesTrabajoComponent, ScanestacionDialogComponent, FabricacionEstacionComponent, MonitoreoProduccionComponent, MantenimientoPerfilesComponent, LineaProduccionComponent, FormProductoComponent, ProyectoDialogComponent, LayoutComponent, MantOpComponent, AsignarModuloDialogComponent, MantenimientoComponentesComponent, DetalleProductosComponent, SupervisionOpComponent, SupervisionDialogComponent, DetalleMonitoreoDialogComponent,  
   ],
   imports: [  
     
