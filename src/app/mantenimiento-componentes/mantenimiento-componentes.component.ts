@@ -82,15 +82,7 @@ export class MantenimientoComponentesComponent implements OnInit {
       element.nombre=selectedOption.des;
     }
   }
-  /*onNombreChange(event: any, element: ListasModel) {
-    console.log(event);
-    if (event) {
-      element.codigo = event.codigo;
-      element.descripcionComponente = event.des;
-      element.unidad = event.coduniad;
-    }
-  }*/
-
+  
   addRowComponente() {
     const newRow: ListasModel = {
       isSelected: false,
@@ -219,6 +211,17 @@ Swal.fire(
       });
 
     // Aquí puedes hacer lo que necesites con el JSON, como enviarlo a un servicio o mostrarlo en la consola.
+  }
+
+  applyFilterTable(filterValues: any) {
+    var value=filterValues.target.value
+    var filterValue = value.trim().toLowerCase(); // Eliminar espacios en blanco y convertir a minúsculas
+    this.dataSource.filterPredicate = (data: ListasModel, filter: string) => {
+      const accumulator = (currentTerm: string, key: string) => currentTerm + (data[key] ? data[key] : '');
+      const dataStr = Object.keys(data).reduce(accumulator, '').toLowerCase();
+      return dataStr.indexOf(filter) !== -1;
+    };
+    this.dataSource.filter = filterValue;
   }
 }
 /*

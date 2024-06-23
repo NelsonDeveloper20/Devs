@@ -59,24 +59,25 @@ width: 528px !important;
 		
 		<div class="row">
 			<div class="col-lg-12">
-				<div class="card"> 
-						<div class="table-responsive">
-                       <table mat-table [dataSource]="dataSource" class="table table-responsive-lg mb-0 table-striped">
-
-                        <!--<ng-container matColumnDef="isSelected">
-                          <th mat-header-cell *matHeaderCellDef> Seleccionado </th>
-                          <td mat-cell *matCellDef="let element">
-                            <mat-checkbox [(ngModel)]="element.isSelected" [ngModelOptions]="{standalone: true}"></mat-checkbox>
-                          </td>
-                        </ng-container>-->
+				
+        <div class="card">
+          <div class="card-body">
+              <div class=""> 
+                  <mat-form-field appearance="outline" style="width: 100%;">
+                    <input matInput (keyup)="applyFilterTable($event)" placeholder="Buscar...">
+                  </mat-form-field>
+              </div>
+            <div class="table-responsive">
+              <section class="example-containerss" tabindex="0">
+                       <table mat-table [dataSource]="dataSource" class="table table-responsive-lg mb-0 table-striped" style="width: 100% !important;"> 
                     
                         <ng-container matColumnDef="id">
-                          <th mat-header-cell *matHeaderCellDef> ID </th>
+                          <th mat-header-cell *matHeaderCellDef sticky> ID </th>
                           <td mat-cell *matCellDef="let element">{{element.id}}</td>
                         </ng-container>
                     
                         <ng-container matColumnDef="nombre">
-                          <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                          <th mat-header-cell *matHeaderCellDef sticky> Nombre </th>
                           <td mat-cell *matCellDef="let element">
                             <ng-container *ngIf="!element.isEdit">{{element.nombre}}</ng-container>
                             <ng-container *ngIf="element.isEdit"> 
@@ -97,7 +98,7 @@ width: 528px !important;
                         </ng-container>
                     
                         <ng-container matColumnDef="codigo">
-                          <th mat-header-cell *matHeaderCellDef> Codigo </th>
+                          <th mat-header-cell *matHeaderCellDef sticky> Codigo </th>
                           <td mat-cell *matCellDef="let element">
                             <ng-container *ngIf="!element.isEdit">{{element.codigo}}</ng-container>
                             <ng-container *ngIf="element.isEdit">
@@ -107,7 +108,7 @@ width: 528px !important;
                         </ng-container>
                     
                         <ng-container matColumnDef="descripcionComponente">
-                          <th mat-header-cell *matHeaderCellDef> Descripción </th>
+                          <th mat-header-cell *matHeaderCellDef sticky> Descripción </th>
                           <td mat-cell *matCellDef="let element">
                             <ng-container *ngIf="!element.isEdit">{{element.descripcionComponente}}</ng-container>
                             <ng-container *ngIf="element.isEdit">
@@ -130,7 +131,7 @@ width: 528px !important;
                         </ng-container>
                     
                         <ng-container matColumnDef="color">
-                          <th mat-header-cell *matHeaderCellDef> Color </th>
+                          <th mat-header-cell *matHeaderCellDef sticky> Color </th>
                           <td mat-cell *matCellDef="let element">
                             <ng-container *ngIf="!element.isEdit">{{element.color}}</ng-container>
                             <ng-container *ngIf="element.isEdit">
@@ -140,7 +141,7 @@ width: 528px !important;
                         </ng-container>
                     
                         <ng-container matColumnDef="unidad">
-                          <th mat-header-cell *matHeaderCellDef> Unidad </th>
+                          <th mat-header-cell *matHeaderCellDef sticky> Unidad </th>
                           <td mat-cell *matCellDef="let element">
                             <ng-container *ngIf="!element.isEdit">{{element.unidad}}</ng-container>
                             <ng-container *ngIf="element.isEdit">
@@ -150,7 +151,7 @@ width: 528px !important;
                         </ng-container>
                     
                         <ng-container matColumnDef="subProducto">
-                          <th mat-header-cell *matHeaderCellDef> Sub Producto </th>
+                          <th mat-header-cell *matHeaderCellDef sticky> Sub Producto </th>
                           <td mat-cell *matCellDef="let element">
                             <ng-container *ngIf="!element.isEdit">{{element.subProducto}}</ng-container>
                             <ng-container *ngIf="element.isEdit">
@@ -160,7 +161,7 @@ width: 528px !important;
                         </ng-container>
                     
                         <ng-container matColumnDef="codigoProducto">
-                          <th mat-header-cell *matHeaderCellDef> Codigo Producto </th>
+                          <th mat-header-cell *matHeaderCellDef sticky> Codigo Producto </th>
                           <td mat-cell *matCellDef="let element">
                             <ng-container *ngIf="!element.isEdit">{{element.codigoProducto}}</ng-container>
                             <ng-container *ngIf="element.isEdit">
@@ -170,7 +171,7 @@ width: 528px !important;
                         </ng-container>
                     
                         <ng-container matColumnDef="acciones">
-                          <th mat-header-cell *matHeaderCellDef> Acciones </th>
+                          <th mat-header-cell *matHeaderCellDef sticky> Acciones </th>
                           <td mat-cell *matCellDef="let element"  style="min-width: 126px !important;">
                             <ng-container *ngIf="!element.isEdit">                              
                               <button class="btn btn-primary tp-btn-light sharp" style="margin: 5px;"  (click)="editRow(element)">
@@ -191,11 +192,16 @@ width: 528px !important;
                           </td>
                         </ng-container>
                     
-                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></tr>
                         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                       </table>
-                      </div> 
-            </div></div>
+                    </section>
+                  </div>
+                </div>
+              </div>
+
+
+          </div>
     </div>
     </div>
 </div>   

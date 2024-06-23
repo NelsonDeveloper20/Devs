@@ -9,6 +9,7 @@ import { AzureAdDemoService } from './azure-ad-demo.service';
 import { Toaster } from 'ngx-toast-notifications';
 import { OperacionesConstruccionService } from './services/operacionesconstruccion.service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-root',
@@ -47,10 +48,10 @@ ngOnInit(): void {
   });
  
   this.dominio= window.location.hostname;  
-//this.rutaImagen='https://tractocamiones.pe/wp-content/uploads/2020/11/Logo-png.png';
 this.rutaImagen='../../assets/login.png'; 
 
- 
+this.checkSession();
+ /*
     const userDataString = localStorage.getItem('UserLog'); 
     if (userDataString) {  
       this.isUserLoggedIn=true;     
@@ -58,49 +59,7 @@ this.rutaImagen='../../assets/login.png';
     } else {
       this.isUserLoggedIn=false;     
       this.router.navigate(['/']);
-    }
-
-   /*
-    this.msalBroadCastService.msalSubject$.pipe
-    (filter(
-      
-      (msg: EventMessage) =>
-        msg.eventType === EventType.LOGIN_SUCCESS ||
-        msg.eventType === EventType.ACQUIRE_TOKEN_SUCCESS 
-    ),
-    takeUntil(this._destroy))
-    .subscribe(async (result) =>
-      {
-        this.isUserLoggedIn=this.authService.instance.getAllAccounts().length>0; 
-        if (result.payload) {
-          localStorage.setItem('tokenMsal', (result.payload as any)['accessToken']);
-          localStorage.setItem('idTokenMsal', (result.payload as any)['idToken']);
-        }
-        if(this.isUserLoggedIn)
-        {
-          this.userName = this.authService.instance.getAllAccounts()[0].name;
-       //   console.log(this.authService.instance.getAllAccounts());
-        // this.router.navigate(['/Home-main']);
-        }
-        this.azureAdDemoSerice.isUserLoggedIn.next(this.isUserLoggedIn);
-      }       ,
-     () => {
-      console.log('er');
-     }
-     
-      
-      ); 
-
-  if(this.authService.instance.getAllAccounts().length<1){
-    this.router.navigate(['/']);
-  }else{
-    this.isUserLoggedIn=true;
-    //this.router.navigate(['/Home-main']);
-
-  }*/
-
-
-
+    } */
   } 
   ngOnDestroy(): void {
    this._destroy.next(undefined);
@@ -126,10 +85,14 @@ this.rutaImagen='../../assets/login.png';
     this._service.ValidarLogin(this.username,this.password).subscribe(
       (data: any) => {
         this.spinner.hide();  
-        console.log(data[0]); 
+        console.log(data);
+        if(data[0]){
+
+          console.log(data[0]); 
           if(data[0].length!=0){
             this.isUserLoggedIn=true;             
             localStorage.setItem('UserLog', JSON.stringify(data[0]));
+            localStorage.setItem('loginTime', new Date().getTime().toString());
             this.azureAdDemoSerice.isUserLoggedIn.next(this.isUserLoggedIn);
             this.router.navigate(['/Home-main']);
           }else{
@@ -140,6 +103,14 @@ this.rutaImagen='../../assets/login.png';
           type: 'danger',
         });
           }  
+        }else{
+
+          this.toaster.open({
+            text: "Usuario o contraseña incorrecto ",
+            caption: 'Mensaje',
+            type: 'danger',
+          });
+        }
       },
       (error: any) => {
         this.spinner.hide(); 
@@ -150,23 +121,53 @@ this.rutaImagen='../../assets/login.png';
           type: 'danger',
         });
       }
-    ); 
-    
-    /*
-    if(this.msalGuardConfig.authRequest)
-    {
-      this.authService.loginRedirect({...this.msalGuardConfig.authRequest} as RedirectRequest)
-    }
-    else
-    {
-      this.authService.loginRedirect();
-    }*/
+    );  
   }
   logout()
   {
+    localStorage.removeItem('UserLog');
+  localStorage.removeItem('loginTime');
     this.authService.logoutRedirect({postLogoutRedirectUri:environment.authRedirectUri});
   }
 
+  checkSession() {
+    const loginData = JSON.parse(localStorage.getItem('UserLog'));
+    const loginTime = localStorage.getItem('loginTime');
+    if (loginData && loginTime) {
+
+      const currentTime = new Date().getTime();
+      const timeDifference = currentTime - parseInt(loginTime, 10);
+      const tenHours = 10 * 60 * 60 * 1000; // 10 horas en milisegundos
+
+/*
+const currentTime = new Date().getTime();
+const timeDifference = currentTime - parseInt(loginTime, 10);
+const tenHours = 3 * 60 * 1000; // 3 minutos en milisegundos   
+*/
+  
+      if (timeDifference > tenHours) {
+        this.logout();
+        Swal.fire({
+          title: 'Mensaje',
+          text: 'La sesión ha expirado',
+          icon: 'info',
+          confirmButtonText: 'Aceptar',
+          allowOutsideClick: false
+        });
+      } else {
+        this.isUserLoggedIn = true;
+        this.azureAdDemoSerice.isUserLoggedIn.next(this.isUserLoggedIn);
+        this.router.navigate(['/Home-main']);
+      }
+    } else {
+      
+    localStorage.removeItem('UserLog');
+    localStorage.removeItem('loginTime');
+      this.isUserLoggedIn=false;   
+      this.azureAdDemoSerice.isUserLoggedIn.next(this.isUserLoggedIn);  
+      this.router.navigate(['/']); 
+    }
+  }
 
 //end
 panelOpenState = true;  

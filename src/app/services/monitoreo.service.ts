@@ -20,6 +20,12 @@ export class MonitoreoService {
   ListarMonitoreo(grupoCotizacion: any,fechaInicio:any,fechaFin:any): Observable<any> {
     return this.http.get<any>(`${this.urlBase}Monitoreo?grupoCotizacion=`+grupoCotizacion+"&fechaInicio="+fechaInicio+"&fechaFin="+fechaFin);
   }
+  ListarReporteExplocion(grupoCotizacion: any,fechaInicio:any,fechaFin:any): Observable<any> {
+    return this.http.get<any>(`${this.urlBase}Monitoreo/ListarReporteExplocion?grupoCotizacion=`+grupoCotizacion+"&fechaInicio="+fechaInicio+"&fechaFin="+fechaFin);
+  }
+  ListarMantenimientoExplocion(grupoCotizacion: any): Observable<any> {
+    return this.http.get<any>(`${this.urlBase}Monitoreo/ListarMantenimientoExplocion?grupoCotizacion=`+grupoCotizacion);
+  }
   ListarComponenteDelProducto(grupoCotizacion: any,id:any): Observable<any> {
     return this.http.get<any>(`${this.urlBase}Monitoreo/ListarComponenteProducto?grupoCotizacion=`+grupoCotizacion+"&id="+id);
   }
@@ -29,6 +35,18 @@ export class MonitoreoService {
     return this.http.get(`${this.urlBase}Monitoreo/downloadPlantilla`, {
       responseType: 'blob' // Especifica que esperas un blob
     }); 
+  }
+  //GUARDAR EXPLOCION DE COMPONENTES
+  
+  GuardarExplocion(data: any): Observable<IApiResponse> {
+    const headers = { 'Content-Type': 'application/json-patch+json' };
+    return this.http.post<IApiResponse>(this.urlBase + 'Monitoreo/ExplocionarComponente', data, { headers: headers });
+  }
+  
+  //CARGAR EXPLOCION EXCEL  
+  CargarExplocionExcel(data: any): Observable<IApiResponse> {
+    const headers = { 'Content-Type': 'application/json-patch+json' };
+    return this.http.post<IApiResponse>(this.urlBase + 'Monitoreo/ExplocionarCompCargaExcel', data, { headers: headers });
   }
   
 }

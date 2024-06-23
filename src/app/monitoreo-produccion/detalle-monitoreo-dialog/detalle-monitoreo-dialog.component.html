@@ -1,26 +1,26 @@
 <ngx-spinner bdColor="rgba(255, 255, 255, 1)" size="medium" color="#0D7ABD" type="ball-beat" [fullScreen]="true">
     <p style="color: black">Loading...</p>
 </ngx-spinner>
-<h2 mat-dialog-title>Explocionar Componentes</h2>
+<h2 mat-dialog-title>Explocionar Componentes  -  <b>{{DatosGrupo.cotizacionGrupo}}</b></h2>
 
 <div mat-dialog-content>
     <div class="panel-body">
-     
-        <div class="table-container"> 
-       
+
+        <div class="table-container">
+
             <table class="table table-responsive-lg mb-0" id="dubcomponente">
                 <thead class="sticky-top">
                     <tr>
                         <th>Componente</th>
                         <th>Codigo</th>
-                        <th>Descripcion</th>
+                        <th>Nombre</th>
                         <th>Color</th>
                         <th>Unidad Medida</th>
                         <th style="white-space: nowrap !important;">Cant. Utilizada</th>
                         <th>Merma</th>
                         <th><button class="btn btn-primary-azul tp-btn-light sharp" style="float: right;"
-                            (click)="agregarComponente()">
-                            <mat-icon>library_add</mat-icon> </button>  </th>
+                                (click)="agregarComponente()">
+                                <mat-icon>library_add</mat-icon> </button> </th>
                     </tr>
                 </thead>
                 <tbody id="id_tabla"></tbody>
@@ -63,10 +63,10 @@
                             0000
                         </td>
                         <td style="width: 124px !important;">
-                            <input type="text" class="form-control input-sm" [(ngModel)]="comp.cantidad" />
+                            <input type="number" class="form-control input-sm" [(ngModel)]="comp.cantidadUtilizada" />
                         </td>
                         <td style="width: 124px !important;">
-                            <input type="text" class="form-control input-sm" [(ngModel)]="comp.merma" />
+                            <input type="number" class="form-control input-sm" [(ngModel)]="comp.merma" />
                         </td>
                         <td style="    min-width: 118px;">
                             <div class="form-group" style="text-align: center;">
@@ -80,11 +80,11 @@
                                 </button>
                             </div>
                         </td>
-                    </tr> 
+                    </tr>
                 </tbody>
             </table>
         </div>
-        
+
     </div>
 </div>
 <div mat-dialog-actions>

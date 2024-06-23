@@ -53,9 +53,9 @@
 									</tr>
 								</thead>
 								<tbody id="customers"> 
-									<tr class="btn-reveal-trigger" *ngFor="let item of ListUsuarios"> 
+									<tr class="btn-reveal-trigger" *ngFor="let item of ListUsuarios; let i = index"> 
 										<td class="py-3">
-											<div class="circle" [style.backgroundColor]="getRandomColor()">
+											<div class="circle" [style.backgroundColor]="userColors[i]">
 												<span>{{ item.nombre.charAt(0) | uppercase }}</span>
 											  </div>
 											  {{ item.nombre }}
@@ -89,107 +89,4 @@
 <!--**********************************
 	Content body end
 ***********************************-->
-<!--USUARIO WORKFLOW-->
-                <div class="" style="display: none;">
-                    <div class="card-header card-header-warning" style="    width: 9%; 
-                    padding-top: 0px;">
-                      <div class="card-icon">
-                          <button mat-icon-button color="primary" (click)="backClicked()" aria-label="Example icon button with a home icon">
-                              <mat-icon>keyboard_backspace</mat-icon>
-                            </button> 
-                      </div>
-                      <h5 class="card-title" style="font-size: 15px;
-                      font-weight: 500;
-                      color: #000000a3;
-                      text-transform: capitalize;">Usuarios</h5> 
-                        
-                    </div>
-                    <div class="card-body table-responsive">
-                        <div class="example-header">
-<div class="row">
 
- 
-         
-                <button mat-fab color="primary"  (click)="openRegisterUser()" style="
-                position: absolute;    right: 3%;" aria-label="Example icon button with a delete icon">
-                  <mat-icon>add_box</mat-icon>
-                </button> 
-
-</div>
-             
-                          </div>
-                          <br>
-                          <div class="example-container mat-elevation-z8" style="background: white;">
-                            <mat-form-field style="left: 5%;">
-                                <input matInput   placeholder="Buscar" (keyup)="buscar($event)">
-                                </mat-form-field>
-                                <table mat-table  [dataSource]="dataSource" matSort style="width: 100% !important;">
-                          
-                              <!-- ID Column [(ngModel)]="searchs"-->
-                              <ng-container matColumnDef="id">
-                                <th mat-header-cell  *matHeaderCellDef mat-sort-header> ID </th>
-                                <td mat-cell *matCellDef="let row"  style="width: 10px;"> {{row.id}} </td>
-                              </ng-container>
-                          
-                              <!-- Progress Column -->
-                              <ng-container matColumnDef="Nombre">
-                                <th mat-header-cell  *matHeaderCellDef mat-sort-header> Nombre </th>
-                                <td mat-cell *matCellDef="let row"> {{row.nombre}}  </td>
-                              </ng-container>
-                              <!-- Name Column -->
-                              <ng-container matColumnDef="Correo">
-                                <th mat-header-cell  *matHeaderCellDef mat-sort-header> Correo </th>
-                                <td mat-cell *matCellDef="let row"> {{row.correo}} </td>
-                              </ng-container>
-                              <!-- Color Column -->
-                              <!-- Name Column --> 
-                              <!-- Name Column -->
-                              <ng-container matColumnDef="Estado">
-                                <th mat-header-cell  *matHeaderCellDef mat-sort-header> Estado </th>
-                                <td mat-cell *matCellDef="let row"> 
-                                  <mat-icon *ngIf="row.estado=='1'" color="primary">sentiment_very_satisfied</mat-icon> 
-                                  <mat-icon *ngIf="row.estado!='1'" color="warn">sentiment_very_dissatisfied</mat-icon> 
-                                  <span *ngIf="row.estado=='1'">Activo</span> 
-                                  <span *ngIf="row.estado!='1'">Inactivo</span> 
-                                </td> 
-
-                              </ng-container>
-                              
-                              <ng-container matColumnDef="Rol">
-                                <th mat-header-cell  *matHeaderCellDef mat-sort-header> UN-ROL-SEDE </th>
-                                <td mat-cell *matCellDef="let row" style="width: 600px;">                                  
-                                  <table border *ngIf="row.roles.length > 0" style="width: 100% !important;"> 
-                                    <tr *ngFor="let item of row.roles">
-                                      <td>{{ item.unidad.descripcion }}</td>
-                                      <td>{{ item.rol.nombre }}</td>
-                                      <td>{{ item.sede.descripcion }}</td>
-                                    </tr> 
-                                 </table>      
-                                 <span *ngIf="row.roles.length < 1" style="font-weight: bold;">Sin Asignar</span>                        
-                                </td>
-                              </ng-container> 
-                              <!-- Name Column -->
-                              <ng-container matColumnDef="Accion">
-                                <th mat-header-cell  *matHeaderCellDef mat-sort-header> Accion </th>
-                                <td mat-cell *matCellDef="let row">
-                                    <button mat-icon-button color="primary"  >
-                                        <mat-icon aria-label="Delete" (click)="openEditUser(row)">create</mat-icon>
-                                      </button>
-                                      <!--<button mat-icon-button color="danger"  > 
-                                         <mat-icon>delete</mat-icon> 
-                                        </button>-->
-                                </td>
-                              </ng-container>
-                           
-                            
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-                          
-                            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
-                          </div>
-  
-                           
-                    </div>
-                </div>
-             

@@ -67,8 +67,9 @@
                 <div class="card-body">
                   <div class="row">
                     <div class="form-group col-md-2">
-                      <label for="cboCotizacion">Cotizacion</label>
-                      <select class="form-control" id="cboCotizacion1Select" name="cboCotizacion"
+                      <label for="cboCotizacion">Cotizacion</label>                      
+                    <input type="text" [(ngModel)]="cotizacion" placeholder="" class="form-control"/>
+                      <!--<select class="form-control" id="cboCotizacion1Select" name="cboCotizacion"
                         [(ngModel)]="cotizacion">
                         <option value="JUL">July</option>
                         <option value="AUG">August</option>
@@ -76,7 +77,7 @@
                         <option value="OCT">October</option>
                         <option value="NOV">November</option>
                         <option value="DEC">December</option>
-                      </select>
+                      </select>-->
                     </div>
                     <div class="form-group col-md-2">
                       <label for="txtfec_inicio_n">Fecha Inicio</label>
@@ -153,8 +154,17 @@
                                   <mat-icon>expand_less</mat-icon>
                                 </button>
                               </td>-->
-                              <td> <button class="btn btn-primary tp-btn-light sharp"
+                              <td>
+                                <button class="btn btn-primary tp-btn-light sharp"  *ngIf="item.estado!=='Terminado'" 
+                                 [disabled]="item.estado !== 'Construcción Terminada'" 
                                   (click)="AbrirExplocionComponentes(item)">
+                                  <mat-icon>explicit</mat-icon>
+                                </button>
+                                
+                                <button class="btn btn-primary tp-btn-light sharp"     *ngIf="item.estado=='Terminado'" 
+                                 [disabled]="item.estado !== 'Construcción Terminada'" 
+                                  (click)="AbrirExplocionComponentes(item)" style="background: #13cc13 !important;
+    border: 1px solid #12cf12 !important;">
                                   <mat-icon>explicit</mat-icon>
                                 </button>
                               </td>
@@ -328,8 +338,9 @@
                 <div class="card-body">
                   <div class="row">
                     <div class="form-group col-md-2">
-                      <label for="cboCotizacion2">Cotizacion</label>
-                      <select class="form-control" id="cboCotizacion2Select" name="cboCotizacion2"
+                      <label for="cboCotizacion2">Cotizacion</label>                      
+                    <input type="text" [(ngModel)]="cotizacion2" placeholder="" class="form-control"/>
+                      <!--<select class="form-control" id="cboCotizacion2Select" name="cboCotizacion2"
                         [(ngModel)]="cotizacion2">
                         <option value="JUL">July</option>
                         <option value="AUG">August</option>
@@ -337,7 +348,7 @@
                         <option value="OCT">October</option>
                         <option value="NOV">November</option>
                         <option value="DEC">December</option>
-                      </select>
+                      </select>-->
                     </div>
                     <div class="form-group col-md-2">
                       <label for="txtfec_inicio_n">Fecha Inicio</label>
@@ -361,7 +372,7 @@
                       <section>
                         <div class="example-button-row">
                           <button mat-flat-button color="primary" style="    margin: 6px;" class="btn btn-primary"
-                            (click)="ListarMonitoreoExplocion()">
+                            (click)="ListarReporteExplocion()">
                             Buscar
                           </button>
                           <button mat-flat-button color="accent" style="    margin: 6px;" class="btn btn-success">
@@ -385,57 +396,49 @@
                         <thead class="sticky-top">
                           <tr>
                             <th style="white-space: nowrap">Cotizacion</th>
-                            <th style="white-space: nowrap">Cod OP</th>
-                            <th>Ruc</th>
+                            <th style="white-space: nowrap">Cotizacio nGrupo</th> 
+                            <th style="white-space: nowrap">Ruc Cliente</th>
                             <th style="white-space: nowrap">Razon Social</th>
-                            <th style="white-space: nowrap">Nombre Proyecto</th>
-                            <th style="white-space: nowrap">Tpo Cliente</th>
-                            <th>Vendedor</th>
-                            <th style="white-space: nowrap">Fec. Producción</th>
-                            <th>Observaciones</th>
-                            <th>Estado</th>
-                            <th style="white-space: nowrap">Cod. Producto</th>
-                            <th style="white-space: nowrap">Nombre Producto</th>
-                            <th style="white-space: nowrap">Unidad Medida</th>
-                            <th>Accionamiento</th>
-                            <th style="white-space: nowrap">Cant. Productos</th>
-                            <th style="white-space: nowrap">Cantidad</th>
-                            <th style="white-space: nowrap">
-                              Fecha Producción
-                            </th>
-                            <th style="white-space: nowrap">Fecha Entrega</th>
-                            <th style="white-space: nowrap">Tiempo X Minuto</th>
-                            <th style="white-space: nowrap">Nro de Motores</th>
-                            <th style="white-space: nowrap">Reproceso</th>
-                            <th style="white-space: nowrap">Cot. Principal</th>
-                            <th style="white-space: nowrap">Tipo Operacion</th>
+                            <th style="white-space: nowrap">Proyecto</th> 
+                            <th style="white-space: nowrap">Tipo Cliente</th> 
+                            <th style="white-space: nowrap">Nombre Vendedor</th> 
+                            <th style="white-space: nowrap">Fecha Produccion</th> 
+                            <th style="white-space: nowrap">Fecha Entrega</th> 
+                            <th style="white-space: nowrap">Observacion</th> 
+                            <th style="white-space: nowrap">Estado</th> 
+                            <th style="white-space: nowrap">Codigo Producto</th> 
+                            <th style="white-space: nowrap">Nombre Producto</th> 
+                            <th style="white-space: nowrap">Unidad</th> 
+                            <th style="white-space: nowrap">Accionamiento</th> 
+                            <th style="white-space: nowrap">Cant. Productos</th> 
+                            <th style="white-space: nowrap">Cantidad</th> 
+                            <th style="white-space: nowrap">Descrip Componente</th> 
+                            <th style="white-space: nowrap">Cod Componente</th> 
+                            <th style="white-space: nowrap">Descripcion</th> 
                           </tr>
                         </thead>
                         <tbody id="detalle_data">
-                          <tr>
-                            <td>025429</td>
-                            <td></td>
-                            <td>20601056926</td>
-                            <td>SJ GLASS SAC</td>
-                            <td>DIST-025429</td>
-                            <td>Distribucion</td>
-                            <td>CRISTINA MUNOZ</td>
-                            <td></td>
-                            <td></td>
-                            <td>Pendiente Venta</td>
-                            <td>PRTRS0052</td>
-                            <td>ROLLER SHADE BLACKOUT PLASTIFICADO | LINEN</td>
-                            <td>MTK</td>
-                            <td>Manual</td>
-                            <td>1</td>
-                            <td>1.729</td>
-                            <td>2024-04-27</td>
-                            <td>2024-04-27</td>
-                            <td></td>
-                            <td>0</td>
-                            <td></td>
-                            <td></td>
-                            <td>Venta</td>
+                          <tr *ngFor="let item of ListReporteExplocion">
+                            <td>{{item.numeroCotizacion}}</td>
+                            <td>{{item.cotizacionGrupo}}</td> 
+                            <td>{{item.rucCliente}}</td> 
+                            <td>{{item.cliente}}</td> 
+                            <td>{{item.proyecto}}</td> 
+                            <td>{{item.tipoCliente}}</td> 
+                            <td>{{item.nombreVendedor}}</td> 
+                            <td>{{item.fechaProduccion}}</td> 
+                            <td>{{item.fechaEntrega}}</td> 
+                            <td>{{item.observacion}}</td> 
+                            <td>{{item.estado}}</td> 
+                            <td>{{item.codigo_Producto}}</td> 
+                            <td>{{item.nombre_Producto}}</td> 
+                            <td>{{item.unidad}}</td> 
+                            <td>{{item.accionamiento}}</td> 
+                            <td>{{item.cantidadProductos}}</td> 
+                            <td>{{item.cantidad}}</td> 
+                            <td>{{item.descrip_Componente}}</td> 
+                            <td>{{item.cod_Componente}}</td> 
+                            <td nowrap>{{item.descripcion}}</td>  
                           </tr>
                         </tbody>
                       </table>
@@ -457,11 +460,11 @@
                   <div class="row">
                     <div class="form-group col-md-4">
                       <label>Cotizacion</label>
-                      <input type="text" class="form-control" placeholder="Ingrese Cotizacion"
+                      <input type="text" class="form-control" placeholder="Ingrese Cotizacion" [(ngModel)]="CotizacionsBuscar"
                         id="txtCotizacionExplocion" name="txtCotizacionExplocion" />
                     </div>
                     <div class="col-lg-1"><br>
-                      <button mat-flat-button color="primary" class="btn btn-primary">Buscar</button>
+                      <button mat-flat-button color="primary" class="btn btn-primary" (click)="ListarMantenimientoExplocion()">Buscar</button>
                   </div>
                   <div class="col-lg-2"><br>
                     <button mat-flat-button color="primary" class="btn btn-primary" >Modificar Exploción</button>
@@ -474,6 +477,7 @@
                           <tr>
                             <th>ID</th>
                             <th>Cotizacion</th>
+                            <th>Grupo</th>
                             <th>Producto</th>
                             <th>Componente</th>
                             <th>Cod.Componente</th>
@@ -492,23 +496,21 @@
                           </tr>
                         </thead>
                         <tbody>
-                          <tr *ngFor="let componente of componentes">
+                          <tr *ngFor="let componente of ListMantenimeintoExplocion">
                             <td>
-                              <span>{{ componente.idExplocion }}</span>
+                              <span>{{ componente.id }}</span>
                             </td>
-                            <td>{{ componente.cotizacion }}</td>
-                            <td>{{ componente.producto }}</td>
+                            <td>{{ componente.numeroCotizacion }}</td>
+                            <td nowrap>{{ componente.cotizacionGrupo }}</td>
+                            <td>{{ componente.codigo_Producto }}</td>
                             <td>{{ componente.componente }}</td>
-                            <td>
-                              <!--<select #selectElement class="form-control input-sm select2">
-                                        <option *ngFor="let opcion of componente.opciones" [value]="opcion.value">{{ opcion.label }}</option>
-                                      </select>-->
+                            <td> 
                               <mat-form-field appearance="outline" style="width: 100%;">
-                                <mat-select [(ngModel)]="componente.componente" placeholder="Buscar"
+                                <mat-select [(ngModel)]="componente.cod_Componente" placeholder="Buscar"
                                   style="width: 190px;" (selectionChange)="onNombreChange($event, componente)">
                                   <mat-select-trigger>
                                     {{
-                                    componente.componente ||
+                                    componente.cod_Componente ||
                                     '---Seleccione---'
                                     }}
                                   </mat-select-trigger>
@@ -521,15 +523,15 @@
                                 </mat-select>
                               </mat-form-field>
                             </td>
-                            <td>{{ componente.descripcionComponente }}</td>
+                            <td>{{ componente.descripcion }}</td>
                             <td>{{ componente.color }}</td>
-                            <td>{{ componente.unidadMedida }}</td>
+                            <td>{{ componente.unidad }}</td>
                             <td>
-                              <input type="text" class="form-control" [value]="componente.cantidad"
+                              <input type="number" class="form-control" [(ngModel)]="componente.cantidad"
                                 placeholder="Cantidad" />
                             </td>
                             <td>
-                              <input type="text" class="form-control" [value]="componente.merma" placeholder="Merma" />
+                              <input type="number" class="form-control" [(ngModel)]="componente.merma" placeholder="Merma" />
                             </td>
                             <td style="min-width: 214px !important;">
                               <button mat-flat-button class="btn btn-primary tp-btn-light sharp"

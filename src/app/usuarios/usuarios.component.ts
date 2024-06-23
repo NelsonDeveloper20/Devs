@@ -53,18 +53,14 @@ dataSource:any = new MatTableDataSource<any>([]);
     // this.getuser();
    
     } 
-    
+    userColors: string[] = [];
     getRandomColor(): string {
-      try{
       const letters = '0123456789ABCDEF';
       let color = '#';
       for (let i = 0; i < 6; i++) {
         color += letters[Math.floor(Math.random() * 16)];
       }
       return color;
-    }catch(ex){
-return "";
-    }
     }
   ListUsuarios:any=[];
   ObtenerUsuarios() { 
@@ -73,7 +69,10 @@ return "";
       .subscribe(
         data => {           
           this.spinner.hide();
-          this.ListUsuarios=data;  
+          this.ListUsuarios=data;   
+          this.ListUsuarios.forEach(() => {
+            this.userColors.push(this.getRandomColor());
+          });
         },
         error => {
           this.spinner.hide();

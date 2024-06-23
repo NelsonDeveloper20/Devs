@@ -209,36 +209,7 @@ export class ReporteNCComponent implements OnInit {
       }
     });
   }
-  /*
-  getSolicitud() {
-    var idUser = localStorage.getItem('ByUser');
-    const fecInicio = moment(this.FechaInicio, 'DD/MM/YYYY').format(
-      'YYYY-MM-DD'
-    );
-    const fecFin = moment(this.FechaFin, 'DD/MM/YYYY').format('YYYY-MM-DD'); 
-    /////
-    var inputDate1 = this.FechaInicioCierre;
-    var formattedDate1 = moment(inputDate1, 'DD/MM/YYYY');
-    if (formattedDate1.isValid()) {
-      var _FechaInicioCierre = formattedDate1.format('YYYY-MM-DD');
-
-    } else {
-      var _FechaInicioCierre = "";
-    }
-
-    /////
-    var inputDate2 = this.FechaFinCierre;
-    var formattedDate2 = moment(inputDate2, 'DD/MM/YYYY');
-    if (formattedDate2.isValid()) {
-      var _FechaFinCierre = formattedDate2.format('YYYY-MM-DD');
-
-    } else {
-      var _FechaFinCierre = "";
-    }
-
-
- 
-  } */
+   
     exportToExcel() {
       const dataToExport = this.dataSource.data.map(row => ({
         'N° Cotiz': row.numeroCotizacion,
@@ -259,7 +230,8 @@ export class ReporteNCComponent implements OnInit {
     }
   
     exportToPDF() {
-      const doc = new jsPDF();
+        // Crear una instancia de jsPDF con orientación horizontal
+  const doc = new jsPDF('l');
       const col = ['N° Cotiz', 'COD OP', 'Grupo OP', 'Nombre Proyecto', 'Estado OP', 'Tipo de Operación', 'RUC', 'Nombre Cliente', 'Fec. Creación OP', 'Fec. Producción'];
       const rows = this.dataSource.data.map(row => [
         row.numeroCotizacion,
@@ -275,7 +247,7 @@ export class ReporteNCComponent implements OnInit {
       ]);
   
       (doc as any).autoTable(col, rows);
-      doc.save('DataSheet.pdf');
+      doc.save('ReporteOP.pdf');
     }
 }
 

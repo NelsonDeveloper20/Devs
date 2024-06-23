@@ -44,9 +44,6 @@ export class MonitoreoProduccionComponent implements OnInit {
     this.ListarMonitoreoExplocion();     
   }  
 showfilter=false; 
-cotizacion: string; 
-fechaInicio: Date;
-fechaFin: Date; 
 
 
 showfilter2=false; 
@@ -95,6 +92,14 @@ setTimeout(() => {
       next: data => {   
        if (data) {
            
+        Swal.fire({
+          title: 'Mensaje',
+          text: 'Explocion realizada',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+          allowOutsideClick: false
+          }); 
+          this.ListarMonitoreoExplocion();
       } 
     },
     error: error => { 
@@ -122,14 +127,17 @@ toggleExpand(item: any) {
   item.isExpand = !item.isExpand; // Abre o cierra el elemento seleccionado
 }
 ListMonitoreoExplocion:any=[];
-ListarMonitoreoExplocion() {
-  const fecInicio = moment(this.Fecha, 'DD/MM/YYYY').format(
-    'YYYY-MM-DD'
-  ); 
-  var cotizacion="--";
-  
+
+cotizacion: string; 
+fechaInicio: Date;
+fechaFin: Date; 
+ListarMonitoreoExplocion() { 
+  const cotizacion = this.cotizacion || "--";
+    const fechaInicio = this.fechaInicio ? this.fechaInicio.toString() : "--";
+    const fechaFin = this.fechaFin ? this.fechaFin.toString() : "--";
+
   this.spinner.show();
-  this._service.ListarMonitoreo(cotizacion,fecInicio,fecInicio).subscribe(
+  this._service.ListarMonitoreo(cotizacion,fechaInicio,fechaFin).subscribe(
     (data: any) => {
       if (data && data.status === 200) {  
         this.ListMonitoreoExplocion = data.json.map(item => ({ ...item, isExpand: false }));
@@ -171,7 +179,7 @@ ListarComponteProductoByGrupo(Grupo) {
   this._service.ListarComponenteDelProducto(Grupo,"1").subscribe(
     (data: any) => {
       if (data && data.status === 200) {  
-        this.ListComponenteProducto = data.json.map(item => ({ ...item, agregado: false ,cantidad:"",merma:"" }));
+        this.ListComponenteProducto = data.json.map(item => ({ ...item, agregado: "NO" ,cantidad:"",merma:"" }));
         this.spinner.hide();      
       } else {
         this.spinner.hide();
@@ -191,7 +199,7 @@ agregarComponente(){
       componente:"Agregado",
       codigo:"",
       nombre:"",
-      agregado:true
+      agregado:"SI"
   });
 }
 
@@ -297,6 +305,7 @@ porCargar=true;
 error: boolean = false;
 previewHeaders: string[] = [];
 previewData: any[] = [];
+dataExcelCarga:any;
 mostrarVistaPrevia(file: any) { 
   // Validar que el archivo sea Excel
   if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
@@ -314,8 +323,9 @@ mostrarVistaPrevia(file: any) {
 
       // Cabeceras esperadas
       const expectedHeaders = [
-        'NOMBRE_PRODUCTO',
         'COTIZACION',
+        'GRUPO',
+        'NOMBRE_PRODUCTO',
         'DESCRIP_COMPONENTE',
         'COD_COMPONENTE',
         'DESCRIPCION',
@@ -356,6 +366,30 @@ mostrarVistaPrevia(file: any) {
       console.log('Cabeceras esperadas:', expectedHeaders);
       console.log('Cabeceras recibidas:', this.previewHeaders);
       this.existearchivo=true;
+
+      // Crear JSON completo
+      // Crear JSON completo con validación de 'CODIGO_PRODUCTO'
+      const fullJsonData = jsonData.map((row, index) => {
+        if (index === 0) {
+          return null; // Saltar la fila de cabeceras
+        }
+        const obj: any = {};
+        this.previewHeaders.forEach((header, i) => {
+          obj[normalize(header)] = String(row[i] || '');
+        });
+
+        // Validar que 'CODIGO_PRODUCTO' no esté vacío
+        if (!obj['CODIGO_PRODUCTO'] || obj['CODIGO_PRODUCTO'].trim() === '') {
+          console.error(`Error en la fila ${index + 1}: 'CODIGO_PRODUCTO' está vacío.`);
+          this.error = true;
+        }
+
+        return obj;
+      }).filter(row => row); // Filtrar filas nulas
+
+      // Almacenar el JSON completo
+      this.dataExcelCarga = fullJsonData;
+
     };
     reader.readAsBinaryString(file);
   } else {      
@@ -405,7 +439,23 @@ mostrarVistaPrevia(file: any) {
       if (result.isConfirmed) {
         // Acción de carga del archivo, suponiendo que tienes una función para esto
         //this.cargarArchivo();
-    
+        
+    console.log("ENVIADO");
+    console.log(this.dataExcelCarga);
+  const jsonData = JSON.stringify(this.dataExcelCarga);
+  console.log(jsonData);
+  this.spinner.show();
+  this._service.CargarExplocionExcel(jsonData)
+    .subscribe({
+      next: response => {
+        this.spinner.hide();
+        console.log(response);
+        if (response.status == 200) { 
+              const respuesta = response.json.respuesta;
+              const id = response.json.id; 
+              console.log("RESPUESTA");
+             if(respuesta=="OK"){     
+              
         Swal.fire({
           title: 'Mensaje',
           text: 'Plantilla cargada correctamente',
@@ -413,7 +463,30 @@ mostrarVistaPrevia(file: any) {
           confirmButtonText: 'Aceptar',
           allowOutsideClick: false
         });
-        this.deleteFile(0);
+        this.deleteFile(0); 
+             }
+          }else{
+            this.toaster.open({
+              text: "Ocurrio un error al enviar",
+              caption: 'Mensaje',
+              type: 'danger',
+              // duration: 994000
+            });
+          }
+      },
+      error: error => {
+        this.spinner.hide();
+        var errorMessage = error.message;
+        console.error('There was an error!', error);
+        this.toaster.open({
+          text: errorMessage,
+          caption: 'Ocurrio un error',
+          type: 'danger',
+          // duration: 994000
+        });
+      }
+    });
+    
       }
     });
   }
@@ -482,6 +555,37 @@ componentes: Componente[] = [
   }
   // Otros componentes...
 ];
+
+CotizacionsBuscar:string='024072';
+ListMantenimeintoExplocion:any=[];
+ListarMantenimientoExplocion() { 
+  const cotizacion = this.CotizacionsBuscar || "--"; 
+  if(cotizacion=="--"){
+    this.toaster.open({
+      text: "Debe ingresar Cotización",
+      caption: 'Mesanej',
+      type: 'danger',
+    });
+    return;
+  }
+  this.spinner.show();
+  this._service.ListarMantenimientoExplocion(cotizacion).subscribe(
+    (data: any) => {
+      if (data && data.status === 200) {  
+        this.ListMantenimeintoExplocion = data.json;
+        this.spinner.hide();      
+      } else {
+        this.spinner.hide();
+        console.error('Error: No se pudo obtener datos.');
+      }
+    },
+    (error: any) => {
+      this.spinner.hide();
+      console.error('Error al obtener datos:', error);
+      // Aquí podrías mostrar un mensaje de error al usuario
+    }
+  );
+}
 clonarComponenteMantenimiento(componente: Componente) {
   const nuevoComponente = { ...componente, idExplocion: this.componentes.length + 1 };
   this.componentes.push(nuevoComponente);
@@ -513,6 +617,35 @@ nuevoComponente() {
 }
 //#endregion
 
+
+//#region LISTAR REPORTE EXPLOCION
+ 
+ListReporteExplocion:any=[];
+ListarReporteExplocion() { 
+  const cotizacion = this.cotizacion2 || "--";
+    const fechaInicio = this.fechaInicio2 ? this.fechaInicio2.toString() : "--";
+    const fechaFin = this.fechaFin2 ? this.fechaFin2.toString() : "--";
+
+  this.spinner.show();
+  this._service.ListarReporteExplocion(cotizacion,fechaInicio,fechaFin).subscribe(
+    (data: any) => {
+      if (data && data.status === 200) {  
+        this.ListReporteExplocion = data.json;
+        this.spinner.hide();      
+      } else {
+        this.spinner.hide();
+        console.error('Error: No se pudo obtener datos.');
+      }
+    },
+    (error: any) => {
+      this.spinner.hide();
+      console.error('Error al obtener datos:', error);
+      // Aquí podrías mostrar un mensaje de error al usuario
+    }
+  );
+}
+
+//#endregion
 }
 
 interface Componente {
