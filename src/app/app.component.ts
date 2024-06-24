@@ -127,7 +127,7 @@ this.checkSession();
   {
     localStorage.removeItem('UserLog');
   localStorage.removeItem('loginTime');
-    this.authService.logoutRedirect({postLogoutRedirectUri:environment.authRedirectUri});
+    //this.authService.logoutRedirect({postLogoutRedirectUri:environment.authRedirectUri});
   }
 
   checkSession() {
@@ -156,7 +156,7 @@ const tenHours = 3 * 60 * 1000; // 3 minutos en milisegundos
         });
       } else {
         this.isUserLoggedIn = true;
-        this.azureAdDemoSerice.isUserLoggedIn.next(this.isUserLoggedIn);
+        //this.azureAdDemoSerice.isUserLoggedIn.next(this.isUserLoggedIn);
         this.router.navigate(['/Home-main']);
       }
     } else {
@@ -164,7 +164,7 @@ const tenHours = 3 * 60 * 1000; // 3 minutos en milisegundos
     localStorage.removeItem('UserLog');
     localStorage.removeItem('loginTime');
       this.isUserLoggedIn=false;   
-      this.azureAdDemoSerice.isUserLoggedIn.next(this.isUserLoggedIn);  
+      //this.azureAdDemoSerice.isUserLoggedIn.next(this.isUserLoggedIn);  
       this.router.navigate(['/']); 
     }
   }

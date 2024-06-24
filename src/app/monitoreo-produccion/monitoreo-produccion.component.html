@@ -125,8 +125,8 @@
                   </div>
                   <div class="table-responsive">
                     <section class="example-containerss" tabindex="0">
-                      <table class="table table-sm mb-0 table-responsive-lg">
-                        <thead class="sticky-top">
+                      <table class="table table-sm mb-0 table-responsive-lg" >
+                        <thead class="sticky-top" style="color: #7e7e7e !important;">
                           <tr>
                             <th>Accion</th>
                             <th>Ruc</th>
@@ -142,9 +142,9 @@
                             <th style="white-space: nowrap">Tipo Operación</th>
                           </tr>
                         </thead>
-                        <tbody>
-                          <ng-container *ngFor="let item of filteredList()">
-                            <tr>
+                        <tbody style="color: black;">
+                          <!--<ng-container *ngFor="let item of filteredList()">-->
+                            <tr  *ngFor="let item of filteredList()">
                               <!--<td (click)="toggleExpand(item)">
                                 <button class="btn btn-primary tp-btn-light sharp" *ngIf="!item.isExpand"
                                   (click)="ListarComponteProductoByGrupo(item.cotizacionGrupo)">
@@ -242,7 +242,7 @@
                               </td>
                               <td>--</td>
                             </tr>
-                            <tr *ngIf="item.isExpand">
+                            <!--<tr *ngIf="item.isExpand">
                               <td colspan="13">
                                 <div class="table-container">
                                   <table class="table table-responsive-lg mb-0 table-striped" id="dubcomponente">
@@ -270,7 +270,6 @@
                                               {{ comp.codigo }} -
                                               {{ comp.nombre }}
                                             </option>
-                                            <!--<option value="PALCS00000002">PALCS00000002 : RIEL SUP/INF CORTINA CELULAR COLOR IVORY</option> -->
                                           </select>
                                         </td>
                                         <td id="row-1" style="width: 302px !important;">
@@ -317,8 +316,8 @@
                                 </div>
                                 <div id="output"></div>
                               </td>
-                            </tr>
-                          </ng-container>
+                            </tr>-->
+                          <!--</ng-container>-->
                         </tbody>
                       </table>
                     </section>

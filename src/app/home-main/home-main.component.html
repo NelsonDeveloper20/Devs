@@ -1,76 +1,43 @@
-
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet" />
 <style>
- .vacios_{
-   color: #e51717;font-weight: 600;
- }
+  .vacios_ {
+    color: #e51717;
+    font-weight: 600;
+  }
+
+  .background-div {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    /* Añadido para posicionar correctamente */
+    background-image: url("https://dossierdearquitectura.com/imgPosts/5e17a69a08aea.jpg");
+    background-size: cover;
+    /* Hace que la imagen cubra todo el div */
+    background-position: center;
+    /* Centra la imagen en el div */
+    background-repeat: no-repeat;
+    /* Evita que la imagen se repita */
+
+    /* Transparencia solo para la imagen de fondo */
+    &:before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255,
+          255,
+          255,
+          0.645);
+      /* Ajusta la transparencia aquí */
+    }
+  }
 </style>
-       
-<div class="col-lg-12 homeMain" style="    width: 80%;    margin: auto;" >
-
-<!--
-<h1>AQUII</h1>
-<div id="container"></div>
-<h1>OTRO</h1> 
-<div id="container2"></div>
-<h1>FIND</h1>
-<div id="container3" style="width: 100%; height: 400px;"></div>-->
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-          <div style="text-align: center;">
-            
-            <img [src]="rutaImagen" style="  width: 70%;  
-            margin-top: 21%;
-            height: auto;
-        " alt="imagen nosotros home"  >
-            
-        </div>
-          
-</div>  
-
-<!--  
-<h1>CALENDAR</h1>
-<app-calender></app-calender>
-<h1>EMAIL</h1>
-<app-compose></app-compose>
-<app-inbox></app-inbox>
-<app-read></app-read>
-<h1>POST DETAIL</h1>
-<app-post-details></app-post-details>
- <h1>PROFILE</h1> 
-<h1>SHOP</h1>
-
-<h1>CHECKOUT</h1>
-<app-checkout></app-checkout>
-<h1>ECOM-CUSTOMERS</h1>
-<app-ecom-customers></app-ecom-customers>
-<h1>INVOICE</h1>
-<app-invoice></app-invoice>
-<h1>ORDER</h1>
-<app-order></app-order>
-<h1>PRODUCT-DETAIL</h1>
-<app-product-detail></app-product-detail>
-<h1>PRODUCTO-GRID</h1>
-<app-product-grid></app-product-grid>
-<h1>PRODUCT-LIST</h1>
-<app-product-list></app-product-list>
-         -->
+<div class="col-lg-12 background-divs">
+  <div class="col-lg-12 homeMain" style="width: 80%; margin: auto">
+    <div style="text-align: center">
+      <img [src]="rutaImagen" style="width: 70%; margin-top: 16%; height: auto" alt="imagen nosotros home" />
+    </div>
+  </div>
+</div>

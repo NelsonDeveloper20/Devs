@@ -249,5 +249,17 @@ export class ReporteNCComponent implements OnInit {
       (doc as any).autoTable(col, rows);
       doc.save('ReporteOP.pdf');
     }
+
+    
+  applyFilterTable(filterValues: any) {
+    var value=filterValues.target.value
+    var filterValue = value.trim().toLowerCase(); // Eliminar espacios en blanco y convertir a minúsculas
+    this.dataSource.filterPredicate = (data: any, filter: string) => {
+      const accumulator = (currentTerm: string, key: string) => currentTerm + (data[key] ? data[key] : '');
+      const dataStr = Object.keys(data).reduce(accumulator, '').toLowerCase();
+      return dataStr.indexOf(filter) !== -1;
+    };
+    this.dataSource.filter = filterValue;
+  }
 }
 
