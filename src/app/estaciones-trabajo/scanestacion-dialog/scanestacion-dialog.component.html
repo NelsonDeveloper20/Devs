@@ -6,20 +6,100 @@
   type="ball-beat"
   [fullScreen]="true"
   ><p style="color: black">Loading...</p></ngx-spinner>
+  <style>
+  .btn-primary.light {
+    background-color: #B8122B !important;
+    }
+    .step-label {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+.step-label mat-icon {
+  font-size: 40px;
+  margin-bottom: 5px;
+}
+
+.step-title {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.step-subtitle {
+  font-size: 12px;
+  color: gray;
+}
+
+.step-content {
+  display: none !important; /* This will hide the step content by default */
+}
+.mat-step-header .mat-step-icon {
+  display: none !important;
+}
+ 
+/* Use ::ng-deep to target the step number circles */
+::ng-deep .mat-step-header .mat-step-icon {
+  display: none !important;
+}
+:host ::ng-deep .custom-stepper .mat-horizontal-stepper-header-container {
+  display: none !important;
+}
+
+</style>
 <h2 mat-dialog-title>Estación de Trabajo</h2>
 <div mat-dialog-content> 
   <div class="panel-body" style="min-height: 236px;">
-    <button mat-raised-button (click)="isEditable = !isEditable" style="display: none;">
-        {{!isEditable ? 'Enable edit mode' : 'Disable edit mode'}}
-      </button>
-      
-      <mat-stepper linear #stepper>
-        <mat-step [stepControl]="firstFormGroup" [editable]="isEditable">
+     
+        <!-- workflow-stepper.component.html --> 
+        <mat-stepper style="    box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 0%), 0px 6px 10px 0px rgba(0, 0, 0, .14), 0px 1px 18px 0px rgba(0, 0, 0, .12);
+        border-radius: 100px;margin-bottom: 20px;">
+            <mat-step>
+              <ng-template matStepLabel>
+                <div class="step-label">
+                  <mat-icon style="color: #f9a825 !important;">brightness_low</mat-icon>
+                  <div class="step-title"  >ESTACIÓN 1</div>
+                  <div class="step-subtitle" [style.color]="showStepNumber1 ? '#e30e0e' : 'initial'">{{inicioestacionFecha}}</div>
+                </div>
+              </ng-template>
+              <div class="step-content">
+                <p>1</p>
+              </div>
+            </mat-step>
+            <mat-step>
+              <ng-template matStepLabel>
+                <div class="step-label">
+                  <mat-icon  style="color: #f9eb25 !important;">brightness_medium</mat-icon>
+                  <div class="step-title" >ESTACIÓN 2</div>
+                  <div class="step-subtitle" [style.color]="showStepNumber2 ? '#e30e0e' : 'initial'">{{finestacionFecha}}</div>
+                </div>
+              </ng-template>
+              <div class="step-content">
+                <p>2</p>
+              </div>
+            </mat-step>
+            <mat-step>
+              <ng-template matStepLabel>
+                <div class="step-label">
+                  <mat-icon  style="color: #24ed19 !important;">bubble_chart</mat-icon>
+                  <div class="step-title" >FINALIZADO</div>
+                  <div class="step-subtitle" [style.color]="showStepNumber3 ? '#24ed19' : 'initial'">{{fechaTermino}}</div>
+                </div>
+              </ng-template>
+              <div class="step-content">
+                <p>3</p>
+              </div>
+            </mat-step>
+          </mat-stepper>
+		<!-- row -->
+      <mat-stepper linear #stepper class="custom-stepper">
+        <mat-step [stepControl]="firstFormGroup"  >
           <form [formGroup]="firstFormGroup" style="padding: 38px !important; ">
-            <ng-template matStepLabel>Número de usuario</ng-template>
+            <ng-template matStepLabel>Número de Grupo</ng-template>
             <mat-form-field style="width: 100%;">
-              <mat-label>Scanee el número de usuario</mat-label>
-              <input matInput formControlName="firstCtrl" placeholder="12345" required>
+              <mat-label>Ingresa el número de Grupo</mat-label> 
+              <input matInput formControlName="firstCtrl" placeholder="00000-0" required autofocus #firstCtrlInput>
             </mat-form-field>
             <br>
             <div>
@@ -27,13 +107,12 @@
             </div>
           </form>
         </mat-step>
-        <mat-step [stepControl]="secondFormGroup" [editable]="isEditable">
+        <mat-step [stepControl]="secondFormGroup" >
           <form [formGroup]="secondFormGroup">
             <ng-template matStepLabel>Número de maquinaria</ng-template>
             <mat-form-field style="width: 100%;">
-              <mat-label>Ingresa el número de maquinaria</mat-label>
-              <input matInput formControlName="secondCtrl" placeholder="123456"
-                     required>
+              <mat-label>Ingresa el número de maquinaria</mat-label> 
+              <input matInput formControlName="secondCtrl" placeholder="123456" required autofocus #secondCtrlInput>
             </mat-form-field><br>
             <div>
               <button mat-button matStepperPrevious>Atras</button>
@@ -41,21 +120,6 @@
             </div>
           </form>
         </mat-step>
-        
-        <mat-step [stepControl]="treeFormGroup" [editable]="isEditable">
-            <form [formGroup]="treeFormGroup">
-              <ng-template matStepLabel>Número de Grupo</ng-template>
-              <mat-form-field style="width: 100%;">
-                <mat-label>Ingresa el número de grupo</mat-label>
-                <input matInput formControlName="treeCtrl" placeholder="123456"
-                       required>
-              </mat-form-field><br>
-              <div>
-                <button mat-button matStepperPrevious>Atras</button>
-                <!--<button mat-button matStepperNext>Ingresar</button>-->
-              </div>
-            </form>
-          </mat-step> 
       </mat-stepper>
 </div>
 <div style="display: none;">
@@ -77,9 +141,9 @@
 </div>
 <div mat-dialog-actions style="display: contents !important;"> 
   <!-- *ngIf="firstFormGroup.valid && secondFormGroup.valid && treeFormGroup.valid"-->
-  <button mat-button class="btn btn-sm btn-primary" (click)="save()" style="float: right;" 
+  <button mat-button class="btn btn-sm btn-primary" (click)="save()" style="float: right; display: none;" 
   >
     Ingresar
   </button>
-  <button mat-button (click)="close()">Cerrar</button>
+  <button mat-button class="btn btn-sm btn-primary" (click)="close()" style="float: right; ">Cerrar</button>
 </div>

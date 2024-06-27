@@ -42,6 +42,7 @@ isOptionInFilteredOptions(codigo: string, filteredOptions: any[]): boolean {
   return filteredOptions.some(option => option.codigo === codigo);
 }
 onNombreChange(event: any, element: any) {
+  console.log(event);
   const value = event.value;  
   console.log(element);
   // Función para asignar propiedades comunes
@@ -53,8 +54,8 @@ onNombreChange(event: any, element: any) {
       element.unidadMedida = selectedOption.unidad || '';
       element.color = selectedOption.color || '';
     }
-  };
-  if (element.componente !== 'Agregado') {
+  }; 
+  if (element.componente !== 'Agregado' && !this.DatosGrupo.cotizacionGrupo.includes('-0')) {
     console.log("ingresa producto");
     const selectedOption = this.lisComponente.find(option =>
       option.codigo === value && option.codigoProducto === element.codigoProducto.substring(0, 5)
@@ -239,7 +240,11 @@ GuardarExplocion(){
     .then((result) => {
       if (result.isConfirmed) { 
         
-  const jsonData = JSON.stringify(this.ListComponenteProducto);
+  //const jsonData = JSON.stringify(this.ListComponenteProducto);
+  const jsonData = JSON.stringify(this.ListComponenteProducto.map(item => {
+    const { filteredOptions, agregado, ...rest } = item;
+    return rest;
+  }));
   console.log(jsonData);
   this.spinner.show();
   this._service.GuardarExplocion(jsonData)

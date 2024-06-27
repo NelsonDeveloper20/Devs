@@ -32,7 +32,7 @@ export class EstacionesTrabajoComponent  implements OnInit {
 
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
-
+    dialogConfig.width ='704px';
     const dialogRef = this.dialog.open(ScanestacionDialogComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe({
