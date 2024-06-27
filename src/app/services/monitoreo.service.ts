@@ -30,6 +30,10 @@ export class MonitoreoService {
     return this.http.get<any>(`${this.urlBase}Monitoreo/ListarComponenteProducto?grupoCotizacion=`+grupoCotizacion+"&id="+id);
   }
   
+  ListarComponentesPorCodigosProducto(codigosProducto: any,grupo): Observable<any> {
+    return this.http.get<any>(`${this.urlBase}Monitoreo/ListarComponentesPorCodigosProducto?codigosProducto=`+codigosProducto+'&grupo='+grupo);
+  }
+  
   
   DescargarPlantilla(): Observable<any>{
     return this.http.get(`${this.urlBase}Monitoreo/downloadPlantilla`, {

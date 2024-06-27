@@ -155,10 +155,17 @@ MANEJO CUANDO HAY MUCHAS CATEGORIAS scroll
 }*/
 LinaProdHorizontal() {
   Highcharts.chart('container_linea_horizontal', { 
+     chart: {
+      scrollablePlotArea: {
+          minWidth: 500,
+          scrollPositionX: 1
+      }
+  }, 
     title: {
       text: 'Linea de Producción',
-      align: 'left'
+      align: 'left',
     },
+    
     xAxis: {
       categories: this.LineaCategoria, 
     },

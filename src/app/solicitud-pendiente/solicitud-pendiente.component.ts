@@ -334,19 +334,26 @@ export class SolicitudPendienteComponent implements OnInit {
     }
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row`;
   }
-
+/*
   isAllSelected(): boolean {
     const numSelected = this.selection.selected.length;
     const numRows = this.dataSource.data.length;
     return numSelected === numRows;
+  }*/
+  isAllSelected(): boolean {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.filter(row => row.estadoPedido === "Pendiente Venta" && row.tipoGrupo === 'Producto').length;
+    //console.log(`isAllSelected: numSelected=${numSelected}, numRows=${numRows}`);
+    return numSelected === numRows;
   }
   
-  toggleAllRows() {
+  toggleAllRows() { 
     if (this.isAllSelected()) {
-      this.selection.clear();
+      this.selection.clear(); 
+      this.ListGrupos = [];
     } else {
       this.dataSource.data.forEach(row => {
-        if (row.estadoPedido === "Pendiente Venta") {        
+        if (row.estadoPedido === "Pendiente Venta" && row.tipoGrupo =='Producto') {        
           this.selection.select(row);
         }
       });
@@ -362,6 +369,28 @@ export class SolicitudPendienteComponent implements OnInit {
         });
       });
     }
+  }
+  toggleRowSelection(row: any) {
+    if (this.selection.isSelected(row)) {
+      // Si la fila ya está seleccionada, deseleccionarla y quitarla de ListGrupos
+      this.selection.deselect(row);
+      this.ListGrupos = this.ListGrupos.filter(item => item.id !== row.idGrupo);
+    } else {
+      // Si la fila no está seleccionada, seleccionarla y agregarla a ListGrupos
+      this.selection.select(row);
+      const userDataString = localStorage.getItem('UserLog');
+      if (userDataString) {
+        const userData = JSON.parse(userDataString);
+        this.ListGrupos.push({
+          id: row.idGrupo,
+          usuarioId: userData.id
+        });
+      }
+    }
+  
+    // Logging the final state for debugging
+    console.log("Final ListGrupos after toggle:", this.ListGrupos);
+    console.log("Final selection after toggle:", this.selection.selected);
   }
   ListGrupos:any  =[];
   EnviarGrupoMasivo(){ 

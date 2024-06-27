@@ -132,12 +132,9 @@
                             <th>Ruc</th>
                             <th>Razón Social</th>
                             <th>Cotización</th>
-                            <th style="white-space: nowrap">Cot. Grupo</th>
-                            <th>Cod Producto</th>
-                            <th>Producto</th>
-                            <th>Accionamiento</th>
-                            <th>Cantidad</th>
+                            <th style="white-space: nowrap">Cot. Grupo</th> 
                             <th style="white-space: nowrap">Cant. Producto</th>
+                            <th>Productos</th>
                             <th>Estado</th>
                             <th style="white-space: nowrap">Tipo Operación</th>
                           </tr>
@@ -171,12 +168,9 @@
                               <td>{{ item.ruc }}</td>
                               <td>{{ item.razonSocial }}</td>
                               <td>{{ item.cotizacion }}</td>
-                              <td>{{ item.cotizacionGrupo }}</td>
-                              <td>{{ item.codigoProducto }}</td>
-                              <td class="min-width-230">{{ item.nombreProducto }}</td>
-                              <td>{{ item.accionamiento }}</td>
-                              <td>{{ item.cantidad }}</td>
+                              <td>{{ item.cotizacionGrupo }}</td> 
                               <td>{{ item.cantidadProductos }}</td>
+                              <td nowrap>{{item.productos}}</td>
                               <td>
                                 <section class="example-section" *ngIf="item.estado=='Pendiente Venta'">
                                   <mat-progress-bar  class="example-margin" color="warn" [mode]="mode" value="15"
