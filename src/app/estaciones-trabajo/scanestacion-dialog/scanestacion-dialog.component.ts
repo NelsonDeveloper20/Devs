@@ -219,7 +219,7 @@ export class ScanestacionDialogComponent  implements OnInit {
 
   private async validarEstacion1(estacion: string, grupo: string, idusuario: string): Promise<boolean> {
     if (estacion === '100002') {
-      this.mostrarMensajeError('Ingrese código de la estación 2');
+      this.mostrarMensajeError('Ingrese código de la estación 1');
       this.resetControl(this.secondFormGroup, 'secondCtrl', this.secondCtrlInput);
       return false;
     }
@@ -257,7 +257,7 @@ export class ScanestacionDialogComponent  implements OnInit {
 
   private async validarEstacion2(estacion: string, grupo: string, idusuario: string): Promise<boolean> {
     if (estacion === '100001') {
-      this.mostrarMensajeError('Ingrese código de la estación 1');
+      this.mostrarMensajeError('Ingrese código de la estación 2');
       this.resetControl(this.treeFormGroup, 'treeCtrl', this.treeCtrlInput);
       return false;
     }

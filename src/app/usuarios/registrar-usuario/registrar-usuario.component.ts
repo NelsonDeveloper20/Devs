@@ -1,22 +1,10 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { ProfileType } from 'src/app/services/auth.model';
-import { AuthService } from 'src/app/services/auth.service';
-import { IAgregarUsuarioRequest } from 'src/app/services/user.model';
-import { UserService } from 'src/app/services/user.service';
-import { AgregarUsuario, RolUsuario, Roles, Sedes, UnidadNegocioS, User } from '../users.model';
+import { NgxSpinnerService } from 'ngx-spinner'; 
 //forms
 import { Toaster } from 'ngx-toast-notifications';
-
-import { IUsuario } from './usuario.model'
-import { FormGroup, FormControl, FormArray } from '@angular/forms'  
-import {FormBuilder, Validators} from '@angular/forms';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSort, Sort } from '@angular/material/sort';
-import { HttpClient } from '@angular/common/http';
-import { IApiResponse } from 'src/app/services/service.model';
-import { environment } from 'src/environments/environment';
+ 
+import { MatSort } from '@angular/material/sort'; 
 import { UsuarioService } from 'src/app/services/usuarioservice';
 import Swal from 'sweetalert2';
 
@@ -44,22 +32,14 @@ interface Usuario {
   styleUrls: ['./registrar-usuario.component.css']
 })
 export class RegistrarUsuarioComponent implements OnInit {
-  
-  @ViewChild(MatSort) sort: MatSort;
-  //user: AgregarUsuario = { rol: "" }; 
+   
   usuario: Usuario;
-  
-  private urlBase: string;
-  constructor(private toaster: Toaster,private httpClient: HttpClient,
-    private authService: AuthService,
-    private userService: UserService,
+   
+  constructor(private toaster: Toaster, 
     private spinner: NgxSpinnerService,
     private dialogRef: MatDialogRef<RegistrarUsuarioComponent>,
     @Inject(MAT_DIALOG_DATA) data: Usuario,
-    private _service: UsuarioService,
-//Form user
-    private fb:FormBuilder, 
-   private _formBuilder: FormBuilder
+    private _service: UsuarioService, 
   ) { 
     this.usuario = data ? data : this.initUsuario();
   }
@@ -95,8 +75,41 @@ export class RegistrarUsuarioComponent implements OnInit {
    ); 
    this.spinner.hide();
  } 
-  
+ validateForm(): boolean {
+  if (!this.usuario.nombre) {
+    this.toaster.open({ text: 'El campo Nombre es obligatorio', caption: 'Error', type: 'danger' });
+    return false;
+  }
+  if (!this.usuario.apellido) {
+    this.toaster.open({ text: 'El campo Apellido es obligatorio', caption: 'Error', type: 'danger' });
+    return false;
+  }
+  if (!this.usuario.dni) {
+    this.toaster.open({ text: 'El campo Documento es obligatorio', caption: 'Error', type: 'danger' });
+    return false;
+  }
+  if (!this.usuario.idTipoUsuario) {
+    this.toaster.open({ text: 'El campo Tipo de Usuario es obligatorio', caption: 'Error', type: 'danger' });
+    return false;
+  }
+  if (!this.usuario.idRol) {
+    this.toaster.open({ text: 'El campo Rol Usuario es obligatorio', caption: 'Error', type: 'danger' });
+    return false;
+  }
+  if (!this.usuario.usuario) {
+    this.toaster.open({ text: 'El campo Usuario es obligatorio', caption: 'Error', type: 'danger' });
+    return false;
+  }
+  if (!this.usuario.clave) {
+    this.toaster.open({ text: 'El campo Contraseña es obligatorio', caption: 'Error', type: 'danger' });
+    return false;
+  }
+  return true;
+}
   save(): void {
+    if (!this.validateForm()) {
+      return;
+    }
     const jsonData = JSON.stringify(this.usuario);
     console.log(jsonData);
     this.spinner.show();
@@ -107,17 +120,29 @@ export class RegistrarUsuarioComponent implements OnInit {
           if (response.status == 200) { 
                 const respuesta = response.json.respuesta;
                 const id = response.json.id; 
-                Swal.fire({
-                title: 'Mensaje',
-                text: 'Operacion realizada correctamente',
-                icon: 'success',
-                confirmButtonText: 'Aceptar',
-                allowOutsideClick: false
-                }); 
-                var requests={
-                agegados:"OK"
-                };
-                this.dialogRef.close(requests);
+                if(respuesta=="Operacion realizada correctamente"){
+                  Swal.fire({
+                  title: 'Mensaje',
+                  text: 'Operacion realizada correctamente',
+                  icon: 'success',
+                  confirmButtonText: 'Aceptar',
+                  allowOutsideClick: false
+                  }); 
+                  var requests={
+                  agegados:"OK"
+                  };
+                  this.dialogRef.close(requests);
+
+                }else{
+                  Swal.fire({
+                  title: 'Mensaje',
+                  text: respuesta,
+                  icon: 'warning',
+                  confirmButtonText: 'Aceptar',
+                  allowOutsideClick: false
+                  }); 
+                  
+                }
             }
         },
         error: error => {
@@ -132,8 +157,7 @@ export class RegistrarUsuarioComponent implements OnInit {
           });
         }
       });
-
-    // Aquí puedes hacer lo que necesites con el JSON, como enviarlo a un servicio o mostrarlo en la consola.
+ 
   } 
   nuevo="NO";
   initUsuario(): Usuario {

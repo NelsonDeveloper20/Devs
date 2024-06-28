@@ -88,18 +88,14 @@ dataSource:any = new MatTableDataSource<any>([]);
   
       dialogConfig.disableClose = true;
       dialogConfig.autoFocus = true;
+      dialogConfig.width="900px";
   
       const dialogRef = this.dialog.open(RegistrarUsuarioComponent, dialogConfig);
   
       dialogRef.afterClosed().subscribe({
         next: data => {   
          if (data) { 
-          this.toaster.open({
-            text: `Se registro al usuario ${data.correo}.`,
-            caption: 'Mensaje',
-            type: 'success',
-            position:'bottom-right'
-          }); 
+           
           this.ObtenerUsuarios();
         } 
       },
@@ -120,7 +116,8 @@ dataSource:any = new MatTableDataSource<any>([]);
   
       dialogConfig.disableClose = true;
       dialogConfig.autoFocus = true;
-      dialogConfig.data=item;
+      dialogConfig.data=item;      
+      dialogConfig.width="900px";
       const dialogRef = this.dialog.open(RegistrarUsuarioComponent, dialogConfig);
   
       dialogRef.afterClosed().subscribe({
@@ -242,12 +239,11 @@ unidadToString(roles: RolUsuarioResponse[]): string {
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.data = element;
-
+      dialogConfig.width="900px";
     const dialogRef = this.dialog.open(ModificarUsuarioComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe((result: any) => {
-      if (result) {
-       
+      if (result) {       
         this.toaster.open({
           text: `Usuario modificado correctamente`,
           caption: 'Mensaje',
