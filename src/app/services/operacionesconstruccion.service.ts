@@ -20,8 +20,8 @@ export class OperacionesConstruccionService {
   ListarOperacionesConstruccion(fecha: any): Observable<any> {
     return this.http.get<any>(`${this.urlBase}OperacionesContruccion?fecha=`+fecha);
   }
-  ValidarEstacion(paso: any,dato:any): Observable<any> {
-    return this.http.get<any>(`${this.urlBase}OperacionesContruccion/Estacion?paso=`+paso+"&dato="+dato);
+  ValidarEstacion(paso: any,codigoEstacion:any,idusuario:any,valorGrupo): Observable<any> {
+    return this.http.get<any>(`${this.urlBase}OperacionesContruccion/Estacion?paso=`+paso+"&codigoEstacion="+codigoEstacion+"&idusuario="+idusuario+"&grupo="+valorGrupo);
   }
   
   ValidarLogin(usuario: any,contrasena:any): Observable<any> {

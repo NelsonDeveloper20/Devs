@@ -25,6 +25,7 @@
 .step-title {
   font-size: 16px;
   font-weight: bold;
+  margin-top: 9px !important;
 }
 
 .step-subtitle {
@@ -48,13 +49,13 @@
 }
 
 </style>
-<h2 mat-dialog-title>Estación de Trabajo</h2>
+<h2 mat-dialog-title>Estación de Trabajo  {{grupoScan}}</h2>
 <div mat-dialog-content> 
-  <div class="panel-body" style="min-height: 236px;">
+  <div class="panel-body" style="min-height: 236px;margin-top: 30px;">
      
         <!-- workflow-stepper.component.html --> 
         <mat-stepper style="    box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 0%), 0px 6px 10px 0px rgba(0, 0, 0, .14), 0px 1px 18px 0px rgba(0, 0, 0, .12);
-        border-radius: 100px;margin-bottom: 20px;">
+        border-radius: 100px;margin-bottom: 20px;" *ngIf="estacionesEstado">
             <mat-step>
               <ng-template matStepLabel>
                 <div class="step-label">
@@ -79,12 +80,12 @@
                 <p>2</p>
               </div>
             </mat-step>
-            <mat-step>
+            <mat-step *ngIf="finalizado">
               <ng-template matStepLabel>
                 <div class="step-label">
-                  <mat-icon  style="color: #24ed19 !important;">bubble_chart</mat-icon>
-                  <div class="step-title" >FINALIZADO</div>
-                  <div class="step-subtitle" [style.color]="showStepNumber3 ? '#24ed19' : 'initial'">{{fechaTermino}}</div>
+                  <mat-icon  style="color: #24ed19 !important;">bubble_chart</mat-icon> 
+                  <div class="step-title" >TERMINADO</div>
+                  <div class="step-subtitle" [style.color]="showStepNumber3 ? '#24ed19' : 'initial'"></div>
                 </div>
               </ng-template>
               <div class="step-content">
@@ -93,51 +94,51 @@
             </mat-step>
           </mat-stepper>
 		<!-- row -->
-      <mat-stepper linear #stepper class="custom-stepper">
-        <mat-step [stepControl]="firstFormGroup"  >
-          <form [formGroup]="firstFormGroup" style="padding: 38px !important; ">
-            <ng-template matStepLabel>Número de Grupo</ng-template>
-            <mat-form-field style="width: 100%;">
-              <mat-label>Ingresa el número de Grupo</mat-label> 
-              <input matInput formControlName="firstCtrl" placeholder="00000-0" required autofocus #firstCtrlInput>
-            </mat-form-field>
-            <br>
-            <div>
-              <button mat-button   (click)="validarYAvanzar()">Siguiente</button>
-            </div>
-          </form>
-        </mat-step>
-        <mat-step [stepControl]="secondFormGroup" >
-          <form [formGroup]="secondFormGroup">
-            <ng-template matStepLabel>Número de maquinaria</ng-template>
-            <mat-form-field style="width: 100%;">
-              <mat-label>Ingresa el número de maquinaria</mat-label> 
-              <input matInput formControlName="secondCtrl" placeholder="123456" required autofocus #secondCtrlInput>
-            </mat-form-field><br>
-            <div>
-              <button mat-button matStepperPrevious>Atras</button>
-              <button mat-button  (click)="validarYAvanzar()">Siguiente</button>
-            </div>
-          </form>
-        </mat-step>
-      </mat-stepper>
-</div>
-<div style="display: none;">
-
-  <div *ngIf="DataUsuario">
-    <p>Datos del usuario:</p>
-    <p>{{ DataUsuario | json }}</p>
-  </div>
-  <div *ngIf="DataEstacion">
-    <p>Datos del DataEstacion:</p>
-    <p>{{ DataEstacion | json }}</p>
-  </div>
-  <div *ngIf="DataCotizacion">
-    <p>Datos del DataCotizacion:</p>
-    <p>{{ DataCotizacion | json }}</p>
-  </div>
-</div>
-
+    <mat-stepper linear #stepper class="custom-stepper" *ngIf="!finalizado">
+      <mat-step [stepControl]="firstFormGroup">
+        <form [formGroup]="firstFormGroup" style="padding: 38px !important;">
+          <ng-template matStepLabel>Número de Grupo</ng-template>
+          <mat-form-field style="width: 100%;">
+            <mat-label>Ingresa el número de Grupo</mat-label>
+            <input matInput formControlName="firstCtrl" placeholder="00000-0" required autofocus #firstCtrlInput>
+          </mat-form-field>
+          <br>
+          <div>
+            <button mat-button (click)="validarYAvanzar()">Siguiente</button>
+          </div>
+        </form>
+      </mat-step>
+      <mat-step [stepControl]="secondFormGroup">
+        <form [formGroup]="secondFormGroup">
+          <ng-template matStepLabel>Número de Estación 1</ng-template>
+          <mat-form-field style="width: 100%;">
+            <mat-label>Estación 1</mat-label>
+            <input matInput formControlName="secondCtrl" placeholder="123456" required autofocus #secondCtrlInput>
+          </mat-form-field>
+          <br>
+          <div>
+            <button mat-button matStepperPrevious>Atras</button>
+            <button mat-button (click)="validarYAvanzar()">Siguiente</button>
+          </div>
+        </form>
+      </mat-step>
+      <mat-step [stepControl]="treeFormGroup">
+        <form [formGroup]="treeFormGroup">
+          <ng-template matStepLabel>Número de Estación 2</ng-template>
+          <mat-form-field style="width: 100%;">
+            <mat-label>Estación 2</mat-label>
+            <input matInput formControlName="treeCtrl" placeholder="123456" required autofocus #treeCtrlInput>
+          </mat-form-field>
+          <br>
+          <div>
+            <button mat-button matStepperPrevious>Atras</button>
+            <button mat-button (click)="validarYAvanzar()">Siguiente</button>
+          </div>
+        </form>
+      </mat-step>
+    </mat-stepper>
+    
+</div> 
 </div>
 <div mat-dialog-actions style="display: contents !important;"> 
   <!-- *ngIf="firstFormGroup.valid && secondFormGroup.valid && treeFormGroup.valid"-->
