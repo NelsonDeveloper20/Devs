@@ -129,7 +129,11 @@
                             
                               <ng-container matColumnDef="estadoOp">
                                 <th mat-header-cell *matHeaderCellDef sticky>Estado OP</th>
-                                <td mat-cell *matCellDef="let element" class="center">{{ element.estadoOp }}</td>
+                                <td mat-cell *matCellDef="let element" class="center">
+                                  <span *ngIf="element.estadoOp=='Pendiente Operaciones'"><b>{{ element.estadoOp }}</b></span>
+                                  <span *ngIf="element.estadoOp!=='Pendiente Operaciones'">{{ element.estadoOp }}</span>
+                                  
+                                </td>
                               </ng-container>
                             
                               <ng-container matColumnDef="tipoOperacion">

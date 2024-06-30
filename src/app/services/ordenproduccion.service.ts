@@ -68,7 +68,7 @@ export class OrdenproduccionService {
       
       ValidarRegistroProducto( turno:any,  fechaProduccion:any,  codigoProducto:any,  accionamiento:any): Observable<IApiResponse>{    
          return this.http.post<IApiResponse>(  this.urlBase +
-          'ValidarCantidadPorTurnoFecProd?turno='+turno+"&fechaProduccion="+fechaProduccion+"&codigoProducto="+codigoProducto+"&accionamiento="+accionamiento,  {} );
+          'DetalleOrdenProduccion/ValidarCantidadPorTurnoFecProd?turno='+turno+"&fechaProduccion="+fechaProduccion+"&codigoProducto="+codigoProducto+"&accionamiento="+accionamiento,  {} );
        }
 
      
