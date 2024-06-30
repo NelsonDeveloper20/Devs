@@ -160,6 +160,7 @@ this.spinner.hide();
 switch(respuesta){
   case "Ok": 
   //PROCESAR REGISTRO   
+  console.log("registrando: "+respuesta);
   this.RegistrarProducto(this.jsonProductoItemDelHijo);
     break;
   case "NO":

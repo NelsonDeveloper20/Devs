@@ -98,12 +98,12 @@
       <mat-step [stepControl]="firstFormGroup">
         <form [formGroup]="firstFormGroup" style="padding: 38px !important;">
           <ng-template matStepLabel>Número de Grupo</ng-template>
-          <mat-form-field style="width: 100%;">
+          <mat-form-field style="width: 100%;font-size: x-large;">
             <mat-label>Ingresa el número de Grupo</mat-label>
             <input matInput formControlName="firstCtrl" placeholder="00000-0" required autofocus #firstCtrlInput>
           </mat-form-field>
           <br>
-          <div>
+          <div><br>
             <button mat-button (click)="validarYAvanzar()">Siguiente</button>
           </div>
         </form>
@@ -111,12 +111,12 @@
       <mat-step [stepControl]="secondFormGroup">
         <form [formGroup]="secondFormGroup">
           <ng-template matStepLabel>Número de Estación 1</ng-template>
-          <mat-form-field style="width: 100%;">
+          <mat-form-field style="width: 100%;font-size: x-large;">
             <mat-label>Estación 1</mat-label>
             <input matInput formControlName="secondCtrl" placeholder="123456" required autofocus #secondCtrlInput>
           </mat-form-field>
           <br>
-          <div>
+          <div><br>
             <button mat-button matStepperPrevious>Atras</button>
             <button mat-button (click)="validarYAvanzar()">Siguiente</button>
           </div>
@@ -125,12 +125,12 @@
       <mat-step [stepControl]="treeFormGroup">
         <form [formGroup]="treeFormGroup">
           <ng-template matStepLabel>Número de Estación 2</ng-template>
-          <mat-form-field style="width: 100%;">
+          <mat-form-field style="width: 100%;font-size: x-large;">
             <mat-label>Estación 2</mat-label>
             <input matInput formControlName="treeCtrl" placeholder="123456" required autofocus #treeCtrlInput>
           </mat-form-field>
           <br>
-          <div>
+          <div><br>
             <button mat-button matStepperPrevious>Atras</button>
             <button mat-button (click)="validarYAvanzar()">Siguiente</button>
           </div>
