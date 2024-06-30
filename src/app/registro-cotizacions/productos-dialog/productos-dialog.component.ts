@@ -1,12 +1,13 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Toaster } from 'ngx-toast-notifications';
 import { ObjConfigs } from 'src/app/configuration';
 import { FormProductoComponent } from 'src/app/form-producto/form-producto.component';
 import { OrdenproduccionService } from 'src/app/services/ordenproduccion.service';
 import Swal from 'sweetalert2';
+import { LineaProdDialogComponent } from '../linea-prod-dialog/linea-prod-dialog.component';
  
 interface ConfiguracionAtributos {
   [key: string]: {
@@ -38,6 +39,7 @@ CodigoSisgeco:string="";
 IdProducto:string="";
 constructor(@Inject(MAT_DIALOG_DATA) public data: any,
 private toaster: Toaster,
+private dialog: MatDialog,
   private dialogRef: MatDialogRef<ProductosDialogComponent>,
   private spinner: NgxSpinnerService,    
   private _OrdenService: OrdenproduccionService,
@@ -76,8 +78,7 @@ private toaster: Toaster,
     if (this.formProductoComponent) {
       this.formProductoComponent.onInputChange();
     }  
-    if(this.jsonProductoItemDelHijo){
-
+    if(this.jsonProductoItemDelHijo){ 
       var accionamiento=""
       Object.entries(this.jsonProductoItemDelHijo.Formulario).forEach(([key, value]) => {
         var lowerKey = key.toLowerCase();
@@ -139,7 +140,74 @@ private toaster: Toaster,
         }
       });
       if(validacion==0){
+
+        
+if(this.jsonProductoItemDelHijo.Formulario.Id==""){ 
+  this.spinner.show(); 
+  this._OrdenService.ValidarRegistroProducto(
+    this.jsonProductoItemDelHijo.Formulario.Turno,
+    this.jsonProductoItemDelHijo.Formulario.FechaProduccion,
+    this.jsonProductoItemDelHijo.Formulario.CodigoProducto.slice(0, 5), //PRTRZ CORTIN Esto imprimirá "PRTRZ"
+    this.jsonProductoItemDelHijo.Formulario.Accionamiento)
+    .subscribe({
+      next: response => {
+        console.log(response);
+        if (response.status == 200) { 
+const respuesta = response.json.resultado;
+const mensaje = response.json.msj;
+const id = response.json.id;
+this.spinner.hide();
+switch(respuesta){
+  case "Ok": 
+  //PROCESAR REGISTRO   
+  this.RegistrarProducto(this.jsonProductoItemDelHijo);
+    break;
+  case "NO":
+    Swal.fire({
+      title: mensaje,
+      text: 'Advertencia',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, Guardar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {        
         this.RegistrarProducto(this.jsonProductoItemDelHijo);
+      } 
+    });
+    break;
+  default:
+    ;
+     } 
+        } else {
+          this.spinner.hide();
+          this.toaster.open({
+            text: "Ocurrio un error, ingrese los datos correctamente",
+            caption: 'Mensaje',
+            type: 'warning',
+            position: 'bottom-right',
+            //duration: 4000
+          });
+        }
+      },
+      error: error => {
+        this.spinner.hide();
+        var errorMessage = error.message;
+        console.error('There was an error!', error);
+        this.toaster.open({
+          text: errorMessage,
+          caption: 'Ocurrio un error',
+          type: 'danger',
+          // duration: 994000
+        });
+      }
+    });
+
+
+}else{
+  this.RegistrarProducto(this.jsonProductoItemDelHijo);
+}
+
         
       }
     }
@@ -148,11 +216,10 @@ private toaster: Toaster,
   close() {
     this.dialogRef.close();
   }
-   RegistrarProducto(data){
-    //this.dialogRef.close(this.jsonProductoItemDelHijo);
+   RegistrarProducto(data){   
+
     data.Formulario.NumeroCotizacion =  this.Cotizacion;
-    data.Formulario.CodigoSisgeco = this.CodigoSisgeco; 
-    
+    data.Formulario.CodigoSisgeco = this.CodigoSisgeco;     
     console.log(JSON.stringify(data));
     this.spinner.show(); 
     this._OrdenService.RegistrarDetalleOrdenProduccion(data,"Producto")
@@ -215,4 +282,30 @@ private toaster: Toaster,
       });
 
    }
+
+   
+  AbrirLineaProd(): void {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width ='1104px';
+    const dialogRef = this.dialog.open(LineaProdDialogComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe({
+      next: data => {   
+       if (data) {   
+      } 
+    },
+    error: error => { 
+        var errorMessage = error.message;
+        console.error('There was an error!', error); 
+        this.toaster.open({
+          text: errorMessage,
+          caption: 'Ocurrio un error',
+          type: 'danger',
+        });
+      }
+    });
+  }
   }

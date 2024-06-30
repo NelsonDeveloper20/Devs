@@ -152,7 +152,6 @@ export class SolicitudPendienteComponent implements OnInit {
   }
   ListVenta:any=[];
   obtenerDetalleOpGrupo() {
-   
     
     const request = { 
       Vendedor: this.selectedVendedor ? this.selectedVendedor : '--', 

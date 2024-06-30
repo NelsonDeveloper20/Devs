@@ -33,6 +33,11 @@
           <p class="help-block" style="display: none;">Example block-level help text here.</p>
         </div> 
         <div class="form-group col-lg-4">
+          <label>Correo</label>
+          <input class="form-control" placeholder="Ingrese correo" id="correo" name="correo" [(ngModel)]="usuario.correo">
+          <p class="help-block" style="display: none;">Example block-level help text here.</p>
+        </div> 
+        <div class="form-group col-lg-4">
           <label>Tipo de Usuario</label>
           <select class="form-control" id="perfil_usuario" name="perfil_usuario" [(ngModel)]="usuario.idTipoUsuario"> 
             <option value="">--Seleccione--</option>

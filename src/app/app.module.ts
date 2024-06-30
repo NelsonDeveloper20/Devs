@@ -167,6 +167,8 @@ import { SupervisionOpComponent } from './supervision-op/supervision-op.componen
 import { SupervisionDialogComponent } from './supervision-op/supervision-dialog/supervision-dialog.component';
 import { DatePipe } from '@angular/common';
 import { DetalleMonitoreoDialogComponent } from './monitoreo-produccion/detalle-monitoreo-dialog/detalle-monitoreo-dialog.component';
+import { LineaProdDialogComponent } from './registro-cotizacions/linea-prod-dialog/linea-prod-dialog.component';
+
 //IMPORT
 
 @NgModule({
@@ -228,6 +230,7 @@ import { DetalleMonitoreoDialogComponent } from './monitoreo-produccion/detalle-
     SupervisionOpComponent,
     SupervisionDialogComponent,
     DetalleMonitoreoDialogComponent,
+    LineaProdDialogComponent,
   ],
   imports: [
     HighchartsChartModule, //grafico

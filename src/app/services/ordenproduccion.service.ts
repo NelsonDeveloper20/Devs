@@ -51,21 +51,26 @@ export class OrdenproduccionService {
     }
     //REGISTRAR  PRODUCTO
     
-    RegistrarDetalleOrdenProduccion(Data:any,tipo:any ): Observable<IApiResponse>{ 
-   
+    RegistrarDetalleOrdenProduccion(Data:any,tipo:any ): Observable<IApiResponse>{    
       const formData = new FormData();
        formData.append('Formulario', JSON.stringify(Data.Formulario)); // Convertir el objeto a JSON y agregarlo al FormData
        formData.append('Escuadra', JSON.stringify(Data.Escuadra));
          return this.http.post<IApiResponse>(  this.urlBase + 'DetalleOrdenProduccion?tipo='+tipo,  formData  );
-     
        }
-       RegistrarDetalleOrdenProduccionComponente(Data:any,tipo:any ): Observable<IApiResponse>{ 
-   
-        const formData = new FormData();
-         formData.append('Formulario', JSON.stringify(Data)); // Convertir el objeto a JSON y agregarlo al FormData
-           return this.http.post<IApiResponse>(  this.urlBase + 'DetalleOrdenProduccion?tipo='+tipo,  formData  );
-       
-         }
+    RegistrarDetalleOrdenProduccionComponente(Data:any,tipo:any ): Observable<IApiResponse>{ 
+
+    const formData = new FormData();
+      formData.append('Formulario', JSON.stringify(Data)); // Convertir el objeto a JSON y agregarlo al FormData
+        return this.http.post<IApiResponse>(  this.urlBase + 'DetalleOrdenProduccion?tipo='+tipo,  formData  );
+    
+      }
+      //VALIDAR CANTIDAD DE PRODUCTO POR TURNO
+      
+      ValidarRegistroProducto( turno:any,  fechaProduccion:any,  codigoProducto:any,  accionamiento:any): Observable<IApiResponse>{    
+         return this.http.post<IApiResponse>(  this.urlBase +
+          'ValidarCantidadPorTurnoFecProd?turno='+turno+"&fechaProduccion="+fechaProduccion+"&codigoProducto="+codigoProducto+"&accionamiento="+accionamiento,  {} );
+       }
+
      
   
   listarAmbiente(numCotizacion): Observable<any>{

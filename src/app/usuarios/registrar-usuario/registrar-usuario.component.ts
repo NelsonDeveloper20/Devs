@@ -88,6 +88,10 @@ export class RegistrarUsuarioComponent implements OnInit {
     this.toaster.open({ text: 'El campo Documento es obligatorio', caption: 'Error', type: 'danger' });
     return false;
   }
+  if (!this.usuario.correo) {
+    this.toaster.open({ text: 'El campo Correo es obligatorio', caption: 'Error', type: 'danger' });
+    return false;
+  }
   if (!this.usuario.idTipoUsuario) {
     this.toaster.open({ text: 'El campo Tipo de Usuario es obligatorio', caption: 'Error', type: 'danger' });
     return false;

@@ -5,9 +5,19 @@
   type="ball-beat"
   [fullScreen]="true"
   ><p style="color: black">Loading...</p></ngx-spinner>
-<h2 mat-dialog-title *ngIf="IdProducto">Modificar Producto {{TipoProducto}}</h2>
-<h2 mat-dialog-title *ngIf="!IdProducto">Registrar Producto {{TipoProducto}}</h2>
+  <div class="row">
+    <div class="col-lg-9">
 
+      <h2 mat-dialog-title *ngIf="IdProducto">Modificar Producto {{TipoProducto}} </h2>
+      <h2 mat-dialog-title *ngIf="!IdProducto">Registrar Producto {{TipoProducto}}</h2> 
+    </div>
+    <div class="col-lg-3">
+
+      <a mat-raised-button (click)="AbrirLineaProd()"  style="color: green;
+      text-decoration: underline; ">Linea Producción</a>
+    </div>
+
+  </div>
 <div mat-dialog-content style="max-width: 1114px !important;"> 
   <div class="panel-body">
     <!--{{JsonItemHijo | json}}

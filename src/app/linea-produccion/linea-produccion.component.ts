@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';  
+import { Component, Input, OnInit } from '@angular/core';  
 
 import * as Highcharts from 'highcharts';   
 import HC_exporting from 'highcharts/modules/exporting'; 
@@ -16,23 +16,32 @@ HC_exporting(Highcharts);
   styleUrls: ['./linea-produccion.component.css']
 })
 export class LineaProduccionComponent implements OnInit { 
+  @Input() nombreLinea: string; // Propiedad de entrada para recibir el nombre de la línea
   constructor( 
     private toaster: Toaster,
     private spinner: NgxSpinnerService,
     private _service: LineaProduccionService
-  ) { 
-    
+  ) {  
   }
-  ngOnInit(): void { }
+  ngOnInit(): void { 
+    console.log("NNN");
+    console.log(this.nombreLinea);
+  }
 
   ngAfterViewInit() {
     this.iniciarGraficos();  
   }
   iniciarGraficos(){
-    this.crearCircular(); 
-    this.CrearBaraDerecha();
-    //this.LinaProdHorizontal();
-    this.ListarLinea();
+    if(!this.nombreLinea){//no tiene valor DEBE MOSTRAR TODO
+
+      this.crearCircular(); 
+      this.CrearBaraDerecha();
+      //this.LinaProdHorizontal();
+      this.ListarLinea();
+    }else{
+
+      this.ListarLinea();
+    } 
   }
  
 
@@ -44,9 +53,18 @@ LineaSeries: any[] = [];
 LineaPieSeriesData: any[] = [];
 Fecha: Date = new Date();  
 LineaAverageSeries: any = {}; // Cambiado a un objeto
+
+
+fechaInicio: Date;
 ListarLinea() {
   this.spinner.show();
-  this._service.ListarLineaProduccion("2024").subscribe(
+  var filtra="sin filtro";
+  if(!this.nombreLinea){ // no tiene valor DEBE MOSTRAR TODO 
+    filtra="sin filtro";
+  }else{
+    filtra="actual en adelante";
+  } 
+  this._service.ListarLineaProduccion(filtra).subscribe(
     (data: any) => {
       if (data && data.status === 200) {
         this.ListLinea = data.json;
@@ -223,7 +241,7 @@ CrearBaraDerecha() {
       type: 'bar'
     },
     title: {
-      text: 'Historic World Population by Region',
+      text: 'Historico',
       align: 'left'
     },
     subtitle: {
@@ -297,7 +315,7 @@ Highcharts.chart('container_circular', {
     type: 'pie'
   },
   title: {
-    text: 'Egg Yolk Composition'
+    text: 'Pie grafic'
   },
   tooltip: {
     valueSuffix: '%'
