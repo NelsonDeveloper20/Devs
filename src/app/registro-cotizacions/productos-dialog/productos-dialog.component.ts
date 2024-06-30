@@ -158,7 +158,7 @@ const mensaje = response.json.msj;
 const id = response.json.id;
 this.spinner.hide();
 switch(respuesta){
-  case "Ok": 
+  case "OK": 
   //PROCESAR REGISTRO   
   console.log("registrando: "+respuesta);
   this.RegistrarProducto(this.jsonProductoItemDelHijo);
