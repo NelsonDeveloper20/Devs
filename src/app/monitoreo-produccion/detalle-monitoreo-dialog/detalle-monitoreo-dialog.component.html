@@ -25,6 +25,7 @@
             <table class="table table-responsive-lg mb-0" id="dubcomponente">
                 <thead class="sticky-top">
                     <tr>
+                        <th nowrap>ID</th>
                         <th nowrap>Cod. Producto</th>
                         <th nowrap>Nom. Producto</th>
                         <th>Componente</th>
@@ -42,6 +43,7 @@
                 <tbody id="id_tabla"></tbody>
                 <tbody>
                     <tr *ngFor="let comp of ListComponenteProducto">
+                        <td>{{ comp.idProducto }}</td> 
                         <td>{{ comp.codigoProducto }}</td> 
                         <td  style="width: 124px !important;">{{ comp.nombreProducto }}</td>
                         <td style="width: 124px !important;">

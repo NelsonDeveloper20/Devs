@@ -184,9 +184,9 @@ agregarComponente(){
 
 guardarComponentes() {
  
-  const datosJSON = JSON.stringify(this.ListComponenteProducto);
+  /*const datosJSON = JSON.stringify(this.ListComponenteProducto);
   console.log('Datos en formato JSON:', datosJSON);
-  console.log('DATOS ENDS');
+  console.log('DATOS ENDS');*/
   var counter=0;
   this.ListComponenteProducto.forEach(item => {
      if(item.codigo==""){
@@ -241,9 +241,20 @@ GuardarExplocion(){
       if (result.isConfirmed) { 
         
   //const jsonData = JSON.stringify(this.ListComponenteProducto);
-  const jsonData = JSON.stringify(this.ListComponenteProducto.map(item => {
-    const { filteredOptions, agregado, ...rest } = item;
+  /*const jsonData = JSON.stringify(this.ListComponenteProducto.map(item => {
+    const { filteredOptions, agregado,idProducto, ...rest } = item;
     return rest;
+  }));*/
+  const jsonData = JSON.stringify(this.ListComponenteProducto.map(item => {
+    const { filteredOptions, agregado, idProducto, ...rest } = item;
+  
+    const transformedItem = {};
+    Object.keys(rest).forEach(key => {
+      const newKey = key.charAt(0).toUpperCase() + key.slice(1);
+      transformedItem[newKey] = String(rest[key]);
+    });
+  
+    return transformedItem;
   }));
   console.log(jsonData);
   this.spinner.show();
@@ -318,11 +329,11 @@ clonarComponente(item:any){
     componente: item.componente+"-Clonado",
     codigo:item.codigo,
     nombre:item.nombre,
-    agregado:item.agregado,
+    agregado:true,
     color:item.color,
     unidadMedida:item.unidadMedida,
     merma:item.merma,
-
+    cantidadUtilizada:item.cantidadUtilizada,
     NumeroCotizacion:this.DatosGrupo.cotizacion,
     Grupo:this.DatosGrupo.cotizacionGrupo,
     Usuario:idUsuario,  
