@@ -34,7 +34,7 @@
                         <th>Unidad Medida</th>
                         <th style="white-space: nowrap !important;">Cant. Utilizada</th>
                         <th>Merma</th>
-                        <th><button class="btn btn-primary-azul tp-btn-light sharp" style="float: right;"
+                        <th><button class="btn btn-primary-azul tp-btn-light sharp" style="float: right;"  title="Agregar Nuevo Componente"
                                 (click)="agregarComponente()">
                                 <mat-icon>library_add</mat-icon> </button> </th>
                     </tr>
@@ -50,20 +50,18 @@
                         <td style="width: 124px !important;">  
                             <mat-form-field appearance="outline" style="width: 100%;">
                                 <mat-select  [(ngModel)]="comp.codigo" placeholder="Buscar" style="width: 190px;" (selectionChange)="onNombreChange($event, comp)">
-                                  <mat-select-trigger>
-                                    {{ comp.nombre || '---Seleccione---' }}
-                                  </mat-select-trigger>
-                                  <input matInput (keyup)="applyFilter($event, comp)" placeholder="Buscar" class="search-input" />
-
-                                                        <!-- Opción para el valor seleccionado actual si no está en las opciones filtradas -->
+                                <mat-select-trigger>
+                                {{ comp.nombre || '---Seleccione---' }}
+                                </mat-select-trigger>
+                                <input matInput (keyup)="applyFilter($event, comp)" placeholder="Buscar" class="search-input" />
+                                <!-- Opción para el valor seleccionado actual si no está en las opciones filtradas -->
                                 <mat-option *ngIf="!isOptionInFilteredOptions(comp.codigo, comp.filteredOptions)" [value]="comp.codigo">
                                     {{ comp.codigo }} : {{ comp.nombre }}
+                                </mat-option>                                
+                                <mat-option value="">---Seleccione---</mat-option>
+                                <mat-option *ngFor="let item of comp.filteredOptions" [value]="item.codigo">
+                                {{ item.codigo }} : {{ item.nombre }}
                                 </mat-option>
-                                
-                                  <mat-option value="">---Seleccione---</mat-option>
-                                  <mat-option *ngFor="let item of comp.filteredOptions" [value]="item.codigo">
-                                    {{ item.codigo }} : {{ item.nombre }}
-                                  </mat-option>
                                 </mat-select>
                               </mat-form-field>
                         </td>
@@ -80,11 +78,11 @@
                         </td>
                         <td style="    min-width: 118px;">
                             <div class="form-group" style="text-align: center;">
-                                <button class="btn btn-primary tp-btn-light sharp" (click)="clonarComponente(comp)"
+                                <button class="btn btn-primary tp-btn-light sharp" (click)="clonarComponente(comp)" title="Clonar"
                                     style="    margin: 9px;">
                                     <mat-icon>file_copy</mat-icon>
                                 </button>
-                                <button class="btn btn-primary tp-btn-light sharp" *ngIf="comp.agregado"
+                                <button class="btn btn-primary tp-btn-light sharp" *ngIf="comp.agregado" title="Eliminar"
                                     (click)="eliminarItemAgregado(comp)">
                                     <mat-icon>remove_circle_outline</mat-icon>
                                 </button>

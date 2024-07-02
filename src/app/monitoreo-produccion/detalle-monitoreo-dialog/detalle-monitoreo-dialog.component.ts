@@ -207,7 +207,7 @@ guardarComponentes() {
     this.GuardarExplocion();
   }else{
     this.toaster.open({
-      text: "Debe ingresar todos los atos",
+      text: "Debe ingresar todos los datos",
       caption: 'Mensaje',
       type: 'danger',
       // duration: 994000
@@ -231,7 +231,7 @@ GuardarExplocion(){
   Swal.fire({
     allowOutsideClick: false,
     title: "¿Desea Explocionar?",
-    html: `Al explocionar finalizara todo el proceo`,
+    html: `Al explocionar finalizara todo el proceso`,
     icon: 'info',
     showCancelButton: true,
     confirmButtonText: 'Si, Enviar',

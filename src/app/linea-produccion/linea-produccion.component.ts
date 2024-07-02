@@ -5,6 +5,7 @@ import HC_exporting from 'highcharts/modules/exporting';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Toaster } from 'ngx-toast-notifications';
 import { LineaProduccionService } from '../services/lineaproduccion.service';
+import Swal from 'sweetalert2';
 HC_exporting(Highcharts);
 
 
@@ -151,15 +152,79 @@ ListarLinea() {
 /*
 MANEJO CUANDO HAY MUCHAS CATEGORIAS scroll 
 */
-/*filtrarPorTurnoYFecha(turno: string, fecha: string) {
+
+get totalCantidad() {
+  return this.detalleLinea.reduce((sum, item) => sum + item.cantidad, 0);
+}
+
+get totalEquivalencia() {
+  return this.detalleLinea.reduce((sum, item) => sum + item.equivalencia, 0);
+}
+
+get totalEquivalenciaTotal() {
+  return this.detalleLinea.reduce((sum, item) => sum+ (item.equivalencia*item.cantidad), 0);
+
+}
+showTablePopup(turno:any,fecha:any) {
+
+  const totalEquivalenciaTotal = this.totalEquivalenciaTotal;
+  const tableHTML = ` 
+  <h5>${turno} - ${fecha}</h5>
+      <div  class="table-responsive">
+        <section tabindex="0"  class="example-containerss" style="height: 323px !important;">
+          <table class="table table-sm mb-0">
+            <thead class="sticky-top"> 
+              <tr>
+                <th nowrap>Producto</th>
+                <th nowrap>Accionamiento</th>
+                <th nowrap>Cantidad</th>
+                <th nowrap>Equivalencia</th>
+                <th nowrap>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${this.detalleLinea.map(producto => `
+                <tr>
+                  <td>${producto.productos}</td>
+                  <td>${producto.accionamiento}</td>
+                  <td>${producto.cantidad}</td>
+                  <td>${producto.equivalencia}</td>
+                  <td>${producto.cantidad *  producto.equivalencia}</td>
+                </tr>
+              `).join('')}
+              <tr>
+                <td></td>
+              <td><strong>Total</strong></td>
+              <td><strong>${this.totalCantidad}</strong></td>
+              <td><strong>${this.totalEquivalencia}</strong></td>
+              <td><strong style="color: ${totalEquivalenciaTotal >= 30 ? '#e00a2a' : '#0ae01c'}; font-weight: 600;">
+                ${totalEquivalenciaTotal}</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </div> 
+  `;
+
+  Swal.fire({
+     title: 'Tabla de Productos',
+    html: tableHTML,
+    //icon: 'info',
+    //showCancelButton: true,
+    confirmButtonText: 'Cerrar'
+  });
+}
+detalleLinea=[];
+filtrarPorTurnoYFecha(turno: string, fecha: string) {
   this.spinner.show();
-  this._service.FiltrarPorTurnoYFecha(turno, fecha).subscribe(
+  this._service.DetalleListarLinaProduccion(turno, fecha).subscribe(
     (data: any) => {
-      if (data && data.status === 200) {
-        this.spinner.hide();
-        const productos = data.json;
-        console.log("Productos filtrados:", productos);
-        this.mostrarProductosFiltrados(productos);
+      console.log(data);
+      this.spinner.hide();
+      if (data && data.status === 200) { 
+        this.detalleLinea = data.json; 
+        console.log(this.detalleLinea);
+        this.showTablePopup(turno,fecha);
       } else {
         this.spinner.hide();
         console.error('Error: No se pudo obtener datos.');
@@ -170,12 +235,12 @@ MANEJO CUANDO HAY MUCHAS CATEGORIAS scroll
       console.error('Error al obtener datos:', error);
     }
   );
-}*/
+} 
 LinaProdHorizontal() {
   Highcharts.chart('container_linea_horizontal', { 
      chart: {
       scrollablePlotArea: {
-          minWidth: 500,
+          minWidth: 900,
           scrollPositionX: 1
       }
   }, 
@@ -203,7 +268,7 @@ LinaProdHorizontal() {
             click: (event) => {
               const turno = event.point.series.name;
               const fecha = event.point.category;
-              //this.filtrarPorTurnoYFecha(turno, fecha);
+               this.filtrarPorTurnoYFecha(turno, fecha);
             }
           }
         }

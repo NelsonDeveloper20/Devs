@@ -20,4 +20,7 @@ export class LineaProduccionService {
   ListarLineaProduccion(fecha: any): Observable<any> {
     return this.http.get<any>(`${this.urlBase}LineaProduccion?fecha=`+fecha);
   } 
+  DetalleListarLinaProduccion(turno: any,dia: any): Observable<any> {
+    return this.http.get<any>(`${this.urlBase}LineaProduccion/DetalleLineaProd?turno=`+turno+"&dia="+dia);
+  } 
 }

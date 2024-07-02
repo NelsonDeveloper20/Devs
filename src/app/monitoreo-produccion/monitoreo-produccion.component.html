@@ -211,107 +211,10 @@
                                   <div style="padding: 10px; color: white;background: #07ff5e !important; ">
                                     {{ item.estado }}
                                   </div>
-                                </section>
-                                <!--<section class="example-section" *ngIf="item.estado=='Terminado'">
-          <mat-progress-bar
-              class="example-margin"
-              color="success"
-              [mode]="mode"
-              value="100" 
-              [bufferValue]="bufferValue">
-          </mat-progress-bar>
-                <div style="padding: 10px; color: black;"> {{ item.estado }} </div>
-        </section>-->
-                                <!--<section class="example-section" *ngIf="item.estado=='Finalizado'">
-          <mat-progress-bar
-              class="example-margin"
-              color="success"
-              [mode]="mode"
-              value="100" 
-              [bufferValue]="bufferValue">
-          </mat-progress-bar>
-                <div style=" padding: 10px; color: black;"> {{ item.estado }} </div>
-        </section>-->
-                                <!-- susces verde -->
+                                </section> 
                               </td>
                               <td>--</td>
-                            </tr>
-                            <!--<tr *ngIf="item.isExpand">
-                              <td colspan="13">
-                                <div class="table-container">
-                                  <table class="table table-responsive-lg mb-0 table-striped" id="dubcomponente">
-                                    <thead class="sticky-top">
-                                      <tr>
-                                        <th>Componente</th>
-                                        <th>Codigo</th>
-                                        <th>Descripcion</th>
-                                        <th>Color</th>
-                                        <th>Unidad Medida</th>
-                                        <th>Cantidad Utilizada</th>
-                                        <th>Merma</th>
-                                        <th>Accion</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody id="id_tabla"></tbody>
-                                    <tbody>
-                                      <tr *ngFor="let comp of ListComponenteProducto">
-                                        <td style="width: 124px !important;">
-                                          {{ comp.componente }}
-                                        </td>
-                                        <td style="width: 124px !important;">
-                                          <select class="form-control input-sm" [(ngModel)]="comp.codigo">
-                                            <option [value]="comp.codigo">
-                                              {{ comp.codigo }} -
-                                              {{ comp.nombre }}
-                                            </option>
-                                          </select>
-                                        </td>
-                                        <td id="row-1" style="width: 302px !important;">
-                                          {{ comp.nombre }}
-                                        </td>
-                                        <td id="row-2" style="width: 182px !important;"></td>
-                                        <td id="row-3" style="width: 362px !important;">
-                                          0000
-                                        </td>
-                                        <td style="width: 124px !important;">
-                                          <input type="text" class="form-control input-sm"
-                                            [(ngModel)]="comp.cantidad" />
-                                        </td>
-                                        <td style="width: 124px !important;">
-                                          <input type="text" class="form-control input-sm" [(ngModel)]="comp.merma" />
-                                        </td>
-                                        <td>
-                                          <div class="form-group" style="text-align: center;">
-                                            <button class="btn btn-primary tp-btn-light sharp" *ngIf="item.isExpand"
-                                              (click)="clonarComponente(comp)" style="    margin: 9px;">
-                                              <mat-icon>file_copy</mat-icon>
-                                            </button>
-                                            <button class="btn btn-primary tp-btn-light sharp"
-                                              *ngIf="item.isExpand && comp.agregado"
-                                              (click)="eliminarItemAgregado(comp)">
-                                              <mat-icon>remove_circle_outline</mat-icon>
-                                            </button>
-                                          </div>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td colspan="8" style="width: 124px !important;">
-                                          <input type="button" class="btn btn-primary" value="Guardar Componentes"
-                                            (click)="guardarComponentes()" />
-
-                                          <button class="btn btn-primary tp-btn-light sharp" style="float: right;"
-                                            *ngIf="item.isExpand" (click)="agregarComponente()">
-                                            <mat-icon>library_add</mat-icon>
-                                          </button>
-                                        </td>
-                                      </tr>
-                                    </tbody>
-                                  </table>
-                                </div>
-                                <div id="output"></div>
-                              </td>
-                            </tr>-->
-                          <!--</ng-container>-->
+                            </tr> 
                         </tbody>
                       </table>
                     </section>
@@ -452,7 +355,7 @@
                 <div class="card-body">
                   <div class="row">
                     <div class="form-group col-md-4">
-                      <label>Cotizacion</label>
+                      <label>Grupo Cotizacion</label>
                       <input type="text" class="form-control" placeholder="Ingrese Cotizacion" [(ngModel)]="CotizacionsBuscar"
                         id="txtCotizacionExplocion" name="txtCotizacionExplocion" />
                     </div>
@@ -460,63 +363,69 @@
                       <button mat-flat-button color="primary" class="btn btn-primary" (click)="ListarMantenimientoExplocion()">Buscar</button>
                   </div>
                   <div class="col-lg-2"><br>
-                    <button mat-flat-button color="primary" class="btn btn-primary" >Modificar Exploción</button>
+                    <button mat-flat-button color="primary" class="btn btn-primary-azul" style="background: #1266F1;"  *ngIf="ListMantenimeintoExplocion.length>0" (click)="guardarComponentesExplocion()">Modificar Exploción</button>
                 </div> 
                   </div>
                   <div class="table-responsive">
                     <section class="example-containerss" tabindex="0">
                       <table class="table table-sm mb-0 table-responsive-lg">
                         <thead class="sticky-top">
-                          <tr>
-                            <th>ID</th>
+                          <tr> 
                             <th>Cotizacion</th>
                             <th>Grupo</th>
-                            <th>Producto</th>
+                            <th nowrap>COD. PRODUCTO</th>
+                            <th nowrap>NOM. PRODUCTO</th>
                             <th>Componente</th>
-                            <th>Cod.Componente</th>
+                            <th>Codigo</th>
                             <th style="white-space: nowrap">
-                              Desc. Componente
+                              Nombre
                             </th>
                             <th>Color</th>
-                            <th style="white-space: nowrap">Unidad Medida</th>
-                            <th>Cantidad</th>
+                            <th style="white-space: nowrap">U. Medida</th>
+                            <th  style="white-space: nowrap !important;">C. UTILIZADA	</th>
                             <th>Merma</th>
                             <th>
-                              <button mat-flat-button class="btn btn-primary-azul tp-btn-light sharp" (click)="nuevoComponente()"
+                              
+                          <button class="btn btn-primary-azul tp-btn-light sharp" *ngIf="ListMantenimeintoExplocion.length>0" (click)="agregarComponenteMantenimiento()" title="Agregar Nuevo Componente">
+                          <mat-icon>library_add</mat-icon>
+                      </button>
+
+                              <!--<button mat-flat-button class="btn btn-primary-azul tp-btn-light sharp" (click)="nuevoComponente()"
                                 style="float: right; border-radius: 8px;">
                                 Nuevo Componente<i class="fa fa-plus-circle fa-3" style="font-size: 200%;" aria-hidden="true"></i>
-                              </button></th>
+                              </button>-->
+                            </th>
                           </tr>
                         </thead>
                         <tbody>
-                          <tr *ngFor="let componente of ListMantenimeintoExplocion">
-                            <td>
-                              <span>{{ componente.id }}</span>
-                            </td>
+                          <tr *ngFor="let componente of ListMantenimeintoExplocion"> 
                             <td>{{ componente.numeroCotizacion }}</td>
                             <td nowrap>{{ componente.cotizacionGrupo }}</td>
                             <td>{{ componente.codigo_Producto }}</td>
+                            <td style="width: 124px !important;">{{ componente.nombre_Producto }}</td>
                             <td>{{ componente.componente }}</td>
-                            <td> 
-                              <mat-form-field appearance="outline" style="width: 100%;">
-                                <mat-select [(ngModel)]="componente.cod_Componente" placeholder="Buscar"
-                                  style="width: 190px;" (selectionChange)="onNombreChange($event, componente)">
-                                  <mat-select-trigger>
-                                    {{
-                                    componente.cod_Componente ||
-                                    '---Seleccione---'
-                                    }}
-                                  </mat-select-trigger>
-                                  <input matInput (keyup)="applyFilter($event)" placeholder="Buscar"
-                                    class="search-input" />
-                                  <mat-option value="">---Seleccione---</mat-option>
-                                  <mat-option *ngFor="let item of filteredListComponente" [value]="item.codigo">
-                                    {{ item.codigo }} : {{ item.nombre }}
-                                  </mat-option>
-                                </mat-select>
-                              </mat-form-field>
+                            <td>  
+                            <mat-form-field appearance="outline" style="width: 100%;">
+                              <mat-select  [(ngModel)]="componente.cod_Componente" placeholder="Buscar" style="width: 190px;" (selectionChange)="onNombreChangeMantenimiento($event, componente)">
+                                <mat-select-trigger>
+                                  {{ componente.descripcion || '---Seleccione---' }}
+                                </mat-select-trigger>
+                                <input matInput (keyup)="applyFilterMantenimiento($event, componente)" placeholder="Buscar" class="search-input" />
+
+                                                      <!-- Opción para el valor seleccionado actual si no está en las opciones filtradas -->
+                              <mat-option *ngIf="!isOptionInFilteredOptions(componente.cod_Componente, componente.filteredOptions)" [value]="componente.cod_Componente">
+                                  {{ componente.cod_Componente }} : {{ componente.descripcion }}
+                              </mat-option>
+                              
+                                <mat-option value="">---Seleccione---</mat-option>
+                                <mat-option *ngFor="let item of componente.filteredOptions" [value]="item.codigo">
+                                  {{ item.codigo }} : {{ item.nombre }}
+                                </mat-option>
+                              </mat-select>
+                            </mat-form-field>
+
                             </td>
-                            <td>{{ componente.descripcion }}</td>
+                            <td  style="width: 124px !important;">{{ componente.descripcion }}</td>
                             <td>{{ componente.color }}</td>
                             <td>{{ componente.unidad }}</td>
                             <td>
@@ -526,16 +435,25 @@
                             <td>
                               <input type="number" class="form-control" [(ngModel)]="componente.merma" placeholder="Merma" />
                             </td>
-                            <td style="min-width: 214px !important;">
-                              <button mat-flat-button class="btn btn-primary tp-btn-light sharp"
+                            <td  style="    min-width: 118px;">
+                              <button class="btn btn-primary tp-btn-light sharp" title="Clonar" (click)="clonarComponenteMantenimiento(componente)"
+                              style="    margin: 9px;">
+                              <mat-icon>file_copy</mat-icon>
+                          </button>
+
+                          <button class="btn btn-primary tp-btn-light sharp" *ngIf="componente.agregado" title="Eliminar"
+                          (click)="eliminarItemAgregadoMantenimiento(componente)">
+                          <mat-icon>remove_circle_outline</mat-icon>
+                      </button>
+                              <!--<button mat-flat-button class="btn btn-primary tp-btn-light sharp"
                                 (click)="clonarComponenteMantenimiento(componente)" style="margin: 4px;">
                                 Clonar
                                 <i class="fa fa-clone" aria-hidden="true"></i>
-                              </button>
-                              <button mat-flat-button class="btn btn-primary tp-btn-light sharp" (click)="eliminarComponente(componente)">
+                              </button>-->
+                              <!--<button mat-flat-button class="btn btn-primary tp-btn-light sharp" (click)="eliminarComponente(componente)">
                                 Eliminar
                                 <span class="glyphicon glyphicon-trash"></span>
-                              </button>
+                              </button>-->
                             </td>
                           </tr>
                         </tbody>
@@ -637,12 +555,11 @@
                           <h3 *ngIf="!error">
                             Vista previa de la carga - Total filas:
                             {{ previewData.length }}
-                          </h3>
-                          <span *ngIf="error" style="color: red; font-weight: 700;">
-                            ERROR: Las cabeceras del archivo no son las
-                            esperadas. Por favor, verifica el archivo y vuelve a
-                            intentarlo.
-                          </span>
+                          </h3> 
+                        <div   *ngFor="let error of htmlErrores" style="color: red; font-weight: 700;">
+                          <span>{{ error }} </span><br>
+                        </div>
+
                         </div>
                         <div class="col-lg-6">
                           <button mat-flat-button color="warn" style="float: right; margin: 6px;"

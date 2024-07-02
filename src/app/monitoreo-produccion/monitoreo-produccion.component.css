@@ -164,4 +164,6 @@
       transition: 0.5s all;
     }
   }
-  
+  .my-swal-container {
+    width: 720px !important; /* Ajusta el ancho máximo según tu necesidad */
+  }

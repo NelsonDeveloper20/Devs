@@ -47,6 +47,11 @@ export class MonitoreoService {
     return this.http.post<IApiResponse>(this.urlBase + 'Monitoreo/ExplocionarComponente', data, { headers: headers });
   }
   
+  GuardarExplocionMantenimiento(data: any): Observable<IApiResponse> {
+    const headers = { 'Content-Type': 'application/json-patch+json' };
+    return this.http.post<IApiResponse>(this.urlBase + 'Monitoreo/ExplocionarMantenimiento', data, { headers: headers });
+  }
+  
   //CARGAR EXPLOCION EXCEL  
   CargarExplocionExcel(data: any): Observable<IApiResponse> {
     const headers = { 'Content-Type': 'application/json-patch+json' };
