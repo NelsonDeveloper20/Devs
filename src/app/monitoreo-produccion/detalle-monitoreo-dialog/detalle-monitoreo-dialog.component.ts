@@ -241,10 +241,11 @@ GuardarExplocion(){
       if (result.isConfirmed) { 
         
   //const jsonData = JSON.stringify(this.ListComponenteProducto);
-  /*const jsonData = JSON.stringify(this.ListComponenteProducto.map(item => {
+  const jsonData = JSON.stringify(this.ListComponenteProducto.map(item => {
     const { filteredOptions, agregado,idProducto, ...rest } = item;
     return rest;
-  }));*/
+  }));
+  /*
   const jsonData = JSON.stringify(this.ListComponenteProducto.map(item => {
     const { filteredOptions, agregado, idProducto, ...rest } = item;
   
@@ -255,7 +256,7 @@ GuardarExplocion(){
     });
   
     return transformedItem;
-  }));
+  }));*/
   console.log(jsonData);
   this.spinner.show();
   this._service.GuardarExplocion(jsonData)
