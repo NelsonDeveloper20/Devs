@@ -68,10 +68,11 @@
                       </div> 
                       <div class="col-lg-4 mb-3">
                           <label for="state">Tipo Cliente</label> 
-                            <select class="d-block default-select form-control selectpicker w-100" id="state" required [(ngModel)]="Orden.idTipoCliente">
+                            <!--<select class="d-block default-select form-control selectpicker w-100" id="state" required [(ngModel)]="Orden.idTipoCliente">
                                 <option value="">--Seleccione--</option>
                                 <option *ngFor="let proyecto of listTipoCliente" [value]="proyecto.id">{{ proyecto.nombre }}</option>
-                            </select>
+                            </select>-->                            
+                          <input type="text" class="form-control" id="zip" placeholder="ingrese tipo cliente" required disabled [(ngModel)]="Orden.tipoCliente"/>
                       </div>
               
                       <div class="col-lg-4 mb-3">

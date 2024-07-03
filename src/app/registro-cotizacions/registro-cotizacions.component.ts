@@ -121,7 +121,7 @@ export class RegistroCotizacionsComponent implements OnInit {
   ngOnInit(): void {
     try{
     this.ListarProyecto();
-    this.listas();
+     this.listas();
     }catch(ex){      
     }
   }
@@ -276,12 +276,14 @@ export class RegistroCotizacionsComponent implements OnInit {
         }
       );
    }
-   listTipoCliente:any=[];
    listDestino:any=[];
    listTipoOperacion:any=[];
+   
+    
+   listTipoCliente:any=[];
    listas(){
     this.spinner.show(); 
-    this._OrdenService.listas('TipoCliente').subscribe(
+   /* this._OrdenService.listas('TipoCliente').subscribe(
       (res: any) => {
         if(res){
           this.listTipoCliente = res;
@@ -292,7 +294,7 @@ export class RegistroCotizacionsComponent implements OnInit {
         console.error("Error al obtener lista de tipo cliente:", error);
         this.checkSpinner();
       }
-    );
+    );*/
   
     this._OrdenService.listas('Destino').subscribe(
       (res: any) => { 
@@ -324,10 +326,11 @@ export class RegistroCotizacionsComponent implements OnInit {
   } 
   checkSpinner() {
     // Verifica si todas las solicitudes han sido completadas antes de ocultar el spinner
-    if (this.listTipoCliente && this.listDestino && this.listTipoOperacion && this.listProyecto) {
+    if (//this.listTipoCliente && 
+      this.listDestino && this.listTipoOperacion && this.listProyecto) {
       this.spinner.hide();
     }
-  }
+  }  
   //Orden: ITblOrdenProduccion={};
   Orden: ITblOrdenProduccion = {} as ITblOrdenProduccion;
   Guardar(){
@@ -836,6 +839,7 @@ AgregarAmbiente() {
     this.Orden.direccion=state.direccion;
     this.Orden.telefono=state.telefono;
     this.Orden.archivo=state.archivo;
+    this.Orden.tipoCliente=state.tipoCliente;
     //this.Orden.pa=state.Pase; 
     this.selectedState = state;
     this.Productos=[];

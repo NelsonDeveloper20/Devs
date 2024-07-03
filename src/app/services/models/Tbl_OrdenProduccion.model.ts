@@ -15,7 +15,7 @@ export type ITblOrdenProduccion = {
     total?: string;
     observacion?: string;
     observacion2?: string;
-    idTipoCliente?: string;
+    tipoCliente?: string;
     rucCliente?: string;
     cliente?: string;
     departamento?: string;
@@ -53,7 +53,7 @@ export interface TblOrdenProduccion {
     total: string;
     observacion?: string;
     observacion2?: string;
-    idTipoCliente: string;
+    tipoCliente: string;
     rucCliente?: string;
     cliente?: string;
     departamento?: string;

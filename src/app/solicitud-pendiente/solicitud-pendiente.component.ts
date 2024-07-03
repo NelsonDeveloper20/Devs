@@ -162,7 +162,7 @@ export class SolicitudPendienteComponent implements OnInit {
       CodigoSisgeco: this.selectedGrupo ? this.selectedGrupo : '--', 
       RucCliente: this.selectedRuc ? this.selectedRuc : '--', 
       IdProyecto: this.selectedProyecto ? this.selectedProyecto.id : '--',
-      IdTipoCliente: this.selectedTipoCliente ? this.selectedTipoCliente.id : '--',
+      TipoCliente: this.selectedTipoCliente ? this.selectedTipoCliente.id : '--',
     };    
     this.spinner.show();
     this.dataSource = new MatTableDataSource<any>();
