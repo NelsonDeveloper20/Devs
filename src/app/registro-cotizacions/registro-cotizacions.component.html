@@ -245,7 +245,7 @@
 								<thead class="sticky-top">
 									<tr> 
 										<th class="align-middle">Central</th>
-										<th class="align-middle pr-7">Indice Agrupacion</th>
+										<th class="align-middle pr-7">Indice Ambiente</th>
 										<th class="align-middle minw200">Index</th>
 										<th class="align-middle minw200">ID Producto</th>
 										<th class="align-middle">Nombre Producto</th>
@@ -260,14 +260,14 @@
 								</thead>
 								<tbody id="orders"> 
 									<tr *ngFor="let itemproducto of Productos; let i = index " class="btn-reveal-trigger">
-                                        <td class="py-2">
+                                        <td class="py-2"> 
                                           <mat-checkbox *ngIf="itemproducto.pase !== 'PASDIRECCT' && itemproducto.id!=='' "
-                                          [disabled]="itemproducto.estadoOp !== '1' || !Orden.id"
+                                          [disabled]="itemproducto.estadoOp !== '2' || !Orden.id"
                                           (change)="AplicarCentral(itemproducto.id,$event)"
                                           [checked]="itemproducto.central === 'SI'">
                                         </mat-checkbox>
                                         </td>
-                                        <td class="py-2">{{itemproducto.indiceAgrupacion}}</td>
+                                        <td class="py-2" style="text-align: center;">{{itemproducto.indiceAgrupacion}}</td>
                                         <td class="py-2">{{itemproducto.indexDetalle}}</td>
                                         <td class="py-2">{{ itemproducto.codigoProducto }}</td>
                                         <td class="py-2">{{ itemproducto.nombreProducto }}</td>

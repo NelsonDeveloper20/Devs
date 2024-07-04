@@ -45,7 +45,7 @@
         <input class="form-control" type="text"  id="PrecioInc" name="PrecioInc" readonly style="display: none;"> 
         <input class="form-control" type="text"  id="Igv" name="Igv" readonly style="display: none;"> 
         <input class="form-control" type="text"  id="Lote" name="Lote" readonly style="display: none;">  
-        <input class="form-control" type="text"  id="Index" name="IndexDetalle" readonly style="display: none;">  
+        <!--<input class="form-control" type="text"  id="Index" name="IndexDetalle" readonly style="display: none;">  -->
        
         <div class="form-group col-lg-3">
            <label>Código Producto </label>
@@ -65,20 +65,6 @@
            <input class="form-control" type="text" readonly id="cantidad" name="Cantidad">
        </div>				                    	
        
-       <div class="form-group col-lg-3">
-           <label>Indice Agrupado </label>
-           <select class="form-control" id="indice_agrupacion" name="IndiceAgrupacion"
-           (change)="changeIndiceAgrupacion($event)" >               
-             <option *ngFor="let opcion of CboIndiceAgrupacion" [value]="opcion.indice">{{ opcion.indice }}</option>
-           </select>
-       </div>  
-       <div class="form-group col-lg-3">
-           <label>Ambiente</label>      
-           <input class="form-control" type="text" readonly id="IdTbl_Ambiente" name="IdTbl_Ambiente" style="display: none;">
-           <select class="form-control" id="detalle_ambiente" name="Ambiente" disabled >              
-            <option *ngFor="let opcion of CboAmbiente" [value]="opcion.nombre">{{ opcion.nombre }}</option>
-           </select>
-       </div> 
 
         <div class="form-group col-lg-3">
            <label>Fecha Producción </label>
@@ -97,6 +83,20 @@
            </select>
        </div>  
 
+       <div class="form-group col-lg-3">
+        <label>Indice Agrupado </label>
+        <select class="form-control" id="indice_agrupacion" name="IndiceAgrupacion"
+        (change)="changeIndiceAgrupacion($event)" >               
+          <option *ngFor="let opcion of CboIndiceAgrupacion" [value]="opcion.indice">{{ opcion.indice }}</option>
+        </select>
+    </div>  
+    <div class="form-group col-lg-3">
+        <label>Ambiente</label>      
+        <input class="form-control" type="text" readonly id="IdTbl_Ambiente" name="IdTbl_Ambiente" style="display: none;">
+        <select class="form-control" id="detalle_ambiente" name="Ambiente" disabled >              
+         <option *ngFor="let opcion of CboAmbiente" [value]="opcion.nombre">{{ opcion.nombre }}</option>
+        </select>
+    </div> 
         <div class="form-group col-md-4">
            <label>Nota </label>
            <textarea  placeholder="Ingrese Notas del Producto"  class="form-control" id="nota" name="Nota"></textarea>

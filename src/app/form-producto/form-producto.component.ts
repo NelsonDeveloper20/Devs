@@ -3,6 +3,8 @@ import { ObjConfigs } from '../configuration';
 import { ProductoService } from '../services/productoservice';
 import { NgxSpinnerService } from 'ngx-spinner'; 
 import { DatePipe } from '@angular/common';
+import { Toaster } from 'ngx-toast-notifications';
+import Swal from 'sweetalert2';
 declare var $: any; // Declara la variable $ para usar jQuery
 export interface IAgregarUsuarioRequest {
   nombre?:string;
@@ -56,6 +58,7 @@ export class FormProductoComponent implements OnInit {
   TipoProducto:string=""; 
   constructor(private datePipe: DatePipe,
     private spinner: NgxSpinnerService,
+    private toaster: Toaster,
     private _productoService: ProductoService,private cdr: ChangeDetectorRef
   
   ) {
@@ -159,7 +162,7 @@ console.log("entra");
            
           switch (attributeName) {
           //::::::::::::::::::::::::::::::::::::...COMBOS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-case "IndexDetalle": (element as HTMLSelectElement).value = element.value = values.indexDetalle ? values.indexDetalle : "0";  break;
+//case "IndexDetalle": (element as HTMLSelectElement).value = element.value = values.indexDetalle ? values.indexDetalle : "0";  break;
 case "IndiceAgrupacion": (element as HTMLSelectElement).value =element.value = values.indiceAgrupacion ? values.indiceAgrupacion : "0";  break;
 case "IdTbl_Ambiente": (element as HTMLSelectElement).value = values.idTbl_Ambiente;  break;
 
@@ -545,26 +548,95 @@ CboAmbiente=[{id:"--Seleccione--",indice:0,nombre:"--Seleccione--"}];listarCboAm
     });
   });
 }
+formatDate(dateString: string): string {
+  return this.datePipe.transform(dateString, 'yyyy-MM-dd');
+}
+showAlert(mensaje:any) { 
+  /*Swal.fire({
+    title: 'Advertencia',
+    text: mensaje,
+    icon: 'warning',
+    confirmButtonText: 'Cerrar'
+  });*/
+  Swal.fire({
+    title: 'Advertencia',
+    html: mensaje,
+    icon: 'warning',
+    confirmButtonText: 'Cerrar'
+  });
+}
 changeIndiceAgrupacion(event: any): void {
+  console.log(this.TblAmbiente);
   const value = event.target.value; 
   const _ambiente = this.TblAmbiente.find(item => item.indice == value);  
   const IdTbl_Ambiente = document.getElementById("IdTbl_Ambiente") as HTMLInputElement;
   const detalle_ambiente = document.getElementById("detalle_ambiente") as HTMLSelectElement;
 
-  if (_ambiente) {
-    if (IdTbl_Ambiente) {
-      IdTbl_Ambiente.value = _ambiente.id.toString();
+  const indice_agrupacion = document.getElementById("indice_agrupacion") as HTMLSelectElement;
+  const fecha_produccion = document.getElementById("fecha_produccion") as HTMLInputElement;
+  const turno = document.getElementById("turno") as HTMLSelectElement;
+  console.log(fecha_produccion.value);
+  console.log(turno.value);
+  console.log("------END SELECCIONADO------");
+  if(!fecha_produccion.value || !turno.value.replace("--Seleccione--","")){//si ninguno no esta seleccionado
+
+    if (indice_agrupacion) {
+      indice_agrupacion.value = "0";
+    } 
+    this.showAlert("Primero debe seleccionar <b>fecha producción</b> y <b>turno</b>");
+    return;
+  }
+  if(_ambiente.stock>0){
+ 
+    if(_ambiente.turno && _ambiente.fechaProduccion){      
+    //YA ESTA ASGINADO A OTRO GRUPO
+
+    
+    console.log(_ambiente.fechaProduccion);
+    console.log(_ambiente.turno);
+    console.log("------END AMBIENTE------");
+    //ENDS
+     
+        var fechaAmbienteGrupo = _ambiente.fechaProduccion; 
+        fechaAmbienteGrupo = this.formatDate(fechaAmbienteGrupo);  
+        console.log("fecha formateada");
+        console.log(fechaAmbienteGrupo);
+
+        if(fecha_produccion.value==fechaAmbienteGrupo && turno.value==_ambiente.turno){
+
+        }else{  
+          if (indice_agrupacion) {
+            indice_agrupacion.value = "0";
+          } 
+          this.showAlert(`El índice <b>${value}</b> ya está asociada a otro grupo con fecha Prod: <b>${fechaAmbienteGrupo}</b> y turno: <b>${_ambiente.turno}</b>`);
+          return;
+        } 
     }
-    if (detalle_ambiente) { 
-      detalle_ambiente.value = _ambiente.ambiente;
+    
+
+    if (_ambiente) {
+      if (IdTbl_Ambiente) {
+        IdTbl_Ambiente.value = _ambiente.id.toString();
+      }
+      if (detalle_ambiente) { 
+        detalle_ambiente.value = _ambiente.ambiente;
+      }
+    } else {
+      if (IdTbl_Ambiente) {
+        IdTbl_Ambiente.value = "";
+      }
+      if (detalle_ambiente) {
+        detalle_ambiente.value = "";
+      }
     }
-  } else {
-    if (IdTbl_Ambiente) {
-      IdTbl_Ambiente.value = "";
-    }
-    if (detalle_ambiente) {
-      detalle_ambiente.value = "";
-    }
+
+
+  }else{
+    //NO HAY STOCK     
+    if (indice_agrupacion) {
+      indice_agrupacion.value = "0";
+    } 
+    this.showAlert(`La cantidad del producto ha alcanzado su <b>límite</b> para el índice seleccionado <b>${value}</b>.`);
   }
 }
 

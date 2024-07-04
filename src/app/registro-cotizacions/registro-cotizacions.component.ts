@@ -271,7 +271,17 @@ export class RegistroCotizacionsComponent implements OnInit {
           }
           this.spinner.hide();
         },
-        () => {
+        (error) => {
+          console.log(error);
+          this.Orden={};
+          this.toaster.open({
+            text: "Ocurrio un error en el servidor de datos",
+            caption: 'Mensaje',
+            type: 'warning',
+            position: 'bottom-right',
+            //duration: 4000
+          });
+
           this.spinner.hide();
         }
       );
@@ -586,6 +596,11 @@ AgregarAmbiente() {
         this.itemCopiado.precioInc=producto.precioInc;
         this.itemCopiado.igv=producto.igv;
         this.itemCopiado.lote=producto.lote; 
+        this.itemCopiado.fechaProduccion=""; 
+        this.itemCopiado.turno="";
+        this.itemCopiado.indiceAgrupacion="";
+        
+
         producto=this.itemCopiado;
         this.itemCopiado=null;
 
@@ -619,6 +634,7 @@ AgregarAmbiente() {
       next: data => {   
        if (data) {
           this.listarProductosSisgecoAndDcBlinds();
+          this.listarAmbientes(this.selectedState.numero);
       } 
     },
     error: error => { 
@@ -654,6 +670,7 @@ AgregarAmbiente() {
       next: data => {   
        if (data) {
           this.listarProductosSisgecoAndDcBlinds();
+          this.listarAmbientes(this.selectedState.numero);
       } 
     },
     error: error => { 
