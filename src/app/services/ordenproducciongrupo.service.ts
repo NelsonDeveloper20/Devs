@@ -36,7 +36,7 @@ export class OrdenproduccionGrupoService {
   ListatarProductosDetallePorGrupo(grupo:any): Observable<any> {
     return this.http.get<any>(`${this.urlBase}DetalleOpgrupo/ListarProductosPorGrupo?grupo=`+grupo);
   }
-  AplicarCentral(id :any,valor: any): Observable<IApiResponse> { 
-    return this.http.post<IApiResponse>(this.urlBase + 'DetalleOpgrupo/AplicarCentral?id=' + id+"&valor="+valor,{});
+  AplicarCentral(cotizacionGrupo:any,id :any,valor: any): Observable<IApiResponse> { 
+    return this.http.post<IApiResponse>(this.urlBase + 'DetalleOpgrupo/AplicarCentral?cotizacionGrupo='+cotizacionGrupo+'&id=' + id+"&valor="+valor,{});
   }
 }

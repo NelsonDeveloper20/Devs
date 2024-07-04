@@ -146,72 +146,87 @@ export class RegistroCotizacionsComponent implements OnInit {
     return 0;
   }
 
-  AplicarCentral(id: any, event: any) {
+  AplicarCentral(itemproducto: any, event: any) {
     let valor = "";
-    if (event.checked == true) {
+    if (event.checked) {
       valor = "SI";
     } else {
       valor = "NO";
-    } 
+    }
+    
     this.spinner.show();
-    this.ordenproduccionGrupoService.AplicarCentral(id,valor)
+    
+    this.ordenproduccionGrupoService.AplicarCentral(itemproducto.cotizacionGrupo, itemproducto.id, valor)
       .subscribe({
         next: response => {
           this.spinner.hide();
-          if (response.status == 200) { 
-                const respuesta = response.json.respuesta;
-                if(respuesta=="OK"){
-
-              /*  Swal.fire({
-                title: 'Mensaje',
-                text: 'Operacion realizada correctamente',
-                icon: 'success',
-                confirmButtonText: 'Aceptar',
-                allowOutsideClick: false
-                }); */
-               
-                let artcl: IApiResponse = JSON.parse(JSON.stringify(response));
+          
+          if (response.status === 200) {
+            const respuesta = response.json.respuesta;
+            const respuestacentral = response.json.central;
+            itemproducto.central = respuestacentral;
+            
+            switch (respuesta) {
+              case "OK":
                 this.toaster.open({
-                  text: "Ambiente eliminado",
+                  text: "Central Aplicado",
                   caption: 'Mensaje',
                   type: 'success',
                   position: 'bottom-right',
-                  //duration: 4000
-                });     
-                }else{
-                  this.toaster.open({
-                    text: "No se puede aplicar",
-                    caption: 'Mensaje',
-                    type: 'danger',
-                    // duration: 994000
-                  }); 
-
-                }    
-                              
+                  duration:3000
+                });
+                break;
                 
-            }else{
-              this.toaster.open({
-                text: "Ocurrio un error al enviar",
-                caption: 'Mensaje',
-                type: 'danger',
-                // duration: 994000
-              }); 
+              case "Se ha quitado el central":
+                this.toaster.open({
+                  text: "Se ha quitado el central",
+                  caption: 'Mensaje',
+                  type: 'success',
+                  duration:3000
+                });
+                break;
+                
+              default:
+                this.toaster.open({
+                  text: respuesta,
+                  caption: 'Mensaje',
+                  type: 'danger',
+                  duration:3000
+                });
+                break;
             }
+            
+            // Actualizar el estado del checkbox basado en la respuesta del API
+            event.source.checked = respuestacentral === 'SI';
+          } else {
+            // Revertir el estado del checkbox en caso de error
+            event.source.checked = !event.checked;
+            
+            this.toaster.open({
+              text: "Ocurrió un error al enviar",
+              caption: 'Mensaje',
+              type: 'danger',
+              duration:3000
+            });
+          }
         },
         error: error => {
           this.spinner.hide();
-          var errorMessage = error.message;
+          
+          // Revertir el estado del checkbox en caso de error
+          event.source.checked = !event.checked;
+          
           console.error('There was an error!', error);
           this.toaster.open({
-            text: errorMessage,
-            caption: 'Ocurrio un error',
+            text: error.message,
+            caption: 'Ocurrió un error',
             type: 'danger',
-            // duration: 994000
+            duration:3000
           });
         }
       });
-
   }
+  
  
   listProyecto:any[]=[];
   ListarProyecto(){

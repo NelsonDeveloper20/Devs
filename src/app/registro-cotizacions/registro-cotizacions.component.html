@@ -263,7 +263,7 @@
                                         <td class="py-2"> 
                                           <mat-checkbox *ngIf="itemproducto.pase !== 'PASDIRECCT' && itemproducto.id!=='' "
                                           [disabled]="itemproducto.estadoOp !== '2' || !Orden.id"
-                                          (change)="AplicarCentral(itemproducto.id,$event)"
+                                          (change)="AplicarCentral(itemproducto,$event)"
                                           [checked]="itemproducto.central === 'SI'">
                                         </mat-checkbox>
                                         </td>
