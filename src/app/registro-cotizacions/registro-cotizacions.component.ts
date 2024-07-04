@@ -475,7 +475,16 @@ AgregarAmbiente() {
       }); 
       return; // Detener la ejecución del método si algún campo está vacío
   }
-
+  if (Number.parseInt(this.indice) < 1 || Number.parseInt(this.numProd) < 1) { 
+    this.toaster.open({
+      text: "Evite ingresar numeros negativos",
+      caption: 'Mensaje',
+      type: 'warning',
+      position: 'top-right',
+      //duration: 4000
+    }); 
+    return;
+  }
   // Verificar si el índice ya existe en el arreglo
   const indiceExistente = this.TblAmbiente.some(item => item.indice === this.indice);
   if (indiceExistente) {
@@ -532,47 +541,62 @@ AgregarAmbiente() {
   // Limpiar los campos después de agregar el ambiente
 
 }
-  eliminarAmbiente(indice: any) {
-  //this.TblAmbiente.splice(index, 1);
-  this.spinner.show();
-  this._OrdenService.EliminarAmbiente(indice)
-    .subscribe({
-      next: data => {
-        if (data.status == 200) {
-          let artcl: IApiResponse = JSON.parse(JSON.stringify(data));
-          this.toaster.open({
-            text: "Ambiente eliminado",
-            caption: 'Mensaje',
-            type: 'success',
-            position: 'bottom-right',
-            //duration: 4000
-          });          
-          this.listarAmbientes(this.selectedState.numero);
+eliminarAmbiente(indice: number) {
+  Swal.fire({
+    title: 'Mensaje',
+    text: '¿Desea eliminar el índice?',
+    icon: 'question',
+    showCancelButton: true, // Habilita el botón de cancelación
+    confirmButtonText: 'Sí, Eliminar', // Texto del botón de confirmación
+    cancelButtonText: 'Cancelar', // Texto del botón de cancelación
+    allowOutsideClick: false
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.spinner.show();
+
+      this._OrdenService.EliminarAmbiente(indice).subscribe({
+        next: data => {
           this.spinner.hide();
-        } else {
+
+          if (data.status == 200) {
+            this.toaster.open({
+              text: "Ambiente eliminado",
+              caption: 'Mensaje',
+              type: 'success',
+              position: 'bottom-right',
+              duration: 3000 // O duración deseada
+            });
+
+            this.listarAmbientes(this.selectedState.numero);
+          } else {
+            this.toaster.open({
+              text: "Ocurrió un error",
+              caption: 'Mensaje',
+              type: 'warning',
+              position: 'bottom-right',
+              duration: 3000 // O duración deseada
+            });
+          }
+        },
+        error: error => {
           this.spinner.hide();
+
+          const errorMessage = error.message || 'Ocurrió un error desconocido';
+          console.error('There was an error!', error);
+
           this.toaster.open({
-            text: "Ocurrio un error",
-            caption: 'Mensaje',
-            type: 'warning',
+            text: errorMessage,
+            caption: 'Ocurrió un error',
+            type: 'danger',
             position: 'bottom-right',
-            //duration: 4000
+            duration: 3000 // O duración deseada
           });
         }
-      },
-      error: error => {
-        this.spinner.hide();
-        var errorMessage = error.message;
-        console.error('There was an error!', error);
-        this.toaster.open({
-          text: errorMessage,
-          caption: 'Ocurrio un error',
-          type: 'danger',
-          // duration: 994000
-        });
-      }
-    });
-  }
+      });
+    }
+  });
+}
+
   listarAmbientes(numerocotizacion:any){ 
    this.spinner.show();
    this._OrdenService

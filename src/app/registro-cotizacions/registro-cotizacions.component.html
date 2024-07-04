@@ -165,15 +165,15 @@
                               <div class="row">
                               <div class="col-lg-4 mb-3">
                                   <label for="indice">Indice</label>
-                                  <input type="number" class="form-control" id="indice" placeholder="0" required [(ngModel)]="indice" name="indice" />
+                                  <input type="number" class="form-control" id="indice" placeholder="0" min="0" required [(ngModel)]="indice" name="indice" />
                               </div>
                               <div class="col-lg-4 mb-3">
                                   <label for="ambiente">Ambiente</label>
-                                  <input type="text" class="form-control" id="ambiente" placeholder="Ejemplo.." required [(ngModel)]="ambiente" name="ambiente" />
+                                  <input type="text" class="form-control" id="ambiente" placeholder="Ejemplo.." min="0" required [(ngModel)]="ambiente" name="ambiente" />
                               </div>
                               <div class="col-lg-4 mb-3">
                                   <label for="numProd">Nº Prod</label>
-                                  <input type="number" class="form-control" id="numProd" placeholder="0" required [(ngModel)]="numProd" name="numProd" />
+                                  <input type="number" class="form-control" id="numProd" placeholder="0" required min="0" [(ngModel)]="numProd" name="numProd" />
                               </div>
                               <div class="col-lg-4">
                                   <button mat-flat-button color="primary" class="btn btn-primary" (click)="AgregarAmbiente()" 
@@ -203,7 +203,9 @@
                                                           <td class="py-2">{{item.ambiente}}</td>
                                                           <td class="py-2">{{item.cantidadProducto}}</td>
                                                           <td class="py-2">
-                                                              <button mat-mini-fab color="primary" aria-label="Example icon button with a menu icon" (click)="eliminarAmbiente(item.id)">
+                                                              <button mat-mini-fab color="primary" aria-label="Example icon button with a menu icon"
+                                                              [disabled]="item.turno"
+                                                               (click)="eliminarAmbiente(item.id)">
                                                                   <mat-icon>delete</mat-icon>
                                                               </button>
                                                           </td>

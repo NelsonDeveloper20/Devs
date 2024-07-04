@@ -329,7 +329,7 @@ mostrarVistaPrevia(file: any) {
         'COTIZACION',
         'GRUPO',
         'NOMBRE_PRODUCTO',
-        'DESCRIP_COMPONENTE',
+        'COMPONENTE',
         'COD_COMPONENTE',
         'DESCRIPCION',
         'COLOR',
@@ -796,6 +796,16 @@ guardarComponentesExplocion() {
       counter++;
      }    
 
+     if (Number.parseInt(item.merma) < 1 || Number.parseInt(item.cantidadUtilizada) < 1) { 
+      counter++;
+      this.toaster.open({
+        text: "Evite ingresar numeros negativos en merma y cantidad",
+        caption: 'Mensaje',
+        type: 'warning',
+        position: 'top-right',
+        duration: 3000
+      });  
+    }
   });
   if(counter==0){
     this.GuardarExplocionMantenimiento();
@@ -807,6 +817,9 @@ guardarComponentesExplocion() {
       // duration: 994000
     });
   }
+}
+CancelarMantenimiento(){
+  this.ListMantenimeintoExplocion=[];
 }
 GuardarExplocionMantenimiento(){ 
   if(this.ListMantenimeintoExplocion.length === 0){

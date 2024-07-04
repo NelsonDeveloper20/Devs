@@ -365,6 +365,9 @@
                   <div class="col-lg-2"><br>
                     <button mat-flat-button color="primary" class="btn btn-primary-azul" style="background: #1266F1;"  *ngIf="ListMantenimeintoExplocion.length>0" (click)="guardarComponentesExplocion()">Modificar Exploción</button>
                 </div> 
+                <div class="col-lg-2"><br>
+                  <button mat-flat-button color="primary" class="btn btn-primary"    *ngIf="ListMantenimeintoExplocion.length>0" (click)="CancelarMantenimiento()">Cancelar</button>
+              </div> 
                   </div>
                   <div class="table-responsive">
                     <section class="example-containerss" tabindex="0">
@@ -429,11 +432,11 @@
                             <td>{{ componente.color }}</td>
                             <td>{{ componente.unidad }}</td>
                             <td>
-                              <input type="number" class="form-control" [(ngModel)]="componente.cantidad"
+                              <input type="number" class="form-control"  min="0" [(ngModel)]="componente.cantidad"
                                 placeholder="Cantidad" />
                             </td>
                             <td>
-                              <input type="number" class="form-control" [(ngModel)]="componente.merma" placeholder="Merma" />
+                              <input type="number" class="form-control"  min="0" [(ngModel)]="componente.merma" placeholder="Merma" />
                             </td>
                             <td  style="    min-width: 118px;">
                               <button class="btn btn-primary tp-btn-light sharp" title="Clonar" (click)="clonarComponenteMantenimiento(componente)"

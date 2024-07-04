@@ -87,6 +87,7 @@ export class MantenimientoPerfilesComponent implements OnInit {
       }); 
       this.Cancelar();
       this.ListPerfil();
+      this.ObtenerPerfiles();
     }
         },
         error: error => {
@@ -169,6 +170,7 @@ Swal.fire(
         //this.ListPerfil(); 
         //OK
   
+        this.ObtenerPerfiles();
       } 
     },
     error: error => { 

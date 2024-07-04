@@ -187,7 +187,10 @@ break;
 case "Mando":(element as HTMLSelectElement).value = element.value = values.mando ? values.mando : "--Seleccione--" ;  break;
 case "TipoMecanismo": (element as HTMLSelectElement).value = element.value = values.tipoMecanismo ? values.tipoMecanismo : "--Seleccione--";  break;
 case "ModeloMecanismo": (element as HTMLSelectElement).value = element.value = values.modeloMecanismo ? values.modeloMecanismo : "--Seleccione--";  break;
-case "TipoCadena": (element as HTMLSelectElement).value = element.value = values.tipoCadena ? values.tipoCadena : "--Seleccione--";  break;
+case "TipoCadena":
+console.log("TIPO DE CADENA")  ;
+console.log(values.tipoCadena);
+                     (element as HTMLSelectElement).value = element.value = values.tipoCadena ? values.tipoCadena : "--Seleccione--";  break;
 case "CodigoCadena": (element as HTMLSelectElement).value = element.value = values.codigoCadena ? values.codigoCadena : "--Seleccione--";  break;
 case "TipoRiel": (element as HTMLSelectElement).value = element.value = values.tipoRiel ? values.tipoRiel : "0";  break;
 case "TipoInstalacion": (element as HTMLSelectElement).value = element.value = values.tipoInstalacion ? values.tipoInstalacion : "--Seleccione--";  break;
@@ -717,7 +720,7 @@ CboAccionamiento=[{id:0,nombre:"--Seleccione--"}];listarCboAccionamiento(tipoPro
 //region ACCIONAMIENTO
 codProd: string = '';
 nomProducto: string = '';
-existeMotor(event: any, tipo: any) {
+async existeMotor(event: any, tipo: any) {
   let valMotor = "";
   if (tipo == "html") {
     valMotor = event.target.value;
@@ -826,9 +829,9 @@ existeMotor(event: any, tipo: any) {
       }
     }
   }
-  this.listarCboTipoCadena();
+ //await this.listarCboTipoCadena(); 
   if(this.JsonItemHijo.producto.id!="" && this.JsonItemHijo.producto.tipoCadena){
-  const element = document.getElementById("tipo_cadena") as HTMLInputElement | HTMLSelectElement;
+  const element = document.getElementById("tipo_cadena") as  HTMLSelectElement;
     if (element) {  
       element.value = this.JsonItemHijo.producto.tipoCadena;
     }
@@ -952,11 +955,11 @@ CboModeloMecanismo=[{id:0,nombre:"--Seleccione--",idTipoMecanismo:"0"}];listarCb
   var result=this.CboModeloMecanismo.filter(elem=>{elem.idTipoMecanismo==valorSeleccionado});
   this.CboModeloMecanismo=result;
 }
-CboTipoCadena=[{id:0,nombre:"--Seleccione--"}];listarCboTipoCadena(){  
+CboTipoCadena=[{id:"0",nombre:"--Seleccione--"}];listarCboTipoCadena(){  
   this.CboTipoCadena=[
-    {id:0,nombre:"--Seleccione--"},
-    {id:1,nombre:"Plastico"},
-    {id:2,nombre:"Metal"}
+    {id:"",nombre:"--Seleccione--"},
+    {id:"Plastico",nombre:"Plastico"},
+    {id:"Metal",nombre:"Metal"}
   ]; 
 }
 //GUARDAR CODIGO Y NOMBRE
