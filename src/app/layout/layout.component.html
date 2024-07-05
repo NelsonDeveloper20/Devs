@@ -252,7 +252,8 @@ color: black !important;margin: 8px;">
             <tbody> 
                 <tr>
                     <td style="border: none !important;">   
-                        <img style="width:80px;" [src]="'https://barcode.tec-it.com/barcode.ashx?data=' + DatosJson2[0]?.cotizacionGrupo + '&code=Code128&dpi=96&dataseparator='">
+                        <!--<img style="width:80px;" [src]="generarCodigoBarras()">-->
+                        <img id="barcodeImage" style="width: 114px; height: 50px;">
                     </td>
                     <td colspan="2" style="border: none !important;text-align: end;"> <h3  >Orden de Produccion N: {{DatosJson2[0]?.cotizacionGrupo}}</h3></td>                 
                     <td style="border: none !important;">

@@ -15,6 +15,7 @@ import { ComunicacionService } from '../shared/comunicacion.service';
 import { OrdenproduccionGrupoService } from '../services/ordenproducciongrupo.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ObjConfigsLayout } from '../configuration_layout';
+import * as JsBarcode from 'jsbarcode';
 interface ConfiguracionLayout {
   [key: string]: {};
 }
@@ -82,7 +83,7 @@ export class LayoutComponent implements OnInit {
       }
     );
   }
-
+   
   generarPDF2() {
     console.log("ejecute");
     const options = {
@@ -105,14 +106,22 @@ export class LayoutComponent implements OnInit {
         });
         const url = URL.createObjectURL(blob);
         window.open(url);
-      });
-    /*
-    html2pdf()
-      .from(contenido)
-      .set(options)
-      .save();*/
-  }
+      }); 
+  } 
+  generarCodigoBarras() {
+    const canvas = document.createElement('canvas');
+    JsBarcode(canvas, this.DatosJson2[0]?.cotizacionGrupo, {
+      format: 'CODE128',
+      displayValue: false,
+    });
+    const barcodeDataUrl = canvas.toDataURL('image/png');
 
+    // Asignar directamente al elemento <img> existente
+    const imgElement = document.getElementById('barcodeImage') as HTMLImageElement;
+    if (imgElement) {
+      imgElement.src = barcodeDataUrl;
+    }
+  }
   generatePDF(contenido: HTMLElement, options: any) {
     html2pdf()
       .from(contenido)
@@ -146,7 +155,7 @@ export class LayoutComponent implements OnInit {
 
   @ViewChild('layout') contenthtml: ElementRef;
   GenerarLayout() {  
-
+    this.generarCodigoBarras();
     this.spinner.show();
 // Obtén el primer elemento del array, si es necesario
 const primerElemento = this.DatosJson2[0];
@@ -659,7 +668,7 @@ for (let i = 0; i < this.cantSubArray; i++) {
         prods[i].familia + prods[i].subFamilia == 'PRTRF'
       ) {
         //RIEL MOTORIZADO
-        dataDisp = prods[i].L_baston;
+        dataDisp = prods[i].l_baston;
         if (dataDisp == '1') {
           dataDisp = 'SI';
         } else if (dataDisp == '2') {
@@ -822,7 +831,7 @@ for (let i = 0; i < this.cantSubArray; i++) {
               "<td class=caida_" +
               num_table +
               " >" +
-              prods[i].Tipo_Caida +
+              prods[i].tipo_Caida +
               "</td>";
           }
         } else {
@@ -1030,165 +1039,7 @@ for (let i = 0; i < this.cantSubArray; i++) {
     html += `<tr><td class=tela_${num_table}><b>Comentario:</b></td><td colspan='7'></td></tr>`;
     html += `</tbody></table>${htmlfechas}<label>OBSERVACIONES: ${htmlobs}</label></div>`;
     return html;
-    /*
-    var htmlfechas = '';
-    var turno_l = '';
-    try {
-      turno_l = this.arraySubArray[0][0].turno.toUpperCase();
-    } catch (err) {}
-    htmlfechas +=
-      "<div style='float:right'><label>" +
-      "Fecha Entrega: &nbsp;&nbsp;&nbsp;&nbsp;<b>" +
-      this.arraySubArray[0][0].fechaEntrega +
-      "</b> &nbsp;&nbsp;" +
-      "Turno : &nbsp;&nbsp;&nbsp;<b>" +
-      turno_l +
-      "</b></div>";
-
-    var notaprod = '';
-    try {
-      notaprod = prods[num_table].nota;
-    } catch (err) {}
-    var htmlobs = '';
-    htmlobs +=
-      "<label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; " +
-      notaprod +
-      " &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label></br>";
-    htmlobs +=
-      "<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label></br></br>";
-
-    var htmlfooter = '';
-    html += "<div><table class='table-layout laypdf'><tbody>";
-    html +=
-      "<tr><td style='border: 0px dotted white !important;'></td>" +
-      html_renderFigura +
-      "</tr><tr><td></td></tr>";
-    html +=
-      "<tr class='bordertable'><td class='cabecera'>Mecanismo</td>" +
-      html_tipo_mecanismo +
-      "</tr>";
-    html +=
-      "<tr class='bordertable'><td>Ambiente</td>" + html_Ambiente + "</tr>";
-
-    if (
-      cod_producto_m == 'PRTRH' ||
-      cod_producto_m == 'PRTRF' ||
-      cod_producto_m == 'PRTRM'
-    ) {
-      html += "<tr class='bordertable'><td>Riel</td>" + html_riel + "</tr>";
-    }
-
-    html += "<tr class='bordertable'><td>Modelo</td>" + html_modelo + "</tr>";
-    html +=
-      "<tr><td class=color_" +
-      num_table +
-      " class='bordertable'>Ancho</td>" +
-      html_ancho +
-      "</tr>";
-    html +=
-      "<tr><td class=color_" +
-      num_table +
-      " class='bordertable'>Altura</td>" +
-      html_alto +
-      "</tr>";
-    html +=
-      "<tr><td class=color_" +
-      num_table +
-      " class='bordertable'>Tip. Tubo</td>" +
-      html_tipotubo +
-      "</tr>";
-    if (
-      cod_producto_m == 'PRTPJ' ||
-      cod_producto_m == 'PRTRH' ||
-      cod_producto_m == 'PRTRF' ||
-      cod_producto_m == 'PRTRM' ||
-      cod_producto_m == 'PRTTO' ||
-      cod_producto_m == 'PRTLU'
-    ) {
-      //panel japones
-      html +=
-        "<tr><td class='bordertable tipo-cadena_" +
-        num_table +
-        "'>Cantidad</td>" +
-        html_tipo_cadena +
-        "</tr>";
-    } else {
-      html +=
-        "<tr><td class='bordertable tipo-cadena_" +
-        num_table +
-        "'>Tip.Cadena</td>" +
-        html_tipo_cadena +
-        "</tr>";
-    }
-
-    if (cod_producto_m == 'PRTCS') {
-      html +=
-        "<tr><td class='bordertable'>Via Recogida</td>" + html_caida + "</tr>";
-    } else if (cod_producto_m == 'PRTPJ') {
-      html +=
-        "<tr><td class='bordertable'>Numero Via</td>" + html_caida + "</tr>";
-    } else if (cod_producto_m == 'PRTRM') {
-      html += "<tr><td class='bordertable'>Cruzeta</td>" + html_caida + "</tr>";
-    } else if (cod_producto_m == 'PRTRF' || cod_producto_m == 'PRTRH') {
-      html += "<tr><td class='bordertable'>Cruzeta</td>" + html_caida + "</tr>";
-    } else {
-      html +=
-        "<tr><td class='bordertable'>Tipo Caida</td>" + html_caida + "</tr>";
-    }
-    //tipo de caida
-    if (cod_producto_m == 'PRTRM') {
-      html += "<tr><td>Dispositivo</td>" + html_altura_cadena + "</tr>";
-    } else if (cod_producto_m == 'PRTRF' || cod_producto_m == 'PRTRH') {
-      html += "<tr><td>Lleva Baston</td>" + html_altura_cadena + "</tr>";
-    } else {
-      html += "<tr><td>Alt.Cadena</td>" + html_altura_cadena + "</tr>";
-    }
-
-    html += "<tr><td>Destino</td>" + html_Destino + "</tr>";
-    html += "<tr><td>Tipo Operación</td>" + html_TipoOperacion + "</tr>";
-
-    html +=
-      "<tr><td class=cenefa cenefa_" +
-      num_table +
-      ">Cenefa</td>" +
-      html_cenefa +
-      "</tr>";
-    html += "<tr><td>Ind.Agrupacion</td>" + html_indice_agrupacion + "</tr>";
-    html += "<tr><td>Index </td>" + html_indexdetalle + "</tr>";
-    html +=
-      "<tr><td class=cabecera tipo-riel_" +
-      num_table +
-      ">Tip.riel</td>" +
-      html_tipo_riel +
-      "</tr>";
-    html +=
-      "<tr><td class=tubo_" + num_table + " >Tubo</td>" + html_tubo + "</tr>";
-    html +=
-      "<tr><td class=tela_" + num_table + " >Tela</td>" + html_tela + "</tr>";
-    html +=
-      "<tr><td class=tela_" +
-      num_table +
-      " >Altura</td>" +
-      html_altura_medida +
-      "</tr>"; //modificar
-    html +=
-      "<tr><td class=tela_" + num_table + " >Area</td>" + html_area + "</tr>"; //modificar
-
-    html +=
-      "<tr class='bordertable'><td>Escuadra</td>" + html_escuadra + "</tr>";
-
-    html +=
-      "<tr><td class=tela_" +
-      num_table +
-      " ><b>Comentario:</b></td><td colspan='7'></td></tr>"; //modificar
-    //}
-    html +=
-      "</tbody></table>" +
-      htmlfechas +
-      "<label>OBSERVACIONES: " +
-      htmlobs +
-      "</label></div>";
-    return html;*/
+     
   }
   //ENDS
 }
