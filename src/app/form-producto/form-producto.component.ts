@@ -258,7 +258,7 @@ case "Id": (element as HTMLInputElement).value = values.id;  break;
 case "CodigoProducto":(element as HTMLInputElement).value = values.codigoProducto; break;
 case "NombreProducto":(element as HTMLInputElement).value = values.nombreProducto; break;
 case "UnidadMedida":(element as HTMLInputElement).value = values.unidadMedida; break;
-case "Cantidad":(element as HTMLInputElement).value = values.cantidad; break;
+case "Cantidad":(element as HTMLInputElement).value = parseFloat(values.cantidad.replace(',', '.')).toFixed(3); break;
 case "FechaProduccion": 
 const fechaString = values.fechaProduccion; 
 var fechaFormateada=fechaString; 
@@ -275,15 +275,15 @@ if(this.JsonItemHijo.producto.id!==""){
   (element as HTMLInputElement).value = fechaFormateada2; 
 break;
 case "Nota":(element as HTMLInputElement).value = values.nota; break;
-case "Ancho":(element as HTMLInputElement).value = values.ancho; break;
-case "Alto":(element as HTMLInputElement).value = values.alto; break;
+case "Ancho":(element as HTMLInputElement).value = parseFloat(values.ancho.replace(',', '.')).toFixed(3); break;
+case "Alto":(element as HTMLInputElement).value = parseFloat(values.alto.replace(',', '.')).toFixed(3); break;
 case "Color":(element as HTMLInputElement).value = values.color; break;
 case "Cenefa":(element as HTMLInputElement).value = values.cenefa; break;
 case "NumeroMotores":(element as HTMLInputElement).value = values.numeroMotores; break;
 case "Serie":(element as HTMLInputElement).value =values.serie; break;
 case "AlturaCadena":
   if(!values.id){
-    var alturaCadena = values.alto; 
+    const alturaCadena = parseFloat(values.alto.replace(',', '.')).toFixed(3); 
     // Lógica de cálculo
     const rptAlturaCadena = this.calcularAlturaCadena(this.TipoProducto, alturaCadena);
     console.log('Altura de Cadena:', rptAlturaCadena);
@@ -331,7 +331,9 @@ break;
       return inclusive ? value >= min && value <= max : value > min && value < max;
     }
    // Método para calcular la altura de la cadena
-  calcularAlturaCadena(keyProduct: string, alturaCadena: number): number {
+  calcularAlturaCadena(keyProduct: string, alturaCadena: any): number {
+    console.log("ALTURA RECIBIDA");
+    console.log(alturaCadena);
     let rptAlturaCadena = 0;
 
     if (keyProduct !== 'PRTRF' && keyProduct !== 'PRTRH' && keyProduct !== 'PRTRM') {
@@ -463,13 +465,13 @@ break;
 
               switch(attributeName){
                 case "Ancho":
-                var  tubo_medida=parseFloat(attributeValue) - 0.025;
+                var  tubo_medida=parseFloat(attributeValue.replace(',', '.')) - 0.025;
                 this.attributosProducto["TuboMedida"] = tubo_medida.toString();
-                var  tela_medida=parseFloat(tubo_medida.toString()) - 0.001;
+                var  tela_medida=parseFloat(tubo_medida.toString().replace(',', '.')) - 0.001;
                 this.attributosProducto["TelaMedida"] = tela_medida.toString(); 
                     break;
                 case "Alto":
-                var  altura_medida=altura_medida = parseFloat(attributeValue) + 0.20;                
+                var  altura_medida=altura_medida = parseFloat(attributeValue.replace(',', '.')) + 0.20;                
                 this.attributosProducto["AlturaMedida"] = altura_medida.toString();
                   break;
               } 
@@ -817,7 +819,7 @@ async existeMotor(event: any, tipo: any) {
     // Set height of chain calculation if applicable
     const altura_cadena = document.getElementById("altura_cadena") as HTMLInputElement;
     if (altura_cadena) {
-      let alturaCadena = this.JsonItemHijo.producto.alto;
+      let alturaCadena = parseFloat(this.JsonItemHijo.producto.alto.replace(',', '.')).toFixed(3); 
       const rptAlturaCadena = this.calcularAlturaCadena(this.TipoProducto, alturaCadena);
       if (this.TipoProducto == "PRTCV" || this.TipoProducto == "PRTPH") {
         altura_cadena.value = (rptAlturaCadena * 2).toFixed(3);
@@ -859,14 +861,10 @@ listarCboNombreTubo(familia,tipoProducto){
     (response) => {
       if (response) {  
       var data = response; 
+      console.log("CARRGANDO EL TUBO");
+      console.log(tipoProducto);
       for (var i = 0; i < data.length; i++) {
-        /*if (
-          (tipoProducto === 'PRTRS' && !['PALRS00000001', 'PALRS00000002'].includes(data[i].codigo)) ||
-          (tipoProducto === 'PRTRZ' && !['PALRS00000001', 'PALRS00000002'].includes(data[i].codigo)) ||
-          (tipoProducto === 'PRTRS' && !['PALRS00000001', 'PALRS00000002', 'PALRS00000005', 'PALRZ00000026', 'PALRZ00000011'].includes(data[i].codigo))
-        ) {
-          this.CboNombreTubo.push(data[i]);
-        }*/
+       
           for (var i = 0; i < data.length; i++) {
             if (tipoProducto === 'PRTRS') {
               if (!['PALRS00000001', 'PALRS00000002'].includes(data[i].codigo)) {
