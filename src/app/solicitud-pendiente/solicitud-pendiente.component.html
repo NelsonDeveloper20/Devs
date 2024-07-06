@@ -133,12 +133,11 @@ box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 0%), 0px 6px 10px 0px rgba(0, 0, 0, .14
 				</div> 
 				<div class="form-group col-md-2">
 					<label for="cboTipoCliente">TipoCliente</label>
-					<!--<select class="form-control" id="cboTipoCliente" name="cboTipoCliente" [(ngModel)]="tipoCliente"></select>-->
-          <!-- Tipo Cliente Combo -->
-          <mat-form-field appearance="outline" style="width: 100%;font-size: 14px;">
+					<input type="text" class="form-control" placeholder="Ingrese Razon Social" id="cboselectedTipoCliente" name="selectedTipoCliente" [(ngModel)]="selectedTipoCliente"> 
+				  <!--<mat-form-field appearance="outline" style="width: 100%;font-size: 14px;">
             <mat-select [(ngModel)]="selectedTipoCliente" placeholder="Tipo Cliente" style="width: 190px;" (openedChange)="filterTiposClientes($event)">
               <mat-select-trigger>
-                {{ selectedTipoCliente?.nombre || '---Seleccione---' }} <!-- Cambio aquí: selectedTipoCliente?.nombre -->
+                {{ selectedTipoCliente?.nombre || '---Seleccione---' }}
               </mat-select-trigger>
               <input matInput (keyup)="filterTiposClientes($event)" placeholder="Buscar" class="search-input" />
               <mat-option value="">---Seleccione---</mat-option>
@@ -146,7 +145,7 @@ box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 0%), 0px 6px 10px 0px rgba(0, 0, 0, .14
                 {{ tipoCliente.nombre }}
               </mat-option>
             </mat-select>
-          </mat-form-field>
+          </mat-form-field>-->
 				</div> 
 				<div class="form-group col-md-2">
 					<label for="txtfec_inicio_n">Fecha Inicio</label>

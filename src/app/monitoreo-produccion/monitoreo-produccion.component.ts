@@ -992,6 +992,14 @@ ListarReporteExplocion() {
 }
 
 //#endregion
+
+@ViewChild('tableRef') tableRef: ElementRef;
+exportToExcel(): void {
+  const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(this.tableRef.nativeElement);
+  const wb: XLSX.WorkBook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Tabla1');
+  XLSX.writeFile(wb, 'ReportMonitoreo.xlsx');
+}  
 }
 
 interface Componente {

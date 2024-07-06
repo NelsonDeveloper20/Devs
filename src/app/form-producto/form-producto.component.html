@@ -131,7 +131,7 @@
 
    <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['cenefa'].visible !== 0"  id="reg_cont_cenefa">
        <label>Cenefa <span *ngIf="objConfiguracionAtributos[TipoProducto]['cenefa'].required === 1"  class="requerid_css">*</span></label>
-       <input type="text" class="form-control" onkeypress="return filterFloat(event,this);" id="cenefa" name="Cenefa"  [required]="objConfiguracionAtributos[TipoProducto]['cenefa'].required === 1">
+       <input type="text" class="form-control" autocomplete="off"  onkeypress="return filterFloat(event,this);" id="cenefa" name="Cenefa"  [required]="objConfiguracionAtributos[TipoProducto]['cenefa'].required === 1">
    </div>
 
    <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['tubo'].visible !== 0"  id="reg_cont_tubo" >
@@ -230,7 +230,7 @@
 
    <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['alturaCadena'].visible !== 0"  id="reg_cont_alturaCadena">
        <label>Altura Cadena <span *ngIf="objConfiguracionAtributos[TipoProducto]['alturaCadena'].required === 1"  class="requerid_css">*</span></label>
-       <input placeholder="Ingrese Altura Cadena" type="text" class="form-control" id="altura_cadena" name="AlturaCadena"  [required]="objConfiguracionAtributos[TipoProducto]['alturaCadena'].required === 1">
+       <input placeholder="Ingrese Altura Cadena" autocomplete="off" type="number"  min="0"  class="form-control" id="altura_cadena" name="AlturaCadena"  [required]="objConfiguracionAtributos[TipoProducto]['alturaCadena'].required === 1">
    </div>
 
    <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['tipoRiel'].visible !== 0"  id="reg_cont_tipoRiel">
@@ -435,7 +435,7 @@
                     <input type="text" id="lngbox" class="form-control descript" [value]="item.Descripcion" readonly=true />
                 </td>
                 <td>
-                    <input class="form-control" type="number" [(ngModel)]="item.Cantidad" class="form-control"/> 
+                    <input class="form-control" type="number" min="0"  (blur)="onBlurCantidad(item)" [(ngModel)]="item.Cantidad" class="form-control"/> 
                 </td>
                 <td>  
       <button mat-mini-fab color="primary" (click)="deleteProduct(item)" *ngIf="item.Id !== 1">

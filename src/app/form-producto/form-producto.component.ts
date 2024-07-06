@@ -1528,4 +1528,10 @@ case "CodigoMotor":this.listarCboMotor(tipoProducto);break;
       this.TblEscuadraItems = this.TblEscuadraItems.filter(item => item.Id !== event.Id);
     }  
     //#endregion 
+
+    onBlurCantidad(item: any) {
+      if (item.Cantidad < 0) {
+        item.Cantidad = 0; // Puedes cambiar esto a '' si prefieres dejar el campo vacío
+      }
+    }
     }
