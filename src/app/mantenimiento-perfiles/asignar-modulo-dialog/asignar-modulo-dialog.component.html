@@ -41,7 +41,7 @@
     <!-- FechaAsignado Column -->
     <ng-container matColumnDef="FechaAsignado">
       <th mat-header-cell *matHeaderCellDef> Fecha Asignado </th>
-      <td mat-cell *matCellDef="let element"> {{element.fechaAsignado}} </td>
+      <td mat-cell *matCellDef="let element"> {{element.fechaAsignado | date:'dd/MM/yyyy HH:mm'}} </td>
     </ng-container>
   
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

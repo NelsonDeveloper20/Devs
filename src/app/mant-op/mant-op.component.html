@@ -144,7 +144,7 @@
 
                                     <ng-container matColumnDef="fechaCreacion">
                                         <th mat-header-cell *matHeaderCellDef sticky>Fecha Creación</th>
-                                        <td mat-cell *matCellDef="let element" class="center">{{ element.fechaCreacion }}
+                                        <td mat-cell *matCellDef="let element" class="center">{{ element.fechaCreacion  | date:'dd/MM/yyyy HH:mm'}}
                                         </td>
                                     </ng-container> 
 

@@ -198,7 +198,7 @@ for (let i = 0; i < this.cantSubArray; i++) {
         if(this.paginas==0){
           this.html += this.renderProducts(primerElemento, arraySubArray[i], i, central_si, this.comentcoun);
         }else{
-          this.html +='<div class="pagina"> <h1 style="visibility: hidden;">Página </h1>';
+          this.html +='<p style=" height: 95.67px;visibility: hidden; ">Página </p>';///* visibility: hidden; */
         this.html += this.renderProducts(primerElemento, arraySubArray[i], i, central_si, this.comentcoun);
         this.html +='</div>';
         }
@@ -981,14 +981,16 @@ for (let i = 0; i < this.cantSubArray; i++) {
         //turno_l = this.arraySubArray[0][0].turno.toUpperCase();
         turno_l = primerElemento.turno.toUpperCase();
     } catch (err) {}
-    //${this.arraySubArray[0][0].fechaEntrega}
-    htmlfechas += `<div style='float:right'><label>Fecha Entrega: &nbsp;&nbsp;&nbsp;&nbsp;<b>${primerElemento.fechaEntrega}</b> &nbsp;&nbsp;Turno : &nbsp;&nbsp;&nbsp;<b>${turno_l}</b></div>`;
+    //<div style='float:right'>
+    htmlfechas += `
+     Fecha Entrega: &nbsp;&nbsp;&nbsp;&nbsp;<b>${primerElemento.fechaEntrega}</b> &nbsp;&nbsp;Turno : &nbsp;&nbsp;&nbsp;<b>${turno_l}</b>
+   `;// </div>
     let notaprod = '';
     try {
         notaprod = prods[num_table].nota;
     } catch (err) {}
     let htmlobs = '';
-    htmlobs += `<label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${notaprod} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label></br>`;
+    htmlobs += `<label>  ${notaprod} </label></br>`;
     htmlobs += "<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label></br></br>";
     html += "<div><table class='table-layout laypdf'><tbody>";
     html += "<tr><td style='border: 0px dotted white !important;'></td>" + html_renderFigura + "</tr>";
@@ -1037,7 +1039,17 @@ for (let i = 0; i < this.cantSubArray; i++) {
     html += `<tr><td class=tela_${num_table}>Area</td>${html_area}</tr>`;
     html += `<tr class='bordertable'><td>Escuadra</td>${html_escuadra}</tr>`;
     html += `<tr><td class=tela_${num_table}><b>Comentario:</b></td><td colspan='7'></td></tr>`;
-    html += `</tbody></table>${htmlfechas}<label>OBSERVACIONES: ${htmlobs}</label></div>`;
+    html += `</tbody></table>
+    <div class='row'>
+    <div class='col-lg-10'  style='font-size: 11px;'>
+    <b>OBSERVACIONES:</b> ${htmlobs}
+    </div>
+    <div class='col-lg-2' style='font-size: 11px;'>
+    ${htmlfechas}
+    </div>
+    </div>
+    
+   `;// ${htmlfechas}<label>OBSERVACIONES: ${htmlobs}</label></div>
     return html;
      
   }

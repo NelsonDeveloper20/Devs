@@ -54,15 +54,26 @@ export class MantenimientoPerfilesComponent implements OnInit {
   
   
   Guardar() {
-    console.log(this.EdicionPerfil);
+    console.log(this.EdicionPerfil.nombre);
+    if(this.EdicionPerfil.nombre==undefined || this.EdicionPerfil.nombre==""){
+      this.toaster.open({
+        text: "Debe ingresar nombre del perfil",
+        caption: 'Mensaje',
+        type: 'warning',
+        position: 'bottom-right',
+        //duration: 4000
+      });
+      return;
+
+    }
     this.spinner.show(); 
     if(!this.EdicionPerfil.id){
     this.EdicionPerfil.id="0"
     }
-    if(!this.EdicionPerfil.nombre){
+    if(!this.EdicionPerfil || !this.EdicionPerfil.nombre){
 
       this.toaster.open({
-        text: "Debe ingresar nombre",
+        text: "Debe ingresar nombre del perfil",
         caption: 'Mensaje',
         type: 'warning',
         position: 'bottom-right',
@@ -86,8 +97,8 @@ export class MantenimientoPerfilesComponent implements OnInit {
         allowOutsideClick: false
       }); 
       this.Cancelar();
-      this.ListPerfil();
       this.ObtenerPerfiles();
+      this.EdicionPerfil={};
     }
         },
         error: error => {

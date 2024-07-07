@@ -291,10 +291,12 @@
                                           [checked]="itemproducto.central === 'SI'">
                                         </mat-checkbox>
                                         </td>
-                                        <td class="py-2" style="text-align: center;">{{itemproducto.indiceAgrupacion}}</td>
+                                        <td class="py-2" style="text-align: center;">{{itemproducto.indiceAgrupacion}}
+                                          
+                                          <span *ngIf="itemproducto.ambiente">- {{itemproducto.ambiente}}</span>
+                                        </td>
                                         <td class="py-2" nowrap>
                                           {{itemproducto.indexDetalle}}  
-                                          <span *ngIf="itemproducto.ambiente">- {{itemproducto.ambiente}}</span>
                                         </td>
                                         <td class="py-2">{{ itemproducto.codigoProducto }}</td>
                                         <td class="py-2">{{ itemproducto.nombreProducto }}</td>
