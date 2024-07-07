@@ -313,8 +313,8 @@
                             <td>{{item.proyecto}}</td> 
                             <td>{{item.tipoCliente}}</td> 
                             <td>{{item.nombreVendedor}}</td> 
-                            <td>{{item.fechaProduccion}}</td> 
-                            <td>{{item.fechaEntrega}}</td> 
+                            <td>{{item.fechaProduccion | date:'dd/MM/yyyy HH:mm'}}</td> 
+                            <td>{{item.fechaEntrega | date:'dd/MM/yyyy HH:mm'}}</td> 
                             <td>{{item.observacion}}</td> 
                             <td>{{item.estado}}</td> 
                             <td>{{item.codigo_Producto}}</td> 

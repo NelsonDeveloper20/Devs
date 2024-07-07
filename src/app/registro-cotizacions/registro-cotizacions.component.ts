@@ -84,6 +84,10 @@ export class RegistroCotizacionsComponent implements OnInit {
     }
   }
    Productos: any=[];
+   totalProductos=0; 
+   totalComponentes=0;
+   totalRegistrados=0;
+   totalPorRegistrar=0;
    listarProductosSisgecoAndDcBlinds(){  //BOTON CARGAR
     this.spinner.show();
     this._OrdenService
@@ -91,17 +95,34 @@ export class RegistroCotizacionsComponent implements OnInit {
       .subscribe(
         (response) => {
           var index_count=0;
+          this.totalProductos=0; 
+          this.totalComponentes=0;
+          this.totalRegistrados=0;
+          this.totalPorRegistrar=0;
           this.Productos=response; 
           this.Productos.forEach(item=> 
             {
-            if(item.id==""){                                         
-              /*var cod_prod=item.codigoProducto.substring(0,5);
-              if(cod_prod=='PRTRS' || cod_prod=='PRTSH'){
+              
+            if(item.id==""){   
+              this.totalPorRegistrar++;                                      
+              var cod_prod=item.codigoProducto.substring(0,3);
+              if(cod_prod=='PRT'){
                   index_count++;
-                  item.index=index_count
-                }*/
-                index_count++;
-                item.indexDetalle=index_count.toString();
+                  this.totalProductos++;
+                  item.indexDetalle=index_count.toString()
+                }else{      
+                  this.totalComponentes++;            
+                  item.indexDetalle=""
+                }
+            }else{
+              this.totalRegistrados++;
+              var cod_prod=item.codigoProducto.substring(0,3);
+              if(cod_prod!=='PRT'){
+                this.totalComponentes++;
+                 item.indexDetalle="";
+                }else{
+                  this.totalProductos++;
+                }
             }
             if(item.pase=="" && item.id!=="" && item.codigoProducto.substring(0,3)!=="PRT"){       //componentes ya guardados        
               item.pase='PASDIRECCT';

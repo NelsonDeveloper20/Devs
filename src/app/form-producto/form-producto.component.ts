@@ -258,7 +258,16 @@ case "Id": (element as HTMLInputElement).value = values.id;  break;
 case "CodigoProducto":(element as HTMLInputElement).value = values.codigoProducto; break;
 case "NombreProducto":(element as HTMLInputElement).value = values.nombreProducto; break;
 case "UnidadMedida":(element as HTMLInputElement).value = values.unidadMedida; break;
-case "Cantidad":(element as HTMLInputElement).value = parseFloat(values.cantidad.replace(',', '.')).toFixed(3); break;
+case "Cantidad":
+  let cantidadString: string;
+  if (typeof values.cantidad === 'string') {
+    cantidadString = values.cantidad.replace(',', '.');
+  } else {
+    cantidadString = values.cantidad.toString();
+  }
+  (element as HTMLInputElement).value = parseFloat(cantidadString).toFixed(3);  
+//(element as HTMLInputElement).value = parseFloat(values.cantidad.replace(',', '.')).toFixed(3); 
+break;
 case "FechaProduccion": 
 const fechaString = values.fechaProduccion; 
 var fechaFormateada=fechaString; 
@@ -275,14 +284,34 @@ if(this.JsonItemHijo.producto.id!==""){
   (element as HTMLInputElement).value = fechaFormateada2; 
 break;
 case "Nota":(element as HTMLInputElement).value = values.nota; break;
-case "Ancho":(element as HTMLInputElement).value = parseFloat(values.ancho.replace(',', '.')).toFixed(3); break;
-case "Alto":(element as HTMLInputElement).value = parseFloat(values.alto.replace(',', '.')).toFixed(3); break;
+case "Ancho":
+  let AnchoString: string;
+  if (typeof values.ancho === 'string') {
+    AnchoString = values.ancho.replace(',', '.');
+  } else {
+    AnchoString = values.ancho.toString();
+  }
+  (element as HTMLInputElement).value = parseFloat(AnchoString).toFixed(3);  
+//(element as HTMLInputElement).value = parseFloat(values.ancho.replace(',', '.')).toFixed(3);
+ break;
+case "Alto":
+  let altoString: string;
+  if (typeof values.alto === 'string') {
+    altoString = values.alto.replace(',', '.');
+  } else {
+    altoString = values.alto.toString();
+  }
+  (element as HTMLInputElement).value = parseFloat(altoString).toFixed(3); 
+  //(element as HTMLInputElement).value = parseFloat(values.alto.replace(',', '.')).toFixed(3); 
+  break;
 case "Color":(element as HTMLInputElement).value = values.color; break;
 case "Cenefa":(element as HTMLInputElement).value = values.cenefa; break;
 case "NumeroMotores":(element as HTMLInputElement).value = values.numeroMotores; break;
 case "Serie":(element as HTMLInputElement).value =values.serie; break;
 case "AlturaCadena":
-  if(!values.id){
+  console.log("AULTRAAA:::::::::::::::::::::::::.");
+  console.log(values.id);
+  if(values.id==""){
     const alturaCadena = parseFloat(values.alto.replace(',', '.')).toFixed(3); 
     // Lógica de cálculo
     const rptAlturaCadena = this.calcularAlturaCadena(this.TipoProducto, alturaCadena);
@@ -299,8 +328,16 @@ case "AlturaCadena":
       }
     }
 
-  }else{
-    (element as HTMLInputElement).value = values.alturaCadena; 
+  }else{ 
+  let alturaCadenaString: string;
+  if (typeof values.alturaCadena === 'string') {
+    alturaCadenaString = values.alturaCadena.replace(',', '.');
+  } else {
+    alturaCadenaString = values.alturaCadena.toString();
+  }
+  (element as HTMLInputElement).value = parseFloat(alturaCadenaString).toFixed(3);  
+
+    //(element as HTMLInputElement).value = parseFloat(values.alturaCadena.replace(',', '.')).toFixed(3); 
   }
 break;
 case "AlturaCordon":(element as HTMLInputElement).value = values.alturaCodon; break;
@@ -819,6 +856,8 @@ async existeMotor(event: any, tipo: any) {
     // Set height of chain calculation if applicable
     const altura_cadena = document.getElementById("altura_cadena") as HTMLInputElement;
     if (altura_cadena) {
+      if (tipo == "html") {
+        console.log("INGRESO A ALTURA CADENA EXIST MOTOR");
       let alturaCadena = parseFloat(this.JsonItemHijo.producto.alto.replace(',', '.')).toFixed(3); 
       const rptAlturaCadena = this.calcularAlturaCadena(this.TipoProducto, alturaCadena);
       if (this.TipoProducto == "PRTCV" || this.TipoProducto == "PRTPH") {
@@ -829,6 +868,8 @@ async existeMotor(event: any, tipo: any) {
           altura_cadena.value = (rptAlturaCadena * 2).toFixed(3);
         }
       }
+      }
+      
     }
   }
  //await this.listarCboTipoCadena(); 
