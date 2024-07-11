@@ -521,6 +521,7 @@ break;
    
     const userDataString = JSON.parse(localStorage.getItem('UserLog'));   
     this.attributosProducto["IdUsuarioCrea"] = userDataString.id.toString();
+    
     var itemsEcuadra=[];
     if(this.escuadraVisible==true){
       itemsEcuadra=  this.TblEscuadraItems;

@@ -39,4 +39,9 @@ export class OrdenproduccionGrupoService {
   AplicarCentral(cotizacionGrupo:any,id :any,valor: any): Observable<IApiResponse> { 
     return this.http.post<IApiResponse>(this.urlBase + 'DetalleOpgrupo/AplicarCentral?cotizacionGrupo='+cotizacionGrupo+'&id=' + id+"&valor="+valor,{});
   }
+  
+  ReiniciarGrupo(id:any): Observable<IApiResponse> { 
+    return this.http.post<IApiResponse>(this.urlBase + 'DetalleOpgrupo/ReiniciarGrupo?id='+id,{});
+  }
+
 }

@@ -73,6 +73,7 @@ private dialog: MatDialog,
     }, {});
   }
   save(): void {   
+
     let validacion = 0;
     const normalizedConfig = this.normalizeKeys(this.objConfiguracionAtributos[this.TipoProducto]); 
     if (this.formProductoComponent) {
@@ -160,7 +161,8 @@ this.spinner.hide();
 switch(respuesta){
   case "OK": 
   //PROCESAR REGISTRO   
-  console.log("registrando: "+respuesta);
+  console.log("registrando: "+respuesta);  
+  this.jsonProductoItemDelHijo.Formulario["Maximo"] = "NO";
   this.RegistrarProducto(this.jsonProductoItemDelHijo);
     break;
   case "NO":
@@ -173,6 +175,8 @@ switch(respuesta){
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {        
+        
+        this.jsonProductoItemDelHijo.Formulario["Maximo"] = "SI";
         this.RegistrarProducto(this.jsonProductoItemDelHijo);
       } 
     });

@@ -38,7 +38,7 @@ export interface ElementoTabla {
   encapsulation: ViewEncapsulation.None, //TOOLTIP
 })
 export class ReporteNCComponent implements OnInit {
-  displayedColumns: string[] = ['cotizacion', 'codOp', 'OpGrupo','nombreProyecto', 'estadoOp', 'tipoOperacion', 'ruc', 'nombreCliente', 'fechaCreacion', 'fechaFin', 'acciones', 'estado'];
+  displayedColumns: string[] = ['cotizacion', 'codOp', 'OpGrupo','nombreProyecto', 'estadoOp', 'tipoOperacion', 'ruc', 'nombreCliente', 'fechaCreacion', 'fechaFin', 'acciones', 'estado','accion'];
  
   dataSource=new MatTableDataSource<any>();//this.ELEMENT_DATA
 
@@ -86,6 +86,8 @@ export class ReporteNCComponent implements OnInit {
           this.spinner.hide(); 
           //this.groupData();           
       this.dataSource = new MatTableDataSource<any>(this.ListOP);
+      console.log("OPERACIONN:: ");
+      console.log(this.ListOP);
         } else {
           this.spinner.hide();
           console.error('Error: No se pudo obtener datos.');
@@ -180,6 +182,19 @@ export class ReporteNCComponent implements OnInit {
     });
     this.EnviarGrupoMasivo();
   }
+  validarGerencia(): boolean {
+    const userDataString = localStorage.getItem('UserLog');
+    
+    if (userDataString) {
+      const userData = JSON.parse(userDataString);
+      if (userData.perfil && userData.perfil.toUpperCase() === 'GERENTE') {
+        return true;
+      }
+    }
+    
+    return false;
+  }
+  
   
   AbrirPopupDetalleProducto(item,grupo:any){
     const dialogConfig = new MatDialogConfig();
@@ -261,5 +276,63 @@ export class ReporteNCComponent implements OnInit {
     };
     this.dataSource.filter = filterValue;
   }
+
+
+  
+ReniciarProceso(item:any) {
+  Swal.fire({
+    title: '¿Desea  reiniciar el grupo?',
+    text: 'considere que al reiniciar se estara eliminando los procesos de estación',
+    icon: 'question',
+    showCancelButton: true, // Habilita el botón de cancelación
+    confirmButtonText: 'Sí, Eliminar', // Texto del botón de confirmación
+    cancelButtonText: 'Cancelar', // Texto del botón de cancelación
+    allowOutsideClick: false
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.spinner.show();
+
+      this.ordenproduccionGrupoService.ReiniciarGrupo(item.id).subscribe({
+        next: data => {
+          this.spinner.hide();
+
+          if (data.status == 200) {
+            this.toaster.open({
+              text: "El grupo fue reiniciado",
+              caption: 'Mensaje',
+              type: 'success',
+              position: 'bottom-right',
+              duration: 3000 // O duración deseada
+            });
+
+            this.ListarOp();
+          } else {
+            this.toaster.open({
+              text: "Ocurrió un error",
+              caption: 'Mensaje',
+              type: 'warning',
+              position: 'bottom-right',
+              duration: 3000 // O duración deseada
+            });
+          }
+        },
+        error: error => {
+          this.spinner.hide();
+
+          const errorMessage = error.message || 'Ocurrió un error desconocido';
+          console.error('There was an error!', error);
+
+          this.toaster.open({
+            text: errorMessage,
+            caption: 'Ocurrió un error',
+            type: 'danger',
+            position: 'bottom-right',
+            duration: 3000 // O duración deseada
+          });
+        }
+      });
+    }
+  });
+}
 }
 
