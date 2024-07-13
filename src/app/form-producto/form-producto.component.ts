@@ -682,7 +682,37 @@ changeIndiceAgrupacion(event: any): void {
     this.showAlert(`La cantidad del producto ha alcanzado su <b>límite</b> para el índice seleccionado <b>${value}</b>.`);
   }
 }
-
+onFechaProduccionChange(event: any): void {
+  const fechaProduccion = event.target.value;
+  console.log('Fecha Producción seleccionada:', fechaProduccion); 
+  const IdTbl_Ambiente = document.getElementById("IdTbl_Ambiente") as HTMLInputElement;
+  const detalle_ambiente = document.getElementById("detalle_ambiente") as HTMLSelectElement;
+ const indice_agrupacion=document.getElementById("indice_agrupacion") as HTMLSelectElement;
+      if (IdTbl_Ambiente) {
+        IdTbl_Ambiente.value = "";
+      }
+      if (detalle_ambiente) {
+        detalle_ambiente.value = "";
+      } 
+      if(indice_agrupacion){
+        indice_agrupacion.value="0";
+      }
+} 
+changeTurno(event: any): void { 
+  const value = event.target.value; 
+  const IdTbl_Ambiente = document.getElementById("IdTbl_Ambiente") as HTMLInputElement;
+  const detalle_ambiente = document.getElementById("detalle_ambiente") as HTMLSelectElement;
+ const indice_agrupacion=document.getElementById("indice_agrupacion") as HTMLSelectElement;
+      if (IdTbl_Ambiente) {
+        IdTbl_Ambiente.value = "";
+      }
+      if (detalle_ambiente) {
+        detalle_ambiente.value = "";
+      } 
+      if(indice_agrupacion){
+        indice_agrupacion.value="0";
+      }
+}
 CboTurno:any[]=[{id:0,nombre:"--Seleccione--"}];listarCboTurno(){
   this.CboTurno=[
   {id:0,nombre:"--Seleccione--"},

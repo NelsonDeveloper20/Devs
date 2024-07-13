@@ -15,7 +15,7 @@ import { SupervisionDialogComponent } from './supervision-dialog/supervision-dia
   styleUrls: ['./supervision-op.component.css']
 })
 export class SupervisionOpComponent implements OnInit {
-  displayedColumns: string[] = ['cotizacion', 'codOp', 'grupo','fechasolicitud','vendedor','destrito','fechaCreacion','aprobar','rechazar'];
+  displayedColumns: string[] = ['cotizacion', 'codOp', 'grupo','fechasolicitud','vendedor','destrito','fechaCreacion','Estado','Motivo','aprobar','rechazar'];
   dataSource=new MatTableDataSource<any>();//this.ELEMENT_DATA
   constructor(
     private dialog: MatDialog,
@@ -155,81 +155,91 @@ Swal.fire(
       }
     });
   }
-  AplicarRechazo(item:any){
+  AplicarRechazo(item: any) {
+    console.log(item);
     const userDataString = JSON.parse(localStorage.getItem('UserLog'));   
-    var idUser= userDataString.id.toString();
-      var requests = { 
-          id:item.id,
-          CotizacionGrupo:item.cotizacionGrupo,
-          TurnoInicial:item.turno,
-          TurnoCambio:item.turno,
-          FechProdInicial:item.fechaProduccion,
-          FechaProdCambio:item.fechaProduccion,
-          IdUsuario:idUser,
-          IdUsuarioSolicita:item.idUsuarioCrea,
-          NumeroCotizacion:item.numeroCotizacion,
-          Estado:"Rechazado"
-  
-      }
+    var idUser = userDataString.id.toString();
+    
     Swal.fire({
       allowOutsideClick: false,
       title: "¿Desea Rechazar?",
-      html: `¿Esta seguro que desea rechazar el grupo?`,
-      icon: 'info',
+      html: `
+        <p>¿Esta seguro que desea rechazar el grupo?</p>
+        <textarea id="motivo" class="form-control" placeholder="Ingrese el motivo de rechazo"></textarea>
+      `,
+      icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Si, Rechazar',
       cancelButtonText: 'Cancelar',
+      preConfirm: () => {
+        const motivo = (document.getElementById('motivo') as HTMLInputElement).value;
+        if (!motivo) {
+          Swal.showValidationMessage('Debe ingresar un motivo');
+          return false;
+        }
+        return motivo;
+      }
     })
       .then((result) => {
         if (result.isConfirmed) {            
-    this.spinner.show();
-    this._service.AplicarAprobacion(requests)
-    .subscribe({
-      next: response => {
-        this.spinner.hide();
-        if (response.status == 200) { 
-              const respuesta = response.json.respuesta;
-              if(respuesta=="OK"){ 
+          this.spinner.show();
+          var requests = { 
+            id: item.id,
+            CotizacionGrupo: item.cotizacionGrupo,
+            TurnoInicial: item.turno,
+            TurnoCambio: item.turno,
+            FechProdInicial: item.fechaProduccion,
+            FechaProdCambio: item.fechaProduccion,
+            IdUsuario: idUser,
+            IdUsuarioSolicita: item.idUsuarioCrea,
+            NumeroCotizacion: item.numeroCotizacion.toString(),
+            Estado: "Rechazado",
+            Motivo: result.value  // Motivo from Swal
+          };
+          this._service.AplicarAprobacion(requests)
+            .subscribe({
+              next: response => {
+                this.spinner.hide();
+                if (response.status == 200) { 
+                  const respuesta = response.json.respuesta;
+                  if (respuesta == "OK") { 
+                    this.toaster.open({
+                      text: "Grupo Rechazado",
+                      caption: 'Mensaje',
+                      type: 'success',
+                      position: 'bottom-right',
+                      duration: 2000
+                    });  
+                    this.ListarOp();
+                  } else {
+                    this.toaster.open({
+                      text: respuesta,
+                      caption: 'Mensaje',
+                      type: 'danger',
+                      duration: 2000
+                    }); 
+                  }    
+                } else {
+                  this.toaster.open({
+                    text: "Ocurrio un error al enviar",
+                    caption: 'Mensaje',
+                    type: 'danger'
+                  }); 
+                }
+              },
+              error: error => {
+                this.spinner.hide();
+                var errorMessage = error.message;
+                console.error('There was an error!', error);
                 this.toaster.open({
-                  text: "Grupo Rechazado",
-                  caption: 'Mensaje',
-                  type: 'success',
-                  position: 'bottom-right',
-                  //duration: 4000
-                });  
-                this.ListarOp();
-              }else{
-                this.toaster.open({
-                  text: respuesta,
-                  caption: 'Mensaje',
-                  type: 'danger',
-                  // duration: 994000
-                }); 
-              }    
-          }else{
-            this.toaster.open({
-              text: "Ocurrio un error al enviar",
-              caption: 'Mensaje',
-              type: 'danger',
-              // duration: 994000
-            }); 
-          }
-      },
-      error: error => {
-        this.spinner.hide();
-        var errorMessage = error.message;
-        console.error('There was an error!', error);
-        this.toaster.open({
-          text: errorMessage,
-          caption: 'Ocurrio un error',
-          type: 'danger',
-          // duration: 994000
-        });
-      }
-    });
-        }else{
-          
+                  text: errorMessage,
+                  caption: 'Ocurrio un error',
+                  type: 'danger'
+                });
+              }
+            });
         }
       });
   }
+  
 }

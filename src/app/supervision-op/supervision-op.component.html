@@ -144,11 +144,24 @@
                                         </td>
                                     </ng-container> 
 
+                                    <ng-container matColumnDef="Estado">
+                                        <th mat-header-cell *matHeaderCellDef sticky>Estado</th>
+                                        <td mat-cell *matCellDef="let element" class="center">{{ element.estadoOp}}
+                                        </td>
+                                    </ng-container> 
+
+                                    <ng-container matColumnDef="Motivo">
+                                        <th mat-header-cell *matHeaderCellDef sticky>Motivo</th>
+                                        <td mat-cell *matCellDef="let element" class="center">{{ element.motivo}}
+                                        </td>
+                                    </ng-container> 
+
                                     <ng-container matColumnDef="aprobar">
                                         <th mat-header-cell *matHeaderCellDef sticky>Aprobar</th>
                                         <td mat-cell *matCellDef="let element" class="center">
                                             <button class="btn btn-primary tp-btn-light sharp"
                                             (click)="AbriConfirmacion(element)"
+                                            [disabled]="element.estadoOp !== 'Pendiente Supervisor'"  
                                                 >
                                                 <mat-icon>done_outline</mat-icon>
                                             </button>
@@ -158,8 +171,8 @@
                                         <th mat-header-cell *matHeaderCellDef sticky>Rechazar</th>
                                         <td mat-cell *matCellDef="let element" class="center">
                                             <button class="btn btn-primary tp-btn-light sharp"
-                                            (click)="AplicarRechazo(element)"
-                                                >
+                                            [disabled]="element.estadoOp !== 'Pendiente Supervisor'"  
+                                            (click)="AplicarRechazo(element)">
                                                 <mat-icon>block</mat-icon>
                                             </button>
                                         </td>
