@@ -282,7 +282,7 @@ export class ReporteNCComponent implements OnInit {
 ReniciarProceso(item:any) {
   Swal.fire({
     title: '¿Desea  reiniciar el grupo?',
-    text: 'considere que al reiniciar se estara eliminando los procesos de estación',
+    text: 'considere que al reiniciar se estará eliminando los procesos de estación',
     icon: 'question',
     showCancelButton: true, // Habilita el botón de cancelación
     confirmButtonText: 'Sí, Eliminar', // Texto del botón de confirmación

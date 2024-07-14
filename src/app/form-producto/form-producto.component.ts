@@ -226,6 +226,8 @@ case "CodigoMotor": (element as HTMLSelectElement).value = element.value = value
 
 break;
 //::::::::::::::::::::::::::::::::::::...INPUTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+case "Motor": (element as HTMLInputElement).value = values.motor;break;
 case "Familia": (element as HTMLInputElement).value = values.familia;  break;
 case "SubFamilia": (element as HTMLInputElement).value = values.subFamilia;  break;
 case "Precio": (element as HTMLInputElement).value = values.precio;  break;
@@ -329,14 +331,16 @@ case "AlturaCadena":
     }
 
   }else{ 
-  let alturaCadenaString: string;
+  let alturaCadenaString: string; 
+
   if (typeof values.alturaCadena === 'string') {
     alturaCadenaString = values.alturaCadena.replace(',', '.');
-  } else {
+  } else if (values.alturaCadena !== null && values.alturaCadena !== undefined) {
     alturaCadenaString = values.alturaCadena.toString();
+  } else {
+    alturaCadenaString = ''; // O algún valor por defecto que tenga sentido en tu contexto
   }
   (element as HTMLInputElement).value = parseFloat(alturaCadenaString).toFixed(3);  
-
     //(element as HTMLInputElement).value = parseFloat(values.alturaCadena.replace(',', '.')).toFixed(3); 
   }
 break;
@@ -475,7 +479,7 @@ break;
       if (element instanceof HTMLInputElement || element instanceof HTMLSelectElement || element instanceof HTMLTextAreaElement) {
           // Obtener el nombre del atributo y su valor
           const attributeName = element.getAttribute('name');
-          const attributeValue = element.value; // Puedes usar .value para input, select y textarea  
+          let attributeValue = element.value; // Puedes usar .value para input, select y textarea  
           // Almacenar el nombre del atributo y su valor en el objeto
           //this.attributosProducto[attributeName] = attributeValue;
 
@@ -492,8 +496,11 @@ break;
                   valor = formulario['CodigoTubo'].value;
                   break;
                 case 'CodigoMotor':
-                  valor = formulario['CodigoMotor'].value;
-                  break;
+                  if(formulario['Accionamiento'].value=="Manual"){
+                    attributeValue="";
+                  }                  
+                  //valor = formulario['CodigoTubo'].value;
+                  break; 
               }
               // Almacenar el nombre del atributo y su valor en el objeto
               this.attributosProducto[attributeName] = attributeValue;

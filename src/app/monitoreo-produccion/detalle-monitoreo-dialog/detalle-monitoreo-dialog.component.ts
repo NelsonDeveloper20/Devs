@@ -75,8 +75,7 @@ listarComponestePorCodigoProds(productos){
   this.spinner.show();   
 this._service.ListarComponentesPorCodigosProducto(productos,this.DatosGrupo.cotizacionGrupo).subscribe(
   (data: any) => { 
-      this.lisComponente =  data;
-      console.log(this.lisComponente);
+      this.lisComponente =  data; 
       this.spinner.hide();   
       //this.filteredListComponente = this.lisComponente;
 
@@ -119,6 +118,7 @@ ListarComponteProductoByGrupo(Grupo) {
   this._service.ListarComponenteDelProducto(Grupo,"1").subscribe(
     (data: any) => {
       if (data && data.status === 200) {  
+        
         this.ListComponenteProducto = data.json.map(item => (
           { ...item, 
             NumeroCotizacion:this.DatosGrupo.cotizacion,
@@ -128,13 +128,15 @@ ListarComponteProductoByGrupo(Grupo) {
             merma:"",
             filteredOptions: [] // Inicializa como una lista vacía
              }));
+             console.log(this.ListComponenteProducto);
+             console.log("::::::::::::::______________::::::");
         this.spinner.hide();    
         const codigos = this.ListComponenteProducto
         .map(item => item.codigoProducto.substring(0, 5)) // Obtener los primeros 5 caracteres
         .filter((value, index, self) => self.indexOf(value) === index) // Eliminar duplicados si es necesario
         .join("','");  
         const resultado = `'${codigos}'`; // Agregar comillas al inicio y al final
-        console.log(resultado); // 'PRTRS','PRTSZ'
+       
         this.listarComponestePorCodigoProds(resultado);
       } else {
         this.spinner.hide();
@@ -147,7 +149,21 @@ ListarComponteProductoByGrupo(Grupo) {
       // Aquí podrías mostrar un mensaje de error al usuario
     }
   );
+} 
+//#region VALIACIONES SOLO NUMERICOS
+
+
+validateAndFormatInput(event: Event): void {
+  const input = event.target as HTMLInputElement;
+ 
+  const regex = /^[0-9]*\.?[0-9]*$/;
+  if (!regex.test(input.value)) {
+    // Revert to previous valid value
+    input.value = input.value.replace(/[^0-9.]/g, '');
+  }
 }
+
+//#endregion
 agregarComponente(){
   const userDataString = JSON.parse(localStorage.getItem('UserLog'));   
   var idUsuario= userDataString.id.toString(); 

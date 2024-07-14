@@ -53,12 +53,17 @@
                             <mat-form-field appearance="outline" style="width: 100%;">
                                 <mat-select  [(ngModel)]="comp.codigo" placeholder="Buscar" style="width: 190px;" (selectionChange)="onNombreChange($event, comp)">
                                 <mat-select-trigger>
-                                {{ comp.nombre || '---Seleccione---' }}
+                                    <span *ngIf="!comp.codigo">
+                                        {{ comp.nombre || '---Seleccione---' }}                                        
+                                    </span>
+                                    <span *ngIf="comp.codigo">
+                                        {{ comp.nombre || comp.nombre }}                                        
+                                    </span>
                                 </mat-select-trigger>
                                 <input matInput (keyup)="applyFilter($event, comp)" placeholder="Buscar" class="search-input" />
                                 <!-- Opción para el valor seleccionado actual si no está en las opciones filtradas -->
                                 <mat-option *ngIf="!isOptionInFilteredOptions(comp.codigo, comp.filteredOptions)" [value]="comp.codigo">
-                                    {{ comp.codigo }} : {{ comp.nombre }}
+                                    {{ comp.codigo }} : {{ comp.codigo }}
                                 </mat-option>                                
                                 <mat-option value="">---Seleccione---</mat-option>
                                 <mat-option *ngFor="let item of comp.filteredOptions" [value]="item.codigo">
@@ -73,10 +78,14 @@
                         <td id="row-2" style="width: 182px !important;"> {{ comp.color }}</td>
                         <td id="row-3" style="width: 362px !important;"> {{ comp.unidadMedida }}</td>
                         <td style="width: 124px !important;">
-                            <input type="number" class="form-control input-sm" min="0"  [(ngModel)]="comp.cantidadUtilizada" />
+                            <input type="number" class="form-control input-sm" min="0" 
+                            [(ngModel)]="comp.cantidadUtilizada" 
+                            (input)="validateAndFormatInput($event)"/>
                         </td>
                         <td style="width: 124px !important;">
-                            <input type="number" class="form-control input-sm" min="0"  [(ngModel)]="comp.merma" />
+                            <input type="number" class="form-control input-sm" min="0"
+                            [(ngModel)]="comp.merma" 
+                            (input)="validateAndFormatInput($event)"/>
                         </td>
                         <td style="    min-width: 118px;">
                             <div class="form-group" style="text-align: center;">

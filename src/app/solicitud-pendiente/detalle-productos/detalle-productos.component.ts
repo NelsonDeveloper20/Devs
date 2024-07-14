@@ -105,6 +105,7 @@ validarPrt(codigo:any){
     dialogRef.afterClosed().subscribe({
       next: data => {   
        if (data) {
+        this.ListarFiltros(); 
           //this.listarProductosSisgecoAndDcBlinds();
       } 
     },
