@@ -28,7 +28,8 @@
 </div>
 <div mat-dialog-actions> 
   <button mat-button class="btn btn-sm btn-primary" (click)="save()" 
-  [disabled]="!(JsonItemHijo.producto.estadoOp === 'Pendiente Venta' || JsonItemHijo.producto.estadoOp === 'Pendiente Operaciones')">
+  [disabled]="!(JsonItemHijo.producto.estadoOp === 'Pendiente Venta' 
+  || JsonItemHijo.producto.estadoOp === 'Pendiente Operaciones' || JsonItemHijo.producto.estadoOp === '2' )" >
     Grabar
   </button>
   <button mat-button (click)="close()">Cerrar</button>
