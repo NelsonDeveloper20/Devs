@@ -51,6 +51,11 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'Registro-Cotizacion/:item',
+    component: RegistroCotizacionsComponent,
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'Registro-Cotizacion',
     component: RegistroCotizacionsComponent,
     canActivate: [AuthGuard],

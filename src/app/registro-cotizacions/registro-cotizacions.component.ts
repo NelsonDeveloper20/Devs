@@ -3,7 +3,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatAccordion } from '@angular/material/expansion';
 import { ProductosDialogComponent } from './productos-dialog/productos-dialog.component';
 import { Toaster } from 'ngx-toast-notifications';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ITblOrdenProduccion, TblOrdenProduccion } from '../services/models/Tbl_OrdenProduccion.model';
 import { OrdenproduccionService } from '../services/ordenproduccion.service';
@@ -43,7 +43,7 @@ export class RegistroCotizacionsComponent implements OnInit {
   cliente: string;
   fechaSap: Date;
   subNivel: string;
-  constructor(
+  constructor(private route: ActivatedRoute,
     private http: HttpClient,
     private dialog: MatDialog,
     private toaster: Toaster,private router: Router,   
@@ -80,6 +80,11 @@ export class RegistroCotizacionsComponent implements OnInit {
    valor: string = 'algunValor';
    GenerarLayout(cotizacionGrupo:any,tipoProducto:any) {
     if (this.layoutComponent) {
+      if(tipoProducto=="-0"){
+        tipoProducto="Componente";
+      }else{
+        tipoProducto="Producto";
+      }
       this.layoutComponent.ejecutarAccionConParametro(cotizacionGrupo,tipoProducto);
     }
   }
@@ -145,6 +150,15 @@ export class RegistroCotizacionsComponent implements OnInit {
      this.listas();
     }catch(ex){      
     }
+    this.route.params.subscribe(params => {
+      const serializedItem = params['item'];
+      if (serializedItem) {
+       var param = JSON.parse(decodeURIComponent(serializedItem)); // Deserializa y decodifica
+       console.log("NUEEVVVOS");
+       console.log(param);
+       this.onSelectState(param);
+      }
+    });
   }
   getRowSpan(index: number): number {
     if (index === 0 || 
@@ -935,5 +949,99 @@ eliminarAmbiente(indice: number) {
     // Retorna un observable con un mensaje de error
     return throwError('Hubo un problema al obtener los datos. Por favor, intenta de nuevo más tarde.');
   }
+
+  OrdeDeVentaPendiente=[
+    {
+      "id": 1,
+      "idTipoUsuario": 1,
+      "nombre": "Marisol",
+      "apellido": "Pinares  Sanchez",
+      "dni": "7776",
+      "correo": "marisolpinares@gmail.com",
+      "usuario": "Marisol",
+      "clave": "123456",
+      "codigoUsuario": "123",
+      "fechaCreacion": null,
+      "fechaModificacion": null,
+      "idUsuarioCreacion": null,
+      "idUsuarioModifica": null,
+      "estado": 1,
+      "idRol": 7,
+      "nombreRol": "Administrador"
+    },
+    {
+      "id": 1006,
+      "idTipoUsuario": 1,
+      "nombre": "Nelson",
+      "apellido": "RODRIGUEZ",
+      "dni": "87654321",
+      "correo": "nelson@gmail.com",
+      "usuario": "Nelson",
+      "clave": "12345",
+      "codigoUsuario": "",
+      "fechaCreacion": null,
+      "fechaModificacion": null,
+      "idUsuarioCreacion": null,
+      "idUsuarioModifica": null,
+      "estado": 1,
+      "idRol": 1013,
+      "nombreRol": "Gerente"
+    },
+    {
+      "id": 1007,
+      "idTipoUsuario": 1,
+      "nombre": "OSCAR",
+      "apellido": "Pinares sanchez",
+      "dni": "60283143",
+      "correo": "marisolpinares@NAVASOFT.COM",
+      "usuario": "OPINARES",
+      "clave": "123456789",
+      "codigoUsuario": "",
+      "fechaCreacion": null,
+      "fechaModificacion": null,
+      "idUsuarioCreacion": null,
+      "idUsuarioModifica": null,
+      "estado": 1,
+      "idRol": 4,
+      "nombreRol": "Almacén"
+    },
+    {
+      "id": 1009,
+      "idTipoUsuario": 3,
+      "nombre": "NZ FJN",
+      "apellido": "Rz$",
+      "dni": "3487743",
+      "correo": "Goldes@gmail.com",
+      "usuario": "nzfjn",
+      "clave": "123",
+      "codigoUsuario": "",
+      "fechaCreacion": null,
+      "fechaModificacion": null,
+      "idUsuarioCreacion": null,
+      "idUsuarioModifica": null,
+      "estado": 1,
+      "idRol": 7,
+      "nombreRol": "Administrador"
+    },
+    {
+      "id": 1010,
+      "idTipoUsuario": 1,
+      "nombre": "MARIANO",
+      "apellido": "PINARES SANCHEZ",
+      "dni": "60283144",
+      "correo": "olindapinares@gmail.com",
+      "usuario": "mpinares",
+      "clave": "12345",
+      "codigoUsuario": "",
+      "fechaCreacion": null,
+      "fechaModificacion": null,
+      "idUsuarioCreacion": null,
+      "idUsuarioModifica": null,
+      "estado": 1,
+      "idRol": 7,
+      "nombreRol": "Administrador"
+    }
+  ];
+  
 }
 

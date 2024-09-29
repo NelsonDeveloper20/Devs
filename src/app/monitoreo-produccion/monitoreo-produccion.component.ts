@@ -182,7 +182,7 @@ ListarComponteProductoByGrupo(Grupo) {
         this.ListComponenteProducto = data.json.map(item => ({ ...item, agregado: "NO" ,cantidad:"",merma:"" }));
         this.spinner.hide();      
       } else {
-        this.spinner.hide();
+        this.spinner.hide(); 
         console.error('Error: No se pudo obtener datos.');
       }
     },

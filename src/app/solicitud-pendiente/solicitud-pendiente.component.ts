@@ -3,7 +3,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { Toaster } from 'ngx-toast-notifications';
 import { RequestService } from '../services/request.service';
 //import { Solicitud, Solicitud2 } from './solicitud.model'; 
-import { NavigationExtras, Router } from '@angular/router'; 
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router'; 
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
@@ -14,6 +14,7 @@ import Swal from 'sweetalert2';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DetalleProductosComponent } from './detalle-productos/detalle-productos.component';
 import { OrdenproduccionService } from '../services/ordenproduccion.service';
+import { RegistroCotizacionsComponent } from '../registro-cotizacions/registro-cotizacions.component';
 
 export interface ElementoTabla {
   checkbox: any;
@@ -127,7 +128,7 @@ export class SolicitudPendienteComponent implements OnInit {
     private ordenproduccionGrupoService: OrdenproduccionGrupoService,
     private dialog: MatDialog,
     private _OrdenService: OrdenproduccionService,
-  
+    private route: ActivatedRoute
   ) { }
 
   showfilter=false;
@@ -149,6 +150,11 @@ export class SolicitudPendienteComponent implements OnInit {
   ngOnInit(): void { 
     this.ListarFiltros();
     this.obtenerDetalleOpGrupo();
+    this.route.params.subscribe(params => {
+      var value=params['id'];
+      console.log("ENVIASTE EL ID:"+value);
+      //this.id = +params['id']; // Aquí obtienes el ID como un número
+    });
   }
   ListVenta:any=[];
   obtenerDetalleOpGrupo() {
@@ -468,5 +474,11 @@ export class SolicitudPendienteComponent implements OnInit {
     this.EnviarGrupoMasivo();
   }
   //#endregion
+//#region  PARA EDIAR LA OP 
+  EditarOrden(item:any){ 
+    const serializedItem = encodeURIComponent(JSON.stringify(item)); // Serializa y codifica
+    this.router.navigate(['/Registro-Cotizacion', serializedItem]); // Redirige con el objeto 
+  }
+//#endregion
 }
 

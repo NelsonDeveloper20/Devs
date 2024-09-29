@@ -50,24 +50,27 @@
                   <div class="row">
                       <div class="col-lg-4 mb-3">
                           <label for="username">Buscar por Nº Cotizacion</label>
-                          <div class="input-group">                              
-                        <input   class="form-control"
-                        placeholder="Número de Orden"
-                        aria-label="Número de Orden"
-                        [matAutocomplete]="auto"
-                        [formControl]="stateCtrl">
-                 <mat-autocomplete #auto="matAutocomplete">
-                  
-                    <mat-option *ngFor="let state of filteredStates | async" [value]="state.numero" (click)="onSelectState(state)"> 
-                     <span>OP: <b>{{state.numero}}</b></span>  
-                   </mat-option> 
-                   
-                   <!-- Muestra otras propiedades de la orden de producción según sea necesario -->
-                 </mat-autocomplete>
+                          <div class="input-group">    
+
+                            <select class="d-block default-select form-control selectpicker w-100" id="state" required [(ngModel)]="Orden.idTipoPeracion">
+                              <option value="">--Seleccione--</option>
+                              <option *ngFor="let item of OrdeDeVentaPendiente" [value]="item.id">{{ item.dni }}</option>
+                            </select>
+
+                             <input   class="form-control"
+                              placeholder="Número de Orden"
+                              aria-label="Número de Orden"
+                              [matAutocomplete]="auto"
+                              [formControl]="stateCtrl">
+                              <mat-autocomplete #auto="matAutocomplete">                  
+                              <mat-option *ngFor="let state of filteredStates | async" [value]="state.numero" (click)="onSelectState(state)"> 
+                              <span>OP: <b>{{state.numero}}</b></span>  
+                              </mat-option>                    
+                              </mat-autocomplete>
                               <div class="input-group-prepend" *ngIf="isRequesting">
-                                <img src="../../assets/loading.gif" style="
-                                width: 80px;transform: scale(1.5);">
-                              </div>
+                              <img src="../../assets/loading.gif" style="
+                              width: 80px;transform: scale(1.5);">
+                              </div> 
                           </div>
                       </div> 
                       <div class="col-lg-4 mb-3">
@@ -108,7 +111,7 @@
                           <select class="d-block default-select form-control selectpicker w-100" id="state" required [(ngModel)]="Orden.idTipoPeracion">
                             <option value="">--Seleccione--</option>
                             <option *ngFor="let proyecto of listTipoOperacion" [value]="proyecto.id">{{ proyecto.nombre }}</option>
-                        </select>
+                          </select>
                       </div>
                       <div class="col-lg-4 mb-3">
                           <label for="zip">Ruc</label>
@@ -351,7 +354,7 @@
                                         <td *ngIf="getRowSpan(i) > 0" [attr.rowspan]="getRowSpan(i)">
                                           
                     <button class="btn btn-primary-azul tp-btn-light sharp"  matTooltip="Generar PDF Layout"    type="button"
-                     (click)="GenerarLayout(itemproducto.cotizacionGrupo,itemproducto.tipoGrupo)">
+                     (click)="GenerarLayout(itemproducto.cotizacionGrupo, itemproducto.cotizacionGrupo.slice(-2))"> 
                       <mat-icon>apps</mat-icon> 
                   </button> 
                                          </td>
