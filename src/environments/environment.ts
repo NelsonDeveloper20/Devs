@@ -8,6 +8,6 @@ export const environment = {
   authority: 'https://login.microsoftonline.com/b5fdc43d-890f-4208-917d-107c711d57cc',
   authRedirectUri: 'http://localhost:4200',
   logoutRedirectUri: 'http://localhost:4200', 
-  baseUrl: 'https://localhost:44304', //API 
+  baseUrl: 'https://localhost:7014', //API 
 };
  

@@ -117,9 +117,9 @@ export class SolicitudPendienteComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
   }
   @ViewChild(LayoutComponent) layoutComponent: LayoutComponent;
-  GenerarLayout(cotizacionGrupo:any) {
+  GenerarLayout(cotizacionGrupo:any,tipoProducto:any) {
     if (this.layoutComponent) {
-      this.layoutComponent.ejecutarAccionConParametro(cotizacionGrupo);
+      this.layoutComponent.ejecutarAccionConParametro(cotizacionGrupo,tipoProducto);
     }
   }
   constructor(private router: Router, private toaster: Toaster, 

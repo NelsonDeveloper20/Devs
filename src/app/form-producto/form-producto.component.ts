@@ -372,9 +372,7 @@ break;
       return inclusive ? value >= min && value <= max : value > min && value < max;
     }
    // Método para calcular la altura de la cadena
-  calcularAlturaCadena(keyProduct: string, alturaCadena: any): number {
-    console.log("ALTURA RECIBIDA");
-    console.log(alturaCadena);
+  calcularAlturaCadena(keyProduct: string, alturaCadena: any): number { 
     let rptAlturaCadena = 0;
 
     if (keyProduct !== 'PRTRF' && keyProduct !== 'PRTRH' && keyProduct !== 'PRTRM') {

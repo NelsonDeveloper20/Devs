@@ -36,16 +36,23 @@ export class LayoutComponent implements OnInit {
 
   groups: any;
   arrayKeysGroups: string[];
+  tipoGrupo="Producto"; //Producto y Componente
   constructor(
     private route: ActivatedRoute,
     private spinner: NgxSpinnerService,
     private ordenproduccionGrupoService: OrdenproduccionGrupoService
   ) {}
-  ejecutarAccionConParametro(parametro: string): void {
+  ejecutarAccionConParametro(parametro: string,tipoProducto:string): void {
     console.log('Acción ejecutada con parámetro:', parametro);
+    console.log('TIPO: '+tipoProducto);
     // Aquí puedes realizar la lógica adicional cuando se ejecuta la acción con el parámetro
     this.cotizacionGrupo = parametro;
-    this.ObtenerLayout(this.cotizacionGrupo);
+    this.tipoGrupo=tipoProducto;
+    if(this.tipoGrupo=="Producto"){
+      this.ObtenerLayout(this.cotizacionGrupo);
+    }else{      
+      this.ObtenerLayoutComponente(this.cotizacionGrupo);
+    }
     //this.generarPDF2();
   }
   ngOnInit(): void {
@@ -70,7 +77,11 @@ export class LayoutComponent implements OnInit {
         this.totalPaGina=0;
         this.paginas=0;
           this.htmlCabezal = '';
-          this.GenerarLayout();
+          if(this.tipoGrupo=="Producto"){
+            this.GenerarLayout();
+          }else{
+          this.GenerarLayoutComponentes();
+          }
         } else {
           this.spinner.hide();
           console.error('Error: No se pudo obtener datos válidos.');
@@ -84,6 +95,34 @@ export class LayoutComponent implements OnInit {
     );
   }
    
+  ObtenerLayoutComponente(cotizacionGrupo: any) {
+    this.spinner.show();
+    this.ordenproduccionGrupoService.ObtenerLayoutComponentes(cotizacionGrupo).subscribe(
+      (data: any) => {
+        if (data && data.status === 200) { 
+          console.log(data.json);
+          this.DatosJson2 = data.json;
+          this.spinner.hide(); 
+          //this.groupData();
+          this.html='';         
+        this.countercentral=0;
+        this.counter=0;
+        this.totalPaGina=0;
+        this.paginas=0;
+          this.htmlCabezal = ''; 
+          this.GenerarLayoutComponentes(); 
+        } else {
+          this.spinner.hide();
+          console.error('Error: No se pudo obtener datos válidos.');
+        }
+      },
+      (error: any) => {
+        this.spinner.hide();
+        console.error('Error al obtener el detalle del grupo:', error);
+        // Aquí podrías mostrar un mensaje de error al usuario
+      }
+    );
+  }
   generarPDF2() {
     console.log("ejecute");
     const options = {
@@ -1054,5 +1093,45 @@ for (let i = 0; i < this.cantSubArray; i++) {
      
   }
   //ENDS
+  GenerarLayoutComponentes(){
+    
+    this.generarCodigoBarras();
+    this.spinner.show();
+    this.html=""; 
+    this.html = "<table cellspacing='0' style='width: 100% !important; font-size: 13px; border-collapse: collapse;' class=''>";
+    this.html += `<thead style='height: 37px !important;'>
+    <tr>
+    <th style='background: #B8122B !important; color: white !important; text-align: center !important; border: 0.1px solid #dbdbdb4f;'>Código Producto</th>
+    <th style='background: #B8122B !important; color: white !important; text-align: center !important; border: 0.1px solid #dbdbdb4f;'>Nombre Producto</th>
+    <th style='background: #B8122B !important; color: white !important; text-align: center !important; border: 0.1px solid #dbdbdb4f;'>Unidad Medida</th>
+    <th style='background: #B8122B !important; color: white !important; text-align: center !important; border: 0.1px solid #dbdbdb4f;'>Sub Familia</th>
+    <th style='background: #B8122B !important; color: white !important; text-align: center !important; border: 0.1px solid #dbdbdb4f;'>Tipo OP</th>
+    <th style='background: #B8122B !important; color: white !important; text-align: center !important; border: 0.1px solid #dbdbdb4f;'>Número Cotización</th>
+    <th style='background: #B8122B !important; color: white !important; text-align: center !important; border: 0.1px solid #dbdbdb4f;'>Destino</th>
+    <th style='background: #B8122B !important; color: white !important; text-align: center !important; border: 0.1px solid #dbdbdb4f;'>Vendedor</th>
+    </tr>
+    </thead>
+    <tbody style='font-size: 13px !important; text-align: center;'>`;
+    
+    this.DatosJson2.forEach(element => {
+        this.html += "<tr>";
+        this.html += `<td style='border: 0.1px solid #dbdbdb4f;'>${element.codigoProducto}</td>`;
+        this.html += `<td style='border: 0.1px solid #dbdbdb4f;'>${element.nombreProducto}</td>`;
+        this.html += `<td style='border: 0.1px solid #dbdbdb4f;'>${element.unidadMedida}</td>`;
+        this.html += `<td style='border: 0.1px solid #dbdbdb4f;'>${element.subFamilia}</td>`;     
+        this.html += `<td style='border: 0.1px solid #dbdbdb4f;'>${element.tipo_OP}</td>`;
+        this.html += `<td style='border: 0.1px solid #dbdbdb4f;'>${element.numeroCotizacion}</td>`;
+        this.html += `<td style='border: 0.1px solid #dbdbdb4f;'>${element.destino}</td>`;
+        this.html += `<td style='border: 0.1px solid #dbdbdb4f;'>${element.vendedor}</td>`;
+        this.html += "</tr>";
+    });
+    
+    this.html += "</tbody></table>";
+    
+    this.contenthtml.nativeElement.innerHTML = this.html;
+    this.spinner.hide();
+    
+    this.generarPDF2();
+  }
 }
  

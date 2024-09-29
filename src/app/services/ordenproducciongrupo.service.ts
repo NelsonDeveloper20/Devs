@@ -25,6 +25,10 @@ export class OrdenproduccionGrupoService {
     return this.http.get<any>(`${this.urlBase}Layout?numeroCotizacionGrupo=`+numeroCotizacionGrupo);
   }
   
+  ObtenerLayoutComponentes(numeroCotizacionGrupo: any): Observable<any> {
+    return this.http.get<any>(`${this.urlBase}Layout/Componentes?numeroCotizacionGrupo=`+numeroCotizacionGrupo);
+  }
+  
   CambiarEstadoGrupo(destino :any,data: any): Observable<IApiResponse> {
     const headers = { 'Content-Type': 'application/json-patch+json' };
     return this.http.post<IApiResponse>(this.urlBase + 'DetalleOpgrupo/CambioEstadoOP?destino=' + destino, data, { headers: headers });

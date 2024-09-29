@@ -103,12 +103,29 @@ export class ScanestacionDialogComponent  implements OnInit {
           }, 500);
         }, 900); // Ajusta el tiempo según sea necesario
       } else {
+        if(currentIndex==1 && this.DataCotizacion.length==1){
+         
+        console.log("NO ENTRA1");
+        this.stepper.next();
+        setTimeout(() => {
+          this.focusNextInput(currentIndex+1); // Foco en el siguiente paso
+        }, 500); // Ajusta el tiempo según sea necesario
+        }else if(currentIndex==1 && this.DataCotizacion.length== undefined){
+          
+        console.log("NO ENTRA2");
+        this.stepper.next();
+        setTimeout(() => {
+          this.focusNextInput(currentIndex+1); // Foco en el siguiente paso
+        }, 500); // Ajusta el tiempo según sea necesario
+        }
+        else{
         console.log("NO ENTRA");
         this.stepper.next();
         setTimeout(() => {
           this.focusNextInput(currentIndex); // Foco en el siguiente paso
         }, 500); // Ajusta el tiempo según sea necesario
       }
+    }
     }
   }
 
@@ -317,6 +334,11 @@ export class ScanestacionDialogComponent  implements OnInit {
     console.log("INDICE");
     console.log(currentIndex);
     switch (currentIndex) {
+      case 0:
+        if (this.secondCtrlInput && this.secondCtrlInput.nativeElement) {
+          this.secondCtrlInput.nativeElement.focus();
+        }
+        break;
       case 1:
         if (this.secondCtrlInput && this.secondCtrlInput.nativeElement) {
           this.secondCtrlInput.nativeElement.focus();

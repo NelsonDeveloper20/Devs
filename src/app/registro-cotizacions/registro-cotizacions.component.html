@@ -65,8 +65,8 @@
                    <!-- Muestra otras propiedades de la orden de producción según sea necesario -->
                  </mat-autocomplete>
                               <div class="input-group-prepend" *ngIf="isRequesting">
-                                <img src="https://digital.olivesoftware.com/olive/odn/pbdnpalmbeachlife/Styles/Images/loading.gif" style="
-                                width: 48px; height: 48px;">
+                                <img src="../../assets/loading.gif" style="
+                                width: 80px;transform: scale(1.5);">
                               </div>
                           </div>
                       </div> 
@@ -350,7 +350,8 @@
                                         </td> 
                                         <td *ngIf="getRowSpan(i) > 0" [attr.rowspan]="getRowSpan(i)">
                                           
-                    <button class="btn btn-primary-azul tp-btn-light sharp"  matTooltip="Generar PDF Layout"    type="button" (click)="GenerarLayout(itemproducto.cotizacionGrupo)">
+                    <button class="btn btn-primary-azul tp-btn-light sharp"  matTooltip="Generar PDF Layout"    type="button"
+                     (click)="GenerarLayout(itemproducto.cotizacionGrupo,itemproducto.tipoGrupo)">
                       <mat-icon>apps</mat-icon> 
                   </button> 
                                          </td>

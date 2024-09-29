@@ -78,9 +78,9 @@ export class RegistroCotizacionsComponent implements OnInit {
    
   @ViewChild(LayoutComponent) layoutComponent: LayoutComponent;
    valor: string = 'algunValor';
-   GenerarLayout(cotizacionGrupo:any) {
+   GenerarLayout(cotizacionGrupo:any,tipoProducto:any) {
     if (this.layoutComponent) {
-      this.layoutComponent.ejecutarAccionConParametro(cotizacionGrupo);
+      this.layoutComponent.ejecutarAccionConParametro(cotizacionGrupo,tipoProducto);
     }
   }
    Productos: any=[];
