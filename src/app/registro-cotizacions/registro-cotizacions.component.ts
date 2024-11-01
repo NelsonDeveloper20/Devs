@@ -19,6 +19,7 @@ import { ProyectoService } from '../services/proyecto.service';
 import { ComunicacionService } from '../shared/comunicacion.service';
 import { LayoutComponent } from '../layout/layout.component';
 import { OrdenproduccionGrupoService } from '../services/ordenproducciongrupo.service';
+import { SapService } from '../services/sap.service';
 export interface ListasModel {
   isSelected: boolean;
   id: number;
@@ -51,7 +52,7 @@ export class RegistroCotizacionsComponent implements OnInit {
     private _OrdenService: OrdenproduccionService,
     private _proyectoService: ProyectoService,
     private ordenproduccionGrupoService: OrdenproduccionGrupoService,
-    private comunicacionService: ComunicacionService
+    private comunicacionService: ComunicacionService,private sapService: SapService
   ) {  
     this.filteredStates = this.stateCtrl.valueChanges
       .pipe(
@@ -105,6 +106,128 @@ export class RegistroCotizacionsComponent implements OnInit {
           this.totalRegistrados=0;
           this.totalPorRegistrar=0;
           this.Productos=response; 
+          console.log("RESULTS");
+          console.log(response);
+          this.Productos.forEach(item=> 
+            {               
+              this.totalRegistrados++;
+              var cod_prod=item.codigoProducto.substring(0,3);
+              if(cod_prod!=='PRT'){
+                this.totalComponentes++;
+                 item.indexDetalle="";
+                }else{
+                  this.totalProductos++;
+                } 
+            if(item.pase=="" && item.id!=="" && item.codigoProducto.substring(0,3)!=="PRT"){       //componentes ya guardados        
+              item.pase='PASDIRECCT';
+            }
+          } 
+
+          );         
+           const detalleSap= this.ordenes.Lineas;
+          detalleSap.forEach(item=> 
+            {             
+              this.Productos.push({
+                "id":"",
+   "numeroCotizacion":this.ordenes.numero,
+   "codigoSisgeco":this.ordenes.numero,
+   "codigoProducto":item.codarticulo,
+   "linea":item.linea,
+   "nombreProducto":item.des,
+   "unidadMedida":item.codunidad,
+   "cantidad":item.cantidad,
+   "alto":item.alto,
+   "ancho":item.ancho,
+   "indiceAgrupacion":"", //NO
+   "indexDetalle":"",//NO
+   "pase":"",//NO
+   /*
+     CASE
+      WHEN SUBSTRING(cd.codarticulo, 1, 3) != 'PRT' THEN 'PASDIRECCT'
+      ELSE ''
+  END AS Pase,
+   */
+   "existe":"NO",
+   "familia":item.Familia,
+   "subFamilia":item.codsubfamilia,
+   "precio":item.valor,
+   "precioInc":item.valorinc,
+   "igv":item.totalIGV,
+   "lote":"0",
+   "fechaProduccion":"",
+   "fechaEntrega":"",
+   "nota":"",
+   "color":"",
+   "idTbl_Ambiente":"",
+   "ambiente":"",
+   "turno":"",
+   "soporteCentral":"",
+   "tipoSoporteCentral":"",
+   "caida":"",
+   "accionamiento":"",
+   "codigoTubo":"",
+   "nombreTubo":"",
+   "mando":"",
+   "tipoMecanismo":"",
+   "modeloMecanismo":"",
+   "tipoCadena":"",
+   "codigoCadena":"",
+   "cadena":"",
+   "tipoRiel":"",
+   "tipoInstalacion":"",
+   "codigoRiel":"",
+   "riel":"",
+   "tipoCassete":"",
+   "lamina":"",
+   "apertura":"",
+   "viaRecogida":"",
+   "tipoSuperior":"",
+   "codigoBaston":"",
+   "baston":"",
+   "numeroVias":"",
+   "tipoCadenaInferior":"",
+   "mandoCordon":"",
+   "mandoBaston":"",
+   "codigoBastonVarrilla":"",
+   "bastonVarrilla":"",
+   "cabezal":"",
+   "codigoCordon":"",
+   "cordon":"",
+   "codigoCordonTipo2":"",
+   "cordonTipo2":"",
+   "cruzeta":"",
+   "dispositivo":"",
+   "codigoControl":"",
+   "control":"",
+   "codigoSwitch":"",
+   "switch":"",
+   "llevaBaston":"",
+   "mandoAdaptador":"",
+   "codigoMotor":"",
+   "motor":"",
+   "codigoTela":"",
+   "tela":"",
+   "cenefa":"",
+   "numeroMotores":"",
+   "serie":"",
+   "alturaCadena":"",
+   "alturaCordon":"",
+   "marcaMotor":"",
+   "idUsuarioCrea":"",
+   "idUsuarioModifica":"",
+   "fechaCreacion":"",
+   "fechaModifica":"",
+   "idEstado":"",
+   "cotizacionGrupo":"",
+   "tipo":"Producto",
+   "estadoOp":"2",
+   "escuadra":"",
+   "central":""
+              })
+            }
+          ); 
+
+          /*
           this.Productos.forEach(item=> 
             {
               
@@ -132,9 +255,8 @@ export class RegistroCotizacionsComponent implements OnInit {
             if(item.pase=="" && item.id!=="" && item.codigoProducto.substring(0,3)!=="PRT"){       //componentes ya guardados        
               item.pase='PASDIRECCT';
             }
-          }
-
-          )
+          } VERSION SISGECO
+          */
           this.spinner.hide();
           
     this.listarAmbientes(this.selectedState.numero);
@@ -144,10 +266,12 @@ export class RegistroCotizacionsComponent implements OnInit {
         }
       );
    }
-  ngOnInit(): void {
+
+  async ngOnInit() {
     try{
-    this.ListarProyecto();
-     this.listas();
+    await  this.ListarOrdenesSap();
+   await  this.ListarProyecto();
+    await this.listas();
     }catch(ex){      
     }
     this.route.params.subscribe(params => {
@@ -394,7 +518,8 @@ export class RegistroCotizacionsComponent implements OnInit {
   //Orden: ITblOrdenProduccion={};
   Orden: ITblOrdenProduccion = {} as ITblOrdenProduccion;
   Guardar(){
-    if (!this.selectedState.numero){ 
+   
+    if (!this.selectedState.numero){  
      this.toaster.open({
     text: "Por favor, complete todos los campos antes de guardar.",
     caption: 'Mensaje',
@@ -658,23 +783,21 @@ eliminarAmbiente(indice: number) {
       var codigoProducto=producto.codigoProducto.slice(0, 5);// Salida: PRTRS
       if(codigoProductoCopiado==codigoProducto){
         this.itemCopiado.id="";
-        this.itemCopiado.codigoProducto=producto.codigoProducto;
-        this.itemCopiado.linea=producto.linea;
-        this.itemCopiado.nombreProducto=producto.nombreProducto;
-        this.itemCopiado.unidadMedida=producto.unidadMedida;
-        this.itemCopiado.alto=producto.alto;
-        this.itemCopiado.ancho=producto.ancho;
-        this.itemCopiado.familia=producto.familia;
-        this.itemCopiado.subFamilia=producto.subFamilia;
-        this.itemCopiado.precio=producto.precio;
-        this.itemCopiado.precioInc=producto.precioInc;
-        this.itemCopiado.igv=producto.igv;
-        this.itemCopiado.lote=producto.lote; 
+        this.itemCopiado.codigoProducto=producto.codigoProducto.toString();
+        this.itemCopiado.linea=producto.linea.toString();
+        this.itemCopiado.nombreProducto=producto.nombreProducto.toString();
+        this.itemCopiado.unidadMedida=producto.unidadMedida.toString();
+        this.itemCopiado.alto=producto.alto.toString();
+        this.itemCopiado.ancho=producto.ancho.toString();
+        this.itemCopiado.familia=producto.familia.toString();
+        this.itemCopiado.subFamilia=producto.subFamilia.toString();
+        this.itemCopiado.precio=producto.precio.toString();
+        this.itemCopiado.precioInc=producto.precioInc.toString();
+        this.itemCopiado.igv=producto.igv.toString();
+        this.itemCopiado.lote=producto.lote.toString();
         this.itemCopiado.fechaProduccion=""; 
         this.itemCopiado.turno="";
         this.itemCopiado.indiceAgrupacion="";
-        
-
         producto=this.itemCopiado;
         this.itemCopiado=null;
 
@@ -904,39 +1027,45 @@ eliminarAmbiente(indice: number) {
         })
       );
   }
+  ordenes:any;
+  onSelectState(state: any) { 
+    console.log('El objeto seleccionado ha cambiado:', state);
+    if(state){
 
-  onSelectState(state: any) {
-    this.Orden.id="";
-    this.Orden.numeroCotizacion =state.numero;
-    this.Orden.codigoSisgeco=state.numdocref;
-    this.Orden.numdoCref =state.numdocref;
-    this.Orden.rucCliente=state.ruc;
-    this.Orden.cliente=state.cliente;
-    this.Orden.total=state.total;
-    this.Orden.fechaCotizacion=state.fecha_cotizacion;
-    this.Orden.fechaVenta=state.fechaVenta;
-    this.Orden.tipoMoneda=state.tipomoneda;
-    this.Orden.tipoCambio=state.tipocambio;
-    this.Orden.subTotal =state.subtotal;
-    this.Orden.monto=state.monto;
-    this.Orden.codigoVendedor=state.codvendedor;
-    this.Orden.nombreVendedor=state.nomVendedor;
-    this.Orden.distrito=state.distrito;
-    this.Orden.provincia=state.provincia;
-    this.Orden.departamento=state.departamento;
-    this.Orden.observacion=state.observacion;
-    this.Orden.observacion=state.observacion2;
-    this.Orden.totalIgv=state.totalIGV;
-    this.Orden.direccion=state.direccion;
-    this.Orden.telefono=state.telefono;
-    this.Orden.archivo=state.archivo;
-    this.Orden.tipoCliente=state.tipoCliente;
-    //this.Orden.pa=state.Pase; 
-    this.selectedState = state;
-    this.Productos=[];
-    this.listarAmbientes(this.selectedState.numero);
-
-    this.listarOrdenPorCotizacion(this.Orden.numeroCotizacion);
+      this.Orden.id="";
+      this.Orden.numeroCotizacion =state.numero;
+      this.Orden.codigoSisgeco=state.numdocref;
+      this.Orden.numdoCref =state.numdocref;
+      this.Orden.rucCliente=state.ruc;
+      this.Orden.cliente=state.cliente;
+      this.Orden.total=state.total;
+      this.Orden.fechaCotizacion=state.fecha_cotizacion;
+      this.Orden.fechaVenta=state.fechaVenta;
+      this.Orden.tipoMoneda=state.tipomoneda;
+      this.Orden.tipoCambio=state.tipocambio;
+      this.Orden.subTotal =state.subtotal;
+      this.Orden.monto=state.total;
+      this.Orden.codigoVendedor=state.codvendedor;
+      this.Orden.nombreVendedor=state.nomVendedor;
+      this.Orden.distrito=state.distrito;
+      this.Orden.provincia=state.provincia;
+      this.Orden.departamento=state.departamento;
+      this.Orden.observacion=state.observacion;
+      this.Orden.observacion=state.observacion2;
+      this.Orden.totalIgv=state.totalIGV;
+      this.Orden.direccion=state.direccion;
+      this.Orden.telefono=state.telefono;
+      this.Orden.archivo=state.archivo;
+      this.Orden.tipoCliente=state.tipoCliente;
+      this.Orden.fechaSap=state.fecha_cotizacion;
+      //this.Orden.pa=state.Pase; 
+      this.selectedState = state;
+      this.Productos=[];
+       
+      this.listarAmbientes(this.selectedState.numero);
+      
+      this.listarOrdenPorCotizacion(this.Orden.numeroCotizacion);
+    }
   } 
   handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
@@ -950,98 +1079,91 @@ eliminarAmbiente(indice: number) {
     return throwError('Hubo un problema al obtener los datos. Por favor, intenta de nuevo más tarde.');
   }
 
-  OrdeDeVentaPendiente=[
-    {
-      "id": 1,
-      "idTipoUsuario": 1,
-      "nombre": "Marisol",
-      "apellido": "Pinares  Sanchez",
-      "dni": "7776",
-      "correo": "marisolpinares@gmail.com",
-      "usuario": "Marisol",
-      "clave": "123456",
-      "codigoUsuario": "123",
-      "fechaCreacion": null,
-      "fechaModificacion": null,
-      "idUsuarioCreacion": null,
-      "idUsuarioModifica": null,
-      "estado": 1,
-      "idRol": 7,
-      "nombreRol": "Administrador"
-    },
-    {
-      "id": 1006,
-      "idTipoUsuario": 1,
-      "nombre": "Nelson",
-      "apellido": "RODRIGUEZ",
-      "dni": "87654321",
-      "correo": "nelson@gmail.com",
-      "usuario": "Nelson",
-      "clave": "12345",
-      "codigoUsuario": "",
-      "fechaCreacion": null,
-      "fechaModificacion": null,
-      "idUsuarioCreacion": null,
-      "idUsuarioModifica": null,
-      "estado": 1,
-      "idRol": 1013,
-      "nombreRol": "Gerente"
-    },
-    {
-      "id": 1007,
-      "idTipoUsuario": 1,
-      "nombre": "OSCAR",
-      "apellido": "Pinares sanchez",
-      "dni": "60283143",
-      "correo": "marisolpinares@NAVASOFT.COM",
-      "usuario": "OPINARES",
-      "clave": "123456789",
-      "codigoUsuario": "",
-      "fechaCreacion": null,
-      "fechaModificacion": null,
-      "idUsuarioCreacion": null,
-      "idUsuarioModifica": null,
-      "estado": 1,
-      "idRol": 4,
-      "nombreRol": "Almacén"
-    },
-    {
-      "id": 1009,
-      "idTipoUsuario": 3,
-      "nombre": "NZ FJN",
-      "apellido": "Rz$",
-      "dni": "3487743",
-      "correo": "Goldes@gmail.com",
-      "usuario": "nzfjn",
-      "clave": "123",
-      "codigoUsuario": "",
-      "fechaCreacion": null,
-      "fechaModificacion": null,
-      "idUsuarioCreacion": null,
-      "idUsuarioModifica": null,
-      "estado": 1,
-      "idRol": 7,
-      "nombreRol": "Administrador"
-    },
-    {
-      "id": 1010,
-      "idTipoUsuario": 1,
-      "nombre": "MARIANO",
-      "apellido": "PINARES SANCHEZ",
-      "dni": "60283144",
-      "correo": "olindapinares@gmail.com",
-      "usuario": "mpinares",
-      "clave": "12345",
-      "codigoUsuario": "",
-      "fechaCreacion": null,
-      "fechaModificacion": null,
-      "idUsuarioCreacion": null,
-      "idUsuarioModifica": null,
-      "estado": 1,
-      "idRol": 7,
-      "nombreRol": "Administrador"
-    }
-  ];
+  OrdeDeVentaPendiente=[];
+  //#region  ::::::::::::::::::SAP
+  async ListarOrdenesSap() {
+    this.spinner.show();
+    this.sapService.ListarOrdenes().subscribe(
+      datas => {
+        var data=datas.value;
+        console.log('Datos originales:', data);
+  
+        // Verificar si la respuesta es un array
+        if (!Array.isArray(data)) {
+          console.error('La respuesta no es un array:', data);
+          return; // Salir de la función si no es un array
+        }
+  
+        const fieldMap = {
+          DocNum: 'numero',
+          NumAtCard: 'numdocref',
+          CardCode: 'ruc',
+          CardName: 'cliente',
+          DocTotal: 'total',
+          DocDate: 'fecha_cotizacion',
+          TaxDate: 'fechaVenta',
+          DocCur: 'tipomoneda',
+          DocRate: 'tipocambio',
+          SubTotal: 'subtotal',
+          SlpCode: 'codvendedor',
+          SlpName: 'nomVendedor',
+          ZipCode: 'distrito',
+          County: 'provincia',
+          State: 'departamento',
+          Comments: 'observacion',
+          VatSum: 'totalIGV',
+          Street: 'direccion',
+          Phone: 'telefono',
+          GrpName: 'tipoCliente',
+          ItemCode: 'codarticulo',
+          LineNum: 'linea',
+          ItemName: 'des',
+          unitMsr: 'codunidad',
+          Quantity: 'cantidad',
+          Alto: 'alto',
+          Ancho: 'ancho',
+          Familia: 'Familia',
+          CodFamilia: 'codfamilia',
+          CodSubfamilia: 'codsubfamilia',
+          Price: 'valor',
+          PriceAfVAT: 'valorinc',
+          //VatSum: 'igv'
+        };
+  
+        const renameFields = (item: any) => {
+          return Object.keys(item).reduce((acc, key) => {
+            const newKey = fieldMap[key] || key; // Usa el nombre mapeado o deja el original si no hay mapeo
+            acc[newKey] = item[key];
+            return acc;
+          }, {} as any);
+        };
+  
+        // Renombrar los campos en la lista principal y en cada línea de los elementos
+        this.OrdeDeVentaPendiente = data.map((order: any) => {
+          const renamedOrder = renameFields(order);
+          
+          // Verificar que `Lineas` existe y es un array antes de mapearlo
+          renamedOrder.Lineas = Array.isArray(order.Lineas) 
+            ? order.Lineas.map((linea: any) => renameFields(linea))
+            : [];
+            
+          return renamedOrder;
+        });
+  
+        console.log('Datos con nombres renombrados:', this.OrdeDeVentaPendiente);
+        
+        this.spinner.hide();
+      },
+      error => {
+        this.spinner.hide();
+        console.error('Error en la solicitud autenticada:', error);
+      }
+    );
+  }
+  
+  
+  
+  //#endregion
   
 }
 

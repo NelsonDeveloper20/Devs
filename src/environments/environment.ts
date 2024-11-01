@@ -9,5 +9,6 @@ export const environment = {
   authRedirectUri: 'http://localhost:4200',
   logoutRedirectUri: 'http://localhost:4200', 
   baseUrl: 'https://localhost:7014', //API 
+  urlSap:'http://191.98.160.56:8081/'
 };
  

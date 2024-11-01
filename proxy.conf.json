@@ -1,0 +1,10 @@
+{
+    "/apisap": {
+      "target": "http://191.98.160.56:8081",
+      "secure": false,
+      "logLevel": "debug",
+      "changeOrigin": true,
+      "pathRewrite": { "^/apisap": "" }
+    }
+  }
+  

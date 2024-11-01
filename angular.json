@@ -51,13 +51,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "19mb",
-                  "maximumError": "19mb"
+                  "maximumWarning": "29mb",
+                  "maximumError": "29mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "19mb",
-                  "maximumError": "19mb"
+                  "maximumWarning": "29mb",
+                  "maximumError": "29mb"
                 }
               ],
               "fileReplacements": [
@@ -81,6 +81,10 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {           
+          "proxyConfig": "proxy.conf.json"
+        },
+
           "configurations": {
             "production": {
               "browserTarget": "fasto:build:production"

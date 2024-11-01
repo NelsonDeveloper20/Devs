@@ -8,4 +8,5 @@ export const environment = {
   authRedirectUri: 'https://aprobaciones.panaautos.com.pe', 
   logoutRedirectUri: 'https://aprobaciones.panaautos.com.pe/#/', 
   baseUrl: 'http://localhost:81', // PRODUCCION
+  urlSap:'http://191.98.160.56:8081/'
 };

@@ -52,11 +52,18 @@
                           <label for="username">Buscar por Nº Cotizacion</label>
                           <div class="input-group">    
 
-                            <select class="d-block default-select form-control selectpicker w-100" id="state" required [(ngModel)]="Orden.idTipoPeracion">
-                              <option value="">--Seleccione--</option>
-                              <option *ngFor="let item of OrdeDeVentaPendiente" [value]="item.id">{{ item.dni }}</option>
-                            </select>
-
+                            <select 
+                            class="d-block default-select form-control selectpicker w-100"
+                            id="state"
+                            required
+                            [(ngModel)]="ordenes"  
+                            (change)="onSelectState(ordenes)"  
+                          >
+                            <option value="">--Seleccione--</option>
+                            <option *ngFor="let item of OrdeDeVentaPendiente" [ngValue]="item">{{ item.numero }}</option>
+                          </select>
+                          
+                          
                              <input   class="form-control"
                               placeholder="Número de Orden"
                               aria-label="Número de Orden"
@@ -70,7 +77,7 @@
                               <div class="input-group-prepend" *ngIf="isRequesting">
                               <img src="../../assets/loading.gif" style="
                               width: 80px;transform: scale(1.5);">
-                              </div> 
+                              </div>  
                           </div>
                       </div> 
                       <div class="col-lg-4 mb-3">
@@ -123,11 +130,13 @@
                       </div>
                       <div class="col-lg-4 mb-3">
                           <label for="zip">Fecha Sap</label>
-                          <mat-form-field appearance="outline" style="width: 100%;">
+                          <!--<mat-form-field appearance="outline" style="width: 100%;">
                               <input class="form-input" matInput [matDatepicker]="picker" [(ngModel)]="Orden.fechaSap"/>
                               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                               <mat-datepicker #picker></mat-datepicker>
-                          </mat-form-field>
+                          </mat-form-field>-->
+                          
+                          <input type="text" class="form-control" id="zip" placeholder="Fecha Sap" required disabled [(ngModel)]="Orden.fechaSap"/>
                       </div>
                       <!--<div class="col-lg-4 mb-3">
                           <label for="zip">Fecha Inicio</label>

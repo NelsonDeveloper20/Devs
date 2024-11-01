@@ -42,7 +42,8 @@ export class OrdenproduccionService {
 
     //REGISTRO
     RegistrarOrden(_orden: ITblOrdenProduccion,_archivo:any ): Observable<IApiResponse>{ 
-   
+   console.log("ENVIANDO;");
+   console.log(JSON.stringify(_orden));
    const formData = new FormData();
     formData.append('orden', JSON.stringify(_orden)); // Convertir el objeto a JSON y agregarlo al FormData
     formData.append('archivo', _archivo);
