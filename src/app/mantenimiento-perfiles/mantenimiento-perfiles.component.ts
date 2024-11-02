@@ -3,7 +3,7 @@ import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { PerfilGrupoService } from '../services/perfilservice';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Toaster } from 'ngx-toast-notifications';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig } from '@angular/material/legacy-dialog';
 import { AsignarModuloDialogComponent } from './asignar-modulo-dialog/asignar-modulo-dialog.component';
 import Swal from 'sweetalert2';
   

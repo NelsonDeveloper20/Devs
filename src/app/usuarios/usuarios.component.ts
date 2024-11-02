@@ -5,13 +5,13 @@ import { Toaster } from 'ngx-toast-notifications';
 import { RequestService } from '../services/request.service';
 import {Location} from '@angular/common';
 //import {AfterViewInit, Component, ViewChild} from '@angular/core';
-import {MatPaginator} from '@angular/material/paginator';
+import {MatLegacyPaginator as MatPaginator} from '@angular/material/legacy-paginator';
 import {MatSort} from '@angular/material/sort';
-import {MatTableDataSource} from '@angular/material/table'; 
+import {MatLegacyTableDataSource as MatTableDataSource} from '@angular/material/legacy-table'; 
 import { NgxSpinnerService } from 'ngx-spinner';
 //POP
 import { RolUsuarioResponse, User, Usuario } from './users.model';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig } from '@angular/material/legacy-dialog';
 import { RegistrarUsuarioComponent } from './registrar-usuario/registrar-usuario.component';
 import {ModificarUsuarioComponent } from './modificar-usuario/modificar-usuario.component';
 import {Dialog_userComponent } from './dialog_user.component';

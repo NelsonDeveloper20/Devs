@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ProfileType } from 'src/app/services/auth.model';
 import { AuthService } from 'src/app/services/auth.service';
@@ -8,7 +8,7 @@ import { UserService } from 'src/app/services/user.service';
 import { ModificarUsuario, RolUsuario, Roles, Sedes, UnidadNegocioS, User, Usuario } from '../users.model';
 import { Toaster } from 'ngx-toast-notifications';
 import { MatSort, Sort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { HttpClient } from '@angular/common/http';
 import { IApiResponse } from 'src/app/services/service.model';
 import { environment } from 'src/environments/environment';

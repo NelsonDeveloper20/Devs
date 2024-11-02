@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Toaster } from 'ngx-toast-notifications';
 import { NavigationExtras, Router } from '@angular/router'; 
@@ -15,7 +15,7 @@ import * as moment from 'moment';
 import { OperacionesConstruccionService } from 'src/app/services/operacionesconstruccion.service';
 import Swal from 'sweetalert2';
 import { OrdenproduccionGrupoService } from 'src/app/services/ordenproducciongrupo.service';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig } from '@angular/material/legacy-dialog';
 import { DetalleProductosComponent } from 'src/app/solicitud-pendiente/detalle-productos/detalle-productos.component';
 import jsPDF from 'jspdf';
 export interface ElementoTabla {

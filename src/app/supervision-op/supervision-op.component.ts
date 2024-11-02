@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MantenimientoOPService } from '../services/mantenimiento-op.service';
 import * as moment from 'moment';
 import Swal from 'sweetalert2';
 import { Toaster } from 'ngx-toast-notifications';
 import { SupervisionService } from '../services/supervision.service';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig } from '@angular/material/legacy-dialog';
 import { SupervisionDialogComponent } from './supervision-dialog/supervision-dialog.component';
 
 @Component({

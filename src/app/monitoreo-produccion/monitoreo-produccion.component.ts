@@ -5,12 +5,12 @@ import { Toaster } from 'ngx-toast-notifications';
 import { MonitoreoService } from '../services/monitoreo.service';
 import * as moment from 'moment';
 import { ThemePalette } from '@angular/material/core';
-import { ProgressBarMode } from '@angular/material/progress-bar';
-import { MatTabChangeEvent } from '@angular/material/tabs';
+import { LegacyProgressBarMode as ProgressBarMode } from '@angular/material/legacy-progress-bar';
+import { MatLegacyTabChangeEvent as MatTabChangeEvent } from '@angular/material/legacy-tabs';
 declare var $: any; // Declara la variable $ para usar jQuery
 import * as XLSX from 'xlsx';
 import Swal from 'sweetalert2';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig } from '@angular/material/legacy-dialog';
 import { DetalleMonitoreoDialogComponent } from './detalle-monitoreo-dialog/detalle-monitoreo-dialog.component';
 declare var $: any; // Declara la variable $ para usar jQuery
 @Component({

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MantenimientoOPService } from '../services/mantenimiento-op.service';
 import * as moment from 'moment';
