@@ -108,12 +108,7 @@ import { Error403Component } from './pages/error403/error403.component';
 import { Error404Component } from './pages/error404/error404.component';
 import { Error500Component } from './pages/error500/error500.component';
 import { Error503Component } from './pages/error503/error503.component';
-
-import { KanbanComponent } from './kanban/kanban.component';
-
-import { HeaderModule } from './kanban/header/header.module';
-import { BoardModule } from './kanban/board/board.module';
-
+ 
 import { TokenInterceptor } from './shared/interceptors/token.interceptor';
 
 import { LoginComponent } from './login/login.component';
@@ -196,8 +191,7 @@ import { LineaProdDialogComponent } from './registro-cotizacions/linea-prod-dial
     Error403Component,
     Error404Component,
     Error500Component,
-    Error503Component,
-    KanbanComponent,
+    Error503Component, 
     LoginComponent,
     HomeMainComponent,
     HomeMainUserComponent,
@@ -290,10 +284,7 @@ import { LineaProdDialogComponent } from './registro-cotizacions/linea-prod-dial
     MatTableModule,
     MatTooltipModule,
     MatTreeModule,
-
-    HeaderModule,
-    BoardModule,
-
+ 
     //AZURE
     //offc
     MsalModule.forRoot(

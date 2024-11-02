@@ -157,7 +157,7 @@ const _hash = true; // anteriormente ha estado en true
   imports: [
     RouterModule.forRoot(routes, {
       useHash: _hash,
-      initialNavigation: !isIframe ? 'enabled' : 'disabled',
+    //  initialNavigation: !isIframe ? 'enabled' : 'disabled',
     }),
   ],
   exports: [RouterModule],
