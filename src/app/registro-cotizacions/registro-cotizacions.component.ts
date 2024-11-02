@@ -11,7 +11,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { IApiResponse } from '../services/service.model';
 import Swal from 'sweetalert2';
 import { Observable, of, throwError } from 'rxjs';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { catchError, debounceTime, distinctUntilChanged, filter, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { ProyectoDialogComponent } from './proyecto-dialog/proyecto-dialog.component';
@@ -1013,7 +1013,7 @@ eliminarAmbiente(indice: number) {
   }
   //BUSQUEDA DINAMICA
    
-   stateCtrl = new FormControl();
+   stateCtrl = new UntypedFormControl();
    filteredStates: Observable<any[]>;
    selectedState: any;
    isRequesting = false;

@@ -17,7 +17,7 @@ import { Subject } from 'rxjs';
 import { MsalBroadcastService, MsalGuardConfiguration, MsalService, MSAL_GUARD_CONFIG } from '@azure/msal-angular';
 import { EventMessage, EventType, InteractionStatus, RedirectRequest } from '@azure/msal-browser';
 import { AzureAdDemoService } from '../azure-ad-demo.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 //END API
 @Component({
   selector: 'app-login',
@@ -25,7 +25,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit {
-  loginForm: FormGroup;
+  loginForm: UntypedFormGroup;
   
   user: Login={};
   loginDisplay = false;
@@ -45,7 +45,7 @@ export class LoginComponent implements OnInit {
 
   isUserLoggedIn:boolean=false;
   private readonly _destroy=new Subject<void>();
-  constructor(private fb: FormBuilder,
+  constructor(private fb: UntypedFormBuilder,
 //AZUREE
  
     //END AZURE

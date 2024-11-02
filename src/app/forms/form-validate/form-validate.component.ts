@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup,  FormBuilder,  Validators } from '@angular/forms';
+import { UntypedFormGroup,  UntypedFormBuilder,  Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-form-validate',
@@ -14,9 +14,9 @@ export class FormValidateComponent implements OnInit {
   }
 
 
-  angForm: FormGroup | any;
+  angForm: UntypedFormGroup | any;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: UntypedFormBuilder) {
     this.createForm();
   }
   

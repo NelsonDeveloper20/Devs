@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -18,12 +18,12 @@ export class ScanestacionDialogComponent  implements OnInit {
   @ViewChild('treeCtrlInput', { static: false }) treeCtrlInput: ElementRef;
   @ViewChild('stepper') stepper: MatStepper;
 
-  firstFormGroup: FormGroup;
-  secondFormGroup: FormGroup;
-  treeFormGroup: FormGroup;
+  firstFormGroup: UntypedFormGroup;
+  secondFormGroup: UntypedFormGroup;
+  treeFormGroup: UntypedFormGroup;
 
   constructor(
-    private _formBuilder: FormBuilder,
+    private _formBuilder: UntypedFormBuilder,
     private dialogRef: MatDialogRef<ScanestacionDialogComponent>,
     private _service: OperacionesConstruccionService,
     private spinner: NgxSpinnerService,
@@ -321,7 +321,7 @@ export class ScanestacionDialogComponent  implements OnInit {
     });
   }
 
-  private resetControl(formGroup: FormGroup, controlName: string, elementRef: ElementRef) {
+  private resetControl(formGroup: UntypedFormGroup, controlName: string, elementRef: ElementRef) {
     formGroup.get(controlName).reset();
     setTimeout(() => {
       if (elementRef && elementRef.nativeElement) {
