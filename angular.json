@@ -35,7 +35,6 @@
 			  "./node_modules/perfect-scrollbar/css/perfect-scrollbar.css",
               "./node_modules/ngx-lightbox/lightbox.css",
               "./node_modules/metismenujs/dist/metismenujs.css",
-              "src/assets/vendor/owl-carousel/owl.carousel.css",
               "src/assets/css/style.css",
               "src/assets/css/dashboard.css"
             ],

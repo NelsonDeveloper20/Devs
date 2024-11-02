@@ -47,16 +47,4 @@
     background-color: #1f1f1f; /* Cambia el color de fondo del sidenav */
     color: #ffffff; /* Cambia el color del texto del sidenav */
     /* Agrega cualquier otro estilo que desees */
-  }
-  /*
-   "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
-			  "./node_modules/bootstrap/dist/css/bootstrap.min.css",
-			  "./node_modules/perfect-scrollbar/css/perfect-scrollbar.css",
-              "./node_modules/ngx-lightbox/lightbox.css",
-              "./node_modules/metismenujs/dist/metismenujs.css",
-              "src/assets/vendor/owl-carousel/owl.carousel.css",
-              "src/assets/css/style.css",
-              "src/assets/css/dashboard.css",
-              "src/styles.css"
-            ],*/
+  } 

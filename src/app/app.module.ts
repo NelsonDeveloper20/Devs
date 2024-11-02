@@ -39,15 +39,11 @@ FullCalendarModule.registerPlugins([
   interactionPlugin,
 ]);
 
-import { MetismenuAngularModule } from '@metismenu/angular';
-import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
-
-import { NgxDropzoneModule } from 'ngx-dropzone';
-import { CarouselModule } from 'ngx-owl-carousel-o';
+import { MetismenuAngularModule } from '@metismenu/angular'; 
+import { NgxDropzoneModule } from 'ngx-dropzone'; 
 
 // ads*
-
-//NNNSSSimport { NGX_MAT_SELECT_CONFIGS,NgxMatSelectConfigs} from "ngx-mat-select";
+ 
  
 import { MatLegacyListModule as MatListModule } from '@angular/material/legacy-list';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
@@ -120,8 +116,7 @@ import { HomeMainUserComponent } from './home-main-user/home-main-user.component
 import { UsuariosComponent } from './usuarios/usuarios.component';
 import { RegistrarUsuarioComponent } from './usuarios/registrar-usuario/registrar-usuario.component';
 import { ModificarUsuarioComponent } from './usuarios/modificar-usuario/modificar-usuario.component';
-//ADS
-import { ToastNotificationsModule } from 'ngx-toast-notifications';
+//ADS 
 
 import { MatSelectFilterModule } from 'mat-select-filter';
 import { SearchPipe } from './search.pipe';
@@ -228,8 +223,7 @@ import { LineaProdDialogComponent } from './registro-cotizacions/linea-prod-dial
   ],
   imports: [
     HighchartsChartModule, //grafico
-    MatSelectFilterModule, //filter
-    ToastNotificationsModule,
+    MatSelectFilterModule, //filter 
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
@@ -243,10 +237,8 @@ import { LineaProdDialogComponent } from './registro-cotizacions/linea-prod-dial
     NgxSpinnerModule,
     LightboxModule,
     FullCalendarModule,
-    MetismenuAngularModule,
-    PerfectScrollbarModule,
-    NgxDropzoneModule,
-    CarouselModule,
+    MetismenuAngularModule, 
+    NgxDropzoneModule, 
     MatListModule,
     MatAutocompleteModule,
     MatFormFieldModule,
