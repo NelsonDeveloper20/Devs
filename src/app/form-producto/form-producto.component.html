@@ -107,297 +107,297 @@
    <button (click)="sets()" style="display: none;">listar combos</button>
    <button (click)="set2()" style="display: none;">asignar valores</button>
    <div class="row">
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['ancho'].visible !== 0"  id="reg_cont_ancho">
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['ancho'].visible !== 0"  id="reg_cont_ancho">
        <label>Ancho (m) </label>
        <input class="form-control" type="text" id="ancho" name="Ancho" readonly>
    </div> 
 
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['alto'].visible !== 0"  id="reg_cont_alto" >
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['alto'].visible !== 0"  id="reg_cont_alto" >
        <label>Alto (m) </label>
        <input class="form-control" type="text" id="alto" name="Alto" readonly>
    </div>
 
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['tela'].visible !== 0"  id="reg_cont_tela" >
-       <label>Tela <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['tela'].required === 1"  class="requerid_css">*</span></label>
-       <select   class="form-control"  id="tela" name="CodigoTela" (change)="ChangeTela($event)" [required]="objConfiguracionAtributos[TipoProducto]?.['tela'].required === 1">
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['tela'].visible !== 0"  id="reg_cont_tela" >
+       <label>Tela <span *ngIf="objConfiguracionAtributos[TipoProducto]['tela'].required === 1"  class="requerid_css">*</span></label>
+       <select   class="form-control"  id="tela" name="CodigoTela" (change)="ChangeTela($event)" [required]="objConfiguracionAtributos[TipoProducto]['tela'].required === 1">
         <option *ngFor="let opcion of CboTela" [value]="opcion.codigo">{{ opcion.nombre }} : {{opcion.codigo}}</option>
        </select>       
-       <input class="form-control" type="text"  id="Tela" name="Tela" readonly style="display: none;" *ngIf="objConfiguracionAtributos[TipoProducto]?.['tela'].visible !== 0">  
+       <input class="form-control" type="text"  id="Tela" name="Tela" readonly style="display: none;" *ngIf="objConfiguracionAtributos[TipoProducto]['tela'].visible !== 0">  
    </div>
 
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['color'].visible !== 0"  id="reg_cont_color" >
-       <label>Color <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['color'].required === 1"  class="requerid_css">*</span></label>
-       <input  placeholder="Ingrese Color" class="form-control" type="text" id="color" name="Color"  [required]="objConfiguracionAtributos[TipoProducto]?.['color'].required === 1">
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['color'].visible !== 0"  id="reg_cont_color" >
+       <label>Color <span *ngIf="objConfiguracionAtributos[TipoProducto]['color'].required === 1"  class="requerid_css">*</span></label>
+       <input  placeholder="Ingrese Color" class="form-control" type="text" id="color" name="Color"  [required]="objConfiguracionAtributos[TipoProducto]['color'].required === 1">
    </div>
 
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['cenefa'].visible !== 0"  id="reg_cont_cenefa">
-       <label>Cenefa <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['cenefa'].required === 1"  class="requerid_css">*</span></label>
-       <input type="text" class="form-control" autocomplete="off"  onkeypress="return filterFloat(event,this);" id="cenefa" name="Cenefa"  [required]="objConfiguracionAtributos[TipoProducto]?.['cenefa'].required === 1">
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['cenefa'].visible !== 0"  id="reg_cont_cenefa">
+       <label>Cenefa <span *ngIf="objConfiguracionAtributos[TipoProducto]['cenefa'].required === 1"  class="requerid_css">*</span></label>
+       <input type="text" class="form-control" autocomplete="off"  onkeypress="return filterFloat(event,this);" id="cenefa" name="Cenefa"  [required]="objConfiguracionAtributos[TipoProducto]['cenefa'].required === 1">
    </div>
 
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['tubo'].visible !== 0"  id="reg_cont_tubo" >
-       <label>Tubo <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['tubo'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control"  id="nomb_tubo" name="CodigoTubo"  [required]="objConfiguracionAtributos[TipoProducto]?.['tubo'].required === 1" (change)="ChangeTubo($event)">	
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['tubo'].visible !== 0"  id="reg_cont_tubo" >
+       <label>Tubo <span *ngIf="objConfiguracionAtributos[TipoProducto]['tubo'].required === 1"  class="requerid_css">*</span></label>
+       <select class="form-control"  id="nomb_tubo" name="CodigoTubo"  [required]="objConfiguracionAtributos[TipoProducto]['tubo'].required === 1" (change)="ChangeTubo($event)">	
         <option *ngFor="let opcion of CboNombreTubo" [value]="opcion.codigo">{{ opcion.nombre }} : {{opcion.codigo}}</option>		                        	
        </select> 
-       <input class="form-control" type="text"  id="NombreTubo" name="NombreTubo" readonly style="display: none;" *ngIf="objConfiguracionAtributos[TipoProducto]?.['tubo'].visible !== 0">  
+       <input class="form-control" type="text"  id="NombreTubo" name="NombreTubo" readonly style="display: none;" *ngIf="objConfiguracionAtributos[TipoProducto]['tubo'].visible !== 0">  
    </div>
        
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['mando'].visible !== 0"  id="reg_cont_mando">
-       <label>Mando / Ubicacion. Motor <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['mando'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control" id="mando" name="Mando"  [required]="objConfiguracionAtributos[TipoProducto]?.['mando'].required === 1">
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['mando'].visible !== 0"  id="reg_cont_mando">
+       <label>Mando / Ubicacion. Motor <span *ngIf="objConfiguracionAtributos[TipoProducto]['mando'].required === 1"  class="requerid_css">*</span></label>
+       <select class="form-control" id="mando" name="Mando"  [required]="objConfiguracionAtributos[TipoProducto]['mando'].required === 1">
         <option *ngFor="let opcion of CboMando" [value]="opcion.nombre">{{ opcion.nombre }}</option>
     </select>
    </div> 
 
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['soporteCentral'].visible !== 0"  id="reg_cont_soporteCentral" >
-       <label>Soporte Central <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['soporteCentral'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control" id="soporte_central" name="SoporteCentral" (change)="changeCboSoporteCentral($event)"  [required]="objConfiguracionAtributos[TipoProducto]?.['soporteCentral'].required === 1">          
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['soporteCentral'].visible !== 0"  id="reg_cont_soporteCentral" >
+       <label>Soporte Central <span *ngIf="objConfiguracionAtributos[TipoProducto]['soporteCentral'].required === 1"  class="requerid_css">*</span></label>
+       <select class="form-control" id="soporte_central" name="SoporteCentral" (change)="changeCboSoporteCentral($event)"  [required]="objConfiguracionAtributos[TipoProducto]['soporteCentral'].required === 1">          
         <option *ngFor="let opcion of CboSoporteCentral" [value]="opcion.nombre">{{ opcion.nombre }}</option>
        </select>
    </div> 
 
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['tipoSopCentral'].visible !== 0"  id="reg_cont_tipoSopCentral">
-       <label>Tipo Sop Central <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['tipoSopCentral'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control" id="tipo_sop_central" name="TipoSoporteCentral" [required]="objConfiguracionAtributos[TipoProducto]?.['tipoSopCentral'].required === 1">         
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['tipoSopCentral'].visible !== 0"  id="reg_cont_tipoSopCentral">
+       <label>Tipo Sop Central <span *ngIf="objConfiguracionAtributos[TipoProducto]['tipoSopCentral'].required === 1"  class="requerid_css">*</span></label>
+       <select class="form-control" id="tipo_sop_central" name="TipoSoporteCentral" [required]="objConfiguracionAtributos[TipoProducto]['tipoSopCentral'].required === 1">         
         <option *ngFor="let opcion of CboTipoSoporteCentral" [value]="opcion.nombre">{{ opcion.nombre }}</option>
     </select>
    </div>
 
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['caida'].visible !== 0"  id="reg_cont_caida" >
-       <label>Caida <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['caida'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control" id="caida" name="Caida" [required]="objConfiguracionAtributos[TipoProducto]?.['caida'].required === 1">
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['caida'].visible !== 0"  id="reg_cont_caida" >
+       <label>Caida <span *ngIf="objConfiguracionAtributos[TipoProducto]['caida'].required === 1"  class="requerid_css">*</span></label>
+       <select class="form-control" id="caida" name="Caida" [required]="objConfiguracionAtributos[TipoProducto]['caida'].required === 1">
         <option *ngFor="let opcion of CboCaida" [value]="opcion.nombre">{{ opcion.nombre }}</option>
     </select>
    </div> 
 
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['accionamiento'].visible !== 0"  id="reg_cont_accionamiento">
-       <label>Accionamiento <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['accionamiento'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control"  id="accionamiento" name="Accionamiento" (change)="existeMotor($event,'html')"  [required]="objConfiguracionAtributos[TipoProducto]?.['accionamiento'].required === 1" >
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['accionamiento'].visible !== 0"  id="reg_cont_accionamiento">
+       <label>Accionamiento <span *ngIf="objConfiguracionAtributos[TipoProducto]['accionamiento'].required === 1"  class="requerid_css">*</span></label>
+       <select class="form-control"  id="accionamiento" name="Accionamiento" (change)="existeMotor($event,'html')"  [required]="objConfiguracionAtributos[TipoProducto]['accionamiento'].required === 1" >
         <option *ngFor="let opcion of CboAccionamiento" [value]="opcion.nombre" [selected]="opcion.id === defaultAccionamientoId">{{ opcion.nombre }}</option>
        </select>
    </div>
 <!-- CONTINUAR DESDE AQUI-->
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['numeroMotores'].visible !== 0"  id="reg_cont_num_motores" >
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['numeroMotores'].visible !== 0"  id="reg_cont_num_motores" >
        <label>N° Motores (Unidad) </label>
        <input class="form-control" placeholder="Ingrese Cantidad de Motores" id="num_motores" name="NumeroMotores">
    </div>
 
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['nombreMotor'].visible !== 0"  id="reg_cont_nomb_motor" >
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['nombreMotor'].visible !== 0"  id="reg_cont_nomb_motor" >
        <label>Motor</label>
        <select  class="form-control controlMotor form-control-chosen-nomb_motor"   id="nomb_motor" name="CodigoMotor"  (change)="cancheCbopNombreMotor($event)" >
         <option *ngFor="let opcion of CboMotor" [value]="opcion.codigo">{{ opcion.nombre }} : {{opcion.codigo}}</option>
     </select>
-    <input class="form-control" type="text"  id="Motor" name="Motor" readonly style="display: none;" *ngIf="objConfiguracionAtributos[TipoProducto]?.['nombreMotor'].visible !== 0">  
+    <input class="form-control" type="text"  id="Motor" name="Motor" readonly style="display: none;" *ngIf="objConfiguracionAtributos[TipoProducto]['nombreMotor'].visible !== 0">  
    </div>  
 
-       <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['marcaMotor'].visible !== 0"  id="reg_cont_marcamotor">
+       <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['marcaMotor'].visible !== 0"  id="reg_cont_marcamotor">
        <label>Descripción Motor </label>
        <input type="text" class="form-control" readonly id="marcamotor" name="MarcaMotor">
       </div> 
 
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['serie'].visible !== 0"  id="reg_cont_serie">
-       <label>Serie <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['Serie'].required === 1"  class="requerid_css">*</span></label>
-       <input placeholder="Ingrese Serie" type="text" class="form-control" id="serie" name="Serie"  [required]="objConfiguracionAtributos[TipoProducto]?.['Serie'].required === 1">
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['serie'].visible !== 0"  id="reg_cont_serie">
+       <label>Serie <span *ngIf="objConfiguracionAtributos[TipoProducto]['Serie'].required === 1"  class="requerid_css">*</span></label>
+       <input placeholder="Ingrese Serie" type="text" class="form-control" id="serie" name="Serie"  [required]="objConfiguracionAtributos[TipoProducto]['Serie'].required === 1">
    </div> 
 
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['tipoMecanismo'].visible !== 0"  id="reg_cont_tipoMecanismo">
-       <label>Tipo Mecanismo <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['tipoMecanismo'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control" id="tipoMecanismo" name="TipoMecanismo" (change)="listarCboModeloMecanismo($event,'html')"  [required]="objConfiguracionAtributos[TipoProducto]?.['tipoMecanismo'].required === 1">
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['tipoMecanismo'].visible !== 0"  id="reg_cont_tipoMecanismo">
+       <label>Tipo Mecanismo <span *ngIf="objConfiguracionAtributos[TipoProducto]['tipoMecanismo'].required === 1"  class="requerid_css">*</span></label>
+       <select class="form-control" id="tipoMecanismo" name="TipoMecanismo" (change)="listarCboModeloMecanismo($event,'html')"  [required]="objConfiguracionAtributos[TipoProducto]['tipoMecanismo'].required === 1">
         <option *ngFor="let opcion of CboTipoMecanismo" [value]="opcion.nombre">{{ opcion.nombre }}</option>
     </select>
    </div> 
 
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['modeloMecanismo'].visible !== 0"  id="reg_cont_modeloMecanismo">
-       <label>Modelo Mecanismo <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['modeloMecanismo'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control" id="modeloMecanismo" name="ModeloMecanismo" [required]="objConfiguracionAtributos[TipoProducto]?.['modeloMecanismo'].required === 1">
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['modeloMecanismo'].visible !== 0"  id="reg_cont_modeloMecanismo">
+       <label>Modelo Mecanismo <span *ngIf="objConfiguracionAtributos[TipoProducto]['modeloMecanismo'].required === 1"  class="requerid_css">*</span></label>
+       <select class="form-control" id="modeloMecanismo" name="ModeloMecanismo" [required]="objConfiguracionAtributos[TipoProducto]['modeloMecanismo'].required === 1">
         <option *ngFor="let opcion of CboModeloMecanismo" [value]="opcion.nombre">{{ opcion.nombre }}</option>
        </select>
    </div> 
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['tipoCadena'].visible !== 0"  id="reg_cont_tipoCadena">
-       <label>Tipo Cadena <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['tipoCadena'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control" id="tipo_cadena" name="TipoCadena" (change)="listarCboCodigoCadena($event,'html')" [required]="objConfiguracionAtributos[TipoProducto]?.['tipoCadena'].required === 1">
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['tipoCadena'].visible !== 0"  id="reg_cont_tipoCadena">
+       <label>Tipo Cadena <span *ngIf="objConfiguracionAtributos[TipoProducto]['tipoCadena'].required === 1"  class="requerid_css">*</span></label>
+       <select class="form-control" id="tipo_cadena" name="TipoCadena" (change)="listarCboCodigoCadena($event,'html')" [required]="objConfiguracionAtributos[TipoProducto]['tipoCadena'].required === 1">
        <option *ngFor="let opcion of CboTipoCadena" [value]="opcion.nombre">{{ opcion.nombre }}</option>
         </select>
    </div> 
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['codcadena'].visible !== 0"  id="edi_cont_CadenaCod_c">
-   <label>Cod Cadena <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['codcadena'].required === 1"  class="requerid_css">*</span></label>
-   <select class="form-control" id="CadenaCod" name="CodigoCadena"  [required]="objConfiguracionAtributos[TipoProducto]?.['codcadena'].required === 1" (change)="ChangeCadena($event)"> 
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['codcadena'].visible !== 0"  id="edi_cont_CadenaCod_c">
+   <label>Cod Cadena <span *ngIf="objConfiguracionAtributos[TipoProducto]['codcadena'].required === 1"  class="requerid_css">*</span></label>
+   <select class="form-control" id="CadenaCod" name="CodigoCadena"  [required]="objConfiguracionAtributos[TipoProducto]['codcadena'].required === 1" (change)="ChangeCadena($event)"> 
     <option *ngFor="let opcion of CboCodigoCadena" [value]="opcion.codigo">{{ opcion.nombre }}</option>
 </select>
-<input class="form-control" type="text"  id="Cadena" name="Cadena" readonly style="display: none;" *ngIf="objConfiguracionAtributos[TipoProducto]?.['codcadena'].visible !== 0">  
+<input class="form-control" type="text"  id="Cadena" name="Cadena" readonly style="display: none;" *ngIf="objConfiguracionAtributos[TipoProducto]['codcadena'].visible !== 0">  
    </div>
 
 
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['alturaCadena'].visible !== 0"  id="reg_cont_alturaCadena">
-       <label>Altura Cadena <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['alturaCadena'].required === 1"  class="requerid_css">*</span></label>
-       <input placeholder="Ingrese Altura Cadena" autocomplete="off" type="number"  min="0"  class="form-control" id="altura_cadena" name="AlturaCadena"  [required]="objConfiguracionAtributos[TipoProducto]?.['alturaCadena'].required === 1">
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['alturaCadena'].visible !== 0"  id="reg_cont_alturaCadena">
+       <label>Altura Cadena <span *ngIf="objConfiguracionAtributos[TipoProducto]['alturaCadena'].required === 1"  class="requerid_css">*</span></label>
+       <input placeholder="Ingrese Altura Cadena" autocomplete="off" type="number"  min="0"  class="form-control" id="altura_cadena" name="AlturaCadena"  [required]="objConfiguracionAtributos[TipoProducto]['alturaCadena'].required === 1">
    </div>
 
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['tipoRiel'].visible !== 0"  id="reg_cont_tipoRiel">
-       <label>Tipo Riel <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['tipoRiel'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control" id="tipo_riel" name="TipoRiel" [required]="objConfiguracionAtributos[TipoProducto]?.['tipoRiel'].required === 1">
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['tipoRiel'].visible !== 0"  id="reg_cont_tipoRiel">
+       <label>Tipo Riel <span *ngIf="objConfiguracionAtributos[TipoProducto]['tipoRiel'].required === 1"  class="requerid_css">*</span></label>
+       <select class="form-control" id="tipo_riel" name="TipoRiel" [required]="objConfiguracionAtributos[TipoProducto]['tipoRiel'].required === 1">
         <option *ngFor="let opcion of CboTipoRiel" [value]="opcion.nombre">{{ opcion.nombre }}</option>
        </select>
    </div>
 
 
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['tipoInstalacion'].visible !== 0"  id="reg_cont_tipoInstalacion">
-       <label>Tipo Instalación <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['tipoInstalacion'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control" id="tipo_instalacion" name="TipoInstalacion" [required]="objConfiguracionAtributos[TipoProducto]?.['tipoInstalacion'].required === 1">
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['tipoInstalacion'].visible !== 0"  id="reg_cont_tipoInstalacion">
+       <label>Tipo Instalación <span *ngIf="objConfiguracionAtributos[TipoProducto]['tipoInstalacion'].required === 1"  class="requerid_css">*</span></label>
+       <select class="form-control" id="tipo_instalacion" name="TipoInstalacion" [required]="objConfiguracionAtributos[TipoProducto]['tipoInstalacion'].required === 1">
         <option *ngFor="let opcion of CboTipoInstalacion" [value]="opcion.nombre">{{ opcion.nombre }}</option>
     </select>
    </div>
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['riel'].visible !== 0"  id="reg_cont_riel">
-       <label>Riel <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['riel'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control" id="riel" name="CodigoRiel" [required]="objConfiguracionAtributos[TipoProducto]?.['riel'].required === 1" 
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['riel'].visible !== 0"  id="reg_cont_riel">
+       <label>Riel <span *ngIf="objConfiguracionAtributos[TipoProducto]['riel'].required === 1"  class="requerid_css">*</span></label>
+       <select class="form-control" id="riel" name="CodigoRiel" [required]="objConfiguracionAtributos[TipoProducto]['riel'].required === 1" 
        (change)="ChangeRiel($event)">
         <option *ngFor="let opcion of CboRiel" [value]="opcion.codigo">{{ opcion.nombre }}</option>
     </select>
-    <input class="form-control" type="text"  id="Riel" name="Riel" readonly style="display: none;" *ngIf="objConfiguracionAtributos[TipoProducto]?.['riel'].visible !== 0">  
+    <input class="form-control" type="text"  id="Riel" name="Riel" readonly style="display: none;" *ngIf="objConfiguracionAtributos[TipoProducto]['riel'].visible !== 0">  
    </div>
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['tipoCassete'].visible !== 0"  id="reg_cont_tipoCassete">
-       <label>Tipo Cassete <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['tipoCassete'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control" id="tipo_cassete" name="TipoCassete" [required]="objConfiguracionAtributos[TipoProducto]?.['tipoCassete'].required === 1">
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['tipoCassete'].visible !== 0"  id="reg_cont_tipoCassete">
+       <label>Tipo Cassete <span *ngIf="objConfiguracionAtributos[TipoProducto]['tipoCassete'].required === 1"  class="requerid_css">*</span></label>
+       <select class="form-control" id="tipo_cassete" name="TipoCassete" [required]="objConfiguracionAtributos[TipoProducto]['tipoCassete'].required === 1">
         <option *ngFor="let opcion of CboTipoCassete" [value]="opcion.nombre">{{ opcion.nombre }}</option>
     </select>
    </div>  
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['lamina'].visible !== 0"  id="reg_cont_lamina" >
-       <label>Lamina <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['lamina'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control form-control-chosen-lamina" id="lamina" name="Lamina" [required]="objConfiguracionAtributos[TipoProducto]?.['lamina'].required === 1">
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['lamina'].visible !== 0"  id="reg_cont_lamina" >
+       <label>Lamina <span *ngIf="objConfiguracionAtributos[TipoProducto]['lamina'].required === 1"  class="requerid_css">*</span></label>
+       <select class="form-control form-control-chosen-lamina" id="lamina" name="Lamina" [required]="objConfiguracionAtributos[TipoProducto]['lamina'].required === 1">
         <option *ngFor="let opcion of CboLamina" [value]="opcion.nombre">{{ opcion.nombre }}</option>
     </select>
    </div>
 
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['apertura'].visible !== 0"  id="reg_cont_apertura" >
-       <label>Apertura <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['apertura'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control" id="apertura" name="Apertura" [required]="objConfiguracionAtributos[TipoProducto]?.['apertura'].required === 1">
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['apertura'].visible !== 0"  id="reg_cont_apertura" >
+       <label>Apertura <span *ngIf="objConfiguracionAtributos[TipoProducto]['apertura'].required === 1"  class="requerid_css">*</span></label>
+       <select class="form-control" id="apertura" name="Apertura" [required]="objConfiguracionAtributos[TipoProducto]['apertura'].required === 1">
         <option *ngFor="let opcion of CboApertura" [value]="opcion.nombre">{{ opcion.nombre }}</option>
     </select>
    </div>
     
-       <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['viarecogida'].visible !== 0"  id="reg_cont_viaRecogida" >
-       <label>Via Recogida <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['viarecogida'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control" id="viaRecogida" name="ViaRecogida"   [required]="objConfiguracionAtributos[TipoProducto]?.['viarecogida'].required === 1">
+       <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['viarecogida'].visible !== 0"  id="reg_cont_viaRecogida" >
+       <label>Via Recogida <span *ngIf="objConfiguracionAtributos[TipoProducto]['viarecogida'].required === 1"  class="requerid_css">*</span></label>
+       <select class="form-control" id="viaRecogida" name="ViaRecogida"   [required]="objConfiguracionAtributos[TipoProducto]['viarecogida'].required === 1">
         <option *ngFor="let opcion of CboViaRecogida" [value]="opcion.nombre">{{ opcion.nombre }}</option> 
        </select>
        </div>
-       <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['tipoSuperior'].visible !== 0"  id="reg_cont_tipoSuperior">
-       <label>Tipo Superior <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['tipoSuperior'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control" id="tipoSuperior" name="TipoSuperior" (change)="changeViaTipoSuperior($event)" [required]="objConfiguracionAtributos[TipoProducto]?.['tipoSuperior'].required === 1">
+       <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['tipoSuperior'].visible !== 0"  id="reg_cont_tipoSuperior">
+       <label>Tipo Superior <span *ngIf="objConfiguracionAtributos[TipoProducto]['tipoSuperior'].required === 1"  class="requerid_css">*</span></label>
+       <select class="form-control" id="tipoSuperior" name="TipoSuperior" (change)="changeViaTipoSuperior($event)" [required]="objConfiguracionAtributos[TipoProducto]['tipoSuperior'].required === 1">
         <option *ngFor="let opcion of CboTipoSuperior" [value]="opcion.nombre">{{ opcion.nombre }}</option>
     </select>
    </div>  
-       <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['baston'].visible !== 0"  id="reg_cont_baston" >
-       <label>Baston <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['baston'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control" id="baston" name="CodigoBaston"  [required]="objConfiguracionAtributos[TipoProducto]?.['baston'].required === 1"
+       <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['baston'].visible !== 0"  id="reg_cont_baston" >
+       <label>Baston <span *ngIf="objConfiguracionAtributos[TipoProducto]['baston'].required === 1"  class="requerid_css">*</span></label>
+       <select class="form-control" id="baston" name="CodigoBaston"  [required]="objConfiguracionAtributos[TipoProducto]['baston'].required === 1"
        (change)="ChangeBaston($event)">
         <option *ngFor="let opcion of CboBaston" [value]="opcion.codigo">{{ opcion.nombre }}</option>
         </select>
-        <input class="form-control" type="text"  id="Baston" name="Baston" readonly style="display: none;" *ngIf="objConfiguracionAtributos[TipoProducto]?.['baston'].visible !== 0"> 
+        <input class="form-control" type="text"  id="Baston" name="Baston" readonly style="display: none;" *ngIf="objConfiguracionAtributos[TipoProducto]['baston'].visible !== 0"> 
        </div>
-<div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['numerovias'].visible !== 0"  id="reg_cont_numvias" >
-<label>Numero Via <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['numerovias'].required === 1"  class="requerid_css">*</span></label>
-<select class="form-control" id="numvias" name="NumeroVias" [required]="objConfiguracionAtributos[TipoProducto]?.['numerovias'].required === 1">    
+<div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['numerovias'].visible !== 0"  id="reg_cont_numvias" >
+<label>Numero Via <span *ngIf="objConfiguracionAtributos[TipoProducto]['numerovias'].required === 1"  class="requerid_css">*</span></label>
+<select class="form-control" id="numvias" name="NumeroVias" [required]="objConfiguracionAtributos[TipoProducto]['numerovias'].required === 1">    
     <option *ngFor="let opcion of CboNumeroVias" [value]="opcion.nombre">{{ opcion.nombre }}</option> 
 </select>
 </div>
        <!--  end -->
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['tipoCadenaInferior'].visible !== 0"  id="reg_cont_tipoCadenaInferior" >
-       <label>Tipo Cadena Inferior <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['tipoCadenaInferior'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control" id="tipoCadenaInferior" name="TipoCadenaInferior" [required]="objConfiguracionAtributos[TipoProducto]?.['tipoCadenaInferior'].required === 1">
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['tipoCadenaInferior'].visible !== 0"  id="reg_cont_tipoCadenaInferior" >
+       <label>Tipo Cadena Inferior <span *ngIf="objConfiguracionAtributos[TipoProducto]['tipoCadenaInferior'].required === 1"  class="requerid_css">*</span></label>
+       <select class="form-control" id="tipoCadenaInferior" name="TipoCadenaInferior" [required]="objConfiguracionAtributos[TipoProducto]['tipoCadenaInferior'].required === 1">
         <option *ngFor="let opcion of CboTipoCadenaInferior" [value]="opcion.nombre">{{ opcion.nombre }}</option> 
     </select>
    </div>
 
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['tipoCadenaInferior'].visible !== 0"  id="reg_cont_mandoCordon" >
-       <label>Mando Cordón <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['tipoCadenaInferior'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control" id="mandoCordon" name="MandoCordon" [required]="objConfiguracionAtributos[TipoProducto]?.['tipoCadenaInferior'].required === 1">
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['tipoCadenaInferior'].visible !== 0"  id="reg_cont_mandoCordon" >
+       <label>Mando Cordón <span *ngIf="objConfiguracionAtributos[TipoProducto]['tipoCadenaInferior'].required === 1"  class="requerid_css">*</span></label>
+       <select class="form-control" id="mandoCordon" name="MandoCordon" [required]="objConfiguracionAtributos[TipoProducto]['tipoCadenaInferior'].required === 1">
         <option *ngFor="let opcion of CboMandoCordon" [value]="opcion.nombre">{{ opcion.nombre }}</option>
        </select>
    </div>
 
-       <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['mandoBaston'].visible !== 0"  id="reg_cont_mandoBaston" >
-       <label>Mando Bastón <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['mandoBaston'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control" id="mandoBaston" name="MandoBaston" [required]="objConfiguracionAtributos[TipoProducto]?.['mandoBaston'].required === 1">
+       <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['mandoBaston'].visible !== 0"  id="reg_cont_mandoBaston" >
+       <label>Mando Bastón <span *ngIf="objConfiguracionAtributos[TipoProducto]['mandoBaston'].required === 1"  class="requerid_css">*</span></label>
+       <select class="form-control" id="mandoBaston" name="MandoBaston" [required]="objConfiguracionAtributos[TipoProducto]['mandoBaston'].required === 1">
         <option *ngFor="let opcion of CboMandoBaston" [value]="opcion.nombre">{{ opcion.nombre }}</option>
        </select>
    </div>
 
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['bastonvarrilla'].visible !== 0"  id="reg_cont_bastonVarilla" >
-       <label>Bastón(Varilla) <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['bastonvarrilla'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control" id="bastonVarilla" name="CodigoBastonVarrilla" (change)="ChangeBastonVarrilla($event)" [required]="objConfiguracionAtributos[TipoProducto]?.['bastonvarrilla'].required === 1">
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['bastonvarrilla'].visible !== 0"  id="reg_cont_bastonVarilla" >
+       <label>Bastón(Varilla) <span *ngIf="objConfiguracionAtributos[TipoProducto]['bastonvarrilla'].required === 1"  class="requerid_css">*</span></label>
+       <select class="form-control" id="bastonVarilla" name="CodigoBastonVarrilla" (change)="ChangeBastonVarrilla($event)" [required]="objConfiguracionAtributos[TipoProducto]['bastonvarrilla'].required === 1">
         <option *ngFor="let opcion of CboBastonVarrilla" [value]="opcion.codigo">{{ opcion.nombre }}</option>
        </select>
-       <input class="form-control" type="text"  id="BastonVarrilla" name="BastonVarrilla" readonly style="display: none;" *ngIf="objConfiguracionAtributos[TipoProducto]?.['bastonvarrilla'].visible !== 0">  
+       <input class="form-control" type="text"  id="BastonVarrilla" name="BastonVarrilla" readonly style="display: none;" *ngIf="objConfiguracionAtributos[TipoProducto]['bastonvarrilla'].visible !== 0">  
    </div>
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['cabezales'].visible !== 0"  id="reg_cont_cabezal" >
-       <label>Cabezales <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['cabezales'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control" id="cabezal" name="Cabezal" [required]="objConfiguracionAtributos[TipoProducto]?.['cabezales'].required === 1">
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['cabezales'].visible !== 0"  id="reg_cont_cabezal" >
+       <label>Cabezales <span *ngIf="objConfiguracionAtributos[TipoProducto]['cabezales'].required === 1"  class="requerid_css">*</span></label>
+       <select class="form-control" id="cabezal" name="Cabezal" [required]="objConfiguracionAtributos[TipoProducto]['cabezales'].required === 1">
         <option *ngFor="let opcion of CboCabezal" [value]="opcion.nombre">{{ opcion.nombre }}</option> 								
        </select>
    </div>
    
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['cordon'].visible !== 0"  id="reg_cont_ddCordon" >
-       <label>Cordon <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['cordon'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control" id="ddCordon" name="CodigoCordon" [required]="objConfiguracionAtributos[TipoProducto]?.['cordon'].required === 1" 
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['cordon'].visible !== 0"  id="reg_cont_ddCordon" >
+       <label>Cordon <span *ngIf="objConfiguracionAtributos[TipoProducto]['cordon'].required === 1"  class="requerid_css">*</span></label>
+       <select class="form-control" id="ddCordon" name="CodigoCordon" [required]="objConfiguracionAtributos[TipoProducto]['cordon'].required === 1" 
        (change)="ChangeCordon($event)"> 		
         <option *ngFor="let opcion of CboCordon" [value]="opcion.codigo">{{ opcion.nombre }}</option> 						
        </select>
-       <input class="form-control" type="text"  id="Cordon" name="Cordon" readonly style="display: none;" *ngIf="objConfiguracionAtributos[TipoProducto]?.['cordon'].visible !== 0">  
+       <input class="form-control" type="text"  id="Cordon" name="Cordon" readonly style="display: none;" *ngIf="objConfiguracionAtributos[TipoProducto]['cordon'].visible !== 0">  
    </div>
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['cordontipo2']?.visible !== 0"  id="reg_cont_ddCordontipo2" >
-       <label>Cordon Tipo 2 <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['cordontipo2'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control" id="ddCordontipo2" name="CodigoCordonTipo2" [required]="objConfiguracionAtributos[TipoProducto]?.['cordontipo2'].required === 1"
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['cordontipo2'].visible !== 0"  id="reg_cont_ddCordontipo2" >
+       <label>Cordon Tipo 2 <span *ngIf="objConfiguracionAtributos[TipoProducto]['cordontipo2'].required === 1"  class="requerid_css">*</span></label>
+       <select class="form-control" id="ddCordontipo2" name="CodigoCordonTipo2" [required]="objConfiguracionAtributos[TipoProducto]['cordontipo2'].required === 1"
        (change)="ChangeCordonTipo2($event)"> 			
         <option *ngFor="let opcion of CboCordonTipo2" [value]="opcion.codigo">{{ opcion.nombre }}</option> 						
        </select>
-       <input class="form-control" type="text"  id="CordonTipo2" name="CordonTipo2" readonly style="display: none;" *ngIf="objConfiguracionAtributos[TipoProducto]?.['cordontipo2'].visible !== 0">  
+       <input class="form-control" type="text"  id="CordonTipo2" name="CordonTipo2" readonly style="display: none;" *ngIf="objConfiguracionAtributos[TipoProducto]['cordontipo2'].visible !== 0">  
    </div>
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['alturacordon'].visible !== 0"  id="reg_cont_alturaCordon">
-       <label>Altura Cordon <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['alturacordon'].required === 1"  class="requerid_css">*</span></label>
-       <input placeholder="Ingrese Altura Cordon" type="text" class="form-control" id="alturacordon" name="AlturaCordon" [required]="objConfiguracionAtributos[TipoProducto]?.['alturacordon'].required === 1">
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['alturacordon'].visible !== 0"  id="reg_cont_alturaCordon">
+       <label>Altura Cordon <span *ngIf="objConfiguracionAtributos[TipoProducto]['alturacordon'].required === 1"  class="requerid_css">*</span></label>
+       <input placeholder="Ingrese Altura Cordon" type="text" class="form-control" id="alturacordon" name="AlturaCordon" [required]="objConfiguracionAtributos[TipoProducto]['alturacordon'].required === 1">
    </div>
-       <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['cruzeta'].visible !== 0"  id="reg_cont_cruzeta" >
-       <label>Cruzeta <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['cruzeta'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control" id="cruzeta" name="Cruzeta" [required]="objConfiguracionAtributos[TipoProducto]?.['cruzeta'].required === 1">
+       <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['cruzeta'].visible !== 0"  id="reg_cont_cruzeta" >
+       <label>Cruzeta <span *ngIf="objConfiguracionAtributos[TipoProducto]['cruzeta'].required === 1"  class="requerid_css">*</span></label>
+       <select class="form-control" id="cruzeta" name="Cruzeta" [required]="objConfiguracionAtributos[TipoProducto]['cruzeta'].required === 1">
         <option *ngFor="let opcion of CboCruzeta" [value]="opcion.nombre">{{ opcion.nombre }}</option> 	
     </select>
    </div>
 
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['dispositivo'].visible !== 0"  id="reg_cont_dispositivo" >
-       <label>Dispositivo <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['dispositivo'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control" id="dispositivo" name="Dispositivo" (change)="chamgeDispositivo($event)" [required]="objConfiguracionAtributos[TipoProducto]?.['dispositivo'].required === 1">        
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['dispositivo'].visible !== 0"  id="reg_cont_dispositivo" >
+       <label>Dispositivo <span *ngIf="objConfiguracionAtributos[TipoProducto]['dispositivo'].required === 1"  class="requerid_css">*</span></label>
+       <select class="form-control" id="dispositivo" name="Dispositivo" (change)="chamgeDispositivo($event)" [required]="objConfiguracionAtributos[TipoProducto]['dispositivo'].required === 1">        
         <option *ngFor="let opcion of CboDispositivo" [value]="opcion.nombre">{{ opcion.nombre }}</option>  
        </select>
    </div>
    
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['control'].visible !== 0"  id="reg_cont_control" >
-   <label>Control <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['control'].required === 1"  class="requerid_css">*</span></label>
-   <select class="form-control" id="regcontrol" name="CodigoControl" [required]="objConfiguracionAtributos[TipoProducto]?.['control'].required === 1"
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['control'].visible !== 0"  id="reg_cont_control" >
+   <label>Control <span *ngIf="objConfiguracionAtributos[TipoProducto]['control'].required === 1"  class="requerid_css">*</span></label>
+   <select class="form-control" id="regcontrol" name="CodigoControl" [required]="objConfiguracionAtributos[TipoProducto]['control'].required === 1"
    (change)="ChangeControl($event)">       
     <option *ngFor="let opcion of CboControl" [value]="opcion.codigo">{{ opcion.nombre }}</option> 
 </select>
-<input class="form-control" type="text"  id="Control" name="Control" readonly style="display: none;" *ngIf="objConfiguracionAtributos[TipoProducto]?.['control'].visible !== 0">  
+<input class="form-control" type="text"  id="Control" name="Control" readonly style="display: none;" *ngIf="objConfiguracionAtributos[TipoProducto]['control'].visible !== 0">  
    </div>
-   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['swicth'].visible !== 0"  id="reg_cont_switch" >
-       <label>Switch <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['swicth'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control" id="switch" name="CodigoSwitch" [required]="objConfiguracionAtributos[TipoProducto]?.['swicth'].required === 1"
+   <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['swicth'].visible !== 0"  id="reg_cont_switch" >
+       <label>Switch <span *ngIf="objConfiguracionAtributos[TipoProducto]['swicth'].required === 1"  class="requerid_css">*</span></label>
+       <select class="form-control" id="switch" name="CodigoSwitch" [required]="objConfiguracionAtributos[TipoProducto]['swicth'].required === 1"
        (change)="ChangeSwitch($event)">
         <option *ngFor="let opcion of CboSwitch" [value]="opcion.codigo">{{ opcion.nombre }}</option> 
     </select>
-    <input class="form-control" type="text"  id="Switch" name="Switch" readonly style="display: none;" *ngIf="objConfiguracionAtributos[TipoProducto]?.['swicth'].visible !== 0">
+    <input class="form-control" type="text"  id="Switch" name="Switch" readonly style="display: none;" *ngIf="objConfiguracionAtributos[TipoProducto]['swicth'].visible !== 0">
    </div>
-       <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['llevaBaston'].visible !== 0"  id="reg_cont_llevaBaston" >
-       <label>Lleva Baston <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['llevaBaston'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control" id="llevaBaston" name="LlevaBaston" [required]="objConfiguracionAtributos[TipoProducto]?.['llevaBaston'].required === 1">
+       <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['llevaBaston'].visible !== 0"  id="reg_cont_llevaBaston" >
+       <label>Lleva Baston <span *ngIf="objConfiguracionAtributos[TipoProducto]['llevaBaston'].required === 1"  class="requerid_css">*</span></label>
+       <select class="form-control" id="llevaBaston" name="LlevaBaston" [required]="objConfiguracionAtributos[TipoProducto]['llevaBaston'].required === 1">
         <option *ngFor="let opcion of CboLlevaBaston" [value]="opcion.nombre">{{ opcion.nombre }}</option> 
        </select>
    </div>				                    	                    
 
-       <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]?.['mandoAdaptador'].visible !== 0"  id="reg_cont_mandoAdaptador" >
-       <label>Mando con Adaptador <span *ngIf="objConfiguracionAtributos[TipoProducto]?.['mandoAdaptador'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control" id="mandoAdaptador" name="MandoAdaptador" [required]="objConfiguracionAtributos[TipoProducto]?.['mandoAdaptador'].required === 1">
+       <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['mandoAdaptador'].visible !== 0"  id="reg_cont_mandoAdaptador" >
+       <label>Mando con Adaptador <span *ngIf="objConfiguracionAtributos[TipoProducto]['mandoAdaptador'].required === 1"  class="requerid_css">*</span></label>
+       <select class="form-control" id="mandoAdaptador" name="MandoAdaptador" [required]="objConfiguracionAtributos[TipoProducto]['mandoAdaptador'].required === 1">
         <option *ngFor="let opcion of CboMandoAdaptador" [value]="opcion.nombre">{{ opcion.nombre }}</option> 
        </select>
    </div> 
