@@ -123,109 +123,112 @@ export class RegistroCotizacionsComponent implements OnInit {
             }
           } 
 
-          );         
-           const detalleSap= this.ordenes.Lineas;
-          detalleSap.forEach(item=> 
-            {             
-              this.Productos.push({
-                "id":"",
-   "numeroCotizacion":this.ordenes.numero,
-   "codigoSisgeco":this.ordenes.numero,
-   "codigoProducto":item.codarticulo,
-   "linea":item.linea,
-   "nombreProducto":item.des,
-   "unidadMedida":item.codunidad,
-   "cantidad":item.cantidad,
-   "alto":item.alto,
-   "ancho":item.ancho,
-   "indiceAgrupacion":"", //NO
-   "indexDetalle":"",//NO
-   "pase":"",//NO
-   /*
-     CASE
-      WHEN SUBSTRING(cd.codarticulo, 1, 3) != 'PRT' THEN 'PASDIRECCT'
-      ELSE ''
-  END AS Pase,
-   */
-   "existe":"NO",
-   "familia":item.Familia,
-   "subFamilia":item.codsubfamilia,
-   "precio":item.valor,
-   "precioInc":item.valorinc,
-   "igv":item.totalIGV,
-   "lote":"0",
-   "fechaProduccion":"",
-   "fechaEntrega":"",
-   "nota":"",
-   "color":"",
-   "idTbl_Ambiente":"",
-   "ambiente":"",
-   "turno":"",
-   "soporteCentral":"",
-   "tipoSoporteCentral":"",
-   "caida":"",
-   "accionamiento":"",
-   "codigoTubo":"",
-   "nombreTubo":"",
-   "mando":"",
-   "tipoMecanismo":"",
-   "modeloMecanismo":"",
-   "tipoCadena":"",
-   "codigoCadena":"",
-   "cadena":"",
-   "tipoRiel":"",
-   "tipoInstalacion":"",
-   "codigoRiel":"",
-   "riel":"",
-   "tipoCassete":"",
-   "lamina":"",
-   "apertura":"",
-   "viaRecogida":"",
-   "tipoSuperior":"",
-   "codigoBaston":"",
-   "baston":"",
-   "numeroVias":"",
-   "tipoCadenaInferior":"",
-   "mandoCordon":"",
-   "mandoBaston":"",
-   "codigoBastonVarrilla":"",
-   "bastonVarrilla":"",
-   "cabezal":"",
-   "codigoCordon":"",
-   "cordon":"",
-   "codigoCordonTipo2":"",
-   "cordonTipo2":"",
-   "cruzeta":"",
-   "dispositivo":"",
-   "codigoControl":"",
-   "control":"",
-   "codigoSwitch":"",
-   "switch":"",
-   "llevaBaston":"",
-   "mandoAdaptador":"",
-   "codigoMotor":"",
-   "motor":"",
-   "codigoTela":"",
-   "tela":"",
-   "cenefa":"",
-   "numeroMotores":"",
-   "serie":"",
-   "alturaCadena":"",
-   "alturaCordon":"",
-   "marcaMotor":"",
-   "idUsuarioCrea":"",
-   "idUsuarioModifica":"",
-   "fechaCreacion":"",
-   "fechaModifica":"",
-   "idEstado":"",
-   "cotizacionGrupo":"",
-   "tipo":"Producto",
-   "estadoOp":"2",
-   "escuadra":"",
-   "central":""
-              })
-            }
-          ); 
+          );        
+          if(this.ordenes) {
+
+            const detalleSap= this.ordenes.Lineas;
+            detalleSap.forEach(item=> 
+              {             
+                this.Productos.push({
+                  "id":"",
+     "numeroCotizacion":this.ordenes.numero,
+     "codigoSisgeco":this.ordenes.numero,
+     "codigoProducto":item.codarticulo,
+     "linea":item.linea,
+     "nombreProducto":item.des,
+     "unidadMedida":item.codunidad,
+     "cantidad":item.cantidad,
+     "alto":item.alto,
+     "ancho":item.ancho,
+     "indiceAgrupacion":"", //NO
+     "indexDetalle":"",//NO
+     "pase":"",//NO
+     /*
+       CASE
+        WHEN SUBSTRING(cd.codarticulo, 1, 3) != 'PRT' THEN 'PASDIRECCT'
+        ELSE ''
+    END AS Pase,
+     */
+     "existe":"NO",
+     "familia":item.Familia,
+     "subFamilia":item.codsubfamilia,
+     "precio":item.valor,
+     "precioInc":item.valorinc,
+     "igv":item.totalIGV,
+     "lote":"0",
+     "fechaProduccion":"",
+     "fechaEntrega":"",
+     "nota":"",
+     "color":"",
+     "idTbl_Ambiente":"",
+     "ambiente":"",
+     "turno":"",
+     "soporteCentral":"",
+     "tipoSoporteCentral":"",
+     "caida":"",
+     "accionamiento":"",
+     "codigoTubo":"",
+     "nombreTubo":"",
+     "mando":"",
+     "tipoMecanismo":"",
+     "modeloMecanismo":"",
+     "tipoCadena":"",
+     "codigoCadena":"",
+     "cadena":"",
+     "tipoRiel":"",
+     "tipoInstalacion":"",
+     "codigoRiel":"",
+     "riel":"",
+     "tipoCassete":"",
+     "lamina":"",
+     "apertura":"",
+     "viaRecogida":"",
+     "tipoSuperior":"",
+     "codigoBaston":"",
+     "baston":"",
+     "numeroVias":"",
+     "tipoCadenaInferior":"",
+     "mandoCordon":"",
+     "mandoBaston":"",
+     "codigoBastonVarrilla":"",
+     "bastonVarrilla":"",
+     "cabezal":"",
+     "codigoCordon":"",
+     "cordon":"",
+     "codigoCordonTipo2":"",
+     "cordonTipo2":"",
+     "cruzeta":"",
+     "dispositivo":"",
+     "codigoControl":"",
+     "control":"",
+     "codigoSwitch":"",
+     "switch":"",
+     "llevaBaston":"",
+     "mandoAdaptador":"",
+     "codigoMotor":"",
+     "motor":"",
+     "codigoTela":"",
+     "tela":"",
+     "cenefa":"",
+     "numeroMotores":"",
+     "serie":"",
+     "alturaCadena":"",
+     "alturaCordon":"",
+     "marcaMotor":"",
+     "idUsuarioCrea":"",
+     "idUsuarioModifica":"",
+     "fechaCreacion":"",
+     "fechaModifica":"",
+     "idEstado":"",
+     "cotizacionGrupo":"",
+     "tipo":"Producto",
+     "estadoOp":"2",
+     "escuadra":"",
+     "central":""
+                })
+              }
+            ); 
+          }
 
           /*
           this.Productos.forEach(item=> 
@@ -1164,6 +1167,18 @@ eliminarAmbiente(indice: number) {
   
   
   //#endregion
-  
+  nuevaOPEdicion:boolean=true;
+  NuevaOpSap(){
+    this.nuevaOPEdicion= true;//INHABILITAR COMBO SAP
+    this.Orden={};
+    this.Productos=[];
+    this.ordenes=null;
+  }
+  EdiatOpDc(){
+    this.nuevaOPEdicion= false;//HABILITAR INPUT DECOBLINDS
+    this.Orden={};
+    this.Productos=[];
+    this.ordenes=null;
+  }
 }
 

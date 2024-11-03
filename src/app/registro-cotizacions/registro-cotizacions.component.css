@@ -10,3 +10,16 @@
   .example-headers-align .mat-mdc-form-field + .mat-mdc-form-field {
     margin-left: 8px;
   }
+
+  /* En tu archivo de estilos (styles.css o el componente .css) */
+
+/* Cambia el color de fondo cuando está seleccionado */
+.mat-button-toggle-checked {
+  background-color: #ffebee !important; /* Color rosa claro - puedes usar el color que prefieras */
+}
+
+/* Si quieres cambiar también el color del texto cuando está seleccionado */
+.mat-button-toggle-checked {
+  background-color: #ffebee !important;
+  color: #B8122B !important;
+}

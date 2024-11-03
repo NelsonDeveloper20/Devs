@@ -29,14 +29,37 @@
                     <h4>Planificación de producción</h4> 
                 </div>
             </div>
-            <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
-                <ol class="breadcrumb">
+            
+            <div class="col-sm-5 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+              <ol class="breadcrumb">
+                <mat-button-toggle-group 
+                  name="ingredients" 
+                  aria-label="Ingredients"
+                  style="border-radius: 70px; border: 3px solid #B8122B;font-weight: 500; box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 0%), 0px 6px 10px 0px rgba(0, 0, 0, .14), 0px 1px 18px 0px rgba(0, 0, 0, .12);">
                   
-                  <button mat-icon-button (click)="atras()">
-                    <mat-icon>keyboard_backspace</mat-icon>Atras
-                  </button> 
-                </ol>
-            </div>
+                  <mat-button-toggle value="flour" (click)="NuevaOpSap()">
+                    Nueva OP SAP
+                    <mat-icon style="color: #B8122B;">note_add</mat-icon>
+                  </mat-button-toggle>
+                  
+                  <mat-button-toggle value="sugar" (click)="EdiatOpDc()">
+                    OP Existente
+                    <mat-icon style="color: #B8122B;">edit</mat-icon>
+                  </mat-button-toggle>
+                  
+                </mat-button-toggle-group>
+              </ol>
+          </div>
+          
+          <div class="col-sm-1 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+            <ol class="breadcrumb">
+              
+              <button mat-icon-button (click)="atras()">
+                <mat-icon>keyboard_backspace</mat-icon>Atras
+              </button> 
+            </ol>
+        </div>
+
         </div>
 		<div class="row">
 			<div class="col-xl-12">
@@ -49,10 +72,10 @@
                     <!--{{Orden | json}}-->
                   <div class="row">
                       <div class="col-lg-4 mb-3">
-                          <label for="username">Buscar por Nº Cotizacion</label>
+                          <label for="username">Nº Cotizacion</label>
                           <div class="input-group">    
 
-                            <select 
+                            <select  *ngIf="nuevaOPEdicion"
                             class="d-block default-select form-control selectpicker w-100"
                             id="state"
                             required
@@ -64,7 +87,7 @@
                           </select>
                           
                           
-                             <input   class="form-control"
+                             <input   class="form-control" *ngIf="!nuevaOPEdicion"
                               placeholder="Número de Orden"
                               aria-label="Número de Orden"
                               [matAutocomplete]="auto"
