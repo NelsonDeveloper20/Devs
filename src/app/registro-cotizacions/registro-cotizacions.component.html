@@ -30,6 +30,33 @@
                 </div>
             </div>
             
+        <div class="form-group col-md-2">
+          <mat-form-field appearance="outline" style="width: 100%; font-size: 14px;">
+            <mat-select [(ngModel)]="selectedCotizacion" placeholder="Cotización" style="width: 190px;" (openedChange)="filterCotizaciones2($event)">
+              <mat-select-trigger>
+                {{ selectedCotizacion || '---Seleccione---' }}
+              </mat-select-trigger>
+          
+              <!-- Campo de búsqueda con input -->
+              <div style="display: flex; align-items: center;">
+                <input matInput (keyup)="filterCotizaciones2($event)" placeholder="Buscar" class="search-input" [(ngModel)]="searchValue" />
+                
+                <!-- Botón para refrescar listado cuando no se encuentre la cotización -->
+                <button mat-icon-button *ngIf="searchValue && !filteredCotizaciones.length" (click)="refreshCotizaciones(searchValue)">
+                  <mat-icon>search</mat-icon>
+                </button>
+              </div>
+          
+              <!-- Opciones filtradas -->
+              <mat-option value="">---Seleccione---</mat-option>
+              <mat-option *ngFor="let cotizacion of filteredCotizaciones" [value]="cotizacion">
+                {{ cotizacion }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          
+        </div>
+
             <div class="col-sm-5 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
               <ol class="breadcrumb">
                 <mat-button-toggle-group 

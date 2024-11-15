@@ -23,3 +23,13 @@
   background-color: #ffebee !important;
   color: #B8122B !important;
 }
+
+
+.search-input {
+  width: 100%;
+}
+
+button[mat-icon-button] {
+  margin-left: 8px;
+  background-color: transparent;
+}

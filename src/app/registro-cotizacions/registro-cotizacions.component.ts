@@ -1180,5 +1180,34 @@ eliminarAmbiente(indice: number) {
     this.Productos=[];
     this.ordenes=null;
   }
+  
+
+  selectedCotizacion: string = '--';
+  filteredCotizaciones: any[] = [];
+  cotizaciones: any[] = [];  // Este es el array original con todas las cotizaciones.
+  searchValue: string = '';   // Para guardar el valor de búsqueda.
+  
+  filterCotizaciones2(event: any) {
+    this.searchValue = event.target ? event.target.value : ''; // Captura el valor de búsqueda
+    this.filteredCotizaciones = this.cotizaciones.filter(c =>
+      c.toLowerCase().includes(this.searchValue.toLowerCase())
+    );
+  }
+  
+  // Método que se ejecuta cuando no se encuentran resultados en la búsqueda
+  refreshCotizaciones(searchValue: string) {
+    console.log("BUSCANDO ");
+    console.log(searchValue);
+    /*this.ordenproduccionGrupoService.ListarFiltrosByNum(searchValue)
+      .subscribe(data => {
+        if (data.status === 200) {
+          const datos = data.json();
+          this.cotizaciones = datos.cotizaciones;
+          this.filteredCotizaciones = this.cotizaciones.filter(c =>
+            c.toLowerCase().includes(searchValue.toLowerCase())
+          );
+        }
+      });*/
+  }
 }
 

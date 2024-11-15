@@ -302,7 +302,12 @@ export class SolicitudPendienteComponent implements OnInit {
     var valor = event.target ? event.target.value : '';
     this.filteredCotizaciones = this.cotizaciones.filter(c => c.toLowerCase().includes(valor.toLowerCase()));
   }
- 
+  filterCotizaciones2(event: any) {
+    this.searchValue = event.target ? event.target.value : ''; // Captura el valor de búsqueda
+    this.filteredCotizaciones = this.cotizaciones.filter(c =>
+      c.toLowerCase().includes(this.searchValue.toLowerCase())
+    );
+  }
   filterRucs(event: any) {  
     var valor = event.target ? event.target.value : '';
     this.filteredRucs = this.rucs.filter(r => r.toLowerCase().includes(valor.toLowerCase()));
@@ -480,5 +485,11 @@ export class SolicitudPendienteComponent implements OnInit {
     this.router.navigate(['/Registro-Cotizacion', serializedItem]); // Redirige con el objeto 
   }
 //#endregion
+
+
+//cotizaciones: any[] = [];  // Este es el array original con todas las cotizaciones.
+searchValue: string = '';   // Para guardar el valor de búsqueda.
+
+
 }
 
