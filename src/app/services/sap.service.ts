@@ -18,18 +18,7 @@ export class SapService {
 //    this.urlBase = `https://cors-anywhere.herokuapp.com/http://191.98.160.56:8081/api/`;
 
   }
-
- /* private login(): Observable<string> {
-    const url = `${this.urlBase}Login`;
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    const body = { Username: this.username, Password: this.password };
-
-    return this.httpClient.post<string>(url, body, { headers }).pipe(
-      tap((token: string) => {
-        localStorage.setItem('authToken', token); // Guardar token en localStorage
-      })
-    );
-  }*/
+ 
   private login(): Observable<string> {
     const url = `${this.urlBase}Login`;
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
@@ -82,6 +71,26 @@ export class SapService {
       })
     );
   }
+  
+  EnviarSalidaSap(body: any): Observable<any> {
+    const url = `${this.urlBase}InventoryGenExit`;  
+  
+    return this.getValidToken().pipe(
+      switchMap((token) => {
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json', // Asegúrate de especificar este header
+        });
+        return this.httpClient.post(url, body, { headers });
+      }),
+      catchError((error) => {
+        console.error('Error en la solicitud:', error);
+        // Manejo de errores mejorado
+        return throwError(() => new Error(error?.message || 'Error en la solicitud al servidor'));
+      })
+    );
+  }
+  
 
   // Método para cerrar sesión y limpiar el token
   logout(): void {

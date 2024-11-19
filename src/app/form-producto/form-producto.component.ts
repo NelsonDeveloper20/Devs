@@ -346,6 +346,7 @@ case "AlturaCadena":
 break;
 case "AlturaCordon":(element as HTMLInputElement).value = values.alturaCodon; break;
 case "MarcaMotor":(element as HTMLInputElement).value = values.marcaMotor; break;
+case "WhsCode":(element as HTMLInputElement).value = values.whsCode;  break;
 default :
 break;
             

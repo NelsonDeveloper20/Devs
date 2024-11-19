@@ -12,6 +12,7 @@ import * as XLSX from 'xlsx';
 import Swal from 'sweetalert2';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DetalleMonitoreoDialogComponent } from './detalle-monitoreo-dialog/detalle-monitoreo-dialog.component';
+import { SapService } from '../services/sap.service';
 declare var $: any; // Declara la variable $ para usar jQuery
 @Component({
   selector: 'app-monitoreo-produccion',
@@ -36,7 +37,8 @@ export class MonitoreoProduccionComponent implements OnInit {
     private router: Router,
     private toaster: Toaster,
     private spinner: NgxSpinnerService, 
-    private _service: MonitoreoService,private renderer: Renderer2
+    private _service: MonitoreoService,private renderer: Renderer2,
+    private _sapService:SapService
   ) {  
   } 
  
@@ -47,14 +49,21 @@ showfilter=false;
 
 
 showfilter2=false; 
+showfilter3=false;
 cotizacion2: string; 
 fechaInicio2: Date;
 fechaFin2: Date; 
-showFilter(){
-  if(this.indexTab!=0){
-   this.showFilter2();
+showFilter(){ 
+  if(this.indexTab==4){
+    this.showFilter3();//SALIDA ENTRADA SAP 
+   
   }else{
-    this.showfilter=!this.showfilter; 
+    
+  if(this.indexTab!=0){
+    this.showFilter2();
+   }else{
+     this.showfilter=!this.showfilter; 
+   }
   }
 
 setTimeout(() => {       
@@ -76,6 +85,10 @@ setTimeout(() => {
 }, 1000);
 } 
 
+showFilter3(){
+  this.showfilter3=!this.showfilter3; 
+   
+  } 
   //#region ABRIR EXPLOCIÓN
 
   AbrirExplocionComponentes(item:any): void {   
@@ -244,6 +257,13 @@ this.isFilterButtonDisabled=true;
   }else{
     this.isFilterButtonDisabled=false;
   }
+  if(event.index==4){ //SAP ENTRADA SALIDA
+    if(this.ListMonitoreoExplocionSapSalidaEntrada.length==0){
+      console.log("BUSCARA"); 
+      this.ListarMonitoreoExplocionSapSalidaEntrada();
+    }
+  }
+
 }
 
 //#region  Carga
@@ -999,7 +1019,154 @@ exportToExcel(): void {
   const wb: XLSX.WorkBook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Tabla1');
   XLSX.writeFile(wb, 'ReportMonitoreo.xlsx');
-}  
+}
+//#region LISTAR EXPLOCION PARA SALIDA Y ENTRADA SAP
+
+cotizacionSap: string; 
+fechaInicioSap: Date;
+fechaFinSap: Date;   
+
+ListMonitoreoExplocionSapSalidaEntrada:any=[];
+ListarMonitoreoExplocionSapSalidaEntrada() { 
+  console.log("BUSCANDO");
+  const cotizacion = this.cotizacionSap || "--";
+  const fechaInicio = this.fechaInicioSap ? this.fechaInicioSap.toString() : "--";
+  const fechaFin = this.fechaFinSap ? this.fechaFinSap.toString() : "--";
+    
+  this.spinner.show();
+  this._service.ListarMonitoreoSapSalidaEntrada(cotizacion,fechaInicio,fechaFin).subscribe(
+    (data: any) => {
+      if (data && data.status === 200) {  
+        this.ListMonitoreoExplocionSapSalidaEntrada = data.json.map(item => ({ ...item, isExpand: false }));
+        this.spinner.hide();      
+      } else {
+        this.spinner.hide();
+        console.error('Error: No se pudo obtener datos.');
+      }
+    },
+    (error: any) => {
+      this.spinner.hide();
+      console.error('Error al obtener datos:', error);
+      // Aquí podrías mostrar un mensaje de error al usuario
+    }
+  );
+}
+filterTextSapSalidaEntrada: string = '';
+filteredListSapSalidaEntrada() {
+  if (!this.filterTextSapSalidaEntrada) {
+    return this.ListMonitoreoExplocionSapSalidaEntrada;
+  }
+  return this.ListMonitoreoExplocionSapSalidaEntrada.filter(item => {
+    const keys = ['ruc', 'razonSocial', 'cotizacion', 'cotizacionGrupo', 'codigoProducto', 'nombreProducto', 'accionamiento', 'cantidad', 'cantidadProductos', 'estado'];
+    return keys.some(key => {
+      const value = item[key];
+      if (typeof value === 'string') {
+        return value.toLowerCase().includes(this.filterTextSapSalidaEntrada.toLowerCase());
+      }
+      return false;
+    });
+  });
+}
+//#endregion
+
+enviarSalidaSap(item:any){
+  Swal.fire({
+    title: '¿Está seguro de enviar la salida a SAP?',
+    text: 'Una vez enviado, el proceso se considerará terminado y no podrá ser editado.',
+    icon: 'question', // Cambié el icono a 'question' ya que estamos preguntando al usuario
+    showCancelButton: true,
+    confirmButtonText: 'Si, Cargar',
+    cancelButtonText: 'Cancelar',
+    allowOutsideClick: false
+  }).then((result) => {
+    if (result.isConfirmed){ 
+    
+this.spinner.show();
+this._service.ObtenerSalida(item.cotizacion,item.cotizacionGrupo)
+  .subscribe({
+    next: response => {
+      this.spinner.hide();
+      console.log("RESULLLT=>");
+      console.log(response);
+      if (response.status == 200) { 
+            const respuesta = response.json; 
+            console.log("RESPUESTA");
+            if(respuesta){
+              console.log(JSON.stringify(respuesta));
+            
+      this.spinner.show(); // Mostrar spinner al inicio 
+      this._sapService.EnviarSalidaSap(respuesta).subscribe({
+        next: (data) => {
+          console.log('Datos resultado:', data);
+          // Aquí puedes manejar el éxito, como mostrar un mensaje al usuario
+
+          const salidaSapRequest = {
+            numeroCotizacion: item.cotizacion,
+            grupoCotizacion: item.cotizacionGrupo,
+            codigoSalida: data
+          }; 
+          this._service.GuardarSalidaSap(salidaSapRequest).subscribe({
+            next: (response) => {
+              console.log("NNN");
+              console.log(response);
+              Swal.fire({
+                title: 'Mensaje',
+                text: 'Salida enviado a SAP correctamente',
+                icon: 'success',
+                confirmButtonText: 'Aceptar',
+                allowOutsideClick: false
+              }); 
+              console.log('Éxito:', response);
+            },
+            error: (err) => {
+              console.error('Error:', err);
+            }
+          });
+
+          
+        },
+        error: (error) => {
+          console.error('Error en la solicitud autenticada:', error);
+          // Mostrar un mensaje de error al usuario si es necesario
+        },
+        complete: () => {
+          // Ocultar el spinner independientemente del resultado
+          this.spinner.hide();
+        }
+      });
+      
+            }else{
+              this.toaster.open({
+                text: "No hay datos para generar salida",
+                caption: 'Mensaje',
+                type: 'danger',
+                // duration: 994000
+              });
+            }
+        }else{
+          this.toaster.open({
+            text: "Ocurrio un error al generar salida",
+            caption: 'Mensaje',
+            type: 'danger',
+            // duration: 994000
+          });
+        }
+    },
+    error: error => {
+      this.spinner.hide();
+      var errorMessage = error.message;
+      console.error('There was an error!', error);
+      this.toaster.open({
+        text: errorMessage,
+        caption: 'Ocurrio un error',
+        type: 'danger',
+        // duration: 994000
+      });
+    }
+  }); 
+    }
+  });
+}
 }
 
 interface Componente {

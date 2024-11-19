@@ -2,6 +2,11 @@
   <p style="color: black">Loading...</p>
 </ngx-spinner>
 <style>
+  .mat-tab-header{
+    border-radius: 12px !important;
+    box-shadow: 0px 9px 5px 0px rgb(23 23 24 / 10%) !important;
+    background: #ff8ddb00 !important;
+} 
   .table-container {
     max-height: 570px;
     /* Ajusta la altura máxima según tus necesidades */
@@ -141,16 +146,7 @@
                         </thead>
                         <tbody style="color: black;">
                           <!--<ng-container *ngFor="let item of filteredList()">-->
-                            <tr  *ngFor="let item of filteredList()">
-                              <!--<td (click)="toggleExpand(item)">
-                                <button class="btn btn-primary tp-btn-light sharp" *ngIf="!item.isExpand"
-                                  (click)="ListarComponteProductoByGrupo(item.cotizacionGrupo)">
-                                  <mat-icon>expand_more</mat-icon>
-                                </button>
-                                <button class="btn btn-primary tp-btn-light sharp" *ngIf="item.isExpand">
-                                  <mat-icon>expand_less</mat-icon>
-                                </button>
-                              </td>-->
+                            <tr  *ngFor="let item of filteredList()"> 
                               <td>
                                 <button class="btn btn-primary tp-btn-light sharp"  *ngIf="item.estado!=='Terminado'" 
                                  [disabled]="item.estado !== 'Construcción Terminada'" 
@@ -584,6 +580,116 @@
                     </div>
                     <!-- Fin de la vista previa -->
                     <!-- Resto de tu código -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+      
+      <mat-tab label="SAP (SALIDA - ENTRADA)">
+        <div class="example-small-box mat-elevation-z4">
+          <br />
+          <div class="row">
+            <div class="col-lg-12" *ngIf="showfilter3">
+              <div class="card">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="form-group col-md-2">
+                      <label for="cboCotizacion">Cotizacion</label>                      
+                    <input type="text" [(ngModel)]="cotizacionSap" placeholder="" class="form-control"/>
+                    </div>
+                    <div class="form-group col-md-2">
+                      <label for="txtfec_inicio_n">Fecha Inicio</label>
+                      <input type="date" class="form-control" placeholder="Ingrese los Nombres" id="txtfec_inicio_n"
+                        name="txtfec_inicio_n" [(ngModel)]="fechaInicioSap" />
+                      <p class="help-block" style="display: none;">
+                        Example block-level help text here.
+                      </p>
+                    </div>
+                    <div class="form-group col-md-2">
+                      <label for="txtfec_fin_n">Fecha Fin</label>
+                      <input type="date" class="form-control" placeholder="Ingrese el Apellido Paterno"
+                        id="txtfec_fin_n" name="txtfec_fin_n" [(ngModel)]="fechaFinSap" />
+                      <p class="help-block" style="display: none;">
+                        Example block-level help text here.
+                      </p>
+                    </div>
+                    <div class="form-group col-md-4">
+                      <br />
+
+                      <section>
+                        <div class="example-button-row">
+                          <button mat-flat-button color="primary" style="    margin: 6px;" class="btn btn-primary"
+                            (click)="ListarMonitoreoExplocionSapSalidaEntrada()">
+                            Buscar
+                          </button>
+                          <!--<button mat-flat-button color="accent" style="    margin: 6px;" class="btn btn-success">
+                            Exportar
+                          </button>-->
+                        </div>
+                      </section>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-body" style="margin-top: -19px;">
+                  <div class="col-lg-4" style="float: right;">
+                    <input type="text" [(ngModel)]="filterTextSapSalidaEntrada" placeholder="Buscar..." class="form-control"
+                      step="height: 43px !important;" />
+                  </div>
+                  <div class="table-responsive">
+                    <section class="example-containerss" tabindex="0">
+                      <table class="table table-sm mb-0 table-responsive-lg" >
+                        <thead class="sticky-top" style="color: #7e7e7e !important;">
+                          <tr> 
+                            <th>Ruc</th>
+                            <th>Razón Social</th>
+                            <th>Cotización</th>
+                            <th style="white-space: nowrap">Cot. Grupo</th> 
+                            <th style="white-space: nowrap">Cant. Producto</th>
+                            <th>Productos</th> 
+                            <th style="white-space: nowrap">Salida Sap</th>
+                            <th>Estado Salida</th>
+                            <th>Entrada Sap</th>
+                          </tr>
+                        </thead>
+                        <tbody style="color: black;">
+                          <!--<ng-container *ngFor="let item of filteredList()">-->
+                            <tr  *ngFor="let item of filteredListSapSalidaEntrada()"> 
+                             
+                              <td>{{ item.ruc }}</td>
+                              <td>{{ item.razonSocial }}</td>
+                              <td>{{ item.cotizacion }}</td>
+                              <td>{{ item.cotizacionGrupo }}</td> 
+                              <td>{{ item.cantidadProductos }}</td>
+                              <td nowrap>{{item.productos}}</td> 
+                              <td>                                
+                                <!-- DESHABILITARO BOTON CUANDO YA SE HAYA ENVIADO LA SALIDA -->
+                                <button class="btn btn-primary tp-btn-light sharp" (click)="enviarSalidaSap(item)" 
+                                [disabled]="item.codigoSalidaSap !== 'PENDIENTE'"
+>
+                                  <mat-icon>send</mat-icon>
+                                </button>
+                              </td>
+                              <td>                                
+                                {{item.codigoSalidaSap }}
+                              </td>
+                              <td>                                
+                                <button class="btn btn-primary tp-btn-light sharp">
+                                   <mat-icon>save_alt</mat-icon> 
+                                </button>
+                              </td>
+                            </tr> 
+                        </tbody>
+                      </table>
+                    </section>
                   </div>
                 </div>
               </div>

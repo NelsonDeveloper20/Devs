@@ -364,6 +364,7 @@
                                         <td class="py-2">{{ itemproducto.nombreProducto }}</td>
                                         <td class="py-2">{{ itemproducto.cotizacionGrupo }}</td>
                                         <td class="py-2"> 
+                                          <!--ABRIR POPUP PARA COMPLETAR DATOS ADICIONALES DEL PRODUCTO-->
                                           <button *ngIf="itemproducto.pase !== 'PASDIRECCT'"
                                                   class="btn btn-primary tp-btn-light sharp" 
                                                   type="button"
@@ -371,6 +372,7 @@
                                                   [disabled]="itemproducto.existe === 'SI' || !Orden.id">
                                             <mat-icon>note_add</mat-icon>
                                           </button>
+                                          <!--GUARDAR DIRECTO SIN MOSTRAR FORMULARIO-->
                                           <button *ngIf="itemproducto.pase === 'PASDIRECCT'"
                                                   class="btn btn-primary tp-btn-light sharp" 
                                                   type="button"
@@ -379,6 +381,7 @@
                                             <mat-icon>save</mat-icon>
                                           </button>
                                         </td>
+                                        <!--ABRIR POPUP DE EDICION PARA COMPLETAR DATOS ADICIONALES DEL PRODUCTO-->
                                         <td class="py-2">
                                           <button class="btn btn-primary tp-btn-light sharp" type="button" 
                                           (click)="openEditProd(itemproducto)"

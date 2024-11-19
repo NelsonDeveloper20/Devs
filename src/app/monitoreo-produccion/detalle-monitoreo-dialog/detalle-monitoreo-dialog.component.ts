@@ -205,16 +205,21 @@ guardarComponentes() {
   console.log('DATOS ENDS');*/
   var counter=0;
   this.ListComponenteProducto.forEach(item => {
+    
      if(item.codigo==""){
+      console.log("codigo: "+item.codigo);
       counter++;
      }
      if(item.nombre==""){
+      console.log("nombre: "+item.nombre);
       counter++;
      }     
      if(item.cantidadUtilizada==""){
+      console.log("cantidadUtilizada: "+item.cantidadUtilizada);
       counter++;
      }
      if(item.merma==""){
+      console.log("merma: "+item.merma);
       counter++;
      }    
 
@@ -267,23 +272,12 @@ GuardarExplocion(){
     .then((result) => {
       if (result.isConfirmed) { 
         
-  //const jsonData = JSON.stringify(this.ListComponenteProducto);
+  // QUITA DEL ARRAY LOS CAMPOS   filteredOptions, agregado,idProducto
   const jsonData = JSON.stringify(this.ListComponenteProducto.map(item => {
-    const { filteredOptions, agregado,idProducto, ...rest } = item;
+    const { filteredOptions, agregado, ...rest } = item;
     return rest;
   }));
-  /*
-  const jsonData = JSON.stringify(this.ListComponenteProducto.map(item => {
-    const { filteredOptions, agregado, idProducto, ...rest } = item;
-  
-    const transformedItem = {};
-    Object.keys(rest).forEach(key => {
-      const newKey = key.charAt(0).toUpperCase() + key.slice(1);
-      transformedItem[newKey] = String(rest[key]);
-    });
-  
-    return transformedItem;
-  }));*/
+   
   console.log(jsonData);
   this.spinner.show();
   this._service.GuardarExplocion(jsonData)

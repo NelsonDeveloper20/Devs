@@ -20,6 +20,9 @@ export class MonitoreoService {
   ListarMonitoreo(grupoCotizacion: any,fechaInicio:any,fechaFin:any): Observable<any> {
     return this.http.get<any>(`${this.urlBase}Monitoreo?grupoCotizacion=`+grupoCotizacion+"&fechaInicio="+fechaInicio+"&fechaFin="+fechaFin);
   }
+  ListarMonitoreoSapSalidaEntrada(grupoCotizacion: any,fechaInicio:any,fechaFin:any): Observable<any> {
+    return this.http.get<any>(`${this.urlBase}Monitoreo/ListarMonitoreoSapSalidaEntrada?grupoCotizacion=`+grupoCotizacion+"&fechaInicio="+fechaInicio+"&fechaFin="+fechaFin);
+  }
   ListarReporteExplocion(grupoCotizacion: any,fechaInicio:any,fechaFin:any): Observable<any> {
     return this.http.get<any>(`${this.urlBase}Monitoreo/ListarReporteExplocion?grupoCotizacion=`+grupoCotizacion+"&fechaInicio="+fechaInicio+"&fechaFin="+fechaFin);
   }
@@ -56,6 +59,14 @@ export class MonitoreoService {
   CargarExplocionExcel(data: any): Observable<IApiResponse> {
     const headers = { 'Content-Type': 'application/json-patch+json' };
     return this.http.post<IApiResponse>(this.urlBase + 'Monitoreo/ExplocionarCompCargaExcel', data, { headers: headers });
+  }
+  
+  ObtenerSalida(grupoCotizacion: any,grupo:any): Observable<any> {
+    return this.http.get<any>(`${this.urlBase}Monitoreo/ObtenerSalida?cotizacion=`+grupoCotizacion+"&grupo="+grupo);
+  }
+   
+  GuardarSalidaSap(request: { numeroCotizacion: string; grupoCotizacion: string; codigoSalida: string }): Observable<IApiResponse> {
+    return this.http.post<IApiResponse>(`${this.urlBase}Monitoreo/GuardarSalidaSap`, request);
   }
   
 }

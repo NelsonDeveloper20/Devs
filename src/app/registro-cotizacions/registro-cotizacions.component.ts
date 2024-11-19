@@ -124,10 +124,10 @@ export class RegistroCotizacionsComponent implements OnInit {
           } 
 
           );        
-          if(this.ordenes) {
+          if(this.ordenes) { //SI HAY ORDENE SELCCIONADO
 
             const detalleSap= this.ordenes.Lineas;
-            detalleSap.forEach(item=> 
+            detalleSap.forEach(item=>  //AGREGAR LOS QUE AUN NO FUERON GUARDADOS EN LA BD
               {             
                 this.Productos.push({
                   "id":"",
@@ -224,7 +224,8 @@ export class RegistroCotizacionsComponent implements OnInit {
      "tipo":"Producto",
      "estadoOp":"2",
      "escuadra":"",
-     "central":""
+     "central":"",
+     "whsCode":item.whsCode
                 })
               }
             ); 
@@ -1061,6 +1062,8 @@ eliminarAmbiente(indice: number) {
       this.Orden.archivo=state.archivo;
       this.Orden.tipoCliente=state.tipoCliente;
       this.Orden.fechaSap=state.fecha_cotizacion;
+      this.Orden.docEntrySap=state.docEntrySap;
+      this.Orden.docStatusSap=state.docStatusSap;
       //this.Orden.pa=state.Pase; 
       this.selectedState = state;
       this.Productos=[];
@@ -1098,6 +1101,8 @@ eliminarAmbiente(indice: number) {
         }
   
         const fieldMap = {
+          DocEntry: 'docEntrySap',
+          DocStatus:'docStatusSap',
           DocNum: 'numero',
           NumAtCard: 'numdocref',
           CardCode: 'ruc',

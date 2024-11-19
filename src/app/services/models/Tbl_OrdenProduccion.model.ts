@@ -36,6 +36,8 @@ export type ITblOrdenProduccion = {
     idUsuarioCreacion?: string;
     idUsuarioModifica?: string;
     archivo?: string;
+    docEntrySap?: string;
+    docStatusSap?: string;
 };
 export interface TblOrdenProduccion {
     id: string;
