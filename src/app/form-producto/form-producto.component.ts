@@ -314,7 +314,7 @@ case "AlturaCadena":
   console.log("AULTRAAA:::::::::::::::::::::::::.");
   console.log(values.id);
   if(values.id==""){
-    const alturaCadena = parseFloat(values.alto.replace(',', '.')).toFixed(3); 
+    const alturaCadena = parseFloat(values.alto);//.replace(',', '.')).toFixed(3); 
     // Lógica de cálculo
     const rptAlturaCadena = this.calcularAlturaCadena(this.TipoProducto, alturaCadena);
     console.log('Altura de Cadena:', rptAlturaCadena);
@@ -895,7 +895,7 @@ async existeMotor(event: any, tipo: any) {
     if (altura_cadena) {
       if (tipo == "html") {
         console.log("INGRESO A ALTURA CADENA EXIST MOTOR");
-      let alturaCadena = parseFloat(this.JsonItemHijo.producto.alto.replace(',', '.')).toFixed(3); 
+      let alturaCadena = parseFloat(this.JsonItemHijo.producto.alto);//.replace(',', '.')).toFixed(3); 
       const rptAlturaCadena = this.calcularAlturaCadena(this.TipoProducto, alturaCadena);
       if (this.TipoProducto == "PRTCV" || this.TipoProducto == "PRTPH") {
         altura_cadena.value = (rptAlturaCadena * 2).toFixed(3);

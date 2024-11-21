@@ -20,6 +20,7 @@ import { ComunicacionService } from '../shared/comunicacion.service';
 import { LayoutComponent } from '../layout/layout.component';
 import { OrdenproduccionGrupoService } from '../services/ordenproducciongrupo.service';
 import { SapService } from '../services/sap.service';
+import { MatSelectChange } from '@angular/material/select';
 export interface ListasModel {
   isSelected: boolean;
   id: number;
@@ -1032,7 +1033,7 @@ eliminarAmbiente(indice: number) {
       );
   }
   ordenes:any;
-  onSelectState(state: any) { 
+  onSelectState(state: any) {     
     console.log('El objeto seleccionado ha cambiado:', state);
     if(state){
 
@@ -1090,14 +1091,30 @@ eliminarAmbiente(indice: number) {
   async ListarOrdenesSap() {
     this.spinner.show();
     this.sapService.ListarOrdenes().subscribe(
-      datas => {
+      async datas => {
         var data=datas.value;
         console.log('Datos originales:', data);
+        this.OrdeDeVentaPendiente=[];
+        this.filteredCotizaciones=[];
+        this.OrdeDeVentaPendiente = await this.normalizarColumnas(data);
   
+        console.log('Datos con nombres renombrados:', this.OrdeDeVentaPendiente);
+        this.filteredCotizaciones = [...this.OrdeDeVentaPendiente];
+
+        this.spinner.hide();
+      },
+      error => {
+        this.spinner.hide();
+        console.error('Error en la solicitud autenticada:', error);
+      }
+    );
+  }
+  async normalizarColumnas(data:any){
+    
         // Verificar si la respuesta es un array
         if (!Array.isArray(data)) {
           console.error('La respuesta no es un array:', data);
-          return; // Salir de la función si no es un array
+          return []; // Salir de la función si no es un array
         }
   
         const fieldMap = {
@@ -1147,7 +1164,7 @@ eliminarAmbiente(indice: number) {
         };
   
         // Renombrar los campos en la lista principal y en cada línea de los elementos
-        this.OrdeDeVentaPendiente = data.map((order: any) => {
+       var result= data.map((order: any) => {
           const renamedOrder = renameFields(order);
           
           // Verificar que `Lineas` existe y es un array antes de mapearlo
@@ -1157,18 +1174,8 @@ eliminarAmbiente(indice: number) {
             
           return renamedOrder;
         });
-  
-        console.log('Datos con nombres renombrados:', this.OrdeDeVentaPendiente);
-        
-        this.spinner.hide();
-      },
-      error => {
-        this.spinner.hide();
-        console.error('Error en la solicitud autenticada:', error);
-      }
-    );
+        return result;
   }
-  
   
   
   //#endregion
@@ -1187,32 +1194,57 @@ eliminarAmbiente(indice: number) {
   }
   
 
-  selectedCotizacion: string = '--';
+  selectedCotizacion:any = null; // Puede ser cualquier objeto o null
   filteredCotizaciones: any[] = [];
-  cotizaciones: any[] = [];  // Este es el array original con todas las cotizaciones.
-  searchValue: string = '';   // Para guardar el valor de búsqueda.
+  cotizaciones: any[] = [];  
+  searchValue: string = '';   
   
+  
+   
   filterCotizaciones2(event: any) {
-    this.searchValue = event.target ? event.target.value : ''; // Captura el valor de búsqueda
-    this.filteredCotizaciones = this.cotizaciones.filter(c =>
-      c.toLowerCase().includes(this.searchValue.toLowerCase())
+    const searchValue = event.target ? event.target.value : this.searchValue;
+    this.searchValue = searchValue; // Actualiza el valor de búsqueda
+    this.filteredCotizaciones = this.OrdeDeVentaPendiente.filter(c => 
+      c.numero && c.numero.toString().toLowerCase().includes(searchValue.toLowerCase())
     );
   }
+  onCotizacionSelected(event: MatSelectChange) {
+    const selectedItem = event.value; // Objeto seleccionado
+    console.log('Elemento seleccionado:', selectedItem);
+     
+  this.onSelectState(selectedItem);
+    // Llama a un método o ejecuta lógica con el objeto seleccionado
+    //this.procesarCotizacionSeleccionada(selectedItem);
+  }
+  
   
   // Método que se ejecuta cuando no se encuentran resultados en la búsqueda
-  refreshCotizaciones(searchValue: string) {
+  async refreshCotizaciones(searchValue: string) {
     console.log("BUSCANDO ");
     console.log(searchValue);
-    /*this.ordenproduccionGrupoService.ListarFiltrosByNum(searchValue)
-      .subscribe(data => {
-        if (data.status === 200) {
-          const datos = data.json();
-          this.cotizaciones = datos.cotizaciones;
-          this.filteredCotizaciones = this.cotizaciones.filter(c =>
-            c.toLowerCase().includes(searchValue.toLowerCase())
-          );
-        }
-      });*/
+    searchValue="9"; 
+    this.sapService.ListarOrdenesByDocEntry(searchValue).subscribe(
+      async datas => {
+        var data=datas.value;
+        console.log('Datos originales NN1:', data);
+     var nwItem=  await this.normalizarColumnas(data);
+  
+        console.log('Datos con nombres renombrados:', this.OrdeDeVentaPendiente);
+        this.filteredCotizaciones = [...this.OrdeDeVentaPendiente];
+
+        this.spinner.hide();
+      },
+      error => {
+        this.spinner.hide();
+        console.error('Error en la solicitud autenticada:', error);   
+        this.toaster.open({
+          text: "Cotizacion buscada no existe en SAP",
+          caption: 'Mensaje',
+          type: 'danger',
+        });
+      }
+    );
   }
+ 
 }
 

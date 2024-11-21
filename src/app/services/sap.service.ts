@@ -71,7 +71,22 @@ export class SapService {
       })
     );
   }
-  
+  ListarOrdenesByDocEntry(docEntry:any): Observable<any> {
+    console.log("BUSCADO ESS: "+docEntry);
+    const url = `${this.urlBase}Orders/`+docEntry; // Cambia esto a tu endpoint específico 
+    return this.getValidToken().pipe(
+      switchMap((token) => {
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`
+        });
+        return this.httpClient.get(url, { headers });
+      }),
+      catchError((error) => {
+        console.error('Error en la solicitud:', error);
+        return throwError(error);
+      })
+    );
+  }
   EnviarSalidaSap(body: any): Observable<any> {
     const url = `${this.urlBase}InventoryGenExit`;  
   

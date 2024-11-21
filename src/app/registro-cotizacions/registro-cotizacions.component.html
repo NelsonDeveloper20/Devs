@@ -28,35 +28,7 @@
                 <div class="welcome-text">
                     <h4>Planificación de producción</h4> 
                 </div>
-            </div>
-            
-        <div class="form-group col-md-2">
-          <mat-form-field appearance="outline" style="width: 100%; font-size: 14px;">
-            <mat-select [(ngModel)]="selectedCotizacion" placeholder="Cotización" style="width: 190px;" (openedChange)="filterCotizaciones2($event)">
-              <mat-select-trigger>
-                {{ selectedCotizacion || '---Seleccione---' }}
-              </mat-select-trigger>
-          
-              <!-- Campo de búsqueda con input -->
-              <div style="display: flex; align-items: center;">
-                <input matInput (keyup)="filterCotizaciones2($event)" placeholder="Buscar" class="search-input" [(ngModel)]="searchValue" />
-                
-                <!-- Botón para refrescar listado cuando no se encuentre la cotización -->
-                <button mat-icon-button *ngIf="searchValue && !filteredCotizaciones.length" (click)="refreshCotizaciones(searchValue)">
-                  <mat-icon>search</mat-icon>
-                </button>
-              </div>
-          
-              <!-- Opciones filtradas -->
-              <mat-option value="">---Seleccione---</mat-option>
-              <mat-option *ngFor="let cotizacion of filteredCotizaciones" [value]="cotizacion">
-                {{ cotizacion }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-          
-        </div>
-
+            </div>  
             <div class="col-sm-5 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
               <ol class="breadcrumb">
                 <mat-button-toggle-group 
@@ -102,7 +74,7 @@
                           <label for="username">Nº Cotizacion</label>
                           <div class="input-group">    
 
-                            <select  *ngIf="nuevaOPEdicion"
+                            <!--<select  
                             class="d-block default-select form-control selectpicker w-100"
                             id="state"
                             required
@@ -111,8 +83,33 @@
                           >
                             <option value="">--Seleccione--</option>
                             <option *ngFor="let item of OrdeDeVentaPendiente" [ngValue]="item">{{ item.numero }}</option>
-                          </select>
+                          </select>-->
                           
+          <mat-form-field *ngIf="nuevaOPEdicion" appearance="outline" style="width: 100% !important ; font-size: 14px;">
+            <mat-select [(ngModel)]="ordenes" placeholder="Cotización" style="width: 100% !important;"
+             (openedChange)="filterCotizaciones2($event)"
+            (selectionChange)="onCotizacionSelected($event)"
+             >
+              <!-- Define cómo se muestra el valor seleccionado -->
+  <mat-select-trigger>
+    {{ ordenes?.numero || '---Seleccione---' }}
+  </mat-select-trigger>
+        
+              <!-- Campo de búsqueda con input -->
+              <div style="display: flex; align-items: center;">
+                <input matInput (keyup)="filterCotizaciones2($event)" placeholder="Buscar" class="search-input" [(ngModel)]="searchValue" />
+                <!-- Botón para refrescar listado cuando no se encuentre la cotización -->
+                <button mat-icon-button *ngIf="searchValue && !filteredCotizaciones.length" (click)="refreshCotizaciones(searchValue)">
+                  <mat-icon>search</mat-icon>
+                </button>
+              </div>          
+              <!-- Opciones filtradas -->
+              <mat-option value="">---Seleccione---</mat-option>
+              <mat-option *ngFor="let cotizacion of filteredCotizaciones" [value]="cotizacion">
+                {{ cotizacion.numero }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field> 
                           
                              <input   class="form-control" *ngIf="!nuevaOPEdicion"
                               placeholder="Número de Orden"
