@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, of, throwError } from 'rxjs';
-import { catchError, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { catchError, filter, map, switchMap, take, tap } from 'rxjs/operators';
 import jwt_decode from 'jwt-decode';
 import { environment } from 'src/environments/environment';
 
@@ -15,43 +15,64 @@ export class SapService {
   private urlBase = 'apisap/api/';
   constructor(public httpClient: HttpClient) {
   //this.urlBase = `${environment.urlSap}api/`;
-//    this.urlBase = `https://cors-anywhere.herokuapp.com/http://191.98.160.56:8081/api/`;
-
   }
  
-  private login(): Observable<string> {
+  private tokenSubject = new BehaviorSubject<string | null>(null);
+   
+   // Método para iniciar sesión y obtener un token
+   private login(): Observable<string> {
     const url = `${this.urlBase}Login`;
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const body = { Username: this.username, Password: this.password };
-  
-    return this.httpClient.post(url, body, { headers, responseType: 'text' }).pipe(
+
+    return this.httpClient.post<string>(url, body, { headers, responseType: 'text' as 'json' }).pipe(
       tap((token: string) => {
-        localStorage.setItem('authToken', token); // Guardar token en localStorage
+        localStorage.setItem('authToken', token);
+      }),
+      catchError((error) => {
+        console.error('Error al iniciar sesión:', error);
+        return throwError(() => new Error('Error al iniciar sesión. Por favor, verifica tus credenciales.'));
       })
     );
   }
+
+ 
+// Obtiene el token almacenado
+private getToken(): string | null {
+  return localStorage.getItem('authToken');
+}
+
+// Verifica si el token ha expirado
+private isTokenExpired(token: string): boolean {
+  try {
+    const { exp } = jwt_decode<{ exp: number }>(token);
+    return Date.now() >= exp * 1000;
+  } catch {
+    return true;
+  }
+}
   
-
-  private getToken(): string | null {
-    return localStorage.getItem('authToken');
-  }
-
-  private isTokenExpired(token: string): boolean {
-    try {
-      const { exp } = jwt_decode<{ exp: number }>(token);
-      return Date.now() >= exp * 1000;
-    } catch {
-      return true;
-    }
-  }
-
+  // Obtiene un token válido
   private getValidToken(): Observable<string> {
-    const token = this.getToken();
-    if (token && !this.isTokenExpired(token)) {
-      return of(token);
+    const currentToken = this.getToken();
+    if (currentToken && !this.isTokenExpired(currentToken)) {
+      return of(currentToken); // Retorna el token si aún es válido
     }
-    // Si el token ha caducado o no existe, intenta renovarlo
-    return this.login();
+
+    if (!this.tokenSubject.getValue()) {
+      // Evitar múltiples renovaciones simultáneas
+      this.tokenSubject.next(null);
+      this.login().subscribe({
+        next: (newToken) => this.tokenSubject.next(newToken),
+        error: (err) => this.tokenSubject.error(err),
+      });
+    }
+
+    // Espera hasta que el token esté disponible
+    return this.tokenSubject.pipe(
+      filter((token) => token !== null), // Espera a que el token esté disponible
+      take(1) // Sólo toma el primer valor
+    );
   }
 
   // Método para realizar una solicitud GET con token de autenticación
@@ -110,5 +131,33 @@ export class SapService {
   // Método para cerrar sesión y limpiar el token
   logout(): void {
     localStorage.removeItem('authToken');
+    this.tokenSubject.next(null);
   }
+
+  //LISTAR ARTICULOS POR FAMILIA Y GRUPO 
+  ListarArticulosPorFamiliaGrupo(identificador: any, grupo: any): Observable<any[]> { 
+    const url = `${this.urlBase}Items/0/p`;//?idenficado=` + identificador + "&grupo=" + grupo; 
+    return this.getValidToken().pipe(
+      switchMap((token) => {
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`
+        });
+        return this.httpClient.get<any>(url, { headers });
+      }),
+      map((response) => {
+        // Extrae y mapea la información relevante del array `value`
+        return response.value.map((item: any) => ({
+          codigo: item.ItemCode,
+          nombre: item.ItemName,
+          unidadMedida:"",
+          color:""
+        }));
+      }),
+      catchError((error) => {
+        console.error('Error en la solicitud sap:', error);
+        return throwError(error);
+      })
+    );
+  }
+  
 }

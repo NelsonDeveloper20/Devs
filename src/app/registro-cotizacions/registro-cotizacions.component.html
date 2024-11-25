@@ -67,28 +67,18 @@
 						<div class="row"> 
               <div class="needs-validation">
                 <div class="row col-lg-12">
-                  <div class="col-lg-8">
-                    <!--{{Orden | json}}-->
+                  <div class="col-lg-8"> 
                   <div class="row">
                       <div class="col-lg-4 mb-3">
                           <label for="username">Nº Cotizacion</label>
                           <div class="input-group">    
-
-                            <!--<select  
-                            class="d-block default-select form-control selectpicker w-100"
-                            id="state"
-                            required
-                            [(ngModel)]="ordenes"  
-                            (change)="onSelectState(ordenes)"  
-                          >
-                            <option value="">--Seleccione--</option>
-                            <option *ngFor="let item of OrdeDeVentaPendiente" [ngValue]="item">{{ item.numero }}</option>
-                          </select>-->
+ 
                           
           <mat-form-field *ngIf="nuevaOPEdicion" appearance="outline" style="width: 100% !important ; font-size: 14px;">
             <mat-select [(ngModel)]="ordenes" placeholder="Cotización" style="width: 100% !important;"
              (openedChange)="filterCotizaciones2($event)"
             (selectionChange)="onCotizacionSelected($event)"
+            [compareWith]="comparaOrdenes"
              >
               <!-- Define cómo se muestra el valor seleccionado -->
   <mat-select-trigger>

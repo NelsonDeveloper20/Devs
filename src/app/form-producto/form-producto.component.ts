@@ -5,6 +5,8 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { DatePipe } from '@angular/common';
 import { Toaster } from 'ngx-toast-notifications';
 import Swal from 'sweetalert2';
+import { MonitoreoService } from '../services/monitoreo.service';
+import { SapService } from '../services/sap.service';
 declare var $: any; // Declara la variable $ para usar jQuery
 export interface IAgregarUsuarioRequest {
   nombre?:string;
@@ -59,7 +61,9 @@ export class FormProductoComponent implements OnInit {
   constructor(private datePipe: DatePipe,
     private spinner: NgxSpinnerService,
     private toaster: Toaster,
-    private _productoService: ProductoService,private cdr: ChangeDetectorRef
+    private _productoService: ProductoService,private cdr: ChangeDetectorRef  ,  
+    private _service: MonitoreoService,
+    private apiSap:SapService
   
   ) {
     
@@ -78,8 +82,7 @@ export class FormProductoComponent implements OnInit {
     );
   }
    IdProducto:string="";
-    ngOnInit(): void {      
-
+     ngOnInit()  {      
 
     this.TipoProducto=this.JsonItemHijo.tipo; 
     this.IdProducto=this.JsonItemHijo.producto.id;   
@@ -96,8 +99,37 @@ export class FormProductoComponent implements OnInit {
 
       }
     }
-    ngAfterViewInit() {
+    
+  ListMaestroArticulos:any=[]; 
+  ListarMaestroArticulos() {
+    return new Promise<void>((resolve, reject) => {
+      this._service.ListarMaestroArticulos().subscribe({
+        next: (data: any) => {
+          console.log("RESULTADOS===========>");
+          console.log(data);
+          this.ListMaestroArticulos = data;
+          resolve();
+        },
+        error: (error: any) => {
+          console.error('Error al obtener datos:', error);
+          reject(error);
+        }
+      });
+    });
+  }
+     async ngAfterViewInit() {
       // Llamar al método para asignar valores después de que se haya renderizado completamente el HTML 
+      
+   // Si la lista está vacía, esperamos a que se complete la carga
+   if (this.ListMaestroArticulos.length === 0) {
+  
+    console.log("FUE A BD");
+    this.spinner.show();
+    await this.ListarMaestroArticulos();
+    this.spinner.hide();
+  }else{
+    console.log("NO IR A BD");
+  }
       this.spinner.show();          
         this.CargarItemsCombos(this.JsonItemHijo.producto);   
       this.spinner.hide();
@@ -545,8 +577,12 @@ break;
  
 
 //GUARDAR CODIGO Y NOMBRE
-CboTela=[{codigo:0,nombre:"--Seleccione--"}];listarCboTela(codsubfamilia){
-  if(codsubfamilia=='CS'){ //cellular
+CboTela=[{codigo:0,nombre:"--Seleccione--"}];async listarCboTela(codsubfamilia){
+  
+  this.CboTela=[{codigo:0,nombre:"--Seleccione--"}]; 
+  const listComponentes = await this.ListarArticulosPorFamiliaGrupoIndividual("Tela"); 
+  this.CboTela.push(...listComponentes); 
+  /*if(codsubfamilia=='CS'){ //cellular
     codsubfamilia='TELCS';
 } 
   this.CboTela=[{codigo:0,nombre:"--Seleccione--"}]; 
@@ -562,7 +598,7 @@ CboTela=[{codigo:0,nombre:"--Seleccione--"}];listarCboTela(codsubfamilia){
       this.spinner.hide();
     }
   );  
- 
+ */
 }
 
 ChangeTela(event: any): void { 
@@ -932,9 +968,12 @@ private setElementDisabled(id: string, disabled: boolean) {
 //endregion 
 //GUARDAR NOMBRE Y CODIGO
 CboNombreTubo=[{codigo:0,nombre:"--Seleccione--"}];
-listarCboNombreTubo(familia,tipoProducto){  
-  this.CboNombreTubo=[{codigo:0,nombre:"--Seleccione--"}]; 
-  this.spinner.show();  
+async listarCboNombreTubo(familia,tipoProducto){  
+  this.CboNombreTubo=[{codigo:0,nombre:"--Seleccione--"}];    
+  const listComponentes = await this.ListarArticulosPorFamiliaGrupoIndividual("Tubo"); 
+  this.CboNombreTubo.push(...listComponentes); 
+
+ /* this.spinner.show();  
   this.obtenerarticulos("Nombretubo", familia).subscribe(
     (response) => {
       if (response) {  
@@ -967,7 +1006,7 @@ listarCboNombreTubo(familia,tipoProducto){
     () => {
       this.spinner.hide();
     }
-  );  
+  );  */
 }
 
 ChangeTubo(event: any): void {
@@ -1099,8 +1138,11 @@ CboTipoInstalacion=[{id:0,nombre:"--Seleccione--"}];listarCboTipoInstalacion(){
   ]; 
 } 
 //GUARDAR CODIGO Y NOMBRE
-CboRiel=[{codigo:0,nombre:"--Seleccione--"}];listarCboRiel(subfamilia){  
-  this.CboRiel=[{codigo:0,nombre:"--Seleccione--"}]; 
+CboRiel=[{codigo:0,nombre:"--Seleccione--"}]; async listarCboRiel(subfamilia){  
+  this.CboRiel=[{codigo:0,nombre:"--Seleccione--"}];  
+  const listComponentes = await this.ListarArticulosPorFamiliaGrupoIndividual("Riel"); 
+  this.CboRiel.push(...listComponentes); 
+/*
   this.spinner.show();
   this.obtenerarticulos("Familia", subfamilia).subscribe(
     (response) => {
@@ -1112,7 +1154,7 @@ CboRiel=[{codigo:0,nombre:"--Seleccione--"}];listarCboRiel(subfamilia){
     () => {
       this.spinner.hide();
     }
-  ); 
+  ); */
 }
 ChangeRiel(event: any): void {
   const value = event.target.value;  
@@ -1179,11 +1221,15 @@ if(valVia=='VERSARAIL'){
   }
 } 
 //GUARDAR CODIGO Y NOMBRE
-CboBaston=[{codigo:0,nombre:"--Seleccione--"}];listarCboBaston(subfamilia){  
+CboBaston=[{codigo:0,nombre:"--Seleccione--"}];async listarCboBaston(subfamilia){  
   this.CboBaston=[
     {codigo:0,nombre:"--Seleccione--"}, 
   ];   
-  this.spinner.show();
+   
+  const listComponentes = await this.ListarArticulosPorFamiliaGrupoIndividual("Baston"); 
+  this.CboBaston.push(...listComponentes); 
+
+/*  this.spinner.show();
   this.obtenerarticulos("Familia", subfamilia).subscribe(
     (response) => {
       if (response) { 
@@ -1194,7 +1240,7 @@ CboBaston=[{codigo:0,nombre:"--Seleccione--"}];listarCboBaston(subfamilia){
     () => {
       this.spinner.hide();
     }
-  ); 
+  ); */
 }
 ChangeBaston(event: any): void {
   const value = event.target.value;  
@@ -1237,8 +1283,12 @@ CboMandoBaston=[{id:0,nombre:"--Seleccione--"}];listarCboMandoBaston(){
   ]; 
 } 
 //GUARDAR CODIGO Y NOMBRE
-CboBastonVarrilla=[{codigo:0,nombre:"--Seleccione--"}];listarCboBastonVarrilla(subfamilia){  
-  this.CboBastonVarrilla=[{codigo:0,nombre:"--Seleccione--"}]; 
+CboBastonVarrilla=[{codigo:0,nombre:"--Seleccione--"}];async listarCboBastonVarrilla(subfamilia){  
+  this.CboBastonVarrilla=[{codigo:0,nombre:"--Seleccione--"}];  
+  const listComponentes = await this.ListarArticulosPorFamiliaGrupoIndividual("BastonVarrilla"); 
+  this.CboBastonVarrilla.push(...listComponentes); 
+
+  /*
   this.spinner.show();
   this.obtenerarticulos("Varrilla", subfamilia).subscribe(
     (response) => {
@@ -1250,7 +1300,7 @@ CboBastonVarrilla=[{codigo:0,nombre:"--Seleccione--"}];listarCboBastonVarrilla(s
     () => {
       this.spinner.hide();
     }
-  ); 
+  ); */
 }
 ChangeBastonVarrilla(event: any): void {
   const value = event.target.value;  
@@ -1269,9 +1319,11 @@ CboCabezal=[{id:0,nombre:"--Seleccione--"}];listarCboCabezal(){
   ]; 
 } 
 //GUARDAR CODIGO Y NOMBRE
-CboCordon=[{codigo:0,nombre:"--Seleccione--"}];listarCboCordon(subfamilia){  
-  this.CboCordon=[{codigo:0,nombre:"--Seleccione--"}]; 
-  this.spinner.show();
+CboCordon=[{codigo:0,nombre:"--Seleccione--"}]; async listarCboCordon(subfamilia){  
+  this.CboCordon=[{codigo:0,nombre:"--Seleccione--"}];  
+  const listComponentes = await this.ListarArticulosPorFamiliaGrupoIndividual("Cordon"); 
+  this.CboCordon.push(...listComponentes); 
+  /*this.spinner.show();
   this.obtenerarticulos("Cordon", subfamilia).subscribe(
     (response) => {
       if (response) { 
@@ -1282,7 +1334,7 @@ CboCordon=[{codigo:0,nombre:"--Seleccione--"}];listarCboCordon(subfamilia){
     () => {
       this.spinner.hide();
     }
-  ); 
+  ); */
 } 
 ChangeCordon(event: any): void {
   const value = event.target.value;  
@@ -1293,9 +1345,11 @@ ChangeCordon(event: any): void {
   }
 }
    //GUARDAR CODIGO Y NOMBRE
-CboCordonTipo2=[{codigo:0,nombre:"--Seleccione--"}];listarCboCordonTipo2(subfamilia){  
-  this.CboCordonTipo2=[{codigo:0,nombre:"--Seleccione--"}]; 
-  this.spinner.show();
+CboCordonTipo2=[{codigo:0,nombre:"--Seleccione--"}];async listarCboCordonTipo2(subfamilia){  
+  this.CboCordonTipo2=[{codigo:0,nombre:"--Seleccione--"}];  
+  const listComponentes = await this.ListarArticulosPorFamiliaGrupoIndividual("CordonTipo2"); 
+  this.CboCordonTipo2.push(...listComponentes); 
+  /*this.spinner.show();
   this.obtenerarticulos("Varrilla", subfamilia).subscribe(
     (response) => {
       if (response) { 
@@ -1306,7 +1360,7 @@ CboCordonTipo2=[{codigo:0,nombre:"--Seleccione--"}];listarCboCordonTipo2(subfami
     () => {
       this.spinner.hide();
     }
-  ); 
+  ); */
 }
 
 ChangeCordonTipo2(event: any): void {
@@ -1356,9 +1410,11 @@ if(valDispositivo=='Ninguno'){
 }
 }
     //GUARDAR CODIGO y NOMBRE
-CboControl=[{codigo:0,nombre:"--Seleccione--"}];listarCboControl(subfamilia){  
-  this.CboControl=[{codigo:0,nombre:"--Seleccione--"}];  
-  this.spinner.show();
+CboControl=[{codigo:0,nombre:"--Seleccione--"}];async listarCboControl(subfamilia){  
+  this.CboControl=[{codigo:0,nombre:"--Seleccione--"}];   
+  const listComponentes = await this.ListarArticulosPorFamiliaGrupoIndividual("Control"); 
+  this.CboControl.push(...listComponentes); 
+ /* this.spinner.show();
   this.obtenerarticulos("Articulo", subfamilia).subscribe(
     (response) => {
       if (response) { 
@@ -1369,7 +1425,7 @@ CboControl=[{codigo:0,nombre:"--Seleccione--"}];listarCboControl(subfamilia){
     () => {
       this.spinner.hide();
     }
-  ); 
+  ); */
 } 
 
 ChangeControl(event: any): void {
@@ -1381,9 +1437,12 @@ ChangeControl(event: any): void {
   }
 }
     //GUARDAR EN BD CODIGO Y NOMBRE
-CboSwitch=[{codigo:0,nombre:"--Seleccione--"}];listarCboSwitch(subfamilia){  
-  this.CboSwitch=[{codigo:0,nombre:"--Seleccione--"}]; 
-  this.spinner.show();
+CboSwitch=[{codigo:0,nombre:"--Seleccione--"}];async listarCboSwitch(subfamilia){  
+  this.CboSwitch=[{codigo:0,nombre:"--Seleccione--"}];   
+  const listComponentes = await this.ListarArticulosPorFamiliaGrupoIndividual("Switch"); 
+  this.CboSwitch.push(...listComponentes); 
+
+  /*this.spinner.show();
   this.obtenerarticulos("Articulo", subfamilia).subscribe(
     (response) => {
       if (response) { 
@@ -1394,7 +1453,7 @@ CboSwitch=[{codigo:0,nombre:"--Seleccione--"}];listarCboSwitch(subfamilia){
     () => {
       this.spinner.hide();
     }
-  ); 
+  ); */
 }
 
 ChangeSwitch(event: any): void {
@@ -1421,9 +1480,12 @@ CboMandoAdaptador=[{id:0,nombre:"--Seleccione--"}];listarCboMandoAdaptador(){
   ]; 
 } 
 //GUARDAR CODIGO Y NOMBRE
-CboMotor=[{codigo:0,nombre:"--Seleccione--"}];listarCboMotor(tupoProducto){  
-  this.CboMotor=[{codigo:0,nombre:"--Seleccione--"}];
-  this.spinner.show();
+CboMotor=[{codigo:0,nombre:"--Seleccione--"}];async listarCboMotor(tupoProducto){  
+  this.CboMotor=[{codigo:0,nombre:"--Seleccione--"}]; 
+  const listComponentes = await this.ListarArticulosPorFamiliaGrupoIndividual("Motor"); 
+  this.CboMotor.push(...listComponentes); 
+  
+  /*this.spinner.show();
   this.obtenerarticulos("Motor", tupoProducto).subscribe(
     (response) => {
       if (response) { 
@@ -1434,7 +1496,7 @@ CboMotor=[{codigo:0,nombre:"--Seleccione--"}];listarCboMotor(tupoProducto){
     () => {
       this.spinner.hide();
     }
-  );  
+  );  */
 } 
  
 cancheCbopNombreMotor(event: any) {
@@ -1479,42 +1541,42 @@ case "IndiceAgrupacion":this.listarCboIndiceAgrupacion();(element as HTMLSelectE
 break;
 case "Ambiente":this.listarCboAmbiente();break;
 case "Turno":this.listarCboTurno();break;
-case "SoporteCentral":this.listarCboSoporteCentral();break;
+case "SoporteCentral":this.listarCboSoporteCentral();break; 
 case "TipoSoporteCentral":this.listarCboTipoSoporteCentral();break;
 case "Caida":this.listarCboCaida();break;
 case "Accionamiento":this.listarCboAccionamiento(tipoProducto,nombreProd); accionamiento="SI" ;break;
 case "CodigoTela":this.listarCboTela(subFamiliaProd);break;
 case "CodigoTubo": 
-this.listarCboNombreTubo(subFamiliaProd,tipoProducto);break; 
-case "Mando":this.listarCboMando(tipoProducto);break;
+this.listarCboNombreTubo(subFamiliaProd,tipoProducto);break;
+case "Mando":this.listarCboMando(tipoProducto);break; 
 case "TipoMecanismo":this.listarCboTipoMecanismo();break;
 case "ModeloMecanismo":this.listarCboModeloMecanismo(null,"0");break;
 case "TipoCadena":this.listarCboTipoCadena();break;
-case "CodigoCadena":this.listarCboCodigoCadena(null,"0");break;
+case "CodigoCadena":this.listarCboCodigoCadena(null,"0");break; 
 case "TipoRiel":this.listarCboTipoRiel();break;
-case "TipoInstalacion":this.listarCboTipoInstalacion();break;
-case "CodigoRiel":this.listarCboRiel(subFamiliaProd);break;
+case "TipoInstalacion":this.listarCboTipoInstalacion();break; 
+case "CodigoRiel":this.listarCboRiel(subFamiliaProd);break; 
 case "TipoCassete":this.listarCboTipoCassete();break;
 case "Lamina":this.listarCboLamina();break;
 case "Apertura":this.listarCboApertura();break;
 case "ViaRecogida":this.listarCboViaRecogida();break;
 case "TipoSuperior":this.listarCboTipoSuperior();break;
-case "CodigoBaston":this.listarCboBaston(subFamiliaProd);break;
+case "CodigoBaston":this.listarCboBaston(subFamiliaProd);break; 
 case "NumeroVias":this.listarCboNumeroVias();break;
 case "TipoCadenaInferior":this.listarCboTipoCadenaInferior();break;
 case "MandoCordon":this.listarCboMandoCordon();break;
 case "MandoBaston":this.listarCboMandoBaston();break;
-case "CodigoBastonVarrilla":this.listarCboBastonVarrilla(subFamiliaProd);break;
+case "CodigoBastonVarrilla":this.listarCboBastonVarrilla(subFamiliaProd);break; 
 case "Cabezal":this.listarCboCabezal();break;
-case "CodigoCordon":this.listarCboCordon(subFamiliaProd);break;
-case "CodigoCordonTipo2":this.listarCboCordonTipo2(subFamiliaProd);break;
+case "CodigoCordon":this.listarCboCordon(subFamiliaProd);break; 
+case "CodigoCordonTipo2":this.listarCboCordonTipo2(subFamiliaProd);break; 
 case "Cruzeta":this.listarCboCruzeta();break;
 case "Dispositivo":this.listarCboDispositivo();break;
 case "CodigoControl":this.listarCboControl(subFamiliaProd);break;
-case "CodigoSwitch":this.listarCboSwitch(subFamiliaProd);break;
+case "CodigoSwitch":this.listarCboSwitch(subFamiliaProd);break; 
 case "LlevaBaston":this.listarCboLlevaBaston();break;
 case "MandoAdaptador":this.listarCboMandoAdaptador();break;
-case "CodigoMotor":this.listarCboMotor(tipoProducto);break;
+case "CodigoMotor":this.listarCboMotor(tipoProducto);break; 
             default :
             break;
             }
@@ -1610,4 +1672,48 @@ case "CodigoMotor":this.listarCboMotor(tipoProducto);break;
         item.Cantidad = 0; // Puedes cambiar esto a '' si prefieres dejar el campo vacío
       }
     }
+
+    
+  async ListarArticulosPorFamiliaGrupoIndividual(componente: string): Promise<any[]> {
+    this.spinner.show(); // Muestra el spinner
+    
+    const maestro = this.ListMaestroArticulos.find(item => item.identificador === componente);
+  
+    if (!maestro) {
+      this.spinner.hide();
+      this.toaster.open({
+        text: "Maestro artículo no encontrado para "+componente,
+        caption: 'Mensaje',
+        type: 'danger',
+      });
+      return []; // Retornar array vacío si no se encuentra el maestro
+    }
+  
+    try {
+      const data = await this.apiSap
+        .ListarArticulosPorFamiliaGrupo(maestro.identificador, maestro.codigoGrupo)
+        .toPromise(); // Convertir observable en promesa
+  
+      if (!data || data.length === 0) {
+        this.toaster.open({
+          text: "No se encontraron artículos para el componente "+componente,
+          caption: 'Mensaje',
+          type: 'warning',
+        });
+        return [];
+      }
+  
+      return data; // Devuelve los datos si están disponibles
+    } catch (error) {
+      this.toaster.open({
+        text: "Error al cargar datos para el componente individual (SAP)",
+        caption: 'Mensaje',
+        type: 'danger',
+      });
+      console.error(`Error al cargar datos para el componente ${componente}:`, error);
+      return []; // Retornar array vacío en caso de error
+    } finally {
+      this.spinner.hide(); // Asegura que el spinner se oculta
+    }
+  }
     }

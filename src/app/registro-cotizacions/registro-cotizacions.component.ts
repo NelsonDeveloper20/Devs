@@ -1032,8 +1032,12 @@ eliminarAmbiente(indice: number) {
         })
       );
   }
+  comparaOrdenes = (o1: any, o2: any): boolean => {
+    return o1 && o2 ? o1.docEntrySap === o2.docEntrySap : o1 === o2;
+  };
+  
   ordenes:any;
-  onSelectState(state: any) {     
+  onSelectState(state: any) {    
     console.log('El objeto seleccionado ha cambiado:', state);
     if(state){
 
@@ -1096,7 +1100,7 @@ eliminarAmbiente(indice: number) {
         console.log('Datos originales:', data);
         this.OrdeDeVentaPendiente=[];
         this.filteredCotizaciones=[];
-        this.OrdeDeVentaPendiente = await this.normalizarColumnas(data);
+        this.OrdeDeVentaPendiente = await this.normalizarColumnas(data,"MASIVO");
   
         console.log('Datos con nombres renombrados:', this.OrdeDeVentaPendiente);
         this.filteredCotizaciones = [...this.OrdeDeVentaPendiente];
@@ -1109,13 +1113,9 @@ eliminarAmbiente(indice: number) {
       }
     );
   }
-  async normalizarColumnas(data:any){
+  async normalizarColumnas(data:any,tipo:any){
     
-        // Verificar si la respuesta es un array
-        if (!Array.isArray(data)) {
-          console.error('La respuesta no es un array:', data);
-          return []; // Salir de la función si no es un array
-        }
+       
   
         const fieldMap = {
           DocEntry: 'docEntrySap',
@@ -1162,18 +1162,39 @@ eliminarAmbiente(indice: number) {
             return acc;
           }, {} as any);
         };
-  
+        var result;
         // Renombrar los campos en la lista principal y en cada línea de los elementos
-       var result= data.map((order: any) => {
-          const renamedOrder = renameFields(order);
+        if(tipo!="INDIVIDUAL"){
+ // Verificar si la respuesta es un array
+ if (!Array.isArray(data)) {
+  console.error('La respuesta no es un array:', data);
+  return []; // Salir de la función si no es un array
+}
+
+ result= data.map((order: any) => {
+  const renamedOrder = renameFields(order);
+  
+  // Verificar que `Lineas` existe y es un array antes de mapearlo
+  renamedOrder.Lineas = Array.isArray(order.Lineas) 
+    ? order.Lineas.map((linea: any) => renameFields(linea))
+    : [];
+    
+  return renamedOrder;
+});
+        }else{
+          
+           
+          const renamedOrder = renameFields(data);
           
           // Verificar que `Lineas` existe y es un array antes de mapearlo
-          renamedOrder.Lineas = Array.isArray(order.Lineas) 
-            ? order.Lineas.map((linea: any) => renameFields(linea))
+          renamedOrder.Lineas = Array.isArray(data.Lineas) 
+            ? data.Lineas.map((linea: any) => renameFields(linea))
             : [];
             
-          return renamedOrder;
-        });
+            result=  renamedOrder;
+        
+        
+       }
         return result;
   }
   
@@ -1220,18 +1241,21 @@ eliminarAmbiente(indice: number) {
   
   // Método que se ejecuta cuando no se encuentran resultados en la búsqueda
   async refreshCotizaciones(searchValue: string) {
+    this.spinner.show();
     console.log("BUSCANDO ");
     console.log(searchValue);
-    searchValue="9"; 
+    searchValue="1600009"; 
     this.sapService.ListarOrdenesByDocEntry(searchValue).subscribe(
       async datas => {
-        var data=datas.value;
+        this.searchValue="";;
+        var data=datas;
         console.log('Datos originales NN1:', data);
-     var nwItem=  await this.normalizarColumnas(data);
-  
-        console.log('Datos con nombres renombrados:', this.OrdeDeVentaPendiente);
-        this.filteredCotizaciones = [...this.OrdeDeVentaPendiente];
-
+     var nwItem=  await this.normalizarColumnas(data,"INDIVIDUAL");
+    console.log(nwItem);
+ 
+if (!this.filteredCotizaciones.some(existingItem => existingItem.docEntrySap === nwItem.docEntrySap)) {
+  this.filteredCotizaciones = [...this.filteredCotizaciones, nwItem];
+}
         this.spinner.hide();
       },
       error => {

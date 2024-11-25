@@ -69,4 +69,7 @@ export class MonitoreoService {
     return this.http.post<IApiResponse>(`${this.urlBase}Monitoreo/GuardarSalidaSap`, request);
   }
   
+  ListarMaestroArticulos(): Observable<any> {
+    return this.http.get<any>(`${this.urlBase}MaestroArticulo`);
+  }
 }

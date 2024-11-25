@@ -1,6 +1,7 @@
 <ngx-spinner bdColor="rgba(255, 255, 255, 1)" size="medium" color="#0D7ABD" type="ball-beat" [fullScreen]="true">
     <p style="color: black">Loading...</p>
 </ngx-spinner>
+
 <h2 mat-dialog-title>Explocionar Componentes  -  <b>{{DatosGrupo.cotizacionGrupo}}</b></h2>
 <style>
     
@@ -17,17 +18,18 @@
     border-radius: 4px;
 }
 </style>
-<div mat-dialog-content>
+<div mat-dialog-content #tableElement>
     <div class="panel-body">
 
         <div class="table-container">
 
-            <table class="table table-responsive-lg mb-0" id="dubcomponente">
+            <table class="table table-responsive-lg mb-0" id="dubcomponente" >
                 <thead class="sticky-top">
                     <tr>
-                        <th nowrap>ID</th>
+                        
                         <th nowrap>Cod. Producto</th>
                         <th nowrap>Nom. Producto</th>
+                        <th >Familia</th>
                         <th>Componente</th>
                         <th>Codigo</th>
                         <th>Nombre</th>
@@ -35,17 +37,22 @@
                         <th>Unidad Medida</th>
                         <th style="white-space: nowrap !important;">Cant. Utilizada</th>
                         <th>Merma</th>
-                        <th><button class="btn btn-primary-azul tp-btn-light sharp" style="float: right;"  title="Agregar Nuevo Componente"
-                                (click)="agregarComponente()">
-                                <mat-icon>library_add</mat-icon> </button> </th>
+                        <th>
+                           <!--<button class="btn btn-primary-azul tp-btn-light sharp" style="float: right;"  title="Agregar Nuevo Componente"
+                            (click)="agregarComponente()"><mat-icon>library_add</mat-icon> 
+                            </button>-->
+                            <button class="btn btn-primary-azul tp-btn-light sharp" style="float: right;"  title="Agregar Nuevo Componente"
+                            (click)="openTablePopup()"><mat-icon>library_add</mat-icon> 
+                            </button>
+                        </th>
                     </tr>
                 </thead>
                 <tbody id="id_tabla"></tbody>
                 <tbody>
                     <tr *ngFor="let comp of ListComponenteProducto">
-                        <td>{{ comp.idProducto }}</td> 
                         <td>{{ comp.codigoProducto }}</td> 
                         <td  style="width: 124px !important;">{{ comp.nombreProducto }}</td>
+                        <td> {{comp.familia}}</td>
                         <td style="width: 124px !important;">
                             {{ comp.componente }}
                         </td>
@@ -61,6 +68,7 @@
                                     </span>
                                 </mat-select-trigger>
                                 <input matInput (keyup)="applyFilter($event, comp)" placeholder="Buscar" class="search-input" />
+                                <mat-option *ngIf="!comp.filteredOptions">Cargando...</mat-option>
                                 <!-- Opción para el valor seleccionado actual si no está en las opciones filtradas -->
                                 <mat-option *ngIf="!isOptionInFilteredOptions(comp.codigo, comp.filteredOptions)" [value]="comp.codigo">
                                     {{ comp.codigo }} : {{ comp.codigo }}
