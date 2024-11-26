@@ -136,17 +136,22 @@ private isTokenExpired(token: string): boolean {
 
   //LISTAR ARTICULOS POR FAMILIA Y GRUPO 
   ListarArticulosPorFamiliaGrupo(identificador: any, grupo: any): Observable<any[]> { 
-    const url = `${this.urlBase}Items/0/p`;//?idenficado=` + identificador + "&grupo=" + grupo; 
+    const url = `${this.urlBase}Items/ListFilter`;//?idenficado=` + identificador + "&grupo=" + grupo; 
+    const body=
+      {
+        "GroupCode": 124,
+        "FamilyCode": "TEL"
+      };
     return this.getValidToken().pipe(
       switchMap((token) => {
         const headers = new HttpHeaders({
           'Authorization': `Bearer ${token}`
         });
-        return this.httpClient.get<any>(url, { headers });
+        return this.httpClient.post<any>(url,body, { headers });
       }),
       map((response) => {
         // Extrae y mapea la información relevante del array `value`
-        return response.value.map((item: any) => ({
+        return response.map((item: any) => ({
           codigo: item.ItemCode,
           nombre: item.ItemName,
           unidadMedida:"",

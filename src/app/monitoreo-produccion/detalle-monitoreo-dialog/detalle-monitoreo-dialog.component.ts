@@ -3,6 +3,8 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Toaster } from 'ngx-toast-notifications';
+import { throwError } from 'rxjs';
+import { catchError, retry } from 'rxjs/operators';
 import { MonitoreoService } from 'src/app/services/monitoreo.service';
 import { SapService } from 'src/app/services/sap.service';
 import Swal from 'sweetalert2';
@@ -156,7 +158,7 @@ listarComponestePorCodigoProds(prods) {
           comp.filteredOptions = null; // Estado de carga
           comp.error = false;         // Limpia errores previos
         });
-
+/*
       this.apiSap.ListarArticulosPorFamiliaGrupo(maestro.identificador, maestro.codigoGrupo).subscribe({
         next: (data) => {
           this.ListComponenteProducto
@@ -171,6 +173,65 @@ listarComponestePorCodigoProds(prods) {
               comp.filteredOptions = [];
               comp.error = true; // Marca error
             });
+        }
+      });*/
+
+      this.apiSap.ListarArticulosPorFamiliaGrupo(maestro.identificador, maestro.codigoGrupo).pipe(
+        retry(3), // Intenta la solicitud hasta 3 veces
+        catchError((err) => {
+          console.error(`Error al intentar cargar datos para el componente ${componente}:`, err);
+          return throwError(() => err);
+        })
+      ).subscribe({
+        next: (data) => {
+          this.ListComponenteProducto
+            .filter(comp => comp.componente === componente)
+            .forEach(comp => comp.filteredOptions = data);
+        },
+        error: (err) => {
+          this.ListComponenteProducto
+            .filter(comp => comp.componente === componente)
+            .forEach(comp => {
+              comp.filteredOptions = [];
+              comp.error = true;
+            });
+          alert(`Error definitivo en la comunicación con SAP para el componente ${componente}.`);
+        }
+      });
+    }
+  });
+}
+listarComponestePorCodigoProdsOFICIAL(prods) {
+  const componentesUnicos = [...new Set(this.ListComponenteProducto.map(comp => comp.componente))];
+  componentesUnicos.forEach(componente => {
+    const maestro = this.ListMaestroArticulos.find(item => item.identificador === componente);
+    if (maestro) {
+      this.ListComponenteProducto
+        .filter(comp => comp.componente === componente)
+        .forEach(comp => {
+          comp.filteredOptions = null; // Estado de carga
+          comp.error = false; // Limpia errores previos
+        });
+      
+      this.apiSap.ListarArticulosPorFamiliaGrupo(maestro.identificador, maestro.codigoGrupo).subscribe({
+        next: (data) => {
+          this.ListComponenteProducto
+            .filter(comp => comp.componente === componente)
+            .forEach(comp => comp.filteredOptions = data);
+        },
+        error: (err) => {
+          console.error(`Error al cargar datos para el componente ${componente}:`, err);
+          this.ListComponenteProducto
+            .filter(comp => comp.componente === componente)
+            .forEach(comp => {
+              comp.filteredOptions = [];
+              comp.error = true; // Marca error
+            });
+
+          // Opcional: muestra un mensaje de error específico
+          if (err.error && err.error.ErrorDescription) {
+            alert(`Error en SAP para el componente ${componente}: ${err.error.ErrorDescription}`);
+          }
         }
       });
     }
