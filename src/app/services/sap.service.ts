@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, of, throwError, timer } from 'rxjs';
 import { catchError, filter, map, switchMap, take, tap } from 'rxjs/operators';
 import jwt_decode from 'jwt-decode';
 import { environment } from 'src/environments/environment';
@@ -135,7 +135,7 @@ private isTokenExpired(token: string): boolean {
   }
 
   //LISTAR ARTICULOS POR FAMILIA Y GRUPO 
-  ListarArticulosPorFamiliaGrupo(identificador: any, grupo: any): Observable<any[]> { 
+  ListarArticulosPorFamiliaGrupo2(identificador: any, grupo: any): Observable<any[]> { 
     const url = `${this.urlBase}Items/ListFilter`;//?idenficado=` + identificador + "&grupo=" + grupo; 
     const body=
       {
@@ -164,5 +164,48 @@ private isTokenExpired(token: string): boolean {
       })
     );
   }
+  ListarArticulosPorFamiliaGrupo(identificador: any, grupo: any): Observable<any[]> {
+    const url = `${this.urlBase}Items/ListFilter`;
+    const body = {
+      "GroupCode": 124,
+      "FamilyCode": "TEL"
+    };
   
+    return this.getValidToken().pipe(
+      switchMap((token) => {
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        });
+  
+        return this.httpClient.post<any>(url, body, { 
+          headers,
+          responseType: 'json'
+        }).pipe(
+          map(response => {
+            if (!response) {
+              throw new Error('No se recibió respuesta del servidor');
+            }
+            return response.map((item: any) => ({
+              codigo: item.ItemCode,
+              nombre: item.ItemName,
+              unidadMedida: "",
+              color: ""
+            }));
+          }),
+          catchError(error => {
+            console.error('Error en la solicitud SAP:', error);
+            // Reintentar la conexión si es un error de COM
+            if (error.error?.ErrorDescription?.includes('COM object')) {
+              return timer(1000).pipe(
+                switchMap(() => this.ListarArticulosPorFamiliaGrupo(identificador, grupo))
+              );
+            }
+            return throwError(() => error);
+          })
+        );
+      })
+    );
+  }
 }

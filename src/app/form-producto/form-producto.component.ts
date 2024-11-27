@@ -201,13 +201,39 @@ case "IdTbl_Ambiente": (element as HTMLSelectElement).value = values.idTbl_Ambie
 case "Ambiente": (element as HTMLSelectElement).value = element.value = values.ambiente ? values.ambiente : "--Seleccione--";  break;
 case "Turno":  (element as HTMLSelectElement).value = element.value = values.turno ? values.turno : "--Seleccione--"; 
 break;
-case "CodigoTela": (element as HTMLSelectElement).value = element.value = values.codigoTela ? values.codigoTela : "--Seleccione--";  break;
+case "CodigoTela":  
+// Verifica si el código almacenado está en las opciones
+const existe = this.CboTela.some((opcion) => opcion.codigo === values.codigoTela); 
+if (!existe && values.codigoTela) {
+  // Agrega temporalmente la opción a CboTela si no existe
+  const newItem = { codigo: values.codigoTela, nombre: values.tela };
+  this.CboTela.push(newItem);  
+  // Forzar actualización de la vista
+  this.cdr.detectChanges();
+} 
+// Asignar el valor al elemento select
+(element as HTMLSelectElement).value = values.codigoTela || "--Seleccione--";
+  break;
 case "SoporteCentral": (element as HTMLSelectElement).value = element.value = values.soporteCentral ? values.soporteCentral : "--Seleccione--";  break;
 case "TipoSoporteCentral": (element as HTMLSelectElement).value = element.value = values.tipoSoporteCentral ? values.tipoSoporteCentral : "--Seleccione--";  break;
 case "Caida": (element as HTMLSelectElement).value = element.value = values.caida ? values.caida : "--Seleccione--";  break;
 case "Accionamiento": (element as HTMLSelectElement).value = element.value = values.accionamiento ? values.accionamiento : "--Seleccione--";  break;
-case "CodigoTubo": (element as HTMLSelectElement).value = element.value = values.codigoTubo ? values.codigoTubo : "--Seleccione--"; 
- 
+case "CodigoTubo":
+  
+
+// Verifica si el código almacenado está en las opciones
+const existetubo = this.CboNombreTubo.some((opcion) => opcion.codigo === values.codigoTubo); 
+if (!existetubo && values.codigoTubo) {
+  // Agrega temporalmente la opción a CboTela si no existe
+  const newItem = { codigo: values.codigoTubo, nombre: values.nombreTubo };
+  this.CboNombreTubo.push(newItem);  
+  // Forzar actualización de la vista
+  this.cdr.detectChanges();
+} 
+// Asignar el valor al elemento select
+
+(element as HTMLSelectElement).value = element.value = values.codigoTubo ? values.codigoTubo : "--Seleccione--"; 
+  
   $('#nomb_tubo').select2({
     placeholder: '--Seleccione--'
   });  
@@ -1674,7 +1700,7 @@ case "CodigoMotor":this.listarCboMotor(tipoProducto);break;
     }
 
     
-  async ListarArticulosPorFamiliaGrupoIndividual(componente: string): Promise<any[]> {
+  async ListarArticulosPorFamiliaGrupoIndividual2(componente: string): Promise<any[]> {
     this.spinner.show(); // Muestra el spinner
     
     const maestro = this.ListMaestroArticulos.find(item => item.identificador === componente);
@@ -1716,4 +1742,82 @@ case "CodigoMotor":this.listarCboMotor(tipoProducto);break;
       this.spinner.hide(); // Asegura que el spinner se oculta
     }
   }
+
+  
+  private async ListarArticulosPorFamiliaGrupoIndividual(componente: string): Promise<any[]> {
+    const maestro = this.ListMaestroArticulos.find(item => item.identificador === componente);
+    console.log("COMPONENTES BUSCADOS");
+    console.log(componente);
+    
+    if (!maestro) {
+      this.toaster.open({
+        text: `No se encontró la configuración maestra para el componente ${componente}`,
+        caption: 'Mensaje',
+        type: 'warning',
+      });
+      return []; // Retorno explícito cuando no se encuentra el maestro
+    }
+  
+    try {
+      // Intentar obtener datos con reintentos
+      const data = await this.obtenerDatosConReintentos(maestro, componente);
+      
+      if (!data || data.length === 0) {
+        this.toaster.open({
+          text: `No se encontraron artículos para el componente ${componente}`,
+          caption: 'Mensaje',
+          type: 'warning',
+        });
+        return [];
+      }
+      
+      return data;
+    } catch (error) {
+      console.error(`Error al cargar datos para el componente ${componente}:`, error);
+      
+      // Mostrar mensaje de error
+      this.toaster.open({
+        text: error.error?.ErrorDescription?.includes('COM object')
+          ? `Error de conexión SAP para el componente ${componente}. Reintentando...`
+          : "Error al cargar datos para el componente individual (SAP)",
+        caption: 'Error',
+        type: 'danger',
+      });
+      
+      return []; // Retorno explícito en caso de error
+    }
+  }
+// Método auxiliar para reintentos
+private async obtenerDatosConReintentos(maestro: any, componente: string, maxIntentos = 3): Promise<any[]> {
+  for (let intento = 1; intento <= maxIntentos; intento++) {
+    try {
+      const data = await new Promise<any[]>((resolve, reject) => {
+        const subscription = this.apiSap
+          .ListarArticulosPorFamiliaGrupo(maestro.identificador, maestro.codigoGrupo)
+          .subscribe({
+            next: (data: any[]) => {
+              resolve(data || []); 
+              subscription.unsubscribe();
+            },
+            error: (error) => {
+              reject(error);
+              subscription.unsubscribe();
+            },
+          });
+      });
+      
+      return data; // Retorno exitoso
+    } catch (error) {
+      if (intento === maxIntentos || !error.error?.ErrorDescription?.includes('COM object')) {
+        throw error; // Propagar el error si es el último intento o no es error de COM
+      }
+      // Esperar antes de reintentar
+      await new Promise((resolve) => setTimeout(resolve, 1000 * intento));
+    }
+  }
+  
+  return []; // Retorno explícito si todos los intentos fallan
+}
+
+
     }

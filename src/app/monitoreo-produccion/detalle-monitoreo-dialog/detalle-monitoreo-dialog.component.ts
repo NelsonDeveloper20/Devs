@@ -3,8 +3,8 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Toaster } from 'ngx-toast-notifications';
-import { throwError } from 'rxjs';
-import { catchError, retry } from 'rxjs/operators';
+import { Subscription, throwError } from 'rxjs';
+import { catchError, finalize, retry, timeout } from 'rxjs/operators';
 import { MonitoreoService } from 'src/app/services/monitoreo.service';
 import { SapService } from 'src/app/services/sap.service';
 import Swal from 'sweetalert2';
@@ -90,189 +90,139 @@ getSelectedOption(value: string, componente: string): any {
     (componente === 'Agregado' || option.codigoProducto.startsWith(componente.substring(0, 5)))
   );
 }
-
+ 
 onNombreChange(event: any, element: any) {
-  const value = event.value;
-  const selectedOption = this.getSelectedOption(value, element.componente);
+  const selectedCodigo = event.value; // Código seleccionado
+  const selectedOption = element.filteredOptionsOriginal.find(item => item.codigo === selectedCodigo);
+
   if (selectedOption) {
-    element.nombre = selectedOption.nombre;
-    element.codigo = selectedOption.codigo;
-    element.unidadMedida = selectedOption.unidad || '';
-    element.color = selectedOption.color || '';
+    element.nombre = selectedOption.nombre; // Actualiza el nombre
+    element.unidadMedida = selectedOption.unidadMedida || ''; // Actualiza unidad de medida
+    element.color = selectedOption.color || ''; // Actualiza el color
+  } else {
+    // Si no se encuentra, limpia los valores
+    element.nombre = '';
+    element.unidadMedida = '';
+    element.color = '';
   }
 }
 
-lisComponente: any[] = [];
-/*alistarComponestePorCodigoProds(productos){    
-  this.spinner.show();   
-this._service.ListarComponentesPorCodigosProducto(productos,this.DatosGrupo.cotizacionGrupo).subscribe(
-  (data: any) => { 
-      this.lisComponente =  data; 
-      this.spinner.hide();    
-      // Actualiza la lista de opciones filtradas para cada componente
-      this.ListComponenteProducto.forEach(comp => {
-        comp.filteredOptions = this.lisComponente; // Inicializa con la lista completa
-      });
 
-  },
-  (error: any) => {
-    this.spinner.hide();
-    console.error('Error al obtener Componentes:', error); 
-  }
-);
-}*/
-listarComponestePorCodigoProds2(prods) {
+lisComponente: any[] = []; 
+// Nuevo método usando async/await
+private async listarComponestePorCodigoProdsOFICIAL(prods) {
   const componentesUnicos = [...new Set(this.ListComponenteProducto.map(comp => comp.componente))];
-  componentesUnicos.forEach(componente => {
-    const maestro = this.ListMaestroArticulos.find(item => item.identificador === componente);
-    if (maestro) {
-      // Indicar que está en estado de carga
-      this.ListComponenteProducto
-        .filter(comp => comp.componente === componente)
-        .forEach(comp => comp.filteredOptions = null);
+  
+  for (const componente of componentesUnicos) {
+      const maestro = this.ListMaestroArticulos.find(item => item.identificador === componente);
+      console.log("COMPONENTES BUSCADOS");
+      console.log(componente);
+      if (maestro) {
+          // Marca los componentes en estado de carga
+          this.ListComponenteProducto
+              .filter(comp => comp.componente === componente)
+              .forEach(comp => {
+                  comp.filteredOptions = null;
+                  comp.filteredOptionsOriginal=null;
+                  comp.error = false;
+              });
 
-      this.apiSap.ListarArticulosPorFamiliaGrupo(maestro.identificador, maestro.codigoGrupo).subscribe({
-        next: (data) => {
-          this.ListComponenteProducto
-            .filter(comp => comp.componente === componente)
-            .forEach(comp => comp.filteredOptions = data);
-        },
-        error: (err) => {
-          console.error(`Error al cargar datos para el componente ${componente}:`, err);
-          this.ListComponenteProducto
-            .filter(comp => comp.componente === componente)
-            .forEach(comp => comp.filteredOptions = []);
-        }
-      });
-    }
-  });
-}
-listarComponestePorCodigoProds(prods) {
-  const componentesUnicos = [...new Set(this.ListComponenteProducto.map(comp => comp.componente))];
-  componentesUnicos.forEach(componente => {
-    const maestro = this.ListMaestroArticulos.find(item => item.identificador === componente);
-    if (maestro) {
-      this.ListComponenteProducto
-        .filter(comp => comp.componente === componente)
-        .forEach(comp => {
-          comp.filteredOptions = null; // Estado de carga
-          comp.error = false;         // Limpia errores previos
-        });
-/*
-      this.apiSap.ListarArticulosPorFamiliaGrupo(maestro.identificador, maestro.codigoGrupo).subscribe({
-        next: (data) => {
-          this.ListComponenteProducto
-            .filter(comp => comp.componente === componente)
-            .forEach(comp => comp.filteredOptions = data);
-        },
-        error: (err) => {
-          console.error(`Error al cargar datos para el componente ${componente}:`, err);
-          this.ListComponenteProducto
-            .filter(comp => comp.componente === componente)
-            .forEach(comp => {
-              comp.filteredOptions = [];
-              comp.error = true; // Marca error
-            });
-        }
-      });*/
+          try {
+              // Intentar obtener datos con reintentos
+              const data = await this.obtenerDatosConReintentos(maestro, componente);              
+              // Actualizar componentes con los datos obtenidos
+              this.ListComponenteProducto
+                  .filter(comp => comp.componente === componente)
+                  .forEach(comp => {
+                      comp.filteredOptions = data;
+                      comp.filteredOptionsOriginal=data;
+                      comp.error = false;
+                  });
+          } catch (error) {
+              console.error(`Error al cargar datos para el componente ${componente}:`, error);
+              
+              // Marcar componentes con error
+              this.ListComponenteProducto
+                  .filter(comp => comp.componente === componente)
+                  .forEach(comp => {
+                      comp.filteredOptions = [];
+                      comp.filteredOptionsOriginal=[];
+                      comp.error = true;
+                  });
 
-      this.apiSap.ListarArticulosPorFamiliaGrupo(maestro.identificador, maestro.codigoGrupo).pipe(
-        retry(3), // Intenta la solicitud hasta 3 veces
-        catchError((err) => {
-          console.error(`Error al intentar cargar datos para el componente ${componente}:`, err);
-          return throwError(() => err);
-        })
-      ).subscribe({
-        next: (data) => {
-          this.ListComponenteProducto
-            .filter(comp => comp.componente === componente)
-            .forEach(comp => comp.filteredOptions = data);
-        },
-        error: (err) => {
-          this.ListComponenteProducto
-            .filter(comp => comp.componente === componente)
-            .forEach(comp => {
-              comp.filteredOptions = [];
-              comp.error = true;
-            });
-          alert(`Error definitivo en la comunicación con SAP para el componente ${componente}.`);
-        }
-      });
-    }
-  });
-}
-listarComponestePorCodigoProdsOFICIAL(prods) {
-  const componentesUnicos = [...new Set(this.ListComponenteProducto.map(comp => comp.componente))];
-  componentesUnicos.forEach(componente => {
-    const maestro = this.ListMaestroArticulos.find(item => item.identificador === componente);
-    if (maestro) {
-      this.ListComponenteProducto
-        .filter(comp => comp.componente === componente)
-        .forEach(comp => {
-          comp.filteredOptions = null; // Estado de carga
-          comp.error = false; // Limpia errores previos
-        });
-      
-      this.apiSap.ListarArticulosPorFamiliaGrupo(maestro.identificador, maestro.codigoGrupo).subscribe({
-        next: (data) => {
-          this.ListComponenteProducto
-            .filter(comp => comp.componente === componente)
-            .forEach(comp => comp.filteredOptions = data);
-        },
-        error: (err) => {
-          console.error(`Error al cargar datos para el componente ${componente}:`, err);
-          this.ListComponenteProducto
-            .filter(comp => comp.componente === componente)
-            .forEach(comp => {
-              comp.filteredOptions = [];
-              comp.error = true; // Marca error
-            });
-
-          // Opcional: muestra un mensaje de error específico
-          if (err.error && err.error.ErrorDescription) {
-            alert(`Error en SAP para el componente ${componente}: ${err.error.ErrorDescription}`);
+              // Mostrar mensaje de error solo si es error de COM object
+              if (error.error?.ErrorDescription?.includes('COM object')) {
+                  this.toaster.open({
+                      text: `Error de conexión SAP para el componente ${componente}. Reintentando...`,
+                      caption: 'Error',
+                      type: 'warning',
+                  });
+              }
           }
-        }
-      });
-    }
-  });
+      }
+  }
 }
-
-
+// Método auxiliar para reintentos
+private async obtenerDatosConReintentos(maestro, componente, maxIntentos = 3) {
+  for (let intento = 1; intento <= maxIntentos; intento++) {
+      try {
+          return await new Promise((resolve, reject) => {
+              const subscription = this.apiSap
+                  .ListarArticulosPorFamiliaGrupo(maestro.identificador, maestro.codigoGrupo)
+                  .subscribe({
+                      next: (data) => {
+                          resolve(data);
+                          subscription.unsubscribe();
+                      },
+                      error: (error) => {
+                          reject(error);
+                          subscription.unsubscribe();
+                      }
+                  });
+          });
+      } catch (error) {
+          if (intento === maxIntentos || !error.error?.ErrorDescription?.includes('COM object')) {
+              throw error;
+          }
+          // Esperar antes de reintentar
+          await new Promise(resolve => setTimeout(resolve, 1000 * intento));
+      }
+  }
+}
 
 
 filteredListComponente = this.lisComponente;    
 // Método para filtrar opciones según el input de búsqueda
-applyFilter1(event: any, comp: any) {
+/*applyFilter(event: any, comp: any) {
   const valor = event.target.value.toLowerCase();
   comp.filteredOptions = this.lisComponente.filter(option => 
     option.codigo.toLowerCase().includes(valor)
   );
-} 
-applyFilterv2(event: any, comp: any) {
+} */
+applyFilters(event: any, comp: any) {
   const valor = event.target.value.toLowerCase();
-  if (comp.filteredOptions) {
-    comp.filteredOptions = comp.filteredOptions.filter(option =>
-      option.codigo.toLowerCase().includes(valor) ||
-      option.nombre.toLowerCase().includes(valor)
+  if (!valor) {
+    comp.filteredOptions = [...comp.filteredOptionsOriginal]; // Restaura las opciones originales
+  } else {
+    comp.filteredOptions = comp.filteredOptionsOriginal.filter(option =>
+      option.codigo.toLowerCase().includes(valor)
     );
   }
 }
+ 
 applyFilter(event: any, comp: any) {
   const valor = event.target.value.toLowerCase();
-  // Si el valor de búsqueda está vacío, restablece las opciones
-  if (valor === '') {
-    comp.filteredOptions = this.lisComponente.filter(option =>
-      option.codigo.toLowerCase().includes(valor)
-    );
+  if (!valor) {
+    // Restaura las opciones originales si no hay búsqueda
+    comp.filteredOptions = [...comp.filteredOptionsOriginal];
   } else {
-    // Si hay texto de búsqueda, filtra las opciones
-    comp.filteredOptions = this.lisComponente.filter(option =>
-      option.codigo.toLowerCase().includes(valor)
+    // Filtra por código o nombre
+    comp.filteredOptions = comp.filteredOptionsOriginal.filter(option =>
+      option.codigo.toLowerCase().includes(valor) || // Coincidencia en el código
+      option.nombre.toLowerCase().includes(valor)   // Coincidencia en el nombre
     );
   }
 }
-
 
 
 ListComponenteProducto:any=[];
@@ -300,7 +250,7 @@ async ListarComponteProductoByGrupo(Grupo) {
   }  
   this.spinner.show();
   this._service.ListarComponenteDelProducto(Grupo,"1").subscribe(
-    (data: any) => {
+    async (data: any) => {
       if (data && data.status === 200) {  
         
         this.ListComponenteProducto = data.json.map(item => (
@@ -310,7 +260,9 @@ async ListarComponteProductoByGrupo(Grupo) {
             Usuario:idUsuario, 
             agregado: false ,  
             merma:"",
-            filteredOptions: [] // Inicializa como una lista vacía
+            filteredOptions: [], // Inicializa como una lista vacía
+            filteredOptionsOriginal: [], // Inicializa como una lista vacía
+            
              }));
              console.log(this.ListComponenteProducto);
              console.log("::::::::::::::______________::::::");
@@ -321,7 +273,7 @@ async ListarComponteProductoByGrupo(Grupo) {
         .join("','");  
         const resultado = `'${codigos}'`; // Agregar comillas al inicio y al final
        
-        this.listarComponestePorCodigoProds(resultado);
+      await  this.listarComponestePorCodigoProdsOFICIAL(resultado);
       } else {
         this.spinner.hide();
         console.error('Error: No se pudo obtener datos.');
@@ -593,7 +545,8 @@ eliminarItemAgregado(item: any) {
         NumeroCotizacion:this.DatosGrupo.cotizacion,
         Grupo:this.DatosGrupo.cotizacionGrupo,
         Usuario:idUsuario,  
-        filteredOptions: listComponentes
+        filteredOptions: listComponentes,
+        filteredOptionsOriginal:listComponentes
         
     });
     
