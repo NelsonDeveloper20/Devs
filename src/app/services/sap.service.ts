@@ -190,8 +190,10 @@ private isTokenExpired(token: string): boolean {
             return response.map((item: any) => ({
               codigo: item.ItemCode,
               nombre: item.ItemName,
-              unidadMedida: "",
-              color: ""
+              unidadMedida:item.SalesUnit,
+              color: item.U_EXD_COLD,
+              serie: item.ManageSerialNumbers,
+              lote: item.ManageBatchNumbers,
             }));
           }),
           catchError(error => {

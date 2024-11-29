@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core'; 
 import { ObjConfigs } from '../configuration';
+import { firstValueFrom } from 'rxjs';
 import { ProductoService } from '../services/productoservice';
 import { NgxSpinnerService } from 'ngx-spinner'; 
 import { DatePipe } from '@angular/common';
@@ -220,7 +221,6 @@ case "Caida": (element as HTMLSelectElement).value = element.value = values.caid
 case "Accionamiento": (element as HTMLSelectElement).value = element.value = values.accionamiento ? values.accionamiento : "--Seleccione--";  break;
 case "CodigoTubo":
   
-
 // Verifica si el código almacenado está en las opciones
 const existetubo = this.CboNombreTubo.some((opcion) => opcion.codigo === values.codigoTubo); 
 if (!existetubo && values.codigoTubo) {
@@ -231,7 +231,6 @@ if (!existetubo && values.codigoTubo) {
   this.cdr.detectChanges();
 } 
 // Asignar el valor al elemento select
-
 (element as HTMLSelectElement).value = element.value = values.codigoTubo ? values.codigoTubo : "--Seleccione--"; 
   
   $('#nomb_tubo').select2({
@@ -249,31 +248,130 @@ case "TipoCadena":
 console.log("TIPO DE CADENA")  ;
 console.log(values.tipoCadena);
                      (element as HTMLSelectElement).value = element.value = values.tipoCadena ? values.tipoCadena : "--Seleccione--";  break;
-case "CodigoCadena": (element as HTMLSelectElement).value = element.value = values.codigoCadena ? values.codigoCadena : "--Seleccione--";  break;
+case "CodigoCadena": 
+// Verifica si el código almacenado está en las opciones
+const existeCadena = this.CboCodigoCadena.some((opcion) => opcion.codigo === values.codigoCadena); 
+if (!existeCadena && values.codigoCadena) {
+  // Agrega temporalmente la opción a CboTela si no existe
+  const newItem2 = { codigo:values.codigoCadena,nombre:values.Cadena,tipocadena:"0",producto:""};
+  this.CboCodigoCadena.push(newItem2);  
+  // Forzar actualización de la vista
+  this.cdr.detectChanges();
+} 
+// Asignar el valor al elemento select  
+(element as HTMLSelectElement).value = element.value = values.codigoCadena ? values.codigoCadena : "--Seleccione--";  break;
 case "TipoRiel": (element as HTMLSelectElement).value = element.value = values.tipoRiel ? values.tipoRiel : "0";  break;
 case "TipoInstalacion": (element as HTMLSelectElement).value = element.value = values.tipoInstalacion ? values.tipoInstalacion : "--Seleccione--";  break;
-case "CodigoRiel": (element as HTMLSelectElement).value = element.value = values.codigoRiel ? values.codigoRiel : "0";  break;
+case "CodigoRiel": 
+// Verifica si el código almacenado está en las opciones
+const existeRiel = this.CboRiel.some((opcion) => opcion.codigo === values.codigoRiel); 
+if (!existeRiel && values.codigoRiel) {
+  // Agrega temporalmente la opción a CboTela si no existe
+  const newItem = { codigo: values.codigoRiel, nombre: values.Riel };
+  this.CboRiel.push(newItem);  
+  // Forzar actualización de la vista
+  this.cdr.detectChanges();
+} 
+// Asignar el valor al elemento select  
+(element as HTMLSelectElement).value = element.value = values.codigoRiel ? values.codigoRiel : "0";  break;
 case "TipoCassete": (element as HTMLSelectElement).value = element.value = values.tipoCassete ? values.tipoCassete : "--Seleccione--";  break;
 case "Lamina": (element as HTMLSelectElement).value = element.value = values.lamina ? values.lamina : "--Seleccione--";  break;
 case "Apertura": (element as HTMLSelectElement).value = element.value = values.apertura ? values.apertura : "--Seleccione--";  break;
 case "ViaRecogida": (element as HTMLSelectElement).value = element.value = values.viaRecogida ? values.viaRecogida : "--Seleccione--";  break;
 case "TipoSuperior": (element as HTMLSelectElement).value = element.value = values.tipoSuperior ? values.tipoSuperior : "--Seleccione--";  break;
-case "CodigoBaston": (element as HTMLSelectElement).value = element.value = values.codigoBaston ? values.codigoBaston : "0";  break; 
+case "CodigoBaston":
+
+// Verifica si el código almacenado está en las opciones
+const existeBaston = this.CboBaston.some((opcion) => opcion.codigo === values.codigoBaston); 
+if (!existeBaston && values.codigoBaston) {
+  // Agrega temporalmente la opción a CboTela si no existe
+  const newItem = { codigo: values.codigoBaston, nombre: values.Baston };
+  this.CboBaston.push(newItem);  
+  // Forzar actualización de la vista
+  this.cdr.detectChanges();
+} 
+// Asignar el valor al elemento select    
+(element as HTMLSelectElement).value = element.value = values.codigoBaston ? values.codigoBaston : "0";  break; 
 case "NumeroVias": (element as HTMLSelectElement).value = element.value = values.numeroVias ? values.numeroVias : "--Seleccione--";  break;
 case "TipoCadenaInferior": (element as HTMLSelectElement).value = element.value = values.tipoCadenaInferior ? values.tipoCadenaInferior : "--Seleccione--";  break;
 case "MandoCordon": (element as HTMLSelectElement).value = element.value = values.mandoCordon ? values.mandoCordon : "--Seleccione--";  break;
 case "MandoBaston": (element as HTMLSelectElement).value = element.value = values.mandoBaston ? values.mandoBaston : "--Seleccione--";  break;
-case "CodigoBastonVarrilla": (element as HTMLSelectElement).value = element.value = values.codigoBastonVarrilla ? values.codigoBastonVarrilla : "--Seleccione--";  break;
+case "CodigoBastonVarrilla":
+
+// Verifica si el código almacenado está en las opciones
+const existeBastonVarrilla = this.CboBastonVarrilla.some((opcion) => opcion.codigo === values.codigoBastonVarrilla); 
+if (!existeBastonVarrilla && values.codigoBastonVarrilla) {
+  // Agrega temporalmente la opción a CboTela si no existe
+  const newItem = { codigo: values.codigoBastonVarrilla, nombre: values.BastonVarrilla };
+  this.CboBastonVarrilla.push(newItem);  
+  // Forzar actualización de la vista
+  this.cdr.detectChanges();
+}   
+(element as HTMLSelectElement).value = element.value = values.codigoBastonVarrilla ? values.codigoBastonVarrilla : "--Seleccione--";  break;
 case "Cabezal": (element as HTMLSelectElement).value = element.value = values.cabezal ? values.cabezal : "--Seleccione--";  break;
-case "CodigoCordon": (element as HTMLSelectElement).value = element.value = values.codigoCordon ? values.codigoCordon : "--Seleccione--";  break;
-case "CodigoCordonTipo2": (element as HTMLSelectElement).value = element.value = values.codigoCordonTipo2 ? values.codigoCordonTipo2 : "--Seleccione--";  break;
+case "CodigoCordon": 
+
+// Verifica si el código almacenado está en las opciones
+const existeCordon = this.CboCordon.some((opcion) => opcion.codigo === values.codigoCordon); 
+if (!existeCordon && values.codigoCordon) {
+  // Agrega temporalmente la opción a CboTela si no existe
+  const newItem = { codigo: values.codigoCordon, nombre: values.Cordon };
+  this.CboCordon.push(newItem);  
+  // Forzar actualización de la vista
+  this.cdr.detectChanges();
+}   
+(element as HTMLSelectElement).value = element.value = values.codigoCordon ? values.codigoCordon : "--Seleccione--";  break;
+case "CodigoCordonTipo2": 
+
+// Verifica si el código almacenado está en las opciones
+const existeCordonTipo2 = this.CboCordonTipo2.some((opcion) => opcion.codigo === values.codigoCordonTipo2); 
+if (!existeCordonTipo2 && values.codigoCordonTipo2) {
+  // Agrega temporalmente la opción a CboTela si no existe
+  const newItem = { codigo: values.codigoCordonTipo2, nombre: values.CordonTipo2 };
+  this.CboCordonTipo2.push(newItem);  
+  // Forzar actualización de la vista
+  this.cdr.detectChanges();
+}   
+(element as HTMLSelectElement).value = element.value = values.codigoCordonTipo2 ? values.codigoCordonTipo2 : "--Seleccione--";  break;
 case "Cruzeta": (element as HTMLSelectElement).value = element.value = values.cruzeta ? values.cruzeta : "--Seleccione--";  break;
 case "Dispositivo": (element as HTMLSelectElement).value = element.value = values.dispositivo ? values.dispositivo : "--Seleccione--";  break;
-case "CodigoControl": (element as HTMLSelectElement).value = element.value = values.codigoControl ? values.codigoControl : "--Seleccione--";  break;
-case "CodigoSwitch": (element as HTMLSelectElement).value = element.value = values.codigoSwitch ? values.codigoSwitch : "--Seleccione--";  break;
+case "CodigoControl": 
+
+// Verifica si el código almacenado está en las opciones
+const existeControl = this.CboControl.some((opcion) => opcion.codigo === values.codigoControl); 
+if (!existeControl && values.codigoControl) {
+  // Agrega temporalmente la opción a CboTela si no existe
+  const newItem = { codigo: values.codigoControl, nombre: values.Control };
+  this.CboControl.push(newItem);  
+  // Forzar actualización de la vista
+  this.cdr.detectChanges();
+}   
+(element as HTMLSelectElement).value = element.value = values.codigoControl ? values.codigoControl : "--Seleccione--";  break;
+case "CodigoSwitch":
+  // Verifica si el código almacenado está en las opciones
+  const existeSwitch = this.CboSwitch.some((opcion) => opcion.codigo === values.codigoSwitch); 
+  if (!existeSwitch && values.codigoSwitch) {
+    // Agrega temporalmente la opción a CboTela si no existe
+    const newItem = { codigo: values.codigoSwitch, nombre: values.Switch };
+    this.CboSwitch.push(newItem);  
+    // Forzar actualización de la vista
+    this.cdr.detectChanges();
+  }   
+(element as HTMLSelectElement).value = element.value = values.codigoSwitch ? values.codigoSwitch : "--Seleccione--";  break;
 case "LlevaBaston": (element as HTMLSelectElement).value = element.value = values.llevaBaston ? values.llevaBaston : "--Seleccione--";  break;
 case "MandoAdaptador": (element as HTMLSelectElement).value = element.value = values.mandoAdaptador ? values.mandoAdaptador : "--Seleccione--";  break;
-case "CodigoMotor": (element as HTMLSelectElement).value = element.value = values.codigoMotor ? values.codigoMotor : "--Seleccione--"; 
+case "CodigoMotor": 
+// Verifica si el código almacenado está en las opciones
+const existeMotor = this.CboMotor.some((opcion) => opcion.codigo === values.codigoMotor); 
+if (!existeMotor && values.codigoMotor) {
+  // Agrega temporalmente la opción a CboTela si no existe
+  const newItem = { codigo: values.codigoMotor, nombre: values.Motor };
+  this.CboMotor.push(newItem);  
+  // Forzar actualización de la vista
+  this.cdr.detectChanges();
+} 
+// Asignar el valor al elemento select 
+(element as HTMLSelectElement).value = element.value = values.codigoMotor ? values.codigoMotor : "--Seleccione--"; 
 
   $('#nomb_motor').select2({
     placeholder: '--Seleccione--'
@@ -998,6 +1096,7 @@ async listarCboNombreTubo(familia,tipoProducto){
   this.CboNombreTubo=[{codigo:0,nombre:"--Seleccione--"}];    
   const listComponentes = await this.ListarArticulosPorFamiliaGrupoIndividual("Tubo"); 
   this.CboNombreTubo.push(...listComponentes); 
+  
 
  /* this.spinner.show();  
   this.obtenerarticulos("Nombretubo", familia).subscribe(
@@ -1545,7 +1644,7 @@ cancheCbopNombreMotor(event: any) {
   }
 
   }
-    CargarItemsCombos(values){
+  async CargarItemsCombos(values){
       
   this.spinner.show();
   var tipoProducto = String(values.familia+values.subFamilia); 
@@ -1554,61 +1653,70 @@ cancheCbopNombreMotor(event: any) {
   this.codProd=values.codigoProducto;
   this.nomProducto=nombreProd;
   var accionamiento="--";
-      const formElements = document.querySelectorAll('#formularionuevoDetalleOP select');
+   // Convierte NodeList en un array
+   const formElements = Array.from(document.querySelectorAll<HTMLSelectElement>('#formularionuevoDetalleOP select'));
+
+      //const formElements = document.querySelectorAll('#formularionuevoDetalleOP select');
   // Iterar sobre los elementos del formulario
-  formElements.forEach((element) => {
-      // Verificar si el elemento es un input, select o textarea
-      if (element instanceof HTMLSelectElement) {
+  /*formElements.forEach(async (element) => {
+      if (element instanceof HTMLSelectElement) {*/
           // Obtener el nombre del atributo y su valor
+          for (const element of formElements) {
+            const attributeName = element.getAttribute('name');
+            if (!attributeName) continue;
+        
+            try {
           const attributeName = element.getAttribute('name');          
           switch (attributeName) {
             //::::::::::::::::::::::::::::::::::::...COMBOS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 case "IndiceAgrupacion":this.listarCboIndiceAgrupacion();(element as HTMLSelectElement).value = "0" ;
 break;
-case "Ambiente":this.listarCboAmbiente();break;
-case "Turno":this.listarCboTurno();break;
-case "SoporteCentral":this.listarCboSoporteCentral();break; 
-case "TipoSoporteCentral":this.listarCboTipoSoporteCentral();break;
-case "Caida":this.listarCboCaida();break;
+case "Ambiente":await this.listarCboAmbiente();break;
+case "Turno":await this.listarCboTurno();break;
+case "SoporteCentral":await this.listarCboSoporteCentral();break; 
+case "TipoSoporteCentral":await this.listarCboTipoSoporteCentral();break;
+case "Caida":await this.listarCboCaida();break;
 case "Accionamiento":this.listarCboAccionamiento(tipoProducto,nombreProd); accionamiento="SI" ;break;
-case "CodigoTela":this.listarCboTela(subFamiliaProd);break;
-case "CodigoTubo": 
-this.listarCboNombreTubo(subFamiliaProd,tipoProducto);break;
-case "Mando":this.listarCboMando(tipoProducto);break; 
-case "TipoMecanismo":this.listarCboTipoMecanismo();break;
-case "ModeloMecanismo":this.listarCboModeloMecanismo(null,"0");break;
-case "TipoCadena":this.listarCboTipoCadena();break;
-case "CodigoCadena":this.listarCboCodigoCadena(null,"0");break; 
-case "TipoRiel":this.listarCboTipoRiel();break;
-case "TipoInstalacion":this.listarCboTipoInstalacion();break; 
-case "CodigoRiel":this.listarCboRiel(subFamiliaProd);break; 
-case "TipoCassete":this.listarCboTipoCassete();break;
-case "Lamina":this.listarCboLamina();break;
-case "Apertura":this.listarCboApertura();break;
-case "ViaRecogida":this.listarCboViaRecogida();break;
-case "TipoSuperior":this.listarCboTipoSuperior();break;
-case "CodigoBaston":this.listarCboBaston(subFamiliaProd);break; 
-case "NumeroVias":this.listarCboNumeroVias();break;
-case "TipoCadenaInferior":this.listarCboTipoCadenaInferior();break;
-case "MandoCordon":this.listarCboMandoCordon();break;
-case "MandoBaston":this.listarCboMandoBaston();break;
-case "CodigoBastonVarrilla":this.listarCboBastonVarrilla(subFamiliaProd);break; 
-case "Cabezal":this.listarCboCabezal();break;
-case "CodigoCordon":this.listarCboCordon(subFamiliaProd);break; 
-case "CodigoCordonTipo2":this.listarCboCordonTipo2(subFamiliaProd);break; 
-case "Cruzeta":this.listarCboCruzeta();break;
-case "Dispositivo":this.listarCboDispositivo();break;
-case "CodigoControl":this.listarCboControl(subFamiliaProd);break;
-case "CodigoSwitch":this.listarCboSwitch(subFamiliaProd);break; 
-case "LlevaBaston":this.listarCboLlevaBaston();break;
-case "MandoAdaptador":this.listarCboMandoAdaptador();break;
-case "CodigoMotor":this.listarCboMotor(tipoProducto);break; 
+case "CodigoTela": await this.listarCboTela(subFamiliaProd);break;
+case "CodigoTubo": await this.listarCboNombreTubo(subFamiliaProd,tipoProducto);break;
+case "Mando":await this.listarCboMando(tipoProducto);break; 
+case "TipoMecanismo":await this.listarCboTipoMecanismo();break;
+case "ModeloMecanismo":await this.listarCboModeloMecanismo(null,"0");break;
+case "TipoCadena":await this.listarCboTipoCadena();break;
+case "CodigoCadena":await this.listarCboCodigoCadena(null,"0");break; 
+case "TipoRiel":await this.listarCboTipoRiel();break;
+case "TipoInstalacion":await this.listarCboTipoInstalacion();break; 
+case "CodigoRiel":await this.listarCboRiel(subFamiliaProd);break; 
+case "TipoCassete":await this.listarCboTipoCassete();break;
+case "Lamina":await this.listarCboLamina();break;
+case "Apertura":await this.listarCboApertura();break;
+case "ViaRecogida":await this.listarCboViaRecogida();break;
+case "TipoSuperior":await this.listarCboTipoSuperior();break;
+case "CodigoBaston":await this.listarCboBaston(subFamiliaProd);break; 
+case "NumeroVias":await this.listarCboNumeroVias();break;
+case "TipoCadenaInferior": await this.listarCboTipoCadenaInferior();break;
+case "MandoCordon":await this.listarCboMandoCordon();break;
+case "MandoBaston":await this.listarCboMandoBaston();break;
+case "CodigoBastonVarrilla":await this.listarCboBastonVarrilla(subFamiliaProd);break; 
+case "Cabezal":await this.listarCboCabezal();break;
+case "CodigoCordon":await this.listarCboCordon(subFamiliaProd);break; 
+case "CodigoCordonTipo2":await this.listarCboCordonTipo2(subFamiliaProd);break; 
+case "Cruzeta":await this.listarCboCruzeta();break;
+case "Dispositivo":await this.listarCboDispositivo();break;
+case "CodigoControl":await this.listarCboControl(subFamiliaProd);break;
+case "CodigoSwitch":await this.listarCboSwitch(subFamiliaProd);break; 
+case "LlevaBaston":await this.listarCboLlevaBaston();break;
+case "MandoAdaptador":await this.listarCboMandoAdaptador();break;
+case "CodigoMotor":await this.listarCboMotor(tipoProducto);break; 
             default :
             break;
             }
-      }
-
-  });
+          } catch (error) {
+            console.error(`Error al cargar ${attributeName}:`, error);
+          }
+        }
+     /* }
+  });*/
   
   this.spinner.hide();
   //asignar:  
@@ -1743,81 +1851,52 @@ case "CodigoMotor":this.listarCboMotor(tipoProducto);break;
     }
   }
 
-  
-  private async ListarArticulosPorFamiliaGrupoIndividual(componente: string): Promise<any[]> {
+  async ListarArticulosPorFamiliaGrupoIndividualusando(componente: any): Promise<any[]> {
     const maestro = this.ListMaestroArticulos.find(item => item.identificador === componente);
-    console.log("COMPONENTES BUSCADOS");
-    console.log(componente);
-    
     if (!maestro) {
+      console.error(`No se encontró un maestro para el componente ${componente}`);
+      return [];
+    }
+  
+    console.log("COMPONENTES BUSCADOS", componente);
+  
+    try {
+      const data = await this.apiSap.ListarArticulosPorFamiliaGrupo(maestro.identificador, componente).toPromise();
+      console.log('Artículos obtenidos:', data);
+      return data;
+    } catch (error) {
+      console.error('Error al obtener artículos:', error);
       this.toaster.open({
-        text: `No se encontró la configuración maestra para el componente ${componente}`,
+        text: `No se encontraron artículos para el componente ${componente}`,
         caption: 'Mensaje',
         type: 'warning',
       });
-      return []; // Retorno explícito cuando no se encuentra el maestro
+      return [];
+    }
+  }
+ 
+  private cache: { [key: string]: any[] } = {};
+
+  async ListarArticulosPorFamiliaGrupoIndividual(componente: string): Promise<any[]> {
+    if (this.cache[componente]) {
+      console.log(`Usando datos en caché para ${componente}`);
+      return this.cache[componente];
+    }
+  
+    const maestro = this.ListMaestroArticulos.find(item => item.identificador === componente);
+    if (!maestro) {
+      console.error(`No se encontró un maestro para el componente ${componente}`);
+      return [];
     }
   
     try {
-      // Intentar obtener datos con reintentos
-      const data = await this.obtenerDatosConReintentos(maestro, componente);
-      
-      if (!data || data.length === 0) {
-        this.toaster.open({
-          text: `No se encontraron artículos para el componente ${componente}`,
-          caption: 'Mensaje',
-          type: 'warning',
-        });
-        return [];
-      }
-      
+      const data = await firstValueFrom(this.apiSap.ListarArticulosPorFamiliaGrupo(maestro.identificador, componente));
+      this.cache[componente] = data;
       return data;
     } catch (error) {
-      console.error(`Error al cargar datos para el componente ${componente}:`, error);
-      
-      // Mostrar mensaje de error
-      this.toaster.open({
-        text: error.error?.ErrorDescription?.includes('COM object')
-          ? `Error de conexión SAP para el componente ${componente}. Reintentando...`
-          : "Error al cargar datos para el componente individual (SAP)",
-        caption: 'Error',
-        type: 'danger',
-      });
-      
-      return []; // Retorno explícito en caso de error
+      console.error(`Error al obtener artículos para ${componente}`, error);
+      return [];
     }
   }
-// Método auxiliar para reintentos
-private async obtenerDatosConReintentos(maestro: any, componente: string, maxIntentos = 3): Promise<any[]> {
-  for (let intento = 1; intento <= maxIntentos; intento++) {
-    try {
-      const data = await new Promise<any[]>((resolve, reject) => {
-        const subscription = this.apiSap
-          .ListarArticulosPorFamiliaGrupo(maestro.identificador, maestro.codigoGrupo)
-          .subscribe({
-            next: (data: any[]) => {
-              resolve(data || []); 
-              subscription.unsubscribe();
-            },
-            error: (error) => {
-              reject(error);
-              subscription.unsubscribe();
-            },
-          });
-      });
-      
-      return data; // Retorno exitoso
-    } catch (error) {
-      if (intento === maxIntentos || !error.error?.ErrorDescription?.includes('COM object')) {
-        throw error; // Propagar el error si es el último intento o no es error de COM
-      }
-      // Esperar antes de reintentar
-      await new Promise((resolve) => setTimeout(resolve, 1000 * intento));
-    }
-  }
-  
-  return []; // Retorno explícito si todos los intentos fallan
-}
-
 
     }

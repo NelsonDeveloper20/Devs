@@ -68,6 +68,9 @@ onNombreChange2(event: any, element: any) {
       element.codigo = selectedOption.codigo;
       element.unidadMedida = selectedOption.unidad || '';
       element.color = selectedOption.color || '';
+      element.serie = selectedOption.serie || '';
+      element.lote= selectedOption.lote || '';
+      
     }
   }; 
   if (element.componente !== 'Agregado' && !this.DatosGrupo.cotizacionGrupo.includes('-0')) {
@@ -262,6 +265,8 @@ async ListarComponteProductoByGrupo(Grupo) {
             merma:"",
             filteredOptions: [], // Inicializa como una lista vacía
             filteredOptionsOriginal: [], // Inicializa como una lista vacía
+            serie:"",
+               lote:""
             
              }));
              console.log(this.ListComponenteProducto);
@@ -272,8 +277,10 @@ async ListarComponteProductoByGrupo(Grupo) {
         .filter((value, index, self) => self.indexOf(value) === index) // Eliminar duplicados si es necesario
         .join("','");  
         const resultado = `'${codigos}'`; // Agregar comillas al inicio y al final
-       
-      await  this.listarComponestePorCodigoProdsOFICIAL(resultado);
+       if(this.ListComponenteProducto){
+        await  this.listarComponestePorCodigoProdsOFICIAL(resultado);
+
+       }
       } else {
         this.spinner.hide();
         console.error('Error: No se pudo obtener datos.');

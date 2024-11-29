@@ -37,6 +37,7 @@
                         <th>Unidad Medida</th>
                         <th style="white-space: nowrap !important;">Cant. Utilizada</th>
                         <th>Merma</th>
+                        <th>Serie/Lote</th>
                         <th>
                            <!--<button class="btn btn-primary-azul tp-btn-light sharp" style="float: right;"  title="Agregar Nuevo Componente"
                             (click)="agregarComponente()"><mat-icon>library_add</mat-icon> 
@@ -94,6 +95,22 @@
                             <input type="number" class="form-control input-sm" min="0"
                             [(ngModel)]="comp.merma" 
                             (input)="validateAndFormatInput($event)"/>
+                        </td>
+                        <td >
+                            <input style="min-width: 200px !important;"
+                            type="text" 
+                            class="form-control input-sm" 
+                            [(ngModel)]="comp.lote" 
+                            *ngIf="comp.componente?.includes('Tela')" 
+                            placeholder="Ingrese lote" 
+                          />
+                          <input style="min-width: 200px !important;"
+                            type="text" 
+                            class="form-control input-sm" 
+                            [(ngModel)]="comp.serie" 
+                            placeholder="Ingrese serie"
+                            *ngIf="comp.componente?.includes('Motor')" 
+                          />
                         </td>
                         <td style="    min-width: 118px;">
                             <div class="form-group" style="text-align: center;">
