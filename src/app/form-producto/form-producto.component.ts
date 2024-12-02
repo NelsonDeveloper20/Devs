@@ -183,6 +183,7 @@ console.log("entra");
    }
  //#region ASIGNA VALORES A TODOS LOS FORMULARIOS QUE SE MUESTRA:::::::::::::::::::::::::::::::::::::::::::::::
    setFormValues(values:any) {
+     this.spinner.show();
   // Seleccionar todos los elementos del formulario
   const formElements = document.querySelectorAll('#formularionuevoDetalleOP input, #formularionuevoDetalleOP select, #formularionuevoDetalleOP textarea');
   // Iterar sobre los elementos del formulario
@@ -509,7 +510,7 @@ break;
         }
       }
   }); 
-
+  this.spinner.hide();
 
   }
   //#endregion
@@ -1721,13 +1722,12 @@ case "CodigoMotor":await this.listarCboMotor(tipoProducto);break;
   this.spinner.hide();
   //asignar:  
   this.spinner.show();
-      setTimeout(() => {       
-        this.spinner.show();  
-        this.setFormValues(this.JsonItemHijo.producto); 
+       setTimeout(async () => {     
+      await  this.setFormValues(this.JsonItemHijo.producto); 
         if(accionamiento=="SI"){
-          this.existeMotor(values.accionamiento,"edit");
+        await  this.existeMotor(values.accionamiento,"edit"); 
         }
-        this.spinner.hide();
+      this.spinner.hide();
       }, 2000);
       this.cdr.detectChanges();
       $('#tela').select2({

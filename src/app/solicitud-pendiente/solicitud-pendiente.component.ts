@@ -102,7 +102,7 @@ export class SolicitudPendienteComponent implements OnInit {
   //'observacion2',
   'nivel',
   'subNivel',
-  'reproceso',
+  //'reproceso',
   //'cotiPrincipal',
   //'fSisgeco',
   'detalle',

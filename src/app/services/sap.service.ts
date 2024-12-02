@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError, timer } from 'rxjs';
-import { catchError, filter, map, switchMap, take, tap } from 'rxjs/operators';
+import { catchError, delay, filter, map, retryWhen, scan, switchMap, take, tap } from 'rxjs/operators';
 import jwt_decode from 'jwt-decode';
 import { environment } from 'src/environments/environment';
 
@@ -16,26 +16,37 @@ export class SapService {
   constructor(public httpClient: HttpClient) {
   //this.urlBase = `${environment.urlSap}api/`;
   }
+  
+  private tokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
  
-  private tokenSubject = new BehaviorSubject<string | null>(null);
-   
-   // Método para iniciar sesión y obtener un token
-   private login(): Observable<string> {
+  private login(): Observable<string> {
     const url = `${this.urlBase}Login`;
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const body = { Username: this.username, Password: this.password };
-
+  
     return this.httpClient.post<string>(url, body, { headers, responseType: 'text' as 'json' }).pipe(
       tap((token: string) => {
         localStorage.setItem('authToken', token);
       }),
+      retryWhen((errors) =>
+        errors.pipe(
+          scan((retryCount, err) => {
+            if (retryCount >= 1) {
+              throw err; // Lanza el error después de dos intentos fallidos
+            }
+            console.warn(`Reintentando login (${retryCount + 1}/2)...`);
+            return retryCount + 1;
+          }, 0),
+          delay(1000) // Espera 1 segundo entre intentos
+        )
+      ),
       catchError((error) => {
         console.error('Error al iniciar sesión:', error);
-        return throwError(() => new Error('Error al iniciar sesión. Por favor, verifica tus credenciales.'));
+        return throwError(() => new Error('Error al iniciar sesión después de dos intentos fallidos.'));
       })
     );
   }
-
+  
  
 // Obtiene el token almacenado
 private getToken(): string | null {
@@ -56,24 +67,27 @@ private isTokenExpired(token: string): boolean {
   private getValidToken(): Observable<string> {
     const currentToken = this.getToken();
     if (currentToken && !this.isTokenExpired(currentToken)) {
-      return of(currentToken); // Retorna el token si aún es válido
+      return of(currentToken);
     }
-
+  
     if (!this.tokenSubject.getValue()) {
-      // Evitar múltiples renovaciones simultáneas
       this.tokenSubject.next(null);
       this.login().subscribe({
         next: (newToken) => this.tokenSubject.next(newToken),
-        error: (err) => this.tokenSubject.error(err),
+        error: (err) => {
+          console.error('Error al renovar token:', err);
+          this.tokenSubject.error(err);
+          this.tokenSubject = new BehaviorSubject<string | null>(null); // Reinicia el subject
+        },
       });
     }
-
-    // Espera hasta que el token esté disponible
+  
     return this.tokenSubject.pipe(
-      filter((token) => token !== null), // Espera a que el token esté disponible
-      take(1) // Sólo toma el primer valor
+      filter((token) => token !== null),
+      take(1)
     );
   }
+  
 
   // Método para realizar una solicitud GET con token de autenticación
   ListarOrdenes(): Observable<any> {
@@ -134,37 +148,8 @@ private isTokenExpired(token: string): boolean {
     this.tokenSubject.next(null);
   }
 
-  //LISTAR ARTICULOS POR FAMILIA Y GRUPO 
-  ListarArticulosPorFamiliaGrupo2(identificador: any, grupo: any): Observable<any[]> { 
-    const url = `${this.urlBase}Items/ListFilter`;//?idenficado=` + identificador + "&grupo=" + grupo; 
-    const body=
-      {
-        "GroupCode": 124,
-        "FamilyCode": "TEL"
-      };
-    return this.getValidToken().pipe(
-      switchMap((token) => {
-        const headers = new HttpHeaders({
-          'Authorization': `Bearer ${token}`
-        });
-        return this.httpClient.post<any>(url,body, { headers });
-      }),
-      map((response) => {
-        // Extrae y mapea la información relevante del array `value`
-        return response.map((item: any) => ({
-          codigo: item.ItemCode,
-          nombre: item.ItemName,
-          unidadMedida:"",
-          color:""
-        }));
-      }),
-      catchError((error) => {
-        console.error('Error en la solicitud sap:', error);
-        return throwError(error);
-      })
-    );
-  }
-  ListarArticulosPorFamiliaGrupo(identificador: any, grupo: any): Observable<any[]> {
+  //LISTAR ARTICULOS POR FAMILIA Y GRUPO  
+  ListarArticulosPorFamiliaGrupooff(identificador: any, grupo: any): Observable<any[]> {
     const url = `${this.urlBase}Items/ListFilter`;
     const body = {
       "GroupCode": 124,
@@ -210,4 +195,55 @@ private isTokenExpired(token: string): boolean {
       })
     );
   }
+  ListarArticulosPorFamiliaGrupo(identificador: any, grupo: any): Observable<any[]> {
+    const url = `${this.urlBase}Items/ListFilter`;
+    const body = {
+      "GroupCode": 124,
+      "FamilyCode": "TEL"
+    };
+  
+    return this.getValidToken().pipe(
+      switchMap((token) => {
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        });
+  
+        return this.httpClient.post<any>(url, body, { 
+          headers,
+          responseType: 'json'
+        }).pipe(
+          map(response => {
+            if (!Array.isArray(response)) {
+              // Validación adicional por si el servidor devuelve un tipo inesperado
+              throw new Error('La respuesta no es un array de artículos');
+            }
+            return response.map((item: any) => ({
+              codigo: item.ItemCode,
+              nombre: item.ItemName,
+              unidadMedida: item.SalesUnit,
+              color: item.U_EXD_COLD,
+              serie: item.ManageSerialNumbers,
+              lote: item.ManageBatchNumbers,
+            }));
+          }),
+          catchError(error => {
+            console.error('Error en la solicitud SAP:', error);
+  
+            // Reintentar si el error está relacionado con un COM object
+            if (error.error?.ErrorDescription?.includes('COM object')) {
+              return timer(1000).pipe(
+                switchMap(() => this.ListarArticulosPorFamiliaGrupo(identificador, grupo))
+              );
+            }
+  
+            // Manejar otros errores genéricos
+            return throwError(() => new Error(`Error al listar artículos: ${error.message}`));
+          })
+        );
+      })
+    );
+  }
+  
 }
