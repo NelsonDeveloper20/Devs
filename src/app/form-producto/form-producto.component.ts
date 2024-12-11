@@ -1806,74 +1806,7 @@ case "CodigoMotor":await this.listarCboMotor(tipoProducto);break;
         item.Cantidad = 0; // Puedes cambiar esto a '' si prefieres dejar el campo vacío
       }
     }
-
-    
-  async ListarArticulosPorFamiliaGrupoIndividual2(componente: string): Promise<any[]> {
-    this.spinner.show(); // Muestra el spinner
-    
-    const maestro = this.ListMaestroArticulos.find(item => item.identificador === componente);
-  
-    if (!maestro) {
-      this.spinner.hide();
-      this.toaster.open({
-        text: "Maestro artículo no encontrado para "+componente,
-        caption: 'Mensaje',
-        type: 'danger',
-      });
-      return []; // Retornar array vacío si no se encuentra el maestro
-    }
-  
-    try {
-      const data = await this.apiSap
-        .ListarArticulosPorFamiliaGrupo(maestro.identificador, maestro.codigoGrupo)
-        .toPromise(); // Convertir observable en promesa
-  
-      if (!data || data.length === 0) {
-        this.toaster.open({
-          text: "No se encontraron artículos para el componente "+componente,
-          caption: 'Mensaje',
-          type: 'warning',
-        });
-        return [];
-      }
-  
-      return data; // Devuelve los datos si están disponibles
-    } catch (error) {
-      this.toaster.open({
-        text: "Error al cargar datos para el componente individual (SAP)",
-        caption: 'Mensaje',
-        type: 'danger',
-      });
-      console.error(`Error al cargar datos para el componente ${componente}:`, error);
-      return []; // Retornar array vacío en caso de error
-    } finally {
-      this.spinner.hide(); // Asegura que el spinner se oculta
-    }
-  }
-
-  async ListarArticulosPorFamiliaGrupoIndividualusando(componente: any): Promise<any[]> {
-    const maestro = this.ListMaestroArticulos.find(item => item.identificador === componente);
-    if (!maestro) {
-      console.error(`No se encontró un maestro para el componente ${componente}`);
-      return [];
-    }
-  
-    console.log("COMPONENTES BUSCADOS", componente);
-  
-    try {
-      const data = await this.apiSap.ListarArticulosPorFamiliaGrupo(maestro.identificador, componente).toPromise();
-      console.log('Artículos obtenidos:', data);
-      return data;
-    } catch (error) {
-      console.error('Error al obtener artículos:', error);
-      this.toaster.open({
-        text: `No se encontraron artículos para el componente ${componente}`,
-        caption: 'Mensaje',
-        type: 'warning',
-      });
-      return [];
-    }
-  }
+ 
  
   private cache: { [key: string]: any[] } = {};
 
@@ -1883,14 +1816,14 @@ case "CodigoMotor":await this.listarCboMotor(tipoProducto);break;
       return this.cache[componente];
     }
   
-    const maestro = this.ListMaestroArticulos.find(item => item.identificador === componente);
+    const maestro = this.ListMaestroArticulos.find(item => item.nombreGrupo === componente);
     if (!maestro) {
       console.error(`No se encontró un maestro para el componente ${componente}`);
       return [];
     }
   
     try {
-      const data = await firstValueFrom(this.apiSap.ListarArticulosPorFamiliaGrupo(maestro.identificador, componente));
+      const data = await firstValueFrom(this.apiSap.ListarArticulosPorFamiliaGrupo(maestro.codigoGrupo, maestro.identificador));
       this.cache[componente] = data;
       return data;
     } catch (error) {

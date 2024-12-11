@@ -198,8 +198,8 @@ private isTokenExpired(token: string): boolean {
   ListarArticulosPorFamiliaGrupo(identificador: any, grupo: any): Observable<any[]> {
     const url = `${this.urlBase}Items/ListFilter`;
     const body = {
-      "GroupCode": 124,
-      "FamilyCode": "TEL"
+      "GroupCode": identificador,
+      "FamilyCode": grupo
     };
   
     return this.getValidToken().pipe(

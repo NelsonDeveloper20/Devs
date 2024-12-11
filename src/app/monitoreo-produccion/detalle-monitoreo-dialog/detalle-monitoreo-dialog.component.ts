@@ -117,7 +117,7 @@ private async listarComponestePorCodigoProdsOFICIAL(prods) {
   const componentesUnicos = [...new Set(this.ListComponenteProducto.map(comp => comp.componente))];
   
   for (const componente of componentesUnicos) {
-      const maestro = this.ListMaestroArticulos.find(item => item.identificador === componente);
+      const maestro = this.ListMaestroArticulos.find(item => item.nombreGrupo === componente);
       console.log("COMPONENTES BUSCADOS");
       console.log(componente);
       if (maestro) {
@@ -132,7 +132,7 @@ private async listarComponestePorCodigoProdsOFICIAL(prods) {
 
           try {
               // Intentar obtener datos con reintentos
-              const data = await this.obtenerDatosConReintentos(maestro, componente);              
+              const data = await this.obtenerDatosConReintentos(maestro, componente);               
               // Actualizar componentes con los datos obtenidos
               this.ListComponenteProducto
                   .filter(comp => comp.componente === componente)
@@ -171,7 +171,7 @@ private async obtenerDatosConReintentos(maestro, componente, maxIntentos = 3) {
       try {
           return await new Promise((resolve, reject) => {
               const subscription = this.apiSap
-                  .ListarArticulosPorFamiliaGrupo(maestro.identificador, maestro.codigoGrupo)
+                  .ListarArticulosPorFamiliaGrupo(maestro.codigoGrupo, maestro.identificador)
                   .subscribe({
                       next: (data) => {
                           resolve(data);
@@ -451,8 +451,8 @@ eliminarItemAgregado(item: any) {
     let tableHTML = '<table class="table table-responsive-sm mb-0">';
     tableHTML += `<thead>
       <tr>
-        <th style="text-align: center !important;">Familia</th>
-        <th style="text-align: center !important;">Grupo</th>
+        <th style="text-align: center !important;">Componente</th>
+        <th style="text-align: center !important;">Codigo Grupo</th>
         <th style="text-align: center !important;">Acción</th>
       </tr>
     </thead>
@@ -464,7 +464,7 @@ eliminarItemAgregado(item: any) {
     this.ListMaestroArticulos.forEach((item, index) => {
       tableHTML += `
         <tr>
-          <td>${item.identificador }</td>
+          <td>${item.nombreGrupo }</td>
           <td>${item.codigoGrupo}</td>
           <td><button class="btn btn-primary" id="action-${index}">Agregar</button></td>
         </tr>
@@ -480,11 +480,13 @@ eliminarItemAgregado(item: any) {
       showConfirmButton: false,
       showCancelButton:true,
       cancelButtonText:"Cerrar",
-      width: '30%',
+      width: '45%',
       didOpen: () => {
         // Agregar eventos a cada botón de la tabla
         this.ListMaestroArticulos.forEach((item, index) => {
           document.getElementById(`action-${index}`)?.addEventListener('click', () => {
+            console.log("===============>");
+            console.log(item);
             this.executeAction(item);
           });
         });
@@ -532,7 +534,7 @@ eliminarItemAgregado(item: any) {
     }  
     const ultimoItem = this.ListComponenteProducto[this.ListComponenteProducto.length - 1];
      // Llamada al servicio para obtener componentes
-  const listComponentes = await this.ListarArticulosPorFamiliaGrupoIndividual(this.popupComponenteSelected.identificador);
+  const listComponentes = await this.ListarArticulosPorFamiliaGrupoIndividual(this.popupComponenteSelected.nombreGrupo);
 // Agregar nuevo componente a la lista
     this.ListComponenteProducto.push(
       {
@@ -571,7 +573,7 @@ eliminarItemAgregado(item: any) {
   async ListarArticulosPorFamiliaGrupoIndividual(componente: string): Promise<any[]> {
     this.spinner.show(); // Muestra el spinner
     
-    const maestro = this.ListMaestroArticulos.find(item => item.identificador === componente);
+    const maestro = this.ListMaestroArticulos.find(item => item.nombreGrupo === componente);
   
     if (!maestro) {
       this.spinner.hide();
@@ -585,12 +587,12 @@ eliminarItemAgregado(item: any) {
   
     try {
       const data = await this.apiSap
-        .ListarArticulosPorFamiliaGrupo(maestro.identificador, maestro.codigoGrupo)
+        .ListarArticulosPorFamiliaGrupo(maestro.codigoGrupo, maestro.identificador)
         .toPromise(); // Convertir observable en promesa
   
       if (!data || data.length === 0) {
         this.toaster.open({
-          text: "No se encontraron artículos para el componente",
+          text: "No se encontraron artículos en SAP para el componente "+componente,
           caption: 'Mensaje',
           type: 'warning',
         });
