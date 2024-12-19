@@ -246,4 +246,45 @@ private isTokenExpired(token: string): boolean {
     );
   }
   
+  CerrarCotizacion(body: any): Observable<any> {
+    const url = `${this.urlBase}InventoryGenExit`;  
+  
+    return this.getValidToken().pipe(
+      switchMap((token) => {
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json', // Asegúrate de especificar este header
+        });
+        return this.httpClient.post(url, body, { headers });
+      }),
+      catchError((error) => {
+        console.error('Error en la solicitud:', error);
+        // Manejo de errores mejorado
+        return throwError(() => new Error(error?.message || 'Error en la solicitud al servidor'));
+      })
+    );
+  } 
+  // Método PATCH
+  updateOrder(enty: any): Observable<any> {    
+    //N = MIGRADO
+    //Y = PENDIENTE A MIGRAR
+    // Asumiendo que `enty` es el ID del pedido o un valor similar
+    const url = `${this.urlBase}Orders/${enty}/N`;  
+    return this.getValidToken().pipe(
+      switchMap((token) => {
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json', // Especificar Content-Type
+        }); 
+        const body = { 
+        }; 
+        return this.httpClient.patch(url, body, { headers });
+      }),
+      catchError((error) => {
+        console.error('Error en la solicitud:', error);
+        return throwError(() => new Error(error?.message || 'Error en la solicitud al servidor'));
+      })
+    );
+  }
+  
 }

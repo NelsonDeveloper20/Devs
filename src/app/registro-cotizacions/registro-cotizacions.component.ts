@@ -95,7 +95,7 @@ export class RegistroCotizacionsComponent implements OnInit {
    totalComponentes=0;
    totalRegistrados=0;
    totalPorRegistrar=0;
-   listarProductosSisgecoAndDcBlinds(){  //BOTON CARGAR
+   async listarProductosSisgecoAndDcBlinds(tipo:any){  //BOTON CARGAR
     this.spinner.show();
     this._OrdenService
       .ListarProductoSisgeco_DC( this.selectedState.numero)
@@ -264,6 +264,14 @@ export class RegistroCotizacionsComponent implements OnInit {
           */
           this.spinner.hide();
           
+          if(tipo=="ValidarUiltimoProducto"){
+              const productosPendientes=this.Productos.filter(item=>{
+              item.cotizacionGrupo==""
+              });
+              if(productosPendientes==0 && this.Productos){
+              this.updateOrderStatus();
+              }
+          }
     this.listarAmbientes(this.selectedState.numero);
         },
         () => {
@@ -833,10 +841,12 @@ eliminarAmbiente(indice: number) {
     dialogConfig.width ='1104px';
     const dialogRef = this.dialog.open(ProductosDialogComponent, dialogConfig);
     dialogRef.afterClosed().subscribe({
-      next: data => {   
+      next: async data => {   
        if (data) {
-          this.listarProductosSisgecoAndDcBlinds();
-          this.listarAmbientes(this.selectedState.numero);
+        //SI YA SE REGISTRO EL ULTIMO PRODUCTO SE CERRARÁ LA COTIZACION
+          await   this.listarProductosSisgecoAndDcBlinds("ValidarUiltimoProducto");       
+         
+          
       } 
     },
     error: error => { 
@@ -850,7 +860,29 @@ eliminarAmbiente(indice: number) {
       }
     });
   }
-  
+  // Método para actualizar el pedido
+  updateOrderStatus() {
+    this.spinner.show();
+    // Aquí puedes llamar al servicio y pasar el valor necesario
+    this.sapService.updateOrder(this.selectedState.docEntrySap).subscribe(
+      (response) => {
+        this.spinner.hide();
+        console.log('Respuesta exitosa:', response);
+        //this.status = 'Actualización exitosa';
+        this.toaster.open({
+          text: "La cotizacion fue cambiado al estado 'MIGRADO' en ",
+          caption: 'Mensaje',
+          type: 'success',
+          duration:3000
+        });
+      },
+      (error) => {
+        this.spinner.hide();
+        console.error('Error en la solicitud:', error);
+        //this.status = 'Hubo un error al actualizar';
+      }
+    );
+  }
   openEditProd(producto:any): void {    
     console.log("EDICION");
     console.log(producto);
@@ -871,7 +903,7 @@ eliminarAmbiente(indice: number) {
     dialogRef.afterClosed().subscribe({
       next: data => {   
        if (data) {
-          this.listarProductosSisgecoAndDcBlinds();
+          this.listarProductosSisgecoAndDcBlinds("");
           this.listarAmbientes(this.selectedState.numero);
       } 
     },
@@ -941,7 +973,7 @@ eliminarAmbiente(indice: number) {
         confirmButtonText: 'Aceptar',
         allowOutsideClick: false
       }); 
-      this.listarProductosSisgecoAndDcBlinds();
+      this.listarProductosSisgecoAndDcBlinds("ValidarUiltimoProducto");
       break;
     case "Ya existe":
       Swal.fire({
