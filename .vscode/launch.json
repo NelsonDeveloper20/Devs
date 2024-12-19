@@ -1,0 +1,20 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Angular Debug",
+        "type": "chrome",
+        "request": "launch",
+        "url": "http://localhost:4200",
+        "webRoot": "${workspaceFolder}",
+        "sourceMaps": true,
+        "runtimeArgs": [
+          "--remote-debugging-port=9222",
+          "--user-data-dir=${workspaceFolder}/.chrome-debug-profile"
+        ],
+        "sourceMapPathOverrides": {
+          "webpack:///./src/*": "${webRoot}/src/*"
+        }
+      }
+    ]
+  }

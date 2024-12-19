@@ -332,6 +332,7 @@ for (let i = 0; i < this.cantSubArray; i++) {
       var flecha_amboscolor =        '<h1 style=" color: red; margin-top: -9px; font-size: 55px;">↔</h1>';
       var flecha_drechacolor =        '<h1 style=" color: red; margin-top: -9px; font-size: 55px;">→</h1>';
       var tipoInstalacion = prods[i].tipo_Instal; //.toUpperCase();
+      console.log("TIPO INSTALACION==============>"+tipoInstalacion);
       if (
         this.objConfiguracionAtributos[
           prods[i].familia + prods[i].subFamilia
@@ -647,6 +648,11 @@ for (let i = 0; i < this.cantSubArray; i++) {
           }
         }
       } else {
+       var   htmlCabezal2 =
+                  "<p style='margin-top: -22px;  background: yellow;   width: 38%;   text-align: center;   margin-left: 30%;'><span><b>" +
+                  tipoInstalacion +
+                  "</b></span></p>";
+
         html_renderFigura +=
           "<td style='border: 0px dotted white !important;' key='" +
           prods[i].id +
@@ -972,11 +978,11 @@ for (let i = 0; i < this.cantSubArray; i++) {
         html_ancho +=
           "<td class=amarillo ancho_" +
           num_table +
-          " ><span style='color:red;'></span></td>";
+          " ><span style='color:red;'>"+prods[i].ancho +"</span></td>";
         html_alto +=
           "<td class=amarillo alto_" +
           num_table +
-          " ><span style='color:red;'></span></td>";
+          " ><span style='color:red;'>"+prods[i].alto +"</span></td>";
         html_tela +=
           "<td class=tela_" +
           num_table +
