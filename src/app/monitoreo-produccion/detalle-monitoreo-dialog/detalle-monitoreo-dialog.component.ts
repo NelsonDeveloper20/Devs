@@ -231,7 +231,7 @@ applyFilter(event: any, comp: any) {
 ListComponenteProducto:any=[];
 async ListarComponteProductoByGrupo(Grupo) { 
    // Si la lista está vacía, esperamos a que se complete la carga
- if (this.ListMaestroArticulos.length === 0) {
+/* if (this.ListMaestroArticulos.length === 0) {
   
   console.log("FUE A BD");
   this.spinner.show();
@@ -239,7 +239,7 @@ async ListarComponteProductoByGrupo(Grupo) {
   this.spinner.hide();
 }else{
   console.log("NO IR A BD");
-}
+}*/
   const userDataString = JSON.parse(localStorage.getItem('UserLog'));   
   var idUsuario= userDataString.id.toString(); 
   if (!userDataString) {   this.toaster.open({
@@ -255,8 +255,9 @@ async ListarComponteProductoByGrupo(Grupo) {
   this._service.ListarComponenteDelProducto(Grupo,"1").subscribe(
     async (data: any) => {
       if (data && data.status === 200) {  
-        
-        this.ListComponenteProducto = data.json.map(item => (
+        this.spinner.hide();    
+        this.ListComponenteProducto = data.json;
+       /* this.ListComponenteProducto = data.json.map(item => (
           { ...item, 
             NumeroCotizacion:this.DatosGrupo.cotizacion,
             Grupo:Grupo,
@@ -280,7 +281,7 @@ async ListarComponteProductoByGrupo(Grupo) {
        if(this.ListComponenteProducto){
         await  this.listarComponestePorCodigoProdsOFICIAL(resultado);
 
-       }
+       }*/
       } else {
         this.spinner.hide();
         console.error('Error: No se pudo obtener datos.');

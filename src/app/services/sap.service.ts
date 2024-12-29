@@ -14,7 +14,11 @@ export class SapService {
   private password = 'admin';
   private urlBase = 'apisap/api/';
   constructor(public httpClient: HttpClient) {
-  //this.urlBase = `${environment.urlSap}api/`;
+    if(environment.production==true){
+      this.urlBase = `${environment.urlSap}api/`;
+    }else{
+
+    }
   }
   
   private tokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);

@@ -100,7 +100,7 @@
               </mat-option>
             </mat-select>
           </mat-form-field> 
-                          
+                          <!-- BUSCA EN BD-->
                              <input   class="form-control" *ngIf="!nuevaOPEdicion"
                               placeholder="Número de Orden"
                               aria-label="Número de Orden"
@@ -276,8 +276,10 @@
                 <div class="text-left mt-4 mb-2">
                     <button class="btn btn-primary btn-sl-sm mr-2" type="button" (click)="Guardar()" *ngIf="!Orden.id">
                         <span class="mr-2"><i class="fa fa-floppy-o"></i></span>Guardar
-                    </button>
-                    <button class="btn btn-primary btn-sl-sm mr-2" type="button" (click)="Guardar()" *ngIf="Orden.id">
+                    </button> 
+                    <button class="btn btn-primary btn-sl-sm mr-2" type="button" (click)="Guardar()" *ngIf="Orden.id"
+                    
+                    >
                         <span class="mr-2"><i class="fa fa-pencil-square-o"></i></span>Modificar
                     </button>
                     <button class="btn btn-primary btn-sl-sm mr-2" type="button" (click)="listarProductosSisgecoAndDcBlinds('')"  *ngIf="Orden.numeroCotizacion">

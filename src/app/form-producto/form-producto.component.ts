@@ -431,6 +431,7 @@ case "FechaProduccion":
 const fechaString = values.fechaProduccion; 
 var fechaFormateada=fechaString; 
 if(  this.JsonItemHijo.producto.id!==""){  
+  console.log("FechaProduccion");
       fechaFormateada =this.formatearFecha(fechaString); 
 }
   (element as HTMLInputElement).value = fechaFormateada; break;
@@ -438,6 +439,7 @@ case "FechaEntrega":
 const fechaString2 = values.fechaEntrega;
 var fechaFormateada2=fechaString2; 
 if(this.JsonItemHijo.producto.id!==""){
+  console.log("FechaEntrega");
     fechaFormateada2 =this.formatearFecha(fechaString2); 
 }
   (element as HTMLInputElement).value = fechaFormateada2; 
@@ -515,15 +517,20 @@ break;
   }
   //#endregion
   formatearFecha(fechainicial) {
-    console.log(fechainicial);
-    // Dividir la fecha y la hora
-    const [datePart, timePart] = fechainicial.split(' ');
-    // Dividir la fecha en día, mes y año
-    const [day, month, year] = datePart.split('/');
-    // Crear un nuevo objeto Date
-    const date = new Date(Number(year), Number(month) - 1, Number(day));
-    // Formatear la fecha a 'yyyy-MM-dd'
-    return this.datePipe.transform(date, 'yyyy-MM-dd');
+    if(fechainicial){
+      console.log("FECHA INICIAL==>");
+      console.log(fechainicial);
+      // Dividir la fecha y la hora
+      const [datePart, timePart] = fechainicial.split(' ');
+      // Dividir la fecha en día, mes y año
+      const [day, month, year] = datePart.split('/');
+      // Crear un nuevo objeto Date
+      const date = new Date(Number(year), Number(month) - 1, Number(day));
+      // Formatear la fecha a 'yyyy-MM-dd'
+      return this.datePipe.transform(date, 'yyyy-MM-dd');
+    }else{
+      return fechainicial;
+    }
   }
     // Método para verificar si el valor está dentro del rango
     range(value: number, min: number, max: number, inclusive: boolean): boolean {

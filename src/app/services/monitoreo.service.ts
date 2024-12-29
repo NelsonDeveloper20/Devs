@@ -58,11 +58,13 @@ export class MonitoreoService {
   //CARGAR EXPLOCION EXCEL  
   CargarExplocionExcel(data: any): Observable<IApiResponse> {
     const headers = { 'Content-Type': 'application/json-patch+json' };
+    console.log("ENVIADO===>");
+    console.log(data);
     return this.http.post<IApiResponse>(this.urlBase + 'Monitoreo/ExplocionarCompCargaExcel', data, { headers: headers });
   }
   
-  ObtenerSalida(grupoCotizacion: any,grupo:any): Observable<any> {
-    return this.http.get<any>(`${this.urlBase}Monitoreo/ObtenerSalida?cotizacion=`+grupoCotizacion+"&grupo="+grupo);
+  EnviarEntradaSap(grupoCotizacion: any,grupo:any,idusuario :any): Observable<any> {
+    return this.http.get<any>(`${this.urlBase}Monitoreo/EnviarEntradaSap?cotizacion=`+grupoCotizacion+"&grupo="+grupo);
   }
    
   GuardarSalidaSap(request: { numeroCotizacion: string; grupoCotizacion: string; codigoSalida: string }): Observable<IApiResponse> {

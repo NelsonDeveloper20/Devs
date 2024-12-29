@@ -2,7 +2,7 @@
     <p style="color: black">Loading...</p>
 </ngx-spinner>
 
-<h2 mat-dialog-title>Explocionar Componentes  -  <b>{{DatosGrupo.cotizacionGrupo}}</b></h2>
+<h2 mat-dialog-title>Detalle Grupo Cotizacion  -  <b>{{DatosGrupo.cotizacionGrupo}}</b></h2>
 <style>
     
   .search-input {
@@ -26,6 +26,35 @@
             <table class="table table-responsive-lg mb-0" id="dubcomponente" >
                 <thead class="sticky-top">
                     <tr>
+                        <th>Numero Cotización</th>
+        <th>Cotización Grupo</th>
+        <th nowrap>Código Producto</th>
+        <th nowrap>Nombre Producto</th>
+        <th>Familia</th>
+        <th>SubFamilia</th>
+        <th>Unidad Medida</th>
+        <th>Cantidad</th>
+        <th>Alto</th>
+        <th>Ancho</th> 
+                    </tr>
+                </thead>
+                <tbody id="id_tabla"></tbody>
+                <tbody>
+                    <tr *ngFor="let comp of ListComponenteProducto">
+                        <td>{{ comp.numeroCotizacion }}</td>
+                        <td>{{ comp.cotizacionGrupo }}</td>
+                        <td>{{ comp.codigoProducto }}</td>
+                        <td>{{ comp.nombreProducto }}</td>
+                        <td>{{ comp.familia }}</td>
+                        <td>{{ comp.subFamilia }}</td>
+                        <td>{{ comp.unidadMedida }}</td>
+                        <td>{{ comp.cantidad }}</td>
+                        <td>{{ comp.alto }}</td>
+                        <td>{{ comp.ancho }}</td>
+                    </tr>
+                </tbody>
+                <!--<thead class="sticky-top">
+                    <tr>
                         
                         <th nowrap>Cod. Producto</th>
                         <th nowrap>Nom. Producto</th>
@@ -38,10 +67,7 @@
                         <th style="white-space: nowrap !important;">Cant. Utilizada</th>
                         <th>Merma</th>
                         <th>Serie/Lote</th>
-                        <th>
-                           <!--<button class="btn btn-primary-azul tp-btn-light sharp" style="float: right;"  title="Agregar Nuevo Componente"
-                            (click)="agregarComponente()"><mat-icon>library_add</mat-icon> 
-                            </button>-->
+                        <th> 
                             <button class="btn btn-primary-azul tp-btn-light sharp" style="float: right;"  title="Agregar Nuevo Componente"
                             (click)="openTablePopup()"><mat-icon>library_add</mat-icon> 
                             </button>
@@ -69,8 +95,7 @@
                                     </span>
                                 </mat-select-trigger>
                                 <input matInput (keyup)="applyFilter($event, comp)" placeholder="Buscar" class="search-input" />
-                                <mat-option *ngIf="!comp.filteredOptions">Cargando...</mat-option>
-                                <!-- Opción para el valor seleccionado actual si no está en las opciones filtradas -->
+                                <mat-option *ngIf="!comp.filteredOptions">Cargando...</mat-option> 
                                 <mat-option *ngIf="!isOptionInFilteredOptions(comp.codigo, comp.filteredOptions)" [value]="comp.codigo">
                                     {{ comp.codigo }} : {{ comp.codigo }}
                                 </mat-option>                                
@@ -125,15 +150,15 @@
                             </div>
                         </td>
                     </tr>
-                </tbody>
+                </tbody>-->
             </table>
         </div>
 
     </div>
 </div>
 <div mat-dialog-actions>
-    <button mat-button class="btn btn-sm btn-primary" (click)="guardarComponentes()">
+   <!-- <button mat-button class="btn btn-sm btn-primary" (click)="guardarComponentes()">
         Guardar Componentes
-    </button>
+    </button>-->
     <button mat-button (click)="close()">Cerrar</button>
 </div>

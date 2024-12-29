@@ -13,6 +13,7 @@ import Swal from 'sweetalert2';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DetalleMonitoreoDialogComponent } from './detalle-monitoreo-dialog/detalle-monitoreo-dialog.component';
 import { SapService } from '../services/sap.service';
+import { DetalleSalidaEntradaSapComponent } from './detalle-salida-entrada-sap/detalle-salida-entrada-sap.component';
 declare var $: any; // Declara la variable $ para usar jQuery
 @Component({
   selector: 'app-monitoreo-produccion',
@@ -53,7 +54,7 @@ showfilter3=false;
 cotizacion2: string; 
 fechaInicio2: Date;
 fechaFin2: Date; 
-showFilter(){ 
+/*showFilter(){ 
   if(this.indexTab==4){
     this.showFilter3();//SALIDA ENTRADA SAP 
    
@@ -74,7 +75,29 @@ setTimeout(() => {
     placeholder: '--Seleccione--'
   });   
 }, 1000);
-} 
+} */
+showFilter(){ 
+  if(this.indexTab==2){
+    this.showFilter3();//SALIDA ENTRADA SAP 
+   
+  }else{
+    
+  if(this.indexTab!=0){
+    this.showFilter2();
+   }else{
+     this.showfilter=!this.showfilter; 
+   }
+  }
+
+setTimeout(() => {       
+  $('#cboCotizacion1Select').select2({
+    placeholder: '--Seleccione--'
+  });         
+  $('#cboCotizacion2Select').select2({
+    placeholder: '--Seleccione--'
+  });   
+}, 1000);
+}
 showFilter2(){
 this.showfilter2=!this.showfilter2; 
 
@@ -247,7 +270,7 @@ clonarComponente(item:any){
 //#endregion
 isFilterButtonDisabled = false;
 indexTab=0;
-onTabChange(event: MatTabChangeEvent) {
+/*onTabChange(event: MatTabChangeEvent) {
   this.indexTab=event.index;
   console.log('Index: ' + event.index);
   console.log('Tab Label: ' + event.tab.textLabel);
@@ -264,8 +287,26 @@ this.isFilterButtonDisabled=true;
     }
   }
 
-}
+}*/
 
+onTabChange(event: MatTabChangeEvent) {
+  this.indexTab=event.index;
+  console.log('Index: ' + event.index);
+  console.log('Tab Label: ' + event.tab.textLabel);
+  // Aquí puedes manejar la lógica que necesites con el índice o etiqueta de la pestaña seleccionada
+ /* if(event.index==2 || event.index==3){
+this.isFilterButtonDisabled=true;
+  }else{
+    this.isFilterButtonDisabled=false;
+  }*/
+  if(event.index==2){ //SAP ENTRADA SALIDA
+    if(this.ListMonitoreoExplocionSapSalidaEntrada.length==0){
+      console.log("BUSCARA"); 
+      this.ListarMonitoreoExplocionSapSalidaEntrada();
+    }
+  }
+
+}
 //#region  Carga
 
 files: any[] = []; 
@@ -330,16 +371,30 @@ dataExcelCarga:any;
 htmlErrores = [];
 mostrarVistaPrevia(file: any) {
   // Validar que el archivo sea Excel
-  if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+  if (file.name.endsWith('.xlsx') || file.name.endsWith('.xlsm')) {
     const reader: FileReader = new FileReader();
     reader.onload = (e: any) => {
       const data = e.target.result;
       const workbook: XLSX.WorkBook = XLSX.read(data, { type: 'binary' });
       const sheetName: string = workbook.SheetNames[0]; // Nombre de la primera hoja
       const worksheet: XLSX.WorkSheet = workbook.Sheets[sheetName];
-      // Convertir la primera tabla de la primera hoja en formato JSON
+
+      // Obtener el rango específico desde B7 hasta P7 y hacia abajo
+      const range = XLSX.utils.decode_range(worksheet['!ref'] || ''); // Obtener el rango completo
+      range.s.r = 6; // Fila 7 (índice 6 porque es base 0)
+      range.s.c = 1; // Columna B (índice 1)
+      range.e.c = 15; // Columna P (índice 15)
+      worksheet['!ref'] = XLSX.utils.encode_range(range); // Establecer el nuevo rango
+
+      // Convertir el rango seleccionado en formato JSON
       const jsonData: any[] = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+      // Extraer las cabeceras desde B7 hasta P7
+ /*
+      // Convertir la primera tabla de la primera hoja en formato JSON
+      const jsonData: any[] = XLSX.utils.sheet_to_json(worksheet, { header: 1 }); 
       // Mostrar vista previa
+*/
       this.previewHeaders = jsonData[0] || [];
       this.previewData  = jsonData.slice(1); // Se excluye la primera fila de encabezados 
  
@@ -347,20 +402,27 @@ mostrarVistaPrevia(file: any) {
       // Cabeceras esperadas
       const expectedHeaders = [
         'COTIZACION',
-        'GRUPO',
-        'NOMBRE_PRODUCTO',
-        'COMPONENTE',
-        'COD_COMPONENTE',
-        'DESCRIPCION',
-        'COLOR',
-        'UNIDAD',
-        'CANTIDAD',
-        'MERMA',
-        'CODIGO_PRODUCTO'
+        'GRUPOCOTIZACION',
+        'ITEMCODE',
+        'QUANTITY',
+       // 'ACCTCODE',
+        'COSTINGCODE',
+        'COSTINGCODE2',
+        'COSTINGCODE3',
+        'COSTINGCODE4',
+        'COSTINGCODE5',
+        'FAMILIAPT',
+        'SUBFAMILIAPT',
+        'BATCHNUMBERCODE',
+        'BATCHQUANTITY',
+        'SERIALNUMBERCODE',
+        'SERIALQUANTITY'
       ];
 
       // Columnas que pueden estar vacías
-      const allowedEmptyColumns = ['COLOR'];
+      const allowedEmptyColumns = [ 'COSTINGCODE',	'COSTINGCODE2',	'COSTINGCODE3',	'COSTINGCODE4',	'COSTINGCODE5',
+       'BATCHNUMBERCODE',	'BATCHQUANTITY',	'SERIALNUMBERCODE',	'SERIALQUANTITY',
+      ];
 
       // Función de normalización
       const normalize = (header: string) => header.trim().toUpperCase();
@@ -397,14 +459,7 @@ mostrarVistaPrevia(file: any) {
         this.previewHeaders.forEach((header, i) => {
           obj[normalize(header)] = String(row[i] || '');
         });
-
-        // Validar que 'CODIGO_PRODUCTO' no esté vacío
-        /*if (!obj['CODIGO_PRODUCTO'] || obj['CODIGO_PRODUCTO'].trim() === '') {
-          counter++;
-          this.htmlErrores.push(`Error en la fila ${index + 1}: 'CODIGO_PRODUCTO' está vacío.`);
-          this.error = true;
-        }*/
-
+ 
         // Validar que otros campos no estén vacíos (excepto los permitidos)
         
         for (let key in obj) { 
@@ -425,7 +480,7 @@ mostrarVistaPrevia(file: any) {
   } else {
     Swal.fire({
       title: 'Advertencia',
-      text: 'Solo se pueden subir archivos Excel',
+      text: 'Solo se pueden subir archivos Excel xlsm',
       icon: 'warning',
       confirmButtonText: 'Aceptar',
       allowOutsideClick: false
@@ -442,7 +497,7 @@ mostrarVistaPrevia(file: any) {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = "Plantilla_Carga.xlsx"; // Especificar el nombre del archivo
+        a.download = "Plantilla_Carga.xlsm"; // Especificar el nombre del archivo
         document.body.appendChild(a);
         a.click();
 
@@ -481,7 +536,7 @@ mostrarVistaPrevia(file: any) {
       if (result.isConfirmed) {
         // Acción de carga del archivo, suponiendo que tienes una función para esto
         //this.cargarArchivo();
-        
+        /*
     console.log("ENVIADO");
     console.log(this.dataExcelCarga);
     this.dataExcelCarga = this.dataExcelCarga.map(item => (
@@ -491,7 +546,36 @@ mostrarVistaPrevia(file: any) {
 
   const jsonData = JSON.stringify(this.dataExcelCarga);
   console.log(jsonData);
-  this.spinner.show();
+  this.spinner.show();*/
+  console.log("ENVIADO");
+  console.log(this.dataExcelCarga);
+  
+  const requestData = {
+    cotizacion: this.dataExcelCarga[0].COTIZACION,  // Usamos el primer item para cotizacion
+    grupoCotizacion: this.dataExcelCarga[0].GRUPOCOTIZACION,  // Usamos el primer item para grupoCotizacion
+    usuario: idUsuario.toString(),
+    documentLines: this.dataExcelCarga.map(item => ({
+      itemCode: item.ITEMCODE, // Convertir a camelCase
+      quantity: parseFloat(item.QUANTITY),  // Convertir a decimal
+     // acctCode: item.ACCTCODE, // Convertir a camelCase
+      costingCode: item.COSTINGCODE, // Convertir a camelCase
+      costingCode2: item.COSTINGCODE2, // Convertir a camelCase
+      costingCode3: item.COSTINGCODE3, // Convertir a camelCase
+      costingCode4: item.COSTINGCODE4, // Convertir a camelCase
+      costingCode5: item.COSTINGCODE5, // Convertir a camelCase
+      familiaPT: item.FAMILIAPT, // Convertir a camelCase
+      subFamiliaPT:item.SUBFAMILIAPT,
+      batchNumberCode: item.BATCHNUMBERCODE, // Convertir a camelCase
+      batchQuantity: item.BATCHQUANTITY ? parseFloat(item.BATCHQUANTITY) : 0,  // Convertir a decimal si no está vacío
+      serialNumberCode: item.SERIALNUMBERCODE, // Convertir a camelCase
+      serialQuantity: item.SERIALQUANTITY ? parseFloat(item.SERIALQUANTITY) : 0  // Convertir a decimal si no está vacío
+    }))
+  };
+  // Aseguramos que la estructura final es correcta
+  const jsonData = JSON.stringify(requestData);
+  console.log(jsonData);
+  
+this.spinner.show();
   this._service.CargarExplocionExcel(jsonData)
     .subscribe({
       next: response => {
@@ -504,7 +588,7 @@ mostrarVistaPrevia(file: any) {
              if(respuesta=="OK"){  
         Swal.fire({
           title: 'Mensaje',
-          text: 'Plantilla cargada correctamente',
+          text: 'Plantilla cargada correctamente y enviado a SAP',
           icon: 'success',
           confirmButtonText: 'Aceptar',
           allowOutsideClick: false
@@ -517,12 +601,21 @@ mostrarVistaPrevia(file: any) {
               this.showTablePopup();
              }
           }else{
-            this.toaster.open({
+            /*this.toaster.open({
               text: "Ocurrio un error al enviar",
               caption: 'Mensaje',
               type: 'danger',
               // duration: 994000
+            });*/
+            Swal.fire({
+              title: 'Ocurrió un error al enviar',
+              html: this.processResponse(response.json.detalle),  // Usamos 'html' en lugar de 'text'
+              icon: 'warning',
+              width: '600px', // Establece un tamaño fijo para la alerta
+              confirmButtonText: 'Aceptar',
+              allowOutsideClick: false
             });
+            
           }
       },
       error: error => {
@@ -541,7 +634,40 @@ mostrarVistaPrevia(file: any) {
       }
     });
   }
-  
+  // Función que valida si el contenido es JSON o no
+  processResponse(detalle) {
+  // Intentamos parsear el contenido como JSON
+  try {
+    // Si el contenido ya es un objeto, no lo necesitamos parsear, solo procesamos el objeto
+    if (typeof detalle === 'object') {
+      return this.generateHtmlFromJson(detalle); // Procesamos como JSON
+    }
+
+    // Si es un string, intentamos parsearlo
+    let parsedJson = JSON.parse(detalle);
+    return this.generateHtmlFromJson(parsedJson);
+  } catch (e) {
+    // Si ocurre un error, es probable que no sea JSON, por lo que mostramos el contenido como texto
+    return detalle; // Mostramos el texto tal cual
+  }
+}
+
+// Función para generar el HTML a partir de un objeto JSON
+  generateHtmlFromJson(jsonObj) {
+  let htmlContent = '<ul>'; // Comenzamos una lista no ordenada
+  for (let key in jsonObj) {
+    if (jsonObj.hasOwnProperty(key)) {
+      // Si la propiedad es un objeto (como 'errors'), lo procesamos recursivamente
+      if (typeof jsonObj[key] === 'object') {
+        htmlContent += `<li><strong>${key}:</strong>${this.generateHtmlFromJson(jsonObj[key])}</li>`;
+      } else {
+        htmlContent += `<li><strong>${key}:</strong> ${jsonObj[key]}</li>`;
+      }
+    }
+  }
+  htmlContent += '</ul>'; // Cerramos la lista
+  return htmlContent;
+}
   listErrrores=[];
   showTablePopup() {
     const tableHTML = `
@@ -1028,6 +1154,84 @@ fechaFinSap: Date;
 
 ListMonitoreoExplocionSapSalidaEntrada:any=[];
 ListarMonitoreoExplocionSapSalidaEntrada() { 
+  /*
+  this.ListMonitoreoExplocionSapSalidaEntrada = [
+    {
+      rucCliente: '123456789',
+      cliente: 'Empresa X',
+      numeroCotizacion: 'Cot12345',
+      cotizacionGrupo: 'Grupo123',
+      codigoSalidaSap: 'Salida123',
+      fechaEnvioSalida: '2024-01-01',
+      usuarioEnvioSalida: 'Usuario1',
+      codigoEntradaSap: 'Pendiente',
+      fechaEntradaSap: '2024-01-02',
+      usuarioEnvioEntrada: 'Usuario2',
+      detalleSalida: [
+        {
+          id: 1,
+          docDate: '2024-01-01',
+          taxDate: '2024-01-02',
+          comments: 'Comentario 1',
+          reference2: 'Ref123',
+          u_EXX_TIPOOPER: 'Operacion1',
+          idSistemaExterno: 'Sistema1',
+          idOrdenVenta: 'OV12345',
+          itemCode: 'Item001',
+          quantity: '10',
+          warehouseCode: 'WH1',
+          acctCode: 'Acct001',
+          costingCode: 'CostCode1',
+          projectCode: 'Proj1',
+          costingCode2: 'CostCode2',
+          costingCode3: 'CostCode3',
+          costingCode4: 'CostCode4',
+          costingCode5: 'CostCode5',
+          idLineaSistemaE: 'Linea123',
+          familiaPT: 'FamPT1',
+          batchNumbers: 'Batch1',
+          serialNumbers: 'Serial123',
+          codigoSalidaSap: 'Salida123',
+          idUsuarioCrea: 1,
+          fechaCreacion: new Date('2024-01-01'),
+          tipo: 'TipoSalida',
+          cotizacionGrupo: 'Grupo123'
+        }
+      ],
+      detalleEntrada: [
+        {
+          id: 2,
+          docDate: '2024-01-02',
+          taxDate: '2024-01-03',
+          comments: 'Comentario 2',
+          reference2: 'Ref456',
+          u_EXX_TIPOOPER: 'Operacion2',
+          idSistemaExterno: 'Sistema2',
+          idOrdenVenta: 'OV67890',
+          itemCode: 'Item002',
+          quantity: '5',
+          warehouseCode: 'WH2',
+          acctCode: 'Acct002',
+          costingCode: 'CostCode6',
+          projectCode: 'Proj2',
+          costingCode2: 'CostCode7',
+          costingCode3: 'CostCode8',
+          costingCode4: 'CostCode9',
+          costingCode5: 'CostCode10',
+          idLineaSistemaE: 'Linea456',
+          familiaPT: 'FamPT2',
+          batchNumbers: 'Batch2',
+          serialNumbers: 'Serial456',
+          codigoSalidaSap: 'Entrada123',
+          idUsuarioCrea: 2,
+          fechaCreacion: new Date('2024-01-02'),
+          tipo: 'TipoEntrada',
+          cotizacionGrupo: 'Grupo456'
+        }
+      ]
+    }
+  ];
+ */
   console.log("BUSCANDO");
   const cotizacion = this.cotizacionSap || "--";
   const fechaInicio = this.fechaInicioSap ? this.fechaInicioSap.toString() : "--";
@@ -1037,7 +1241,7 @@ ListarMonitoreoExplocionSapSalidaEntrada() {
   this._service.ListarMonitoreoSapSalidaEntrada(cotizacion,fechaInicio,fechaFin).subscribe(
     (data: any) => {
       if (data && data.status === 200) {  
-        this.ListMonitoreoExplocionSapSalidaEntrada = data.json.map(item => ({ ...item, isExpand: false }));
+        this.ListMonitoreoExplocionSapSalidaEntrada = data.json;//.map(item => ({ ...item, isExpand: false }));
         this.spinner.hide();      
       } else {
         this.spinner.hide();
@@ -1049,7 +1253,7 @@ ListarMonitoreoExplocionSapSalidaEntrada() {
       console.error('Error al obtener datos:', error);
       // Aquí podrías mostrar un mensaje de error al usuario
     }
-  );
+  ); 
 }
 filterTextSapSalidaEntrada: string = '';
 filteredListSapSalidaEntrada() {
@@ -1070,27 +1274,61 @@ filteredListSapSalidaEntrada() {
 //#endregion
 
 enviarSalidaSap(item:any){
+  
+  const userDataString = JSON.parse(localStorage.getItem('UserLog'));   
+  var idUsuario= userDataString.id.toString(); 
+  if (!userDataString) {   this.toaster.open({
+    text: "Su sessión ha caducado",
+    caption: 'Mensaje',
+    type: 'danger',
+    // duration: 994000
+  });
+    this.router.navigate(['/Home-main']);
+    return;
+  }  
   Swal.fire({
-    title: '¿Está seguro de enviar la salida a SAP?',
+    title: '¿Está seguro de enviar la Entrada a SAP?',
     text: 'Una vez enviado, el proceso se considerará terminado y no podrá ser editado.',
     icon: 'question', // Cambié el icono a 'question' ya que estamos preguntando al usuario
     showCancelButton: true,
-    confirmButtonText: 'Si, Cargar',
+    confirmButtonText: 'Si, Enviar',
     cancelButtonText: 'Cancelar',
     allowOutsideClick: false
   }).then((result) => {
     if (result.isConfirmed){ 
     
 this.spinner.show();
-this._service.ObtenerSalida(item.cotizacion,item.cotizacionGrupo)
+this._service.EnviarEntradaSap(item.numeroCotizacion,item.cotizacionGrupo,idUsuario)
   .subscribe({
     next: response => {
       this.spinner.hide();
       console.log("RESULLLT=>");
       console.log(response);
-      if (response.status == 200) { 
-            const respuesta = response.json; 
+      if (response.status == 200) {  
             console.log("RESPUESTA");
+            const respuesta = response.json.respuesta; 
+            console.log("RESPUESTA");
+            console.log(respuesta);
+           if(respuesta=="OPERACION REALIZADA CORRECTAMENTE"){  
+      Swal.fire({
+        title: 'Mensaje',
+        text: 'Entrada cargada correctamente y enviado a SAP',
+        icon: 'success',
+        confirmButtonText: 'Aceptar',
+        allowOutsideClick: false
+      }); 
+      this.ListMonitoreoExplocionSapSalidaEntrada();
+           }else{ 
+
+            this.toaster.open({
+              text: response.json,
+              caption: 'Mensaje',
+              type: 'danger',
+              // duration: 994000
+            });
+           }
+
+            /*
             if(respuesta){
               console.log(JSON.stringify(respuesta));
             
@@ -1142,14 +1380,17 @@ this._service.ObtenerSalida(item.cotizacion,item.cotizacionGrupo)
                 type: 'danger',
                 // duration: 994000
               });
-            }
+            }*/
         }else{
-          this.toaster.open({
-            text: "Ocurrio un error al generar salida",
-            caption: 'Mensaje',
-            type: 'danger',
-            // duration: 994000
+          Swal.fire({
+            title: 'Ocurrió un error al enviar',
+            html: this.processResponse(response.json.detalle),  // Usamos 'html' en lugar de 'text'
+            icon: 'warning',
+            width: '600px', // Establece un tamaño fijo para la alerta
+            confirmButtonText: 'Aceptar',
+            allowOutsideClick: false
           });
+          
         }
     },
     error: error => {
@@ -1167,6 +1408,50 @@ this._service.ObtenerSalida(item.cotizacion,item.cotizacionGrupo)
     }
   });
 }
+DetalleSalidaSap(item:any){
+  const dialogConfig = new MatDialogConfig();
+  dialogConfig.disableClose = true;
+  dialogConfig.autoFocus = true; 
+  dialogConfig.panelClass = 'custom-dialog-container';
+  //const cadenaCompleta = 'PRTRS0054'; 
+   
+  dialogConfig.width ='1604px'; 
+  dialogConfig.data = {detallesEntrada:[],detallesSalida:item};
+  const dialogRef = this.dialog.open(DetalleSalidaEntradaSapComponent, dialogConfig);
+  dialogRef.afterClosed().subscribe({
+    next: data => {   
+     if (data) {
+          
+    } 
+  },
+  error: error => { 
+      var errorMessage = error.message; 
+    }
+  });
+}
+DetalleEntradaSap(item:any){
+   
+
+  const dialogConfig = new MatDialogConfig();
+  dialogConfig.disableClose = true;
+  dialogConfig.autoFocus = true; 
+  dialogConfig.panelClass = 'custom-dialog-container';
+  //const cadenaCompleta = 'PRTRS0054'; 
+   
+  dialogConfig.width ='1604px';
+  dialogConfig.data = {detallesEntrada:item,detallesSalida:[]};
+  const dialogRef = this.dialog.open(DetalleSalidaEntradaSapComponent, dialogConfig);
+  dialogRef.afterClosed().subscribe({
+    next: data => {   
+     if (data) { 
+    } 
+  },
+  error: error => { 
+      var errorMessage = error.message; 
+    }
+  });
+}
+ 
 }
 
 interface Componente {

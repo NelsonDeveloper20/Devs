@@ -1,0 +1,146 @@
+
+  
+<h2 mat-dialog-title *ngIf="detallesSalida.length">Detalle de Salida</h2>
+
+<h2 *ngIf="detallesEntrada.length" mat-dialog-title>Detalle de Entrada</h2>
+  <div mat-dialog-content #tableElement>
+    <div class="panel-body">
+
+        <div class="table-container">
+  
+      <table *ngIf="detallesSalida.length"  class="table table-responsive-lg mb-0">
+        <thead class="sticky-top">
+            <tr>
+                <th>Id</th>
+                <th>DocDate</th>
+                <th>TaxDate</th>
+                <th>Comments</th>
+                <th>Reference2</th>
+                <th>U_EXX_TIPOOPER</th>
+                <th>IdSistemaExterno</th>
+                <th>IdOrdenVenta</th>
+                <th>ItemCode</th>
+                <th>Quantity</th>
+                <th>WarehouseCode</th>
+                <th>AcctCode</th>
+                <th>CostingCode</th>
+                <th>ProjectCode</th>
+                <th>CostingCode2</th>
+                <th>CostingCode3</th>
+                <th>CostingCode4</th>
+                <th>CostingCode5</th>
+                <th>IdLineaSistemaE</th>
+                <th>FamiliaPT</th>
+                <th>BatchNumbers</th>
+                <th>SerialNumbers</th>
+                <th>CodigoSalidaSap</th>
+                <th>FechaCreacion</th>
+                <th>Tipo</th>
+                <th>CotizacionGrupo</th>
+              </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let detalle of detallesSalida">
+                <td>{{ detalle.id }}</td>
+                <td>{{ detalle.docDate }}</td>
+                <td>{{ detalle.taxDate }}</td>
+                <td>{{ detalle.comments }}</td>
+                <td>{{ detalle.reference2 }}</td>
+                <td>{{ detalle.U_EXX_TIPOOPER }}</td>
+                <td>{{ detalle.idSistemaExterno }}</td>
+                <td>{{ detalle.idOrdenVenta }}</td>
+                <td>{{ detalle.itemCode }}</td>
+                <td>{{ detalle.quantity }}</td>
+                <td>{{ detalle.warehouseCode }}</td>
+                <td>{{ detalle.acctCode }}</td>
+                <td>{{ detalle.costingCode }}</td>
+                <td>{{ detalle.projectCode }}</td>
+                <td>{{ detalle.costingCode2 }}</td>
+                <td>{{ detalle.costingCode3 }}</td>
+                <td>{{ detalle.costingCode4 }}</td>
+                <td>{{ detalle.costingCode5 }}</td>
+                <td>{{ detalle.idLineaSistemaE }}</td>
+                <td>{{ detalle.familiaPT }}</td>
+                <td>{{ detalle.batchNumbers }}</td>
+                <td>{{ detalle.serialNumbers }}</td>
+                <td>{{ detalle.codigoSalidaSap }}</td>
+                <td>{{ detalle.fechaCreacion | date: 'yyyy-MM-dd' }}</td>
+                <td>{{ detalle.tipo }}</td>
+                <td>{{ detalle.cotizacionGrupo }}</td>
+              </tr>
+        </tbody>
+      </table>
+   
+      <table *ngIf="detallesEntrada.length"  class="table table-responsive-lg mb-0">
+        <thead class="sticky-top">
+            <tr>
+                <th>Id</th>
+                <th>DocDate</th>
+                <th>TaxDate</th>
+                <th>Comments</th>
+                <th>Reference2</th>
+                <th>U_EXX_TIPOOPER</th>
+                <th>IdSistemaExterno</th>
+                <th>IdOrdenVenta</th>
+                <th>ItemCode</th>
+                <th>Quantity</th>
+                <th>WarehouseCode</th>
+                <th>AcctCode</th>
+                <th>CostingCode</th>
+                <th>ProjectCode</th>
+                <th>CostingCode2</th>
+                <th>CostingCode3</th>
+                <th>CostingCode4</th>
+                <th>CostingCode5</th>
+                <th>IdLineaSistemaE</th>
+                <th>FamiliaPT</th>
+                <th>BatchNumbers</th>
+                <th>SerialNumbers</th>
+                <th>CodigoSalidaSap</th>
+                <th>FechaCreacion</th>
+                <th>Tipo</th>
+                <th>CotizacionGrupo</th>
+              </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let detalle of detallesEntrada">
+                <td>{{ detalle.id }}</td>
+                <td>{{ detalle.docDate }}</td>
+                <td>{{ detalle.taxDate }}</td>
+                <td>{{ detalle.comments }}</td>
+                <td>{{ detalle.reference2 }}</td>
+                <td>{{ detalle.u_EXX_TIPOOPER }}</td>
+                <td>{{ detalle.idSistemaExterno }}</td>
+                <td>{{ detalle.idOrdenVenta }}</td>
+                <td>{{ detalle.itemCode }}</td>
+                <td>{{ detalle.quantity }}</td>
+                <td>{{ detalle.warehouseCode }}</td>
+                <td>{{ detalle.acctCode }}</td>
+                <td>{{ detalle.costingCode }}</td>
+                <td>{{ detalle.projectCode }}</td>
+                <td>{{ detalle.costingCode2 }}</td>
+                <td>{{ detalle.costingCode3 }}</td>
+                <td>{{ detalle.costingCode4 }}</td>
+                <td>{{ detalle.costingCode5 }}</td>
+                <td>{{ detalle.idLineaSistemaE }}</td>
+                <td>{{ detalle.familiaPT }}</td>
+                <td>{{ detalle.batchNumbers }}</td>
+                <td>{{ detalle.serialNumbers }}</td>
+                <td>{{ detalle.codigoSalidaSap }}</td>
+                <td>{{ detalle.fechaCreacion | date: 'yyyy-MM-dd' }}</td>
+                <td>{{ detalle.tipo }}</td>
+                <td>{{ detalle.cotizacionGrupo }}</td>
+              </tr>
+        </tbody>
+      </table>
+
+        </div>
+
+    </div>
+</div>
+<div mat-dialog-actions>
+   <!-- <button mat-button class="btn btn-sm btn-primary" (click)="guardarComponentes()">
+        Guardar Componentes
+    </button>-->
+    <button mat-button (click)="close()">Cerrar</button>
+</div>

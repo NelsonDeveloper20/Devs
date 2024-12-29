@@ -109,6 +109,9 @@ export class RegistroCotizacionsComponent implements OnInit {
           this.Productos=response; 
           console.log("RESULTS");
           console.log(response);
+
+          const productosGuardados=this.Productos?.length;
+          const productosPendientes=this.ordenes?.Lineas?.length;
           this.Productos.forEach(item=> 
             {               
               this.totalRegistrados++;
@@ -127,9 +130,12 @@ export class RegistroCotizacionsComponent implements OnInit {
           );        
           if(this.ordenes) { //SI HAY ORDENE SELCCIONADO
 
-            const detalleSap= this.ordenes.Lineas;
+            const detalleSap= this.ordenes?.Lineas;
             detalleSap.forEach(item=>  //AGREGAR LOS QUE AUN NO FUERON GUARDADOS EN LA BD
               {             
+                if (!this.Productos.some(row => row.codigoProducto === item.codarticulo)) {
+                  
+                  const paseValue = item.codarticulo.substring(0, 3) !== 'PRT' ? 'PASDIRECCT' : '';
                 this.Productos.push({
                   "id":"",
      "numeroCotizacion":this.ordenes.numero,
@@ -143,7 +149,7 @@ export class RegistroCotizacionsComponent implements OnInit {
      "ancho":item.ancho,
      "indiceAgrupacion":"", //NO
      "indexDetalle":"",//NO
-     "pase":"",//NO
+     "pase":paseValue,
      /*
        CASE
         WHEN SUBSTRING(cd.codarticulo, 1, 3) != 'PRT' THEN 'PASDIRECCT'
@@ -226,52 +232,25 @@ export class RegistroCotizacionsComponent implements OnInit {
      "estadoOp":"2",
      "escuadra":"",
      "central":"",
-     "whsCode":item.whsCode
+     "whsCode":(item.whsCode !== null && item.whsCode !== undefined) ? item.whsCode : ""
                 })
+              }
               }
             ); 
           }
-
-          /*
-          this.Productos.forEach(item=> 
-            {
-              
-            if(item.id==""){   
-              this.totalPorRegistrar++;                                      
-              var cod_prod=item.codigoProducto.substring(0,3);
-              if(cod_prod=='PRT'){
-                  index_count++;
-                  this.totalProductos++;
-                  item.indexDetalle=index_count.toString()
-                }else{      
-                  this.totalComponentes++;            
-                  item.indexDetalle=""
-                }
-            }else{
-              this.totalRegistrados++;
-              var cod_prod=item.codigoProducto.substring(0,3);
-              if(cod_prod!=='PRT'){
-                this.totalComponentes++;
-                 item.indexDetalle="";
-                }else{
-                  this.totalProductos++;
-                }
-            }
-            if(item.pase=="" && item.id!=="" && item.codigoProducto.substring(0,3)!=="PRT"){       //componentes ya guardados        
-              item.pase='PASDIRECCT';
-            }
-          } VERSION SISGECO
-          */
+ 
           this.spinner.hide();
           
-          if(tipo=="ValidarUiltimoProducto"){
-              const productosPendientes=this.Productos.filter(item=>{
-              item.cotizacionGrupo==""
-              });
-              if(productosPendientes==0 && this.Productos){
+          if (tipo == "ValidarUiltimoProducto" && productosGuardados>0 && this.ordenes?.Lineas) { 
+            if (productosGuardados === productosPendientes) {
+              console.log("CERRANDO SAP:"+this.ordenes.Lineas.length.toString() +"  - " +this.Productos.length.toString());
               this.updateOrderStatus();
-              }
+            }
           }
+          
+          
+          
+          
     this.listarAmbientes(this.selectedState.numero);
         },
         () => {
@@ -812,7 +791,7 @@ eliminarAmbiente(indice: number) {
         this.itemCopiado.turno="";
         this.itemCopiado.indiceAgrupacion="";
         producto=this.itemCopiado;
-        this.itemCopiado=null;
+        //this.itemCopiado=null;
 
       }else{        
         this.toaster.open({
@@ -836,18 +815,20 @@ eliminarAmbiente(indice: number) {
       CodigoSisgeco:this.selectedState.numdocref,
       ambiente:this.TblAmbiente
     };
-    dialogConfig.data = dataToSend;
-   
+    dialogConfig.data = dataToSend;   
     dialogConfig.width ='1104px';
     const dialogRef = this.dialog.open(ProductosDialogComponent, dialogConfig);
     dialogRef.afterClosed().subscribe({
       next: async data => {   
-       if (data) {
+        this.itemCopiado =null;
+       //if (data) {
+        //console.log("CERRADO CON DATA");
         //SI YA SE REGISTRO EL ULTIMO PRODUCTO SE CERRARÁ LA COTIZACION
           await   this.listarProductosSisgecoAndDcBlinds("ValidarUiltimoProducto");       
-         
-          
-      } 
+      /*} else{
+        console.log("CERRADO SIN DATA"); 
+        
+      }*/
     },
     error: error => { 
         var errorMessage = error.message;
@@ -870,10 +851,10 @@ eliminarAmbiente(indice: number) {
         console.log('Respuesta exitosa:', response);
         //this.status = 'Actualización exitosa';
         this.toaster.open({
-          text: "La cotizacion fue cambiado al estado 'MIGRADO' en ",
+          text: "La cotizacion fue cambiado al estado 'MIGRADO' en Sap",
           caption: 'Mensaje',
           type: 'success',
-          duration:3000
+          duration:9000
         });
       },
       (error) => {
@@ -1184,6 +1165,7 @@ eliminarAmbiente(indice: number) {
           CodSubfamilia: 'codsubfamilia',
           Price: 'valor',
           PriceAfVAT: 'valorinc',
+          WhsCode: 'whsCode'
           //VatSum: 'igv'
         };
   
