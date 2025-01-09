@@ -64,7 +64,7 @@ export class MonitoreoService {
   }
   
   EnviarEntradaSap(grupoCotizacion: any,grupo:any,idusuario :any): Observable<any> {
-    return this.http.get<any>(`${this.urlBase}Monitoreo/EnviarEntradaSap?cotizacion=`+grupoCotizacion+"&grupo="+grupo);
+    return this.http.post<IApiResponse>(`${this.urlBase}Monitoreo/EnviarEntradaSap?cotizacion=`+grupoCotizacion+"&grupo="+grupo+"&idusuario="+idusuario,{});
   }
    
   GuardarSalidaSap(request: { numeroCotizacion: string; grupoCotizacion: string; codigoSalida: string }): Observable<IApiResponse> {

@@ -116,7 +116,7 @@ this.checkSession();
         this.spinner.hide(); 
         console.error(error);       
         this.toaster.open({
-          text: "Error al obtener datos: "+error,
+          text: "Error al obtener datos ",
           caption: 'Ocurrio un error en el API ',
           type: 'danger',
         });

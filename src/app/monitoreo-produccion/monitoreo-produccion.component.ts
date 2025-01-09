@@ -1316,15 +1316,18 @@ this._service.EnviarEntradaSap(item.numeroCotizacion,item.cotizacionGrupo,idUsua
         icon: 'success',
         confirmButtonText: 'Aceptar',
         allowOutsideClick: false
-      }); 
-      this.ListMonitoreoExplocionSapSalidaEntrada();
+      });  
+      this.ListarMonitoreoExplocionSapSalidaEntrada();
            }else{ 
 
-            this.toaster.open({
-              text: response.json,
-              caption: 'Mensaje',
-              type: 'danger',
-              // duration: 994000
+             
+            Swal.fire({
+              title: 'Ocurrió un error al enviar',
+              html: this.processResponse(response.json.detalle),  // Usamos 'html' en lugar de 'text'
+              icon: 'warning',
+              width: '600px', // Establece un tamaño fijo para la alerta
+              confirmButtonText: 'Aceptar',
+              allowOutsideClick: false
             });
            }
 
@@ -1396,13 +1399,23 @@ this._service.EnviarEntradaSap(item.numeroCotizacion,item.cotizacionGrupo,idUsua
     error: error => {
       this.spinner.hide();
       var errorMessage = error.message;
-      console.error('There was an error!', error);
+      console.error('There was an error!====================>');
+      console.log(error);
       this.toaster.open({
         text: errorMessage,
         caption: 'Ocurrio un error',
         type: 'danger',
         // duration: 994000
+      }); 
+      Swal.fire({
+        title: 'Ocurrió un error al enviar',
+        html: error.error.json.respuesta +'<b> DETALLE: <b/><br>'+this.processResponse(error.error.json.detalle),  // Usamos 'html' en lugar de 'text'
+        icon: 'warning',
+        width: '600px', // Establece un tamaño fijo para la alerta
+        confirmButtonText: 'Aceptar',
+        allowOutsideClick: false
       });
+      
     }
   }); 
     }

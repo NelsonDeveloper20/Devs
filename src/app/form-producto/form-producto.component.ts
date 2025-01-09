@@ -146,7 +146,11 @@ export class FormProductoComponent implements OnInit {
   onInputChange() {
     this.obtener();
   }
-   
+formatDateDC(dateString) {
+    const parts = dateString.split(' ')[0].split('/'); // Separamos la fecha y quitamos la parte de la hora
+    return `${parts[2]}-${parts[1]}-${parts[0]}`; // Retorna en formato YYYY-MM-DD
+}
+
   ObtenerEcuadra(id:any){
     console.log("OBTENIENDOOO");
     this.spinner.show();
@@ -433,16 +437,20 @@ var fechaFormateada=fechaString;
 if(  this.JsonItemHijo.producto.id!==""){  
   console.log("FechaProduccion");
       fechaFormateada =this.formatearFecha(fechaString); 
-}
-  (element as HTMLInputElement).value = fechaFormateada; break;
+      (element as HTMLInputElement).value =fechaFormateada; 
+}else{    
+      (element as HTMLInputElement).value =this.formatearFecha(fechaFormateada); 
+} break;
 case "FechaEntrega": 
 const fechaString2 = values.fechaEntrega;
 var fechaFormateada2=fechaString2; 
 if(this.JsonItemHijo.producto.id!==""){
   console.log("FechaEntrega");
     fechaFormateada2 =this.formatearFecha(fechaString2); 
+    (element as HTMLInputElement).value = fechaFormateada2; 
+}else{
+  (element as HTMLInputElement).value = this.formatearFecha(fechaFormateada2); 
 }
-  (element as HTMLInputElement).value = fechaFormateada2; 
 break;
 case "Nota":(element as HTMLInputElement).value = values.nota; break;
 case "Ancho":
@@ -505,7 +513,8 @@ case "AlturaCadena":
 break;
 case "AlturaCordon":(element as HTMLInputElement).value = values.alturaCodon; break;
 case "MarcaMotor":(element as HTMLInputElement).value = values.marcaMotor; break;
-case "WhsCode":(element as HTMLInputElement).value = values.whsCode;  break;
+case "WhsCode":(element as HTMLInputElement).value = values.whsCode;  break; 
+  break;
 default :
 break;
             
@@ -673,13 +682,13 @@ break;
               switch(attributeName){
                 case "Ancho":
                 var  tubo_medida=parseFloat(attributeValue.replace(',', '.')) - 0.025;
-                this.attributosProducto["TuboMedida"] = tubo_medida.toString();
+                this.attributosProducto["TuboMedida"] = tubo_medida.toFixed(3).toString();
                 var  tela_medida=parseFloat(tubo_medida.toString().replace(',', '.')) - 0.001;
-                this.attributosProducto["TelaMedida"] = tela_medida.toString(); 
+                this.attributosProducto["TelaMedida"] = tela_medida.toFixed(3).toString(); 
                     break;
                 case "Alto":
                 var  altura_medida=altura_medida = parseFloat(attributeValue.replace(',', '.')) + 0.20;                
-                this.attributosProducto["AlturaMedida"] = altura_medida.toString();
+                this.attributosProducto["AlturaMedida"] = altura_medida.toFixed(3).toString();
                   break;
               } 
             }

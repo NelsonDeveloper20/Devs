@@ -265,7 +265,7 @@ switch(respuesta){
           } else {
             this.spinner.hide();
             this.toaster.open({
-              text: "Ocurrio un error, ingrese los datos correctamente",
+              text: "Ocurrio un error, "+JSON.stringify(response.json.respuesta),
               caption: 'Mensaje',
               type: 'warning',
               position: 'bottom-right',

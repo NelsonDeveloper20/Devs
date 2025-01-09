@@ -131,10 +131,12 @@ export class RegistroCotizacionsComponent implements OnInit {
           if(this.ordenes) { //SI HAY ORDENE SELCCIONADO
 
             const detalleSap= this.ordenes?.Lineas;
+            console.log("NELSON");
+            console.log(detalleSap);
             detalleSap.forEach(item=>  //AGREGAR LOS QUE AUN NO FUERON GUARDADOS EN LA BD
               {             
-                if (!this.Productos.some(row => row.codigoProducto === item.codarticulo)) {
-                  
+                if (!this.Productos.some(row =>  row.codigoProducto.toString().trim() === item.codarticulo.toString().trim() && row.linea.toString().trim() === item.linea.toString().trim()))  {       
+
                   const paseValue = item.codarticulo.substring(0, 3) !== 'PRT' ? 'PASDIRECCT' : '';
                 this.Productos.push({
                   "id":"",
@@ -769,7 +771,8 @@ eliminarAmbiente(indice: number) {
     }
   
   openRegisterProd(producto:any): void {    
-    console.log(producto);
+    console.log("producto==>");  
+    console.log(producto); 
     if(this.itemCopiado){ 
       var codigoProductoCopiado=this.itemCopiado.codigoProducto.slice(0, 5);// Salida: PRTRS
       var codigoProducto=producto.codigoProducto.slice(0, 5);// Salida: PRTRS
@@ -787,12 +790,15 @@ eliminarAmbiente(indice: number) {
         this.itemCopiado.precioInc=producto.precioInc.toString();
         this.itemCopiado.igv=producto.igv.toString();
         this.itemCopiado.lote=producto.lote.toString();
-        this.itemCopiado.fechaProduccion=""; 
-        this.itemCopiado.turno="";
+        this.itemCopiado.fechaProduccion=this.itemCopiado.fechaProduccion; 
+        this.itemCopiado.fechaEntrega=this.itemCopiado.fechaEntrega; 
+        this.itemCopiado.turno=this.itemCopiado.turno;
         this.itemCopiado.indiceAgrupacion="";
         producto=this.itemCopiado;
         //this.itemCopiado=null;
 
+        console.log("Copiado==>"); 
+        console.log(this.itemCopiado);  
       }else{        
         this.toaster.open({
           text: "El producto debe ser igual al que fue copiado",
