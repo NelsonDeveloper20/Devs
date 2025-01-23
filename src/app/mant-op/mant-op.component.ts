@@ -12,7 +12,7 @@ import { Toaster } from 'ngx-toast-notifications';
   styleUrls: ['./mant-op.component.css']
 })
 export class MantOpComponent implements OnInit {
-  displayedColumns: string[] = ['cotizacion', 'codOp', 'rucCliente','cliente','vendedor','destrito', 'fechaCreacion','acciones'];
+  displayedColumns: string[] = ['cotizacion',   'rucCliente','cliente','vendedor','destrito', 'fechaCreacion','acciones'];
   dataSource=new MatTableDataSource<any>();//this.ELEMENT_DATA
   constructor(
     private toaster: Toaster, 
@@ -57,7 +57,7 @@ export class MantOpComponent implements OnInit {
   EliminarOP(id:any) {
     Swal.fire({
       title: '¿Estás seguro que desea elminar?',
-      text: 'Al realizar este proceso, se eliminaran todos los productos relacionados con este número de cotización.',
+      text: 'Al realizar este proceso, se eliminaran todos los productos incluido los grupos relacionados con este número de cotización.',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sí, eliminar',

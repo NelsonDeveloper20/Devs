@@ -1,6 +1,6 @@
 
 export type ITblOrdenProduccion = {
-    id?: string;
+    id?: string; 
     numeroCotizacion?: string;
     codigoSisgeco?: string;
     numdoCref?: string;

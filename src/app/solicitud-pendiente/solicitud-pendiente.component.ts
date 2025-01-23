@@ -140,14 +140,41 @@ export class SolicitudPendienteComponent implements OnInit {
   }  
   razonSocial: string;
   tipoCliente: string;
-  fechaInicio: Date;
-  fechaFin: Date;
+  fechaInicio: string;
+  fechaFin: string;
   op: string;
   ruc: string;
   proyecto: string;
-  
+   // Método para guardar las fechas seleccionadas en localStorage
+   guardarFechas() {
+    localStorage.setItem('fechaInicio', this.fechaInicio);
+    localStorage.setItem('fechaFin', this.fechaFin);
+  }
   //ENDS
   ngOnInit(): void { 
+    const fecInicio = new Date();
+    const fecIFin = new Date();
+
+    // Ajustar la hora a medianoche para evitar problemas de zona horaria
+    fecInicio.setHours(0, 0, 0, 0);
+    fecIFin.setHours(0, 0, 0, 0);
+
+    // Recuperar la fecha guardada en localStorage (si existe)
+    const storedFechaInicio = sessionStorage.getItem('fechaInicio');
+    const storedFechaFin = sessionStorage.getItem('fechaFin');
+
+    // Si ya hay una fecha guardada, usarla
+    if (storedFechaInicio) {
+      this.fechaInicio = storedFechaInicio;
+    } else {
+      // Si no hay fecha guardada, asignar la fecha actual menos un día
+      fecInicio.setDate(fecInicio.getDate() - 1);
+      this.fechaInicio = fecInicio.toISOString().split('T')[0];  // YYYY-MM-DD
+    }
+
+    // Usar la fecha actual para fechaFin
+    this.fechaFin = storedFechaFin ? storedFechaFin : fecIFin.toISOString().split('T')[0]; // YYYY-MM-DD
+
     this.ListarFiltros();
     this.obtenerDetalleOpGrupo();
     this.route.params.subscribe(params => {
@@ -158,7 +185,7 @@ export class SolicitudPendienteComponent implements OnInit {
   }
   ListVenta:any=[];
   obtenerDetalleOpGrupo() {
-    
+    this.guardarFechas();
     const request = { 
       Vendedor: this.selectedVendedor ? this.selectedVendedor : '--', 
       NumeroCotizacion: this.selectedCotizacion ? this.selectedCotizacion : '--',

@@ -82,7 +82,7 @@
              >
               <!-- Define cómo se muestra el valor seleccionado -->
   <mat-select-trigger>
-    {{ ordenes?.numero || '---Seleccione---' }}
+    {{ ordenes?.numero || cboSapItemsOrdenes }}
   </mat-select-trigger>
         
               <!-- Campo de búsqueda con input -->
@@ -94,7 +94,7 @@
                 </button>
               </div>          
               <!-- Opciones filtradas -->
-              <mat-option value="">---Seleccione---</mat-option>
+              <mat-option value="">{{cboSapItemsOrdenes}}</mat-option>
               <mat-option *ngFor="let cotizacion of filteredCotizaciones" [value]="cotizacion">
                 {{ cotizacion.numero }}
               </mat-option>
@@ -403,11 +403,26 @@
                                           </button>
                                         </td> 
                                         <td *ngIf="getRowSpan(i) > 0" [attr.rowspan]="getRowSpan(i)">
-                                          
-                    <button class="btn btn-primary-azul tp-btn-light sharp"  matTooltip="Generar PDF Layout"    type="button"
+                                          <button class="btn btn-primary-azul tp-btn-light sharp"  matTooltip="Editar Turno y fecha"  style="background: #b8122b !important;margin: 8px;"
+                                          *ngIf="itemproducto.tipo =='Producto'"
+                                            type="button"
+                                            [disabled]="itemproducto.estadoOp !== '2' || !Orden.id  || itemproducto.id=='' || itemproducto.pase === 'PASDIRECCT'"
+                                           (click)="EditarTurnoFechaProduccion(itemproducto)"> 
+                                            <mat-icon>edit</mat-icon> 
+                                        </button> 
+
+                    <button class="btn btn-primary-azul tp-btn-light sharp"  matTooltip="Generar PDF Layout"  
+                    *ngIf="itemproducto.tipo =='Producto'"
+                      type="button"
                      (click)="GenerarLayout(itemproducto.cotizacionGrupo, itemproducto.cotizacionGrupo.slice(-2))"> 
                       <mat-icon>apps</mat-icon> 
-                  </button> 
+                  </button>     
+                  <button class="btn btn-primary-azul tp-btn-light sharp"  *ngIf="itemproducto.tipo !=='Producto'"
+                  style="  background: #ff5f00 !important;" matTooltip="Generar PDF Layout"    type="button"
+                   (click)="GenerarLayout(itemproducto.cotizacionGrupo, itemproducto.cotizacionGrupo.slice(-2))"> 
+                    <mat-icon>apps</mat-icon> 
+                </button> 
+                   
                                          </td>
                                       </tr>
 

@@ -90,6 +90,100 @@ export class RegistroCotizacionsComponent implements OnInit {
       this.layoutComponent.ejecutarAccionConParametro(cotizacionGrupo,tipoProducto);
     }
   }
+  EditarTurnoFechaProduccion(item:any){
+console.log(item);
+Swal.fire({
+  title: 'Grupo: '+item.cotizacionGrupo+'',
+  html: `
+  <h3>  Editar Turno/Fecha</h3><br>
+    <div class="row">
+  <div class="col-lg-6 mb-3">
+    <label for="turno" class="form-label">Turno:</label>
+    <select id="turno" class="form-control">
+      <option value="Mañana" ${item.turno === 'Mañana' ? 'selected' : ''}>Mañana</option>
+      <option value="Tarde" ${item.turno === 'Tarde' ? 'selected' : ''}>Tarde</option> 
+    </select>
+  </div>
+  <div class="col-lg-6 mb-3">
+    <label for="fechaProduccion" class="form-label">Fecha de Producción:</label>
+    <input type="date" id="fechaProduccion" class="form-control" value="${this.formatDateForInput(item.fechaProduccion)}" />
+  </div>
+</div>
+
+  `,
+  showCancelButton: true,
+  confirmButtonText: 'Guardar',
+  cancelButtonText: 'Cancelar',
+  preConfirm: () => {
+    const turno = (document.getElementById('turno') as HTMLSelectElement).value;
+    const fechaProduccion = (document.getElementById('fechaProduccion') as HTMLInputElement).value;
+
+    if (!turno || !fechaProduccion) {
+      Swal.showValidationMessage('Todos los campos son obligatorios');
+       
+    }else{
+      this.spinner.show();
+
+      console.log(turno);console.log(fechaProduccion);
+      this.ordenproduccionGrupoService.ModificarTurnoFecha(item.cotizacionGrupo,turno,fechaProduccion).subscribe({
+        next: data => {
+          this.spinner.hide();
+
+          if (data.status == 200) {
+            this.toaster.open({
+              text: "Operacion Realizada Correctamente",
+              caption: 'Mensaje',
+              type: 'success',
+              position: 'bottom-right',
+              duration: 3000 // O duración deseada
+            });
+
+            this.listarProductosSisgecoAndDcBlinds('');
+          } else {
+            this.toaster.open({
+              text: data.json.respuesta,
+              caption: 'Mensaje',
+              type: 'warning',
+              position: 'bottom-right',
+              duration: 3000 // O duración deseada
+            });
+          }
+        },
+        error: error => {
+          this.spinner.hide();
+
+          const errorMessage = error.message || 'Ocurrió un error desconocido';
+          console.error('There was an error!', error);
+
+          this.toaster.open({
+            text: errorMessage,
+            caption: 'Ocurrió un error',
+            type: 'danger',
+            position: 'bottom-right',
+            duration: 3000 // O duración deseada
+          });
+        }
+      });
+    }
+  },
+}).then((result) => {
+  if (result.isConfirmed) {
+    const { turno, fechaProduccion } = result.value!;
+    // Actualizar el item con los valores editados
+    item.turno = turno;
+    item.fechaProduccion = fechaProduccion;
+
+    console.log('Item actualizado:', item);
+
+    // Aquí puedes agregar la lógica para guardar los cambios, como llamar a un servicio
+  }
+});
+}
+formatDateForInput(dateTime: string): string {
+  // Convertir "05/01/2025 0:00:00" a "2025-01-05"
+  const [day, month, year] = dateTime.split(' ')[0].split('/');
+  return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+}
    Productos: any=[];
    totalProductos=0; 
    totalComponentes=0;
@@ -278,27 +372,67 @@ export class RegistroCotizacionsComponent implements OnInit {
       }
     });
   }
-  getRowSpan(index: number): number {
+  /*getRowSpan(index: number): number {
+    // Determina si la fila actual debería ser la que combina las filas siguientes
     if (index === 0 || 
-        this.Productos[index].cotizacionGrupo !== this.Productos[index - 1].cotizacionGrupo ||
+        this.Productos[index].cotizacionGrupo !== this.Productos[index - 1].cotizacionGrupo || 
         this.Productos[index].tipo !== "Producto") {
-      let count = 1;
+      let count = 1; // Inicializa el contador para el rowspan (comienza en 1)
+  
+      // Si no hay un grupo válido o el tipo no es "Producto", no combinar filas
       if (!this.Productos[index].cotizacionGrupo || this.Productos[index].tipo !== "Producto") {
-        return 0;
+        return 0; // Retorna 0, lo que significa que no habrá rowspan
       }
+  
+      // Recorre las filas siguientes para contar cuántas comparten el mismo grupo y tipo
       for (let i = index + 1; i < this.Productos.length; i++) {
         if (this.Productos[i].cotizacionGrupo === this.Productos[index].cotizacionGrupo &&
             this.Productos[i].tipo === "Producto") {
-          count++;
+          count++; // Incrementa el contador si coincide el grupo y tipo
         } else {
-          break;
+          break; // Detiene el conteo si hay una diferencia en el grupo o tipo
         }
       }
-      return count;
+  
+      return count; // Retorna la cantidad de filas a combinar
     }
-    return 0;
+  
+    return 0; // Retorna 0 si no es la fila principal del grupo
+  }*/
+  getRowSpan(index: number): number {
+    // Determina si la fila actual debería ser la que combina las filas siguientes
+    if (
+      index === 0 || 
+      this.Productos[index].cotizacionGrupo !== this.Productos[index - 1].cotizacionGrupo || 
+      this.Productos[index].tipo !== this.Productos[index - 1].tipo
+    ) {
+      let count = 1; // Inicializa el contador para el rowspan (comienza en 1)
+  
+      // Verifica si el grupo o el tipo no son válidos, en ese caso, no combina filas
+      if (!this.Productos[index].cotizacionGrupo || !this.Productos[index].tipo) {
+        return 0; // Retorna 0 si no hay un grupo o tipo válido
+      }
+  
+      // Recorre las filas siguientes para contar cuántas comparten el mismo grupo y tipo
+      for (let i = index + 1; i < this.Productos.length; i++) {
+        if (
+          this.Productos[i].cotizacionGrupo === this.Productos[index].cotizacionGrupo &&
+          this.Productos[i].tipo === this.Productos[index].tipo
+        ) {
+          count++; // Incrementa el contador si coinciden grupo y tipo
+        } else {
+          break; // Detiene el conteo si hay una diferencia en el grupo o tipo
+        }
+      }
+  
+      return count; // Retorna la cantidad de filas a combinar
+    }
+  
+    return 0; // Retorna 0 si no es la fila principal del grupo
   }
-
+  
+  
+  
   AplicarCentral(itemproducto: any, event: any) {
     let valor = "";
     if (event.checked) {
@@ -432,11 +566,15 @@ export class RegistroCotizacionsComponent implements OnInit {
       .ListarOrdenPorNumero( numCotizacion)
       .subscribe(
         (response) => {
+          console.log("ORDEN DESDE LA BD 1");
+          console.log(response);
           if(response){
             if(response.length>0){
               this.Orden = response[0]; 
+              console.log("ORDEN DESDE LA BD");
+              console.log(this.Orden);
             }
-          }
+          } 
           this.spinner.hide();
         },
         (error) => {
@@ -1060,7 +1198,7 @@ eliminarAmbiente(indice: number) {
     console.log('El objeto seleccionado ha cambiado:', state);
     if(state){
 
-      this.Orden.id="";
+      this.Orden.id=""; 
       this.Orden.numeroCotizacion =state.numero;
       this.Orden.codigoSisgeco=state.numdocref;
       this.Orden.numdoCref =state.numdocref;
@@ -1090,8 +1228,7 @@ eliminarAmbiente(indice: number) {
       this.Orden.docStatusSap=state.docStatusSap;
       //this.Orden.pa=state.Pase; 
       this.selectedState = state;
-      this.Productos=[];
-       
+      this.Productos=[]; 
       this.listarAmbientes(this.selectedState.numero);
       
       this.listarOrdenPorCotizacion(this.Orden.numeroCotizacion);
@@ -1111,7 +1248,10 @@ eliminarAmbiente(indice: number) {
 
   OrdeDeVentaPendiente=[];
   //#region  ::::::::::::::::::SAP
+  cboSapItemsOrdenes="---Seleccione---";
   async ListarOrdenesSap() {
+    this.cboSapItemsOrdenes="Cargando órdenes de Sap...";
+    console.log(this.cboSapItemsOrdenes);
     this.spinner.show();
     this.sapService.ListarOrdenes().subscribe(
       async datas => {
@@ -1123,10 +1263,16 @@ eliminarAmbiente(indice: number) {
   
         console.log('Datos con nombres renombrados:', this.OrdeDeVentaPendiente);
         this.filteredCotizaciones = [...this.OrdeDeVentaPendiente];
-
+          
+        if(this.filteredCotizaciones){
+          this.cboSapItemsOrdenes="---Seleccione---";
+          }else{
+          this.cboSapItemsOrdenes="No hay órdenes en Sap";
+          }
         this.spinner.hide();
       },
-      error => {
+      error => {   
+        this.cboSapItemsOrdenes="---Seleccione---";
         this.spinner.hide();
         console.error('Error en la solicitud autenticada:', error);
       }
@@ -1264,7 +1410,7 @@ eliminarAmbiente(indice: number) {
     this.spinner.show();
     console.log("BUSCANDO ");
     console.log(searchValue);
-    searchValue="1600009"; 
+    //searchValue="1600009"; 
     this.sapService.ListarOrdenesByDocEntry(searchValue).subscribe(
       async datas => {
         this.searchValue="";;
@@ -1275,6 +1421,7 @@ eliminarAmbiente(indice: number) {
  
 if (!this.filteredCotizaciones.some(existingItem => existingItem.docEntrySap === nwItem.docEntrySap)) {
   this.filteredCotizaciones = [...this.filteredCotizaciones, nwItem];
+  
 }
         this.spinner.hide();
       },

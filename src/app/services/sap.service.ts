@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError, timer } from 'rxjs';
-import { catchError, delay, filter, map, retryWhen, scan, switchMap, take, tap } from 'rxjs/operators';
+import { catchError, delay, filter, map, retry, retryWhen, scan, switchMap, take, tap } from 'rxjs/operators';
 import jwt_decode from 'jwt-decode';
 import { environment } from 'src/environments/environment';
 
@@ -199,6 +199,7 @@ private isTokenExpired(token: string): boolean {
       })
     );
   }
+  /*
   ListarArticulosPorFamiliaGrupo(identificador: any, grupo: any): Observable<any[]> {
     const url = `${this.urlBase}Items/ListFilter`;
     const body = {
@@ -248,8 +249,81 @@ private isTokenExpired(token: string): boolean {
         );
       })
     );
-  }
-  
+  }*/
+    ListarArticulosPorFamiliaGrupo(identificador: any, grupo: any): Observable<any[]> {
+      const url = `${this.urlBase}Items/ListFilter`;
+      const body = {
+        "GroupCode": identificador,
+        "FamilyCode": grupo
+      };
+    
+      return this.getValidToken().pipe(
+        switchMap((token) => {
+          const headers = new HttpHeaders({
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          });
+    
+          return this.httpClient.post<any>(url, body, { headers }).pipe(
+            retry({
+              count: 3,
+              delay: (error, retryCount) => {
+                console.log(`Reintento ${retryCount} debido a error:`, error);
+                return timer(1000 * retryCount); // Aumenta el tiempo entre reintentos
+              },
+              resetOnSuccess: true
+            }),
+            map(response => {
+              if (!Array.isArray(response)) {
+                throw new Error('La respuesta no es un array de artículos');
+              }
+              return response.map((item: any) => ({
+                codigo: item.ItemCode,
+                nombre: item.ItemName,
+                unidadMedida: item.SalesUnit,
+                color: item.U_EXD_COLD,
+                serie: item.ManageSerialNumbers,
+                lote: item.ManageBatchNumbers,
+              }));
+            }),
+            catchError(error => {
+              console.error('Error en la solicitud SAP:', error);
+              
+              // Si el error persiste después de los reintentos
+              if (error.status === 500) {
+                return timer(2000).pipe(
+                  switchMap(() => this.ListarArticulosPorFamiliaGrupo(identificador, grupo))
+                );
+              }
+    
+              return throwError(() => new Error(`Error al listar artículos: ${error.message}`));
+            })
+          );
+        }),
+        catchError(error => {
+          if (error.status === 500) {
+            return this.handleTokenRefresh().pipe(
+              switchMap(() => this.ListarArticulosPorFamiliaGrupo(identificador, grupo))
+            );
+          }
+          return throwError(() => error);
+        })
+      );
+    }
+    
+    // Método auxiliar para manejar la renovación del token
+    private handleTokenRefresh(): Observable<any> {
+      return this.login().pipe(
+        tap(newToken => {
+          this.tokenSubject.next(newToken);
+        }),
+        catchError(error => {
+          console.error('Error al renovar el token:', error);
+          return throwError(() => error);
+        })
+      );
+    }
   CerrarCotizacion(body: any): Observable<any> {
     const url = `${this.urlBase}InventoryGenExit`;  
   

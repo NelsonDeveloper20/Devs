@@ -48,4 +48,8 @@ export class OrdenproduccionGrupoService {
     return this.http.post<IApiResponse>(this.urlBase + 'DetalleOpgrupo/ReiniciarGrupo?id='+id,{});
   }
 
+  ModificarTurnoFecha(grupo:any,turno:any,fecha:any): Observable<IApiResponse> { 
+    return this.http.post<IApiResponse>(this.urlBase + 'DetalleOpgrupo/ModificarTurnoFechaGrupo?grupo='+grupo+'&turno='+turno+'&fecha='+fecha,{});
+  }
+
 }

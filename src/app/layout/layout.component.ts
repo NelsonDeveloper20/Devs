@@ -160,6 +160,10 @@ export class LayoutComponent implements OnInit {
     if (imgElement) {
       imgElement.src = barcodeDataUrl;
     }
+    const imgElement2 = document.getElementById('barcodeImageProductos') as HTMLImageElement;
+    if (imgElement2) {
+      imgElement2.src = barcodeDataUrl;
+    }
   }
   generatePDF(contenido: HTMLElement, options: any) {
     html2pdf()
@@ -234,27 +238,73 @@ for (let i = 0; i < this.cantSubArray; i++) {
             central_si = "NOOO";
             this.countercentral = 0;
         }                 
+        // Add header table for each page
+        
+        if(this.paginas > 0) {
+          this.html += '<p style="height: 20.67px; background: red;visibility: hidden;">Página ' + (i + 1) + '</p>';
+      }
+        this.html += `
+    <table class="table-layout laypdf" style="width: 100% !important; font-size: 11px; font-weight: 500;">
+        <tbody>
+            <tr>
+                <td style="border: none !important;vertical-align: top;text-align: start;padding-bottom: 0px !important;">
+                    <img id="barcodeImage_${i}" src="${this.getQRImageSource()}" style="width: 114px; height: 50px;">
+                </td>
+                <td colspan="2" style="border: none !important;text-align: center;vertical-align: top;text-align: center;padding-bottom: 0px !important;">
+                    <h3 style="color: black;">Orden de Produccion N: ${primerElemento?.cotizacionGrupo}</h3>
+                </td>
+                <td style="border: none !important;width: 287px;vertical-align: top;text-align: start;padding-bottom: 0px !important;">
+                    <div class="" style="color: black;">
+                        <h4 style="font-weight: 700;margin-bottom: 0px;color: black;">Fecha de entrega: ${primerElemento?.fechaEntrega}</h4>
+                        <h4 style="font-weight: 700;margin-bottom: 0px;color: black;">Fecha impresión: ${this.formatDate(primerElemento?.fechaImpresion)}</h4>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: none !important;text-align: start;padding-bottom: 0px !important;">
+                    <span>Cliente:. ${primerElemento?.cliente}</span><br>
+                    <span>Direccion: ${primerElemento?.direccion}</span>
+                </td>
+                <td colspan="2" style="border: none !important;text-align: center;padding-bottom: 0px !important;">
+                    Telefono: ${primerElemento?.telefono} &nbsp;&nbsp;&nbsp; Documento: ${primerElemento?.numeroCotizacion}
+                </td>
+                <td style="width: 287px;border: none !important;text-align: start;padding-bottom: 0px !important;">
+                    <span>TIPO: Distribucion ${primerElemento?.tipoCliente}</span><br>
+                    <span>RESPONSABLE: ${primerElemento?.vendedor}</span><br>
+                    <span style="font-weight: 500;">FECHA: ${this.formatDate(primerElemento?.fecha_Fabricacion)}</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>`;
+
         if(this.paginas==0){
           this.html += this.renderProducts(primerElemento, arraySubArray[i], i, central_si, this.comentcoun);
         }else{
-          this.html +='<p style=" height: 95.67px;visibility: hidden; ">Página </p>';///* visibility: hidden; */
+        //  this.html +='<p style=" height: 95.67px;visibility: hidden; ">Página </p>';///* visibility: hidden; */
         this.html += this.renderProducts(primerElemento, arraySubArray[i], i, central_si, this.comentcoun);
         this.html +='</div>';
         }
+
+        
         this.counter++;
         this.totalPaGina++;
-        this.paginas++;
-        //if (this.paginas != 1) {
-            //this.html += "<h1>PAGINACION: " + this.totalPaGina + " | " + this.paginas + "</h1><h1>PAGINACION: " + this.totalPaGina + " | " +
-          //  this.html +='<div class="pagina"> <h1>Página '+this.paginas+'</h1></div>';
-            //this.paginas + "</h1>";
-        //}
+        this.paginas++; 
     }
 
     // Asignar el HTML generado al elemento del DOM 
     this.contenthtml.nativeElement.innerHTML = this.html;
     this.spinner.hide();
     this.generarPDF2();
+}
+// Helper method to format date
+  formatDate(date: string): string {
+  return new Date(date).toLocaleDateString('es-ES');
+}
+
+// Helper method to get QR image source
+  getQRImageSource(): string {
+  // Return the source of your QR code image
+  return document.getElementById('barcodeImageProductos')?.getAttribute('src') || '';
 }
   renderProducts(primerElemento:any,  prods: any,  num_table: number,   cent_si: any,    comentcoun: number  ): string {
     const groups = _.countBy(prods, function (val: any) {      return val.indiceAgrupacion;    });
@@ -1109,6 +1159,7 @@ for (let i = 0; i < this.cantSubArray; i++) {
     <tr>
     <th style='background: #B8122B !important; color: white !important; text-align: center !important; border: 0.1px solid #dbdbdb4f;'>Código Producto</th>
     <th style='background: #B8122B !important; color: white !important; text-align: center !important; border: 0.1px solid #dbdbdb4f;'>Nombre Producto</th>
+    <th style='background: #B8122B !important; color: white !important; text-align: center !important; border: 0.1px solid #dbdbdb4f;'>Cantidad</th>
     <th style='background: #B8122B !important; color: white !important; text-align: center !important; border: 0.1px solid #dbdbdb4f;'>Unidad Medida</th>
     <th style='background: #B8122B !important; color: white !important; text-align: center !important; border: 0.1px solid #dbdbdb4f;'>Sub Familia</th>
     <th style='background: #B8122B !important; color: white !important; text-align: center !important; border: 0.1px solid #dbdbdb4f;'>Tipo OP</th>
@@ -1123,6 +1174,7 @@ for (let i = 0; i < this.cantSubArray; i++) {
         this.html += "<tr>";
         this.html += `<td style='border: 0.1px solid #dbdbdb4f;'>${element.codigoProducto}</td>`;
         this.html += `<td style='border: 0.1px solid #dbdbdb4f;'>${element.nombreProducto}</td>`;
+        this.html += `<td style='border: 0.1px solid #dbdbdb4f;'>${element.cantidad}</td>`;
         this.html += `<td style='border: 0.1px solid #dbdbdb4f;'>${element.unidadMedida}</td>`;
         this.html += `<td style='border: 0.1px solid #dbdbdb4f;'>${element.subFamilia}</td>`;     
         this.html += `<td style='border: 0.1px solid #dbdbdb4f;'>${element.tipo_OP}</td>`;

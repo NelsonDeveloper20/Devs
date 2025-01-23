@@ -243,16 +243,15 @@ color: black !important;margin: 8px;">
 </div> 
 <hr>
 <h1>:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::DESDE AQUI ES LA GENERACION:::::::::::::::::::::::::::::::::::::::::::.</h1>
- 
+<img id="barcodeImageProductos" style="width: 114px; height: 50px;">
 <div   id="layout" style="height: 100% !important;   font-family: 'Didact Gothic', sans-serif !important;
 color: black !important;margin: 8px;">
   
         <!--CABEZAR MAS CODIGO QR-->
-        <table class="table-layout laypdf" style=" width: 100% !important;   font-size: 11px;  font-weight: 500;"  > 
+         <table *ngIf="this.tipoGrupo!=='Producto'"class="table-layout laypdf" style=" width: 100% !important;   font-size: 11px;  font-weight: 500;"  > 
             <tbody> 
                 <tr>
-                    <td style="border: none !important;vertical-align: top;text-align: start;padding-bottom: 0px !important;">   
-                        <!--<img style="width:80px;" [src]="generarCodigoBarras()">-->
+                    <td style="border: none !important;vertical-align: top;text-align: start;padding-bottom: 0px !important;">    
                         <img id="barcodeImage" style="width: 114px; height: 50px;">
                     </td>
                     <td colspan="2" style="border: none !important;text-align: center;vertical-align: top;text-align: center;padding-bottom: 0px !important;"> <h3  style="color: black;">Orden de Produccion N: {{DatosJson2[0]?.cotizacionGrupo}}</h3></td>                 
@@ -272,12 +271,11 @@ color: black !important;margin: 8px;">
             <td style="width: 287px;border: none !important;text-align: start;padding-bottom: 0px !important;"> 
                 <span>TIPO:  Distribucion  {{DatosJson2[0]?.tipoCliente}}  </span> <br>
                 <span>RESPONSABLE:   {{DatosJson2[0]?.vendedor}}  </span> <br>                
-                <span style="font-weight: 500;"> FECHA:  {{DatosJson2[0]?.fecha_Fabricacion | date:'dd/MM/yyyy'}}</span>
-                <!--<span>FECHA: {{DatosJson2[0]?.fecha_Fabricacion}} </span>  -->
+                <span style="font-weight: 500;"> FECHA:  {{DatosJson2[0]?.fecha_Fabricacion | date:'dd/MM/yyyy'}}</span> 
             </td> 
             </tr>
         </tbody>
-            </table><br>
+            </table>
             <!--END-->
 <div  #layout>
 

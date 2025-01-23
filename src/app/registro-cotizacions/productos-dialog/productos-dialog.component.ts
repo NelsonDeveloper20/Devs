@@ -110,7 +110,7 @@ private dialog: MatDialog,
         }
   
         }
-        if(lowerKey=="IdTbl_Ambiente".toLowerCase() && value==""){
+        if(lowerKey=="IdTbl_Ambiente".toLowerCase() && (!value || value === "0")){
           this.toaster.open({
             text: "el dato Indice Agrupado es obligatorio",
             caption: 'Mensaje',

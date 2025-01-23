@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core'; 
 import { ObjConfigs } from '../configuration';
-import { firstValueFrom } from 'rxjs';
+import { delay, firstValueFrom, retryWhen, take, timeout } from 'rxjs';
 import { ProductoService } from '../services/productoservice';
 import { NgxSpinnerService } from 'ngx-spinner'; 
 import { DatePipe } from '@angular/common';
@@ -87,7 +87,7 @@ export class FormProductoComponent implements OnInit {
 
     this.TipoProducto=this.JsonItemHijo.tipo; 
     this.IdProducto=this.JsonItemHijo.producto.id;   
-    this.TblAmbiente=this.JsonItemHijo.ambiente; 
+    this.TblAmbiente=this.JsonItemHijo.ambiente;  
      
       if(this.JsonItemHijo.producto.id!="" && this.JsonItemHijo.producto.escuadra=="SI"){        
         this.ObtenerEcuadra(this.IdProducto);   
@@ -201,10 +201,31 @@ console.log("entra");
           switch (attributeName) {
           //::::::::::::::::::::::::::::::::::::...COMBOS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 //case "IndexDetalle": (element as HTMLSelectElement).value = element.value = values.indexDetalle ? values.indexDetalle : "0";  break;
-case "IndiceAgrupacion": (element as HTMLSelectElement).value =element.value = values.indiceAgrupacion ? values.indiceAgrupacion : "0";  break;
-case "IdTbl_Ambiente": (element as HTMLSelectElement).value = values.idTbl_Ambiente;  break;
+case "IndiceAgrupacion":
+  if(this.JsonItemHijo.producto.id!=""){
+(element as HTMLSelectElement).value =element.value = values.indiceAgrupacion ? values.indiceAgrupacion : "0"; 
+  }else{
+    (element as HTMLSelectElement).value =element.value = "0"; 
+  }
 
-case "Ambiente": (element as HTMLSelectElement).value = element.value = values.ambiente ? values.ambiente : "--Seleccione--";  break;
+break;
+case "IdTbl_Ambiente": 
+
+if(this.JsonItemHijo.producto.id!=""){
+  (element as HTMLSelectElement).value = values.idTbl_Ambiente; 
+    }else{
+      (element as HTMLSelectElement).value =element.value = "0"; 
+    }
+break;
+
+case "Ambiente":
+
+if(this.JsonItemHijo.producto.id!=""){
+   (element as HTMLSelectElement).value = element.value = values.ambiente ? values.ambiente : "--Seleccione--";
+    }else{
+      (element as HTMLSelectElement).value =element.value = "--Seleccione--";
+    }
+break;
 case "Turno":  (element as HTMLSelectElement).value = element.value = values.turno ? values.turno : "--Seleccione--"; 
 break;
 case "CodigoTela":  
@@ -1837,7 +1858,7 @@ case "CodigoMotor":await this.listarCboMotor(tipoProducto);break;
       console.error(`No se encontró un maestro para el componente ${componente}`);
       return [];
     }
-  
+  /*
     try {
       const data = await firstValueFrom(this.apiSap.ListarArticulosPorFamiliaGrupo(maestro.codigoGrupo, maestro.identificador));
       this.cache[componente] = data;
@@ -1845,7 +1866,29 @@ case "CodigoMotor":await this.listarCboMotor(tipoProducto);break;
     } catch (error) {
       console.error(`Error al obtener artículos para ${componente}`, error);
       return [];
-    }
+    }*/
+   
+      this.spinner.show();
+      try {
+        const data = await firstValueFrom(
+          this.apiSap.ListarArticulosPorFamiliaGrupo(maestro.codigoGrupo, maestro.identificador)
+            .pipe(
+              retryWhen(errors => 
+                errors.pipe(
+                  delay(1000),
+                  take(3)
+                )
+              )
+            )
+        );
+        this.spinner.hide();
+        return data;
+      } catch (error) {
+        console.error(`Error al obtener artículos para ${componente}`, error);
+        this.spinner.hide();
+        
+        return [];
+      }
   }
 
     }

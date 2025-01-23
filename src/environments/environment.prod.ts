@@ -7,6 +7,10 @@ export const environment = {
   authority: 'https://login.microsoftonline.com/b5fdc43d-890f-4208-917d-107c711d57cc',
   authRedirectUri: '', 
   logoutRedirectUri: '', 
-  baseUrl: 'http://10.0.2.5:82', // PRODUCCION
-  urlSap:'http://10.0.2.5:8081/'
+  //baseUrl: 'http://10.0.2.5:82', // PRODUCCION
+  //urlSap:'http://10.0.2.5:8081/'
+
+  baseUrl: window.location.hostname === '10.0.2.5' ? 'http://10.0.2.5:82' : 'http://191.98.160.56:82',
+  urlSap: window.location.hostname === '10.0.2.5' ? 'http://10.0.2.5:8081/' : 'http://191.98.160.56:8081/',
+
 };
