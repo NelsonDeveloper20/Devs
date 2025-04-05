@@ -535,6 +535,7 @@ break;
 case "AlturaCordon":(element as HTMLInputElement).value = values.alturaCodon; break;
 case "MarcaMotor":(element as HTMLInputElement).value = values.marcaMotor; break;
 case "WhsCode":(element as HTMLInputElement).value = values.whsCode;  break; 
+case "CodigoTipoRiel": (element as HTMLInputElement).value = values.codigoTipoRiel;
   break;
 default :
 break;
@@ -1181,6 +1182,15 @@ ChangeTubo(event: any): void {
   }
 }
 
+ChangeRielTipo(event: any): void {
+  const value = event.target.value;  
+  const Tela = document.getElementById("CodigoTipoRiel") as HTMLInputElement ;
+  console.log
+  const item = this.CboTipoRiel.find(element => element.nombre === value);
+  if (Tela && item) {
+    Tela.value = item.id; 
+  }
+}
 CboMando=[{id:0,nombre:"--Seleccione--"}];listarCboMando(tipoProducto){  
   this.CboMando=[{id:0,nombre:"--Seleccione--"}];
   var data=[ 
@@ -1282,16 +1292,39 @@ ChangeCadena(event: any): void {
     Tela.value = item.nombre; 
   }
 }
-CboTipoRiel=[{id:0,nombre:"--Seleccione--"}];listarCboTipoRiel(){  
-  this.CboTipoRiel=[
-    {id:0,nombre:"--Seleccione--"},
-    {id:1,nombre:"EXCLUSIVE"},
-    {id:2,nombre:"CLASSIC"},
-    {id:3,nombre:"EUROSLIM"},
-    {id:4,nombre:"RIEL INFERIOR CLASSIC"},
-    {id:5,nombre:"RIEL INFERIOR NEOLUX"},
-    {id:6,nombre:"RIEL INFERIOR SHANGRILLA"},
-  ]; 
+ 
+CboTipoRiel = [{ id: "0", nombre: "--Seleccione--" }];
+
+async listarCboTipoRiel() {
+  const defaultOptions = [
+    { id: "0", nombre: "--Seleccione--" },
+    { id: "1", nombre: "EXCLUSIVE" },
+    { id: "2", nombre: "CLASSIC" },
+    { id: "3", nombre: "EUROSLIM" },
+    { id: "4", nombre: "RIEL INFERIOR CLASSIC" },
+    { id: "5", nombre: "RIEL INFERIOR NEOLUX" },
+    { id: "6", nombre: "RIEL INFERIOR SHANGRILLA" },
+  ];
+
+  // Asigna valores predeterminados
+  this.CboTipoRiel = [...defaultOptions];
+
+  if (this.JsonItemHijo.producto.codigoProducto.substring(0, 5) === "PRTRS") {
+    this.spinner.show();
+    try {
+      const response = await this.listarComponentes("RIEL");
+      if (response.length > 0) {
+        this.CboTipoRiel = [{ id: "0", nombre: "--Seleccione--" }];
+        response.forEach(element => {
+          this.CboTipoRiel.push({ id: element.codigo, nombre: element.descripcion });
+        });
+      }
+    } catch (error) {
+      console.error("Error al listar componentes RIEL:", error);
+    } finally {
+      this.spinner.hide();
+    }
+  }
 }
 CboTipoInstalacion=[{id:0,nombre:"--Seleccione--"}];listarCboTipoInstalacion(){  
   this.CboTipoInstalacion=[
@@ -1844,29 +1877,56 @@ case "CodigoMotor":await this.listarCboMotor(tipoProducto);break;
       }
     }
  
- 
+    async listarComponentes(tipo: string): Promise<any[]> {
+      this.spinner.show();
+      try {
+        const response = await firstValueFrom(
+          this._productoService.listarTelaRielTubo(
+            tipo,
+            this.JsonItemHijo.producto.codigoProducto,
+            this.JsonItemHijo.producto.nombreProducto
+          )
+        );
+        this.spinner.hide();
+        return response || [];
+      } catch (error) {
+        console.log("error: ", error);
+        this.spinner.hide();
+        return [];
+      }
+    }
   private cache: { [key: string]: any[] } = {};
 
   async ListarArticulosPorFamiliaGrupoIndividual(componente: string): Promise<any[]> {
+    const CodigosTela: string[] = []; 
+    if (componente === "Tela" || componente === "Tubo") {
+      this.spinner.show();
+      try {
+        const response = await this.listarComponentes(componente.toUpperCase());
+        
+        response.forEach(element => {
+          CodigosTela.push(element.codigo);
+        });
+      } catch (error) {
+        console.log("error: ", error);
+      }
+      this.spinner.hide();
+    }
+      
     if (this.cache[componente]) {
       console.log(`Usando datos en caché para ${componente}`);
+      if (CodigosTela.length > 0) {
+        return this.cache[componente].filter(item => CodigosTela.includes(item.codigo));
+      }
       return this.cache[componente];
     }
+
   
     const maestro = this.ListMaestroArticulos.find(item => item.nombreGrupo === componente);
     if (!maestro) {
       console.error(`No se encontró un maestro para el componente ${componente}`);
       return [];
-    }
-  /*
-    try {
-      const data = await firstValueFrom(this.apiSap.ListarArticulosPorFamiliaGrupo(maestro.codigoGrupo, maestro.identificador));
-      this.cache[componente] = data;
-      return data;
-    } catch (error) {
-      console.error(`Error al obtener artículos para ${componente}`, error);
-      return [];
-    }*/
+    } 
    
       this.spinner.show();
       try {
@@ -1881,8 +1941,12 @@ case "CodigoMotor":await this.listarCboMotor(tipoProducto);break;
               )
             )
         );
-        this.spinner.hide();
-        return data;
+        this.spinner.hide(); 
+        if (CodigosTela.length > 0) { 
+          return data.filter(item => CodigosTela.includes(item.codigo));
+        }
+        return data; 
+
       } catch (error) {
         console.error(`Error al obtener artículos para ${componente}`, error);
         this.spinner.hide();

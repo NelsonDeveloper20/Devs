@@ -33,4 +33,13 @@ export class ProductoService {
     ObtenerArticulo(tipo:any,subfamilia:any): Observable<any>{
       return this.http.get(`${this.urlBase}ListasSisgeco?tipo=`+tipo+'&subfamilia='+subfamilia); 
     }
+    
+    listarTelaRielTubo(tipo:any,codigoProducto:any,nombreProducto): Observable<any>{
+      return this.http.get(`${this.urlBase}Componentes/listarTelaRielTubo?tipo=`+tipo+'&codigoProducto='+codigoProducto+'&nombreProducto='+nombreProducto); 
+    }
+
+    listarAccesorioXProducto(codigoProducto:any): Observable<any>{
+      return this.http.get(`${this.urlBase}Componentes/listarAccesorioXProducto?codigoProducto=`+codigoProducto); 
+    }
+
 }

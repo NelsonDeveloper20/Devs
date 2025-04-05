@@ -237,9 +237,12 @@
 
    <div class="form-group col-lg-3" *ngIf="objConfiguracionAtributos[TipoProducto]['tipoRiel'].visible !== 0"  id="reg_cont_tipoRiel">
        <label>Tipo Riel <span *ngIf="objConfiguracionAtributos[TipoProducto]['tipoRiel'].required === 1"  class="requerid_css">*</span></label>
-       <select class="form-control" id="tipo_riel" name="TipoRiel" [required]="objConfiguracionAtributos[TipoProducto]['tipoRiel'].required === 1">
+       <select class="form-control" id="tipo_riel" name="TipoRiel" [required]="objConfiguracionAtributos[TipoProducto]['tipoRiel'].required === 1"
+       (change)="ChangeRielTipo($event)"
+       >
         <option *ngFor="let opcion of CboTipoRiel" [value]="opcion.nombre">{{ opcion.nombre }}</option>
        </select>
+       <input class="form-control" type="text"  id="CodigoTipoRiel" name="CodigoTipoRiel" readonly style="display: none;" *ngIf="objConfiguracionAtributos[TipoProducto]['tipoRiel'].visible !== 0">  
    </div>
 
 

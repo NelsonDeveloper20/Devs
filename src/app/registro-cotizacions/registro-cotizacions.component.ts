@@ -1437,5 +1437,84 @@ if (!this.filteredCotizaciones.some(existingItem => existingItem.docEntrySap ===
     );
   }
  
+  EnviarAOperaciones(item:any){
+    const userDataString = JSON.parse(localStorage.getItem('UserLog'));     
+    this.ListGrupos.push({
+      id:item.idGrupo,
+      usuarioId:userDataString.id
+    });
+    this.EnviarGrupoMasivo();
+  }
+  
+    ListGrupos:any  =[];
+    EnviarGrupoMasivo(){ 
+      if(this.ListGrupos.length === 0){
+        this.toaster.open({
+          text: "Debe seleccionar cotizaciones que desee enviar",
+          caption: 'Mensaje',
+          type: 'danger',
+          // duration: 994000
+        });
+        return;
+      }
+  
+      Swal.fire({
+        allowOutsideClick: false,
+        title: "¿Desea Enviar?",
+        html: `¿Esta seguro de enviar a Operaciones Construcción?`,
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonText: 'Si, Enviar',
+        cancelButtonText: 'Cancelar',
+      })
+        .then((result) => {
+          if (result.isConfirmed) { 
+            
+      const jsonData = JSON.stringify(this.ListGrupos);
+      console.log(jsonData);
+      this.spinner.show();
+      this.ordenproduccionGrupoService.CambiarEstadoGrupo("Operaciones",jsonData)
+        .subscribe({
+          next: response => {
+            this.spinner.hide();
+            if (response.status == 200) { 
+              this.ListGrupos=[];
+                  const respuesta = response.json.respuesta;
+                  const id = response.json.id; 
+                  Swal.fire({
+                  title: 'Mensaje',
+                  text: 'Operacion realizada correctamente',
+                  icon: 'success',
+                  confirmButtonText: 'Aceptar',
+                  allowOutsideClick: false
+                  }); 
+                 this.listarProductosSisgecoAndDcBlinds('');
+              }else{
+                this.toaster.open({
+                  text: "Ocurrio un error al enviar",
+                  caption: 'Mensaje',
+                  type: 'danger',
+                  // duration: 994000
+                });
+              }
+          },
+          error: error => {
+            this.ListGrupos=[];
+            this.spinner.hide();
+            var errorMessage = error.message;
+            console.error('There was an error!', error);
+            this.toaster.open({
+              text: errorMessage,
+              caption: 'Ocurrio un error',
+              type: 'danger',
+              // duration: 994000
+            });
+          }
+        });
+          }else{
+            this.ListGrupos=[];
+          }
+        });
+    }
 }
 

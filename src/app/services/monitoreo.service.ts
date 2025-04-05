@@ -50,6 +50,12 @@ export class MonitoreoService {
     return this.http.post<IApiResponse>(this.urlBase + 'Monitoreo/ExplocionarComponente', data, { headers: headers });
   }
   
+  GuardarFormulacionRollerShade(data: any): Observable<IApiResponse> {
+    const headers = { 'Content-Type': 'application/json-patch+json' };
+    return this.http.post<IApiResponse>(this.urlBase + 'Monitoreo/GuardarFormulacionRollerShade', data, { headers: headers });
+  }
+  
+
   GuardarExplocionMantenimiento(data: any): Observable<IApiResponse> {
     const headers = { 'Content-Type': 'application/json-patch+json' };
     return this.http.post<IApiResponse>(this.urlBase + 'Monitoreo/ExplocionarMantenimiento', data, { headers: headers });
@@ -63,6 +69,9 @@ export class MonitoreoService {
     return this.http.post<IApiResponse>(this.urlBase + 'Monitoreo/ExplocionarCompCargaExcel', data, { headers: headers });
   }
   
+  EnviarSalidaSap(grupoCotizacion: any,grupo:any,idusuario :any): Observable<any> {
+    return this.http.post<IApiResponse>(`${this.urlBase}Monitoreo/EnviarSalidaSap?cotizacion=`+grupoCotizacion+"&grupo="+grupo+"&idusuario="+idusuario,{});
+  }
   EnviarEntradaSap(grupoCotizacion: any,grupo:any,idusuario :any): Observable<any> {
     return this.http.post<IApiResponse>(`${this.urlBase}Monitoreo/EnviarEntradaSap?cotizacion=`+grupoCotizacion+"&grupo="+grupo+"&idusuario="+idusuario,{});
   }
@@ -73,5 +82,10 @@ export class MonitoreoService {
   
   ListarMaestroArticulos(): Observable<any> {
     return this.http.get<any>(`${this.urlBase}MaestroArticulo`);
+  }
+
+  
+  ListarFormulacionRollerShade(numCotizacion: any,grupoCotizacion:any): Observable<any> {
+    return this.http.get<any>(`${this.urlBase}Monitoreo/ListarFormulacionRollerShade?numCotizacion=`+numCotizacion+"&grupoCotizacion="+grupoCotizacion);
   }
 }

@@ -169,6 +169,7 @@ import { DatePipe } from '@angular/common';
 import { DetalleMonitoreoDialogComponent } from './monitoreo-produccion/detalle-monitoreo-dialog/detalle-monitoreo-dialog.component';
 import { LineaProdDialogComponent } from './registro-cotizacions/linea-prod-dialog/linea-prod-dialog.component';
 import { DetalleSalidaEntradaSapComponent } from './monitoreo-produccion/detalle-salida-entrada-sap/detalle-salida-entrada-sap.component';
+import { DetalleFormulacionComponent } from './monitoreo-produccion/detalle-formulacion/detalle-formulacion.component';
 
 //IMPORT
 
@@ -233,6 +234,7 @@ import { DetalleSalidaEntradaSapComponent } from './monitoreo-produccion/detalle
     DetalleMonitoreoDialogComponent,
     LineaProdDialogComponent,
     DetalleSalidaEntradaSapComponent,
+    DetalleFormulacionComponent,
   ],
   imports: [
     HighchartsChartModule, //grafico

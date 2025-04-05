@@ -283,7 +283,7 @@
                         <span class="mr-2"><i class="fa fa-pencil-square-o"></i></span>Modificar
                     </button>
                     <button class="btn btn-primary btn-sl-sm mr-2" type="button" (click)="listarProductosSisgecoAndDcBlinds('')"  *ngIf="Orden.numeroCotizacion">
-                        <span class="mr-2"><i class="fa fa-upload" aria-hidden="true"></i></span>Cargar Sisgeco
+                        <span class="mr-2"><i class="fa fa-upload" aria-hidden="true"></i></span>Cargar Sap
                     </button> 
                 </div>
             </div>
@@ -405,23 +405,36 @@
                                         <td *ngIf="getRowSpan(i) > 0" [attr.rowspan]="getRowSpan(i)">
                                           <button class="btn btn-primary-azul tp-btn-light sharp"  matTooltip="Editar Turno y fecha"  style="background: #b8122b !important;margin: 8px;"
                                           *ngIf="itemproducto.tipo =='Producto'"
-                                            type="button"
+                                            type="button"  
+                                            matTooltipClass="example-tooltip-red"
                                             [disabled]="itemproducto.estadoOp !== '2' || !Orden.id  || itemproducto.id=='' || itemproducto.pase === 'PASDIRECCT'"
                                            (click)="EditarTurnoFechaProduccion(itemproducto)"> 
                                             <mat-icon>edit</mat-icon> 
                                         </button> 
 
                     <button class="btn btn-primary-azul tp-btn-light sharp"  matTooltip="Generar PDF Layout"  
-                    *ngIf="itemproducto.tipo =='Producto'"
+                    *ngIf="itemproducto.tipo =='Producto'"  
+                    matTooltipClass="example-tooltip-red"
                       type="button"
                      (click)="GenerarLayout(itemproducto.cotizacionGrupo, itemproducto.cotizacionGrupo.slice(-2))"> 
                       <mat-icon>apps</mat-icon> 
                   </button>     
                   <button class="btn btn-primary-azul tp-btn-light sharp"  *ngIf="itemproducto.tipo !=='Producto'"
-                  style="  background: #ff5f00 !important;" matTooltip="Generar PDF Layout"    type="button"
+                  style="  background: #ff5f00 !important;" matTooltip="Generar PDF Layout"   
+                  matTooltipClass="example-tooltip-red"   type="button"
                    (click)="GenerarLayout(itemproducto.cotizacionGrupo, itemproducto.cotizacionGrupo.slice(-2))"> 
                     <mat-icon>apps</mat-icon> 
                 </button> 
+                
+                <button class="btn btn-primary-azul tp-btn-light sharp" style="background: #b8122b !important;  margin: 8px;" type="button" matTooltip="Enviar a Operaciones construcción" 
+                 *ngIf="itemproducto.tipo =='Producto'"
+                (click)="EnviarAOperaciones(itemproducto)"
+                [disabled]="itemproducto.estadoOp !== '2'"  
+                matTooltipClass="example-tooltip-red">
+                  <i class="fa fa-arrow-right fa-fw"></i>
+                  <!--TIPO 2 ES PENDIENTE VENTA-->
+                  
+                </button>   
                    
                                          </td>
                                       </tr>

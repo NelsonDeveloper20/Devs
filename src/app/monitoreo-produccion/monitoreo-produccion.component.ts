@@ -14,6 +14,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DetalleMonitoreoDialogComponent } from './detalle-monitoreo-dialog/detalle-monitoreo-dialog.component';
 import { SapService } from '../services/sap.service';
 import { DetalleSalidaEntradaSapComponent } from './detalle-salida-entrada-sap/detalle-salida-entrada-sap.component';
+import { DetalleFormulacionComponent } from './detalle-formulacion/detalle-formulacion.component';
 declare var $: any; // Declara la variable $ para usar jQuery
 @Component({
   selector: 'app-monitoreo-produccion',
@@ -121,9 +122,11 @@ showFilter3(){
     dialogConfig.panelClass = 'custom-dialog-container';
     //const cadenaCompleta = 'PRTRS0054'; 
      
-    dialogConfig.width ='1604px';
+    //dialogConfig.width ='1644px';
+    //dialogConfig.maxWidth='94vw';
     dialogConfig.data = item;
-    const dialogRef = this.dialog.open(DetalleMonitoreoDialogComponent, dialogConfig);
+    const dialogRef = this.dialog.open(DetalleFormulacionComponent,//DetalleMonitoreoDialogComponent,
+       dialogConfig);
     dialogRef.afterClosed().subscribe({
       next: data => {   
        if (data) {
@@ -1154,84 +1157,7 @@ fechaFinSap: Date;
 
 ListMonitoreoExplocionSapSalidaEntrada:any=[];
 ListarMonitoreoExplocionSapSalidaEntrada() { 
-  /*
-  this.ListMonitoreoExplocionSapSalidaEntrada = [
-    {
-      rucCliente: '123456789',
-      cliente: 'Empresa X',
-      numeroCotizacion: 'Cot12345',
-      cotizacionGrupo: 'Grupo123',
-      codigoSalidaSap: 'Salida123',
-      fechaEnvioSalida: '2024-01-01',
-      usuarioEnvioSalida: 'Usuario1',
-      codigoEntradaSap: 'Pendiente',
-      fechaEntradaSap: '2024-01-02',
-      usuarioEnvioEntrada: 'Usuario2',
-      detalleSalida: [
-        {
-          id: 1,
-          docDate: '2024-01-01',
-          taxDate: '2024-01-02',
-          comments: 'Comentario 1',
-          reference2: 'Ref123',
-          u_EXX_TIPOOPER: 'Operacion1',
-          idSistemaExterno: 'Sistema1',
-          idOrdenVenta: 'OV12345',
-          itemCode: 'Item001',
-          quantity: '10',
-          warehouseCode: 'WH1',
-          acctCode: 'Acct001',
-          costingCode: 'CostCode1',
-          projectCode: 'Proj1',
-          costingCode2: 'CostCode2',
-          costingCode3: 'CostCode3',
-          costingCode4: 'CostCode4',
-          costingCode5: 'CostCode5',
-          idLineaSistemaE: 'Linea123',
-          familiaPT: 'FamPT1',
-          batchNumbers: 'Batch1',
-          serialNumbers: 'Serial123',
-          codigoSalidaSap: 'Salida123',
-          idUsuarioCrea: 1,
-          fechaCreacion: new Date('2024-01-01'),
-          tipo: 'TipoSalida',
-          cotizacionGrupo: 'Grupo123'
-        }
-      ],
-      detalleEntrada: [
-        {
-          id: 2,
-          docDate: '2024-01-02',
-          taxDate: '2024-01-03',
-          comments: 'Comentario 2',
-          reference2: 'Ref456',
-          u_EXX_TIPOOPER: 'Operacion2',
-          idSistemaExterno: 'Sistema2',
-          idOrdenVenta: 'OV67890',
-          itemCode: 'Item002',
-          quantity: '5',
-          warehouseCode: 'WH2',
-          acctCode: 'Acct002',
-          costingCode: 'CostCode6',
-          projectCode: 'Proj2',
-          costingCode2: 'CostCode7',
-          costingCode3: 'CostCode8',
-          costingCode4: 'CostCode9',
-          costingCode5: 'CostCode10',
-          idLineaSistemaE: 'Linea456',
-          familiaPT: 'FamPT2',
-          batchNumbers: 'Batch2',
-          serialNumbers: 'Serial456',
-          codigoSalidaSap: 'Entrada123',
-          idUsuarioCrea: 2,
-          fechaCreacion: new Date('2024-01-02'),
-          tipo: 'TipoEntrada',
-          cotizacionGrupo: 'Grupo456'
-        }
-      ]
-    }
-  ];
- */
+   
   console.log("BUSCANDO");
   const cotizacion = this.cotizacionSap || "--";
   const fechaInicio = this.fechaInicioSap ? this.fechaInicioSap.toString() : "--";
@@ -1287,8 +1213,102 @@ enviarSalidaSap(item:any){
     return;
   }  
   Swal.fire({
+    title: '¿Está seguro de enviar la Salida a SAP?',
+    text: 'Una vez enviada, quedará pendiente el envío de la entrada a SAP.',
+    icon: 'question', // Cambié el icono a 'question' ya que estamos preguntando al usuario
+    showCancelButton: true,
+    confirmButtonText: 'Si, Enviar',
+    cancelButtonText: 'Cancelar',
+    allowOutsideClick: false
+  }).then((result) => {
+    if (result.isConfirmed){ 
+    
+this.spinner.show();
+this._service.EnviarSalidaSap(item.numeroCotizacion,item.cotizacionGrupo,idUsuario)
+  .subscribe({
+    next: response => {
+      this.spinner.hide();
+      console.log("RESULLLT=>");
+      console.log(response);
+      if (response.status == 200) {  
+            console.log("RESPUESTA");
+            const respuesta = response.json.respuesta; 
+            console.log("RESPUESTA");
+            console.log(respuesta);
+           if(respuesta=="OPERACION REALIZADA CORRECTAMENTE"){  
+      Swal.fire({
+        title: 'Mensaje',
+        text: 'Salida enviado correctamente a SAP',
+        icon: 'success',
+        confirmButtonText: 'Aceptar',
+        allowOutsideClick: false
+      });  
+      this.ListarMonitoreoExplocionSapSalidaEntrada();
+           }else{ 
+
+             
+            Swal.fire({
+              title: 'Ocurrió un error al enviar',
+              html: this.processResponse(response.json.detalle),  // Usamos 'html' en lugar de 'text'
+              icon: 'warning',
+              width: '600px', // Establece un tamaño fijo para la alerta
+              confirmButtonText: 'Aceptar',
+              allowOutsideClick: false
+            });
+           } 
+        }else{
+          Swal.fire({
+            title: 'Ocurrió un error al enviar',
+            html: this.processResponse(response.json.detalle),  // Usamos 'html' en lugar de 'text'
+            icon: 'warning',
+            width: '600px', // Establece un tamaño fijo para la alerta
+            confirmButtonText: 'Aceptar',
+            allowOutsideClick: false
+          });
+          
+        }
+    },
+    error: error => {
+      this.spinner.hide();
+      var errorMessage = error.message;
+      console.error('There was an error!====================>');
+      console.log(error);
+      this.toaster.open({
+        text: errorMessage,
+        caption: 'Ocurrio un error',
+        type: 'danger',
+        // duration: 994000
+      }); 
+      Swal.fire({
+        title: 'Ocurrió un error al enviar',
+        html: error.error.json.respuesta +'<b> DETALLE: <b/><br>'+this.processResponse(error.error.json.detalle),  // Usamos 'html' en lugar de 'text'
+        icon: 'warning',
+        width: '600px', // Establece un tamaño fijo para la alerta
+        confirmButtonText: 'Aceptar',
+        allowOutsideClick: false
+      });
+      
+    }
+  }); 
+    }
+  });
+}
+enviarEntradaSap(item:any){
+  
+  const userDataString = JSON.parse(localStorage.getItem('UserLog'));   
+  var idUsuario= userDataString.id.toString(); 
+  if (!userDataString) {   this.toaster.open({
+    text: "Su sessión ha caducado",
+    caption: 'Mensaje',
+    type: 'danger',
+    // duration: 994000
+  });
+    this.router.navigate(['/Home-main']);
+    return;
+  }  
+  Swal.fire({
     title: '¿Está seguro de enviar la Entrada a SAP?',
-    text: 'Una vez enviado, el proceso se considerará terminado y no podrá ser editado.',
+    text: 'Una vez enviado, el proceso se considerará finalizado y no podrá ser editado.',
     icon: 'question', // Cambié el icono a 'question' ya que estamos preguntando al usuario
     showCancelButton: true,
     confirmButtonText: 'Si, Enviar',
@@ -1312,7 +1332,7 @@ this._service.EnviarEntradaSap(item.numeroCotizacion,item.cotizacionGrupo,idUsua
            if(respuesta=="OPERACION REALIZADA CORRECTAMENTE"){  
       Swal.fire({
         title: 'Mensaje',
-        text: 'Entrada cargada correctamente y enviado a SAP',
+        text: 'Entrada enviada correctamente a SAP',
         icon: 'success',
         confirmButtonText: 'Aceptar',
         allowOutsideClick: false
@@ -1329,61 +1349,7 @@ this._service.EnviarEntradaSap(item.numeroCotizacion,item.cotizacionGrupo,idUsua
               confirmButtonText: 'Aceptar',
               allowOutsideClick: false
             });
-           }
-
-            /*
-            if(respuesta){
-              console.log(JSON.stringify(respuesta));
-            
-      this.spinner.show(); // Mostrar spinner al inicio 
-      this._sapService.EnviarSalidaSap(respuesta).subscribe({
-        next: (data) => {
-          console.log('Datos resultado:', data);
-          // Aquí puedes manejar el éxito, como mostrar un mensaje al usuario
-
-          const salidaSapRequest = {
-            numeroCotizacion: item.cotizacion,
-            grupoCotizacion: item.cotizacionGrupo,
-            codigoSalida: data
-          }; 
-          this._service.GuardarSalidaSap(salidaSapRequest).subscribe({
-            next: (response) => {
-              console.log("NNN");
-              console.log(response);
-              Swal.fire({
-                title: 'Mensaje',
-                text: 'Salida enviado a SAP correctamente',
-                icon: 'success',
-                confirmButtonText: 'Aceptar',
-                allowOutsideClick: false
-              }); 
-              console.log('Éxito:', response);
-            },
-            error: (err) => {
-              console.error('Error:', err);
-            }
-          });
-
-          
-        },
-        error: (error) => {
-          console.error('Error en la solicitud autenticada:', error);
-          // Mostrar un mensaje de error al usuario si es necesario
-        },
-        complete: () => {
-          // Ocultar el spinner independientemente del resultado
-          this.spinner.hide();
-        }
-      });
-      
-            }else{
-              this.toaster.open({
-                text: "No hay datos para generar salida",
-                caption: 'Mensaje',
-                type: 'danger',
-                // duration: 994000
-              });
-            }*/
+           } 
         }else{
           Swal.fire({
             title: 'Ocurrió un error al enviar',
@@ -1463,6 +1429,23 @@ DetalleEntradaSap(item:any){
       var errorMessage = error.message; 
     }
   });
+}// En tu componente TypeScript
+esFechaValida(fecha: string): boolean {
+  return fecha && fecha !== '0001-01-01T00:00:00';
+}
+pendienteSalida(item:any){
+  if(item.codigoSalidaSap){
+    return item.codigoSalidaSap;
+  }else{
+    return "Pendiente envio"
+  } 
+}
+pendienteEntrada(item:any){
+  if(item.codigoSalidaSap){
+    return item.codigoEntradaSap;
+  }else{
+    return ""
+  } 
 }
  
 }

@@ -431,6 +431,7 @@ export class SolicitudPendienteComponent implements OnInit {
   }
   ListGrupos:any  =[];
   EnviarGrupoMasivo(){ 
+    console.log(this.ListGrupos);
     if(this.ListGrupos.length === 0){
       this.toaster.open({
         text: "Debe seleccionar cotizaciones que desee enviar",
@@ -461,6 +462,7 @@ export class SolicitudPendienteComponent implements OnInit {
         next: response => {
           this.spinner.hide();
           if (response.status == 200) { 
+            this.ListGrupos=[];
                 const respuesta = response.json.respuesta;
                 const id = response.json.id; 
                 Swal.fire({
@@ -481,6 +483,7 @@ export class SolicitudPendienteComponent implements OnInit {
             }
         },
         error: error => {
+          this.ListGrupos.clear();
           this.spinner.hide();
           var errorMessage = error.message;
           console.error('There was an error!', error);

@@ -73,16 +73,7 @@
                   <div class="row">
                     <div class="form-group col-md-2">
                       <label for="cboCotizacion">Cotizacion</label>                      
-                    <input type="text" [(ngModel)]="cotizacion" placeholder="" class="form-control"/>
-                      <!--<select class="form-control" id="cboCotizacion1Select" name="cboCotizacion"
-                        [(ngModel)]="cotizacion">
-                        <option value="JUL">July</option>
-                        <option value="AUG">August</option>
-                        <option value="SEP">September</option>
-                        <option value="OCT">October</option>
-                        <option value="NOV">November</option>
-                        <option value="DEC">December</option>
-                      </select>-->
+                    <input type="text" [(ngModel)]="cotizacion" placeholder="" class="form-control"/> 
                     </div>
                     <div class="form-group col-md-2">
                       <label for="txtfec_inicio_n">Fecha Inicio</label>
@@ -132,7 +123,7 @@
                     <section class="example-containerss" tabindex="0">
                       <table class="table table-sm mb-0 table-responsive-lg" >
                         <thead class="sticky-top" style="color: #7e7e7e !important;">
-                          <tr>
+                          <tr style="box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);  ">
                             <th>Accion</th>
                             <th>Ruc</th>
                             <th>Razón Social</th>
@@ -522,18 +513,18 @@
                     <section class="example-containerss" tabindex="0">
                       <table class="table table-sm mb-0 table-responsive-lg" >
                         <thead class="sticky-top" style="color: #7e7e7e !important;">
-                          <tr> 
+                          <tr style="box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);  "> 
                             <th>Ruc</th>
                             <th style="white-space: nowrap">Razón Social</th>
                             <th>Cotización</th>
                             <th style="white-space: nowrap">Cot. Grupo</th> 
                             <th style="white-space: nowrap">Cod. SalidaSap</th>
                             <th style="white-space: nowrap">Fec.Envio Salida</th>
-                            <th style="white-space: nowrap">Usuario EnvioSalida</th>
+                            <th style="white-space: nowrap">User EnvioSalida</th>
                             <th style="white-space: nowrap">Detalle Salida</th>
                             <th style="white-space: nowrap">Cod.Entrada Sap</th>
                             <th style="white-space: nowrap">Fec.Entrada Sap</th>
-                            <th style="white-space: nowrap">Usuario EnvioEntrada</th>
+                            <th style="white-space: nowrap">User EnvioEntrada</th>
                             <th style="white-space: nowrap">Detalle Entrada</th>
                           </tr>
                         </thead>
@@ -543,29 +534,34 @@
                               <td>{{ item.rucCliente }}</td>
                               <td>{{ item.cliente }}</td>
                               <td>{{ item.numeroCotizacion }}</td>
-                              <td>{{ item.cotizacionGrupo }}</td> 
-                              <td>{{ item.codigoSalidaSap }}</td>
-                              <td>{{ item.fechaEnvioSalida }}</td>
+                              <td>{{ item.cotizacionGrupo }}</td>  
+                              <td>{{ pendienteSalida(item)}}</td>
+                              <td> {{item.fechaEnvioSalida ? (item.fechaEnvioSalida | date:'dd/MM/yyyy HH:mm') : ''}} </td>
                               <td>{{ item.usuarioEnvioSalida }}</td> 
                               
-                              <td>                                
-                                <button class="btn btn-primary tp-btn-light sharp" (click)="DetalleSalidaSap(item.detalleSalida)">
-                                   <mat-icon>menu</mat-icon> 
-                                </button>
+                              <td>                 
+                                <button class="btn btn-primary tp-btn-light sharp" (click)="enviarSalidaSap(item)"  
+                                *ngIf="!item.codigoSalidaSap">
+                                  <mat-icon>cloud_upload</mat-icon>
+                                </button>                   
+                                 <button class="btn btn-primary tp-btn-light sharp" (click)="DetalleSalidaSap(item.detalleSalida)" *ngIf="item.codigoSalidaSap"
+                                 style="background: #13cc13 !important;     border: 1px solid #12cf12 !important;">
+                                   <mat-icon>view_list</mat-icon> 
+                                </button> 
                               </td>
-                              <td>{{ item.codigoEntradaSap }}</td>
-                              <td>{{ item.fechaEntradaSap }}</td>
+                              <td>{{ pendienteEntrada(item)  }}</td>   
+                              <td> {{esFechaValida(item.fechaEntradaSap) ? (item.fechaEntradaSap | date:'dd/MM/yyyy HH:mm') : ''}} </td>
                               <td>{{ item.usuarioEnvioEntrada }}</td> 
                               <td>                                
                                 <!-- DESHABILITARO BOTON CUANDO YA SE HAYA ENVIADO LA SALIDA -->
-                                <button class="btn btn-primary tp-btn-light sharp" (click)="enviarSalidaSap(item)" 
-                                *ngIf="item.codigoEntradaSap=='Pendiente'">
-                                  <mat-icon>send</mat-icon>
+                                <button class="btn btn-primary tp-btn-light sharp" (click)="enviarEntradaSap(item)" 
+                                *ngIf="item.codigoEntradaSap=='Pendiente' && item.codigoSalidaSap">
+                                  <mat-icon>cloud_upload</mat-icon>
                                 </button>                     
                                 <button class="btn btn-primary tp-btn-light sharp" *ngIf="item.codigoEntradaSap!=='Pendiente'"
                                 (click)="DetalleEntradaSap(item.detalleEntrada)"
-                                >
-                                   <mat-icon>menu</mat-icon> 
+                                style="background: #13cc13 !important;     border: 1px solid #12cf12 !important;">
+                                   <mat-icon>view_list</mat-icon> 
                                 </button>
                               </td> 
 
