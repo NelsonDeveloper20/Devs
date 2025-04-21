@@ -3,7 +3,7 @@
 </ngx-spinner>
 
 <h2 style="
-    margin: -1px !important;" mat-dialog-title>Detalle Grupo Cotizacion  -  <b>{{DatosGrupo.cotizacionGrupo}} - {{DatosGrupo.accionamiento}} </b></h2>
+    margin: -1px !important;" mat-dialog-title>Detalle Grupo Cotizacion  -  <b>{{DatosGrupo.cotizacionGrupo}} ZEBRA  - {{DatosGrupo.accionamiento}}</b></h2>
 <style>
     
   .search-input {
@@ -49,14 +49,14 @@
                             (click)="openTablePopup()"><mat-icon>library_add</mat-icon> 
                             </button>
                             
-                            
-            <button class="btn btn-primary-azul tp-btn-light sharp" style=" margin: 9px;"  *ngIf="!isFormulacion && DatosGrupo.productos=='PRTRS' && DatosGrupo.accionamiento=='Manual'" 
+                            <div *ngIf="DatosGrupo.productos=='PRTRS' && DatosGrupo.accionamiento=='Manual'">
+            <button class="btn btn-primary-azul tp-btn-light sharp" style=" margin: 9px;"  *ngIf="!isFormulacion"
             (click)="toggleVisibilityFormulation()" >
                 <mat-icon>visibility</mat-icon> 
-              </button>  
+              </button> 
+                            </div>
                         </th>
                         <th nowrap *ngIf="isFormulacion" style="    height: 8px !important;">
-                          
                             Formulación   <button class="btn btn-primary-azul tp-btn-light sharp"  (click)="toggleVisibilityFormulation()" >
                 <mat-icon>visibility_off</mat-icon>
               </button>
@@ -69,7 +69,7 @@
                         [ngStyle]="{'background': getBackgroundColor(comp.tipoDesc)}" -->
                     <td>
                             <button class="btn btn-primary tp-btn-light sharp" 
-                            *ngIf="comp?.agregado !== 'true' && comp?.tipoDesc !== 'ACCESORIO'"
+                            *ngIf="comp?.agregado !== 'true' && comp?.tipoDesc !== 'ACCESORIOS'"
                             (click)="clonarComponente(comp)" 
                             title="Clonar"
                             style="margin: 0px;"><mat-icon>toll</mat-icon> 

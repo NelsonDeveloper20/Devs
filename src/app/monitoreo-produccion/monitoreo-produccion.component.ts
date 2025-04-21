@@ -15,6 +15,7 @@ import { DetalleMonitoreoDialogComponent } from './detalle-monitoreo-dialog/deta
 import { SapService } from '../services/sap.service';
 import { DetalleSalidaEntradaSapComponent } from './detalle-salida-entrada-sap/detalle-salida-entrada-sap.component';
 import { DetalleFormulacionComponent } from './detalle-formulacion/detalle-formulacion.component';
+import { DetalleFormulacionRollerzebraComponent } from './detalle-formulacion-rollerzebra/detalle-formulacion-rollerzebra.component';
 declare var $: any; // Declara la variable $ para usar jQuery
 @Component({
   selector: 'app-monitoreo-produccion',
@@ -114,8 +115,9 @@ showFilter3(){
    
   } 
   //#region ABRIR EXPLOCIÓN
-
+  dialogRef:any;
   AbrirExplocionComponentes(item:any): void {   
+    console.log("ABRIENDO GRUPO =======> ",item);
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true; 
@@ -125,9 +127,16 @@ showFilter3(){
     //dialogConfig.width ='1644px';
     //dialogConfig.maxWidth='94vw';
     dialogConfig.data = item;
-    const dialogRef = this.dialog.open(DetalleFormulacionComponent,//DetalleMonitoreoDialogComponent,
-       dialogConfig);
-    dialogRef.afterClosed().subscribe({
+       if(item.productos=="PRTRS"){
+        this.dialogRef=this.dialog.open(DetalleFormulacionComponent,//DetalleMonitoreoDialogComponent,
+           dialogConfig);
+
+       }else{
+        this.dialogRef=this.dialog.open(DetalleFormulacionRollerzebraComponent,//DetalleMonitoreoDialogComponent,
+           dialogConfig);
+
+       }
+       this.dialogRef.afterClosed().subscribe({
       next: data => {   
        if (data) {
            

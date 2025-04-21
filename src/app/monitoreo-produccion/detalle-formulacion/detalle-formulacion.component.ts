@@ -16,8 +16,8 @@ import Swal from 'sweetalert2';
 })
 export class DetalleFormulacionComponent  implements OnInit {
 
- DatosGrupo:any;
- idUsuario:any;
+DatosGrupo:any;
+idUsuario:any;
 constructor(@Inject(MAT_DIALOG_DATA) public data: any,
 private toaster: Toaster,
   private dialogRef: MatDialogRef<DetalleFormulacionComponent>,
@@ -210,7 +210,7 @@ private async listarComponestePorCodigoProdsOFICIAL(prods) {
 // Obtener el tipo de producto
 let tipoProducto = this.ListComponenteProducto[0]?.producto ?? "";
 // Normalizar tipo de producto
-if (tipoProducto === "ROLLER SHADE") {
+if (tipoProducto === "ROLLER SHADE" || tipoProducto === "ROLLER SHADE MOTORIZADO") {
   tipoProducto = "PRTRS";
 }
 // Obtener componentes desde la API
@@ -394,12 +394,20 @@ async ListarComponteProductoByGrupo(Grupo) {
     return;
   }  
   this.spinner.show();
-  this._service.ListarFormulacionRollerShade("-",Grupo).subscribe(
+  this._service.ListarFormulacionRollerShade("-",Grupo,this.DatosGrupo.productos,this.DatosGrupo.accionamiento).subscribe(
     async (data: any) => {
       if (data && data.status === 200) {  
         this.spinner.hide();    
         //this.ListComponenteProducto = data.json;
-          this.ListComponenteProducto = data.json.map(item => (
+         const ordenPersonalizado = ['TUBO', 'TELA', 'RIEL'];
+
+         const productosOrdenados =  data.json.sort((a, b) => {
+           const iA = ordenPersonalizado.indexOf(a.tipoDesc);
+           const iB = ordenPersonalizado.indexOf(b.tipoDesc);
+           return (iA === -1 ? 999 : iA) - (iB === -1 ? 999 : iB);
+         });
+         
+          this.ListComponenteProducto = productosOrdenados.map(item => (
           { ...item,  
             filteredOptions: [], // Inicializa como una lista vacía
             filteredOptionsOriginal: [], // Inicializa como una lista vacía             
@@ -439,6 +447,11 @@ guardarComponentes() {
   var counter=0;
   for (const item of this.ListComponenteProducto) {
     // Primero validamos el código para todos los componentes
+ 
+    // Para todos los componentes si es ninguno no validar nada
+    if (item.codigoTipo === "Ninguno") {
+      continue;
+    }
     if (item.codigoTipo === "" || item.codigoTipo === null) {
       this.toaster.open({
         text: `Seleccione código de ${item.descripcionTipo}`,
@@ -447,11 +460,6 @@ guardarComponentes() {
       });
       counter++;
       break;
-    }
- 
-    // Para todos los componentes si es ninguno no validar nada
-    if (item.codigoTipo === "Ninguno") {
-      continue;
     }
     
     // Validaciones de cantidades y cálculos solo para los 3 tipos
@@ -465,10 +473,17 @@ guardarComponentes() {
       break;
     }
     
+    // Determinar si es uno de los tipos específicos
+    const isTuboTelaRiel = (item.tipoDesc === 'TUBO' || item.tipoDesc === 'RIEL' || item.tipoDesc === 'TELA');
+    
+    // Para los demás componentes que no son TUBO, RIEL o TELA, no hacemos más validaciones
+    if (!isTuboTelaRiel) {
+      continue;
+    }
     // Validación de números negativos
     if (Number(item.cantidadRoller) < 1 || Number(item.calculoFinal) < 1) {
       this.toaster.open({
-        text: `Evite ingresar números negativos en merma y cantidad de ${item.descripcionTipo}`,
+        text: `Evite ingresar números negativos en cantidad y calculo final de ${item.descripcionTipo}`,
         caption: 'Mensaje',
         type: 'danger',
         position: 'top-right',
@@ -477,14 +492,6 @@ guardarComponentes() {
       counter++;
       break;
     }
-    // Determinar si es uno de los tipos específicos
-    const isTuboTelaRiel = (item.tipoDesc === 'TUBO' || item.tipoDesc === 'RIEL' || item.tipoDesc === 'TELA');
-    
-    // Para los demás componentes que no son TUBO, RIEL o TELA, no hacemos más validaciones
-    if (!isTuboTelaRiel) {
-      continue;
-    }
-    
     // A partir de aquí solo validaciones para TUBO, RIEL y TELA
     
     // Validación específica según tipo

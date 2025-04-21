@@ -85,7 +85,7 @@ export class MonitoreoService {
   }
 
   
-  ListarFormulacionRollerShade(numCotizacion: any,grupoCotizacion:any): Observable<any> {
-    return this.http.get<any>(`${this.urlBase}Monitoreo/ListarFormulacionRollerShade?numCotizacion=`+numCotizacion+"&grupoCotizacion="+grupoCotizacion);
+  ListarFormulacionRollerShade(numCotizacion: any,grupoCotizacion:any,tipoProducto:any,accionamiento:any): Observable<any> {
+    return this.http.get<any>(`${this.urlBase}Monitoreo/ListarFormulacionRollerShade?numCotizacion=`+numCotizacion+"&grupoCotizacion="+grupoCotizacion+"&tipoProducto="+tipoProducto+"&accionamiento="+accionamiento);
   }
 }

@@ -198,58 +198,7 @@ private isTokenExpired(token: string): boolean {
         );
       })
     );
-  }
-  /*
-  ListarArticulosPorFamiliaGrupo(identificador: any, grupo: any): Observable<any[]> {
-    const url = `${this.urlBase}Items/ListFilter`;
-    const body = {
-      "GroupCode": identificador,
-      "FamilyCode": grupo
-    };
-  
-    return this.getValidToken().pipe(
-      switchMap((token) => {
-        const headers = new HttpHeaders({
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        });
-  
-        return this.httpClient.post<any>(url, body, { 
-          headers,
-          responseType: 'json'
-        }).pipe(
-          map(response => {
-            if (!Array.isArray(response)) {
-              // Validación adicional por si el servidor devuelve un tipo inesperado
-              throw new Error('La respuesta no es un array de artículos');
-            }
-            return response.map((item: any) => ({
-              codigo: item.ItemCode,
-              nombre: item.ItemName,
-              unidadMedida: item.SalesUnit,
-              color: item.U_EXD_COLD,
-              serie: item.ManageSerialNumbers,
-              lote: item.ManageBatchNumbers,
-            }));
-          }),
-          catchError(error => {
-            console.error('Error en la solicitud SAP:', error);
-  
-            // Reintentar si el error está relacionado con un COM object
-            if (error.error?.ErrorDescription?.includes('COM object')) {
-              return timer(1000).pipe(
-                switchMap(() => this.ListarArticulosPorFamiliaGrupo(identificador, grupo))
-              );
-            }
-  
-            // Manejar otros errores genéricos
-            return throwError(() => new Error(`Error al listar artículos: ${error.message}`));
-          })
-        );
-      })
-    );
-  }*/
+  } 
     ListarArticulosPorFamiliaGrupo(identificador: any, grupo: any): Observable<any[]> {
       const url = `${this.urlBase}Items/ListFilter`;
       const body = {
@@ -289,7 +238,7 @@ private isTokenExpired(token: string): boolean {
             }),
             catchError(error => {
               console.error('Error en la solicitud SAP:', error);
-              
+               
               // Si el error persiste después de los reintentos
               if (error.status === 500) {
                 return timer(2000).pipe(

@@ -131,6 +131,7 @@
                             <th style="white-space: nowrap">Cot. Grupo</th> 
                             <th style="white-space: nowrap">Cant. Producto</th>
                             <th>Productos</th>
+                            <th>Accionamiento</th>
                             <th>Estado</th>
                             <!--<th style="white-space: nowrap">Tipo Operación</th>-->
                           </tr>
@@ -158,6 +159,7 @@
                               <td>{{ item.cotizacionGrupo }}</td> 
                               <td>{{ item.cantidadProductos }}</td>
                               <td nowrap>{{item.productos}}</td>
+                              <td nowrap>{{item.accionamiento}}</td>
                               <td>
                                 <section class="example-section" *ngIf="item.estado=='Pendiente Venta'">
                                   <mat-progress-bar  class="example-margin" color="warn" [mode]="mode" value="15"
@@ -543,11 +545,15 @@
                                 <button class="btn btn-primary tp-btn-light sharp" (click)="enviarSalidaSap(item)"  
                                 *ngIf="!item.codigoSalidaSap">
                                   <mat-icon>cloud_upload</mat-icon>
-                                </button>                   
+                                </button>   
+                                              
                                  <button class="btn btn-primary tp-btn-light sharp" (click)="DetalleSalidaSap(item.detalleSalida)" *ngIf="item.codigoSalidaSap"
                                  style="background: #13cc13 !important;     border: 1px solid #12cf12 !important;">
                                    <mat-icon>view_list</mat-icon> 
                                 </button> 
+                                <img  
+                                src="https://cdn.iconscout.com/icon/free/png-256/free-sap-logo-icon-download-in-svg-png-gif-file-formats--technology-social-media-vol-6-pack-logos-icons-2945134.png?f=webp&w=256" 
+                                alt="upload" width="44" height="44">
                               </td>
                               <td>{{ pendienteEntrada(item)  }}</td>   
                               <td> {{esFechaValida(item.fechaEntradaSap) ? (item.fechaEntradaSap | date:'dd/MM/yyyy HH:mm') : ''}} </td>
@@ -557,12 +563,15 @@
                                 <button class="btn btn-primary tp-btn-light sharp" (click)="enviarEntradaSap(item)" 
                                 *ngIf="item.codigoEntradaSap=='Pendiente' && item.codigoSalidaSap">
                                   <mat-icon>cloud_upload</mat-icon>
-                                </button>                     
+                                </button>                    
                                 <button class="btn btn-primary tp-btn-light sharp" *ngIf="item.codigoEntradaSap!=='Pendiente'"
                                 (click)="DetalleEntradaSap(item.detalleEntrada)"
                                 style="background: #13cc13 !important;     border: 1px solid #12cf12 !important;">
                                    <mat-icon>view_list</mat-icon> 
                                 </button>
+                                <img  
+                                src="https://cdn.iconscout.com/icon/free/png-256/free-sap-logo-icon-download-in-svg-png-gif-file-formats--technology-social-media-vol-6-pack-logos-icons-2945134.png?f=webp&w=256" 
+                                alt="upload" width="44" height="44">
                               </td> 
 
                             </tr> 

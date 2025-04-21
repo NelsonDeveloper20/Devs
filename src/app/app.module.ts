@@ -170,6 +170,7 @@ import { DetalleMonitoreoDialogComponent } from './monitoreo-produccion/detalle-
 import { LineaProdDialogComponent } from './registro-cotizacions/linea-prod-dialog/linea-prod-dialog.component';
 import { DetalleSalidaEntradaSapComponent } from './monitoreo-produccion/detalle-salida-entrada-sap/detalle-salida-entrada-sap.component';
 import { DetalleFormulacionComponent } from './monitoreo-produccion/detalle-formulacion/detalle-formulacion.component';
+import { DetalleFormulacionRollerzebraComponent } from './monitoreo-produccion/detalle-formulacion-rollerzebra/detalle-formulacion-rollerzebra.component';
 
 //IMPORT
 
@@ -235,6 +236,7 @@ import { DetalleFormulacionComponent } from './monitoreo-produccion/detalle-form
     LineaProdDialogComponent,
     DetalleSalidaEntradaSapComponent,
     DetalleFormulacionComponent,
+    DetalleFormulacionRollerzebraComponent,
   ],
   imports: [
     HighchartsChartModule, //grafico

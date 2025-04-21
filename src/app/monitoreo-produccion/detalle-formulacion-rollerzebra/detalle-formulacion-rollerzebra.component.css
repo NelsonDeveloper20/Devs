@@ -1,0 +1,51 @@
+/*.mat-select-panel {
+   
+    min-width: 112px !important;
+    max-width: 480px !important;
+} */
+table.unstyledTable td, table.unstyledTable th {
+    border: 1px solid #D2CCCB;padding-top: 0px !important; padding-bottom: 0px !important;
+  }
+  table.unstyledTable tbody td {
+    font-size: 10px;padding-top: 0px !important; padding-bottom: 0px !important;
+  }
+  table.unstyledTable thead {
+    background: #DDDDDD;padding-top: 0px !important; padding-bottom: 0px !important;
+  }
+  table.unstyledTable thead th {
+    font-weight: normal;padding-top: 0px !important; padding-bottom: 0px !important;
+  }
+  table.unstyledTable tfoot td {
+    font-size: 12px;padding-top: 0px !important; padding-bottom: 0px !important;
+  }
+  .padding-tables{
+    padding-top: 0px !important; padding-bottom: 0px !important;
+  }
+  /* Estilos para el diálogo redimensionable */
+    ::ng-deep .mat-dialog-container {
+      overflow: hidden !important;
+      resize: both;  /* Alternativa CSS nativa para redimensionar */
+    }
+    
+    ::ng-deep .cdk-overlay-pane {
+      max-width: 95vw !important;
+      max-height: 95vh !important;
+    }
+    
+    .table-container {
+      overflow: auto;
+      max-height: calc(100vh - 200px);
+    }
+    
+    /* Estilos para hacer que el contenido del diálogo se ajuste */
+    .mat-dialog-content {
+      max-height: none !important;
+      overflow: hidden !important;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .panel-body {
+      flex: 1;
+      overflow: auto;
+    }

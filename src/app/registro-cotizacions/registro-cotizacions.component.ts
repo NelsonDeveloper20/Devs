@@ -932,6 +932,9 @@ eliminarAmbiente(indice: number) {
         this.itemCopiado.fechaEntrega=this.itemCopiado.fechaEntrega; 
         this.itemCopiado.turno=this.itemCopiado.turno;
         this.itemCopiado.indiceAgrupacion="";
+        this.itemCopiado.cotizacionGrupo=""; 
+        this.itemCopiado.idTbl_Ambiente="";  
+        this.itemCopiado.cantidad=producto.cantidad;
         producto=this.itemCopiado;
         //this.itemCopiado=null;
 

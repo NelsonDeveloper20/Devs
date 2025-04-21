@@ -240,7 +240,7 @@
        <select class="form-control" id="tipo_riel" name="TipoRiel" [required]="objConfiguracionAtributos[TipoProducto]['tipoRiel'].required === 1"
        (change)="ChangeRielTipo($event)"
        >
-        <option *ngFor="let opcion of CboTipoRiel" [value]="opcion.nombre">{{ opcion.nombre }}</option>
+        <option *ngFor="let opcion of CboTipoRiel" [value]="opcion.nombre">{{ opcion.id }} : {{ opcion.nombre }}</option>
        </select>
        <input class="form-control" type="text"  id="CodigoTipoRiel" name="CodigoTipoRiel" readonly style="display: none;" *ngIf="objConfiguracionAtributos[TipoProducto]['tipoRiel'].visible !== 0">  
    </div>
