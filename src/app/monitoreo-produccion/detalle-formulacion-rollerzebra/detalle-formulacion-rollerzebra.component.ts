@@ -398,11 +398,11 @@ idUsuario:any;
          //this.ListComponenteProducto = data.json;
          const ordenPersonalizado = ['TUBO', 'TELA', 'RIEL'];
 
-const productosOrdenados =  data.json.sort((a, b) => {
-  const iA = ordenPersonalizado.indexOf(a.tipoDesc);
-  const iB = ordenPersonalizado.indexOf(b.tipoDesc);
-  return (iA === -1 ? 999 : iA) - (iB === -1 ? 999 : iB);
-});
+          const productosOrdenados =  data.json.sort((a, b) => {
+            const iA = ordenPersonalizado.indexOf(a.tipoDesc);
+            const iB = ordenPersonalizado.indexOf(b.tipoDesc);
+            return (iA === -1 ? 999 : iA) - (iB === -1 ? 999 : iB);
+          });
 
 
            this.ListComponenteProducto = productosOrdenados.map(item => (

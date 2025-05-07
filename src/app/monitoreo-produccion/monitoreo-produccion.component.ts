@@ -44,8 +44,60 @@ export class MonitoreoProduccionComponent implements OnInit {
     private _sapService:SapService
   ) {  
   } 
- 
+   // Método para guardar las fechas seleccionadas en localStorage
+   guardarFechasExplocion() {
+    localStorage.setItem('fechaInicioExplocion', this.fechaInicio);
+    localStorage.setItem('fechaFinExplocion', this.fechaFin);
+  }
+  // Método para guardar las fechas seleccionadas en localStorage
+  guardarFechasSapEntradaSalida() {
+   localStorage.setItem('fechaInicioSap', this.fechaInicioSap);
+   localStorage.setItem('fechaFinSap', this.fechaFinSap);
+ }
   ngOnInit(): void {  
+    
+    // Recuperar la fecha guardada en localStorage (si existe)
+    const storedFechaInicio = localStorage.getItem('fechaInicioExplocion');
+    const storedFechaFin = localStorage.getItem('fechaFinExplocion');
+    const fecInicio = new Date();
+    const fecIFin = new Date();
+    // Ajustar la hora a medianoche para evitar problemas de zona horaria
+    fecInicio.setHours(0, 0, 0, 0);
+    fecIFin.setHours(0, 0, 0, 0);
+    // Si ya hay una fecha guardada, usarla
+    if (storedFechaInicio) {
+    this.fechaInicio = storedFechaInicio;
+    } else {
+    // Si no hay fecha guardada, asignar la fecha actual menos un día
+    fecInicio.setDate(fecInicio.getDate() - 1);
+    this.fechaInicio = fecInicio.toISOString().split('T')[0];  // YYYY-MM-DD
+    }
+    // Usar la fecha actual para fechaFin
+    this.fechaFin = storedFechaFin ? storedFechaFin : fecIFin.toISOString().split('T')[0]; // YYYY-MM-DD
+
+
+    //SAP
+    
+    // Recuperar la fecha guardada en localStorage (si existe)
+    const storedFechaInicioSap = localStorage.getItem('fechaInicioSap');
+    const storedFechaFinSap = localStorage.getItem('fechaFinSap');
+    const fecInicioSap = new Date();
+    const fecIFinSap = new Date();
+    // Ajustar la hora a medianoche para evitar problemas de zona horaria
+    fecInicioSap.setHours(0, 0, 0, 0);
+    fecIFinSap.setHours(0, 0, 0, 0);
+    // Si ya hay una fecha guardada, usarla
+    if (storedFechaInicioSap) {
+      this.fechaInicioSap = storedFechaInicioSap;
+    } else {
+      // Si no hay fecha guardada, asignar la fecha actual menos un día
+      fecInicioSap.setDate(fecInicioSap.getDate() - 1);
+      this.fechaInicioSap = fecInicioSap.toISOString().split('T')[0];  // YYYY-MM-DD
+    }
+    // Usar la fecha actual para fechaFin
+    this.fechaFinSap = storedFechaFinSap ? storedFechaFinSap : fecIFinSap.toISOString().split('T')[0]; // YYYY-MM-DD
+
+
     this.ListarMonitoreoExplocion();     
   }  
 showfilter=false; 
@@ -55,29 +107,7 @@ showfilter2=false;
 showfilter3=false;
 cotizacion2: string; 
 fechaInicio2: Date;
-fechaFin2: Date; 
-/*showFilter(){ 
-  if(this.indexTab==4){
-    this.showFilter3();//SALIDA ENTRADA SAP 
-   
-  }else{
-    
-  if(this.indexTab!=0){
-    this.showFilter2();
-   }else{
-     this.showfilter=!this.showfilter; 
-   }
-  }
-
-setTimeout(() => {       
-  $('#cboCotizacion1Select').select2({
-    placeholder: '--Seleccione--'
-  });         
-  $('#cboCotizacion2Select').select2({
-    placeholder: '--Seleccione--'
-  });   
-}, 1000);
-} */
+fechaFin2: Date;  
 showFilter(){ 
   if(this.indexTab==2){
     this.showFilter3();//SALIDA ENTRADA SAP 
@@ -117,25 +147,37 @@ showFilter3(){
   //#region ABRIR EXPLOCIÓN
   dialogRef:any;
   AbrirExplocionComponentes(item:any): void {   
+    const productosArray = item.productos.split(',').map(p => p.trim());
+
+    const productosConFormulacion = [
+      "PRTRSMan", "PRTRSMot", "PRTRZ",
+      "PRTRM00000016", "PRTRM00000001",
+      "PRTRH00000001", "PRTRF00000001",
+      "PRTLU00000001", "PRTLU00000002", "PRTLU00000003"
+    ];
+  
+    const tieneFormulacion = productosArray.some(p => productosConFormulacion.includes(p));
+  
+    if (!tieneFormulacion) {
+      Swal.fire({
+        title: 'Mensaje',
+        text: 'Ninguno de los productos tiene formulación.',
+        icon: 'warning',
+        confirmButtonText: 'Aceptar',
+        allowOutsideClick: false
+      }); 
+      return;
+    }
+    
     console.log("ABRIENDO GRUPO =======> ",item);
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true; 
     dialogConfig.panelClass = 'custom-dialog-container';
-    //const cadenaCompleta = 'PRTRS0054'; 
-     
-    //dialogConfig.width ='1644px';
-    //dialogConfig.maxWidth='94vw';
-    dialogConfig.data = item;
-       if(item.productos=="PRTRS"){
+    //const cadenaCompleta = 'PRTRS0054';  
+    dialogConfig.data = item; 
         this.dialogRef=this.dialog.open(DetalleFormulacionComponent,//DetalleMonitoreoDialogComponent,
-           dialogConfig);
-
-       }else{
-        this.dialogRef=this.dialog.open(DetalleFormulacionRollerzebraComponent,//DetalleMonitoreoDialogComponent,
-           dialogConfig);
-
-       }
+           dialogConfig); 
        this.dialogRef.afterClosed().subscribe({
       next: data => {   
        if (data) {
@@ -147,6 +189,7 @@ showFilter3(){
           confirmButtonText: 'Aceptar',
           allowOutsideClick: false
           }); 
+          this.ListMonitoreoExplocion=[];
           this.ListarMonitoreoExplocion();
       } 
     },
@@ -177,9 +220,10 @@ toggleExpand(item: any) {
 ListMonitoreoExplocion:any=[];
 
 cotizacion: string; 
-fechaInicio: Date;
-fechaFin: Date; 
+fechaInicio: string;
+fechaFin: string; 
 ListarMonitoreoExplocion() { 
+  this.guardarFechasExplocion();
   const cotizacion = this.cotizacion || "--";
     const fechaInicio = this.fechaInicio ? this.fechaInicio.toString() : "--";
     const fechaFin = this.fechaFin ? this.fechaFin.toString() : "--";
@@ -281,36 +325,12 @@ clonarComponente(item:any){
 }
 //#endregion
 isFilterButtonDisabled = false;
-indexTab=0;
-/*onTabChange(event: MatTabChangeEvent) {
-  this.indexTab=event.index;
-  console.log('Index: ' + event.index);
-  console.log('Tab Label: ' + event.tab.textLabel);
-  // Aquí puedes manejar la lógica que necesites con el índice o etiqueta de la pestaña seleccionada
-  if(event.index==2 || event.index==3){
-this.isFilterButtonDisabled=true;
-  }else{
-    this.isFilterButtonDisabled=false;
-  }
-  if(event.index==4){ //SAP ENTRADA SALIDA
-    if(this.ListMonitoreoExplocionSapSalidaEntrada.length==0){
-      console.log("BUSCARA"); 
-      this.ListarMonitoreoExplocionSapSalidaEntrada();
-    }
-  }
-
-}*/
-
+indexTab=0; 
 onTabChange(event: MatTabChangeEvent) {
   this.indexTab=event.index;
   console.log('Index: ' + event.index);
   console.log('Tab Label: ' + event.tab.textLabel);
-  // Aquí puedes manejar la lógica que necesites con el índice o etiqueta de la pestaña seleccionada
- /* if(event.index==2 || event.index==3){
-this.isFilterButtonDisabled=true;
-  }else{
-    this.isFilterButtonDisabled=false;
-  }*/
+ 
   if(event.index==2){ //SAP ENTRADA SALIDA
     if(this.ListMonitoreoExplocionSapSalidaEntrada.length==0){
       console.log("BUSCARA"); 
@@ -1161,12 +1181,12 @@ exportToExcel(): void {
 //#region LISTAR EXPLOCION PARA SALIDA Y ENTRADA SAP
 
 cotizacionSap: string; 
-fechaInicioSap: Date;
-fechaFinSap: Date;   
+fechaInicioSap: string;
+fechaFinSap: string;   
 
 ListMonitoreoExplocionSapSalidaEntrada:any=[];
 ListarMonitoreoExplocionSapSalidaEntrada() { 
-   
+  this.guardarFechasSapEntradaSalida();
   console.log("BUSCANDO");
   const cotizacion = this.cotizacionSap || "--";
   const fechaInicio = this.fechaInicioSap ? this.fechaInicioSap.toString() : "--";

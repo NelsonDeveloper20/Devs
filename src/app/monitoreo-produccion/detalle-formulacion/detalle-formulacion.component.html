@@ -1,9 +1,17 @@
-<ngx-spinner bdColor="rgba(255, 255, 255, 1)" size="medium" color="#0D7ABD" type="ball-beat" [fullScreen]="true">
-    <p style="color: black">Loading...</p>
+<ngx-spinner
+  bdColor="rgba(255, 255, 255, 1)"
+  size="medium"
+  color="#0D7ABD"
+  type="ball-beat"
+  [fullScreen]="true"
+  [name]="'cargandoProductos'"
+>
+  <p style="color: black">{{ spinnerMessage }}</p>
 </ngx-spinner>
 
 <h2 style="
-    margin: -1px !important;" mat-dialog-title>Detalle Grupo Cotizacion  -  <b>{{DatosGrupo.cotizacionGrupo}} - {{DatosGrupo.accionamiento}} </b></h2>
+    margin: -1px !important;" mat-dialog-title>Detalle Grupo Cotizacion  -  <b>{{DatosGrupo.cotizacionGrupo}} </b></h2>
+    <!--  - {{DatosGrupo.accionamiento}} -->
 <style>
     
   .search-input {
@@ -25,15 +33,19 @@
 }
 </style>
 <div mat-dialog-content #tableElement >
-    <div class="panel-body">
-
-        <div class="table-container">
+    <div class="panel-body scroll-left">
+      <!-- PRTRS -->
+        <div class="table-container"  *ngIf="mostrarPRTRS">
             <table class="table table-sm mb-0 table-responsive-lg" id="dubcomponente" style="    font-size: 14px;">              
-                 <thead class="sticky-top" style="color: black;">
+                 <thead class="sticky-top" style="color: black;"> 
+                    <tr>
+                      <th colspan="11" style="background: white;padding-bottom: 0px !important;">
+                      <h4>PRTRS-Manual: <b>{{ ListComponenteProducto[0]?.producto }}</b></h4>
+                      </th>
+                    </tr>
                     <tr style="box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);  ">                       
                         <th nowrap style="    height: 8px !important;"></th>       
-                        <th nowrap style="    height: 8px !important;">Tipo</th>              
-                        <th nowrap style="    height: 8px !important;">Producto</th>
+                        <th nowrap style="    height: 8px !important;">Tipo</th>       
                         <th nowrap style="    height: 8px !important;">Código Tipo<!--<input type="checkbox" [(ngModel)]="isEditableTipo">--> 
                         </th>
                         <th nowrap style="    height: 8px !important;">Descripción Tipo</th>
@@ -46,20 +58,10 @@
                         </th>  
                         <th nowrap style="    height: 8px !important;">  
                             <button class="btn btn-primary-azul tp-btn-light sharp"  title="Agregar Nuevo Componente"
-                            (click)="openTablePopup()"><mat-icon>library_add</mat-icon> 
+                            (click)="openTablePopup('PRTRSMan')"><mat-icon>library_add</mat-icon> 
                             </button>
-                            
-                            
-            <button class="btn btn-primary-azul tp-btn-light sharp" style=" margin: 9px;"  *ngIf="!isFormulacion && DatosGrupo.productos=='PRTRS' && DatosGrupo.accionamiento=='Manual'" 
-            (click)="toggleVisibilityFormulation()" >
-                <mat-icon>visibility</mat-icon> 
-              </button>  
                         </th>
                         <th nowrap *ngIf="isFormulacion" style="    height: 8px !important;">
-                          
-                            Formulación   <button class="btn btn-primary-azul tp-btn-light sharp"  (click)="toggleVisibilityFormulation()" >
-                <mat-icon>visibility_off</mat-icon>
-              </button>
                         </th>
                     </tr>
                 </thead>
@@ -70,14 +72,13 @@
                     <td>
                             <button class="btn btn-primary tp-btn-light sharp" 
                             *ngIf="comp?.agregado !== 'true' && comp?.tipoDesc !== 'ACCESORIO'"
-                            (click)="clonarComponente(comp)" 
+                            (click)="clonarComponente(comp,'PRTRSMan')" 
                             title="Clonar"
-                            style="margin: 0px;"><mat-icon>toll</mat-icon> 
+                            style="margin: 0px;  height: 0px !important;"><mat-icon>toll</mat-icon> 
                     </button>
                     </td>
-                         <td>{{ comp.tipoDesc }}</td>  
-                        <td>{{ comp.producto }}</td>                
-                        <td style="width: 124px !important;">  
+                         <td class="sizeTd">{{ comp.tipoDesc }}</td>                
+                        <td style="width: 124px !important;font-size: 12px !important;" class="sizeTd">  
                             <mat-form-field appearance="outline" style="width: 100%;" >
                                 <mat-select  [disabled]="!isEditableTipo" [(ngModel)]="comp.codigoTipo" placeholder="Buscar" style="width: 190px;" (selectionChange)="onNombreChange($event, comp)">
                                 <mat-select-trigger>
@@ -100,146 +101,758 @@
                                 </mat-select>
                               </mat-form-field>
                         </td>
-                        <td> {{comp.descripcionTipo}}</td> 
-                        <td style="text-align: center;min-width: 127px !important;"> 
-                            <input type="number" class="form-control input-sm" min="0" style="height: 37px !important;font-size: 14px;"
+                        <td class="sizeTd"> {{comp.descripcionTipo}}</td> 
+                        <td style="text-align: center;min-width: 127px !important;" class="sizeTd"> 
+                            <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
                             [(ngModel)]="comp.ancho"  *ngIf="comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA'"/>  
                             <span *ngIf="!(comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA')">--</span>
                             <!-- (ngModelChange)="onComponentInputChange(comp)" -->
 
                         </td>  
-                        <td style="text-align: center;min-width: 127px !important;"> 
-                            <input type="number" class="form-control input-sm" min="0" style="height: 37px !important;font-size: 14px;"
+                        <td style="text-align: center;min-width: 127px !important;" class="sizeTd"> 
+                            <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
                             [(ngModel)]="comp.alto"  *ngIf="comp.tipoDesc === 'TELA'" />
                             <span *ngIf="comp.tipoDesc !== 'TELA'">--</span>                        
                             <!--  (ngModelChange)="onComponentInputChange(comp)" -->
                         </td> 
-                        <td>                            
-                            <input type="number" class="form-control input-sm" min="0" style="height: 37px !important;font-size: 14px;"
+                        <td class="sizeTd">                            
+                            <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
                             [(ngModel)]="comp.cantidadRoller" />
                             <!--  (ngModelChange)="onComponentInputChange(comp)"  -->
                         </td> 
-                        <td style="min-width: 127px !important;">
-                            <input type="number" class="form-control input-sm" min="0" style="height: 37px !important;font-size: 14px;"
+                        <td style="min-width: 127px !important;" class="sizeTd">
+                            <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
                             [(ngModel)]="comp.calculoFinal"  (input)="validateAndFormatInput($event)" [disabled]="!isEditableCalculo"/>
                         </td>
-                        <td style="min-width: 55px !important;">
-                            <input type="number" class="form-control input-sm" min="0" style="height: 37px !important;font-size: 14px;"
+                        <td style="min-width: 55px !important;" class="sizeTd">
+                            <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
                             [(ngModel)]="comp.merma"  (input)="validateAndFormatInput($event)" [disabled]="!isEditableMerma"
                             *ngIf="comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA'"/>
                             <span *ngIf="!(comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA')">--</span>
                         </td> 
-                        <td>
+                        <td class="sizeTd">
                                 <button class="btn btn-primary tp-btn-light sharp" *ngIf="comp?.agregado==='true'" title="Eliminar"
-                                    (click)="eliminarItemAgregado(comp)">
+                                    (click)="eliminarItemAgregado(comp,'PRTRSMan')">
                                     <mat-icon>delete_forever</mat-icon>
                                 </button>
                         </td>
                         
-                        <td *ngIf="isFormulacion">
-                            <table  style="  font-size: 10px !important;" *ngIf="mostrar(comp)" class="table-responsive-sm">
-                                <tr *ngIf="comp.tipoDesc == 'TUBO' || comp.tipoDesc == 'RIEL'">
-                                  <th class="padding-tables">val.AnchoxGrupo</th>
-                                  <td  class="padding-tables" *ngFor="let item of getGrupos(comp.altoXgrupo)">{{ item }}</td>
-                                </tr>
-                                <tr>
-                                  <th class="padding-tables">Val.FinalXGrupo</th>
-                                  <td  class="padding-tables" *ngFor="let item of getGrupos(comp.calculoFinalXgrupo)">{{ item }}</td>
-                                </tr>
-                                <tr>
-                                  <th class="padding-tables">Grupo</th>
-                                  <td  class="padding-tables" *ngFor="let grupo of getGrupos(comp.indiceAgrupacion)">{{ grupo }}</td>
-                                </tr>
-                                <tr>
-                                  <th  class="padding-tables">Cantidad</th>
-                                  <td  class="padding-tables" *ngFor="let cantidad of getCantidades(comp.cantXGrupoIndiceAgrupacion)">{{ cantidad }}</td>
-                                </tr>
-                                <tr>
-                                  <th  class="padding-tables">Valor</th>
-                                  <td  class="padding-tables" *ngFor="let valor of getValores(comp.cantXGrupoIndiceAgrupacion,comp)">{{ valor }}</td>
-                                </tr>    
-                                    <tr>
-                                    <td  class="padding-tables">Total</td>
-                                    <td  class="padding-tables" *ngFor="let valor of getValoresTotal(comp.cantXGrupoIndiceAgrupacion,comp)">{{ valor }}</td>
-                                    </tr> 
-                                    <tr>
-                                        <td  class="padding-tables" [attr.colspan]="getGrupos(comp.indiceAgrupacion).length + 1" style="text-align: center;">
-                                              {{ sum(getValoresTotal(comp.cantXGrupoIndiceAgrupacion,comp)) }}
-                                          </td>
-                                    </tr> 
-                              </table> 
-                                   <!-- Tabla para Detalle Completo -->
-<div *ngFor="let item of parseDetalleCompleto(comp)" class="mb-3" style="margin-bottom: -4px !important;">
-    <span class="mt-2 mb-1" style="
-    text-transform: uppercase;
-    font-size: 11px !important;
-    font-weight: 600;
-    color: #b6122a;">Grupo: {{ item.alto.grupo }} - Cantidad Roller: {{ item.alto.cantRoller }}</span>
-    
-    <!-- Alto Table -->
-    <table style="  font-size: 10px !important;"  class="table-responsive-sm"> 
-        <tr>
-          <th  style="
-          width: 0px !important;
-          padding-top: 0px !important;
-          padding-bottom: 0px !important;
-          padding-left: 0px !important;
-          padding-right: 0px !important;
-          transform: rotate(-90deg);" rowspan="3" class="text-center">Alto</th>
-        </tr>
-        <tr>
-          <th class="padding-tables" nowrap>Alto Roller</th>
-          <th class="padding-tables" nowrap>Val. Aplicado</th>
-          <th class="padding-tables" nowrap>Val.1Roller</th>
-          <th class="padding-tables" nowrap>Val.2Rollers</th>
-          <th class="padding-tables" nowrap>Val.3Rollers</th>
-          <th class="padding-tables" nowrap>Val.4Rollers</th>
-          <th class="padding-tables" nowrap>Cálc. Final</th>
-        </tr>  
-        <tr>
-          <td class="padding-tables">{{ item.alto['alto-roller'] | number:'1.3-3' }}</td>
-          <td class="padding-tables">{{ item.alto.valorAplicado | number:'1.3-3' }}</td>
-          <td class="padding-tables">{{ item.alto.ValorPor1Roller | number:'1.3-3' }}</td>
-          <td class="padding-tables">{{ item.alto.ValorPor2Rollers | number:'1.3-3' }}</td>
-          <td class="padding-tables">{{ item.alto.ValorPor3Rollers | number:'1.3-3' }}</td>
-          <td class="padding-tables">{{ item.alto.ValorPor4Rollers | number:'1.3-3' }}</td>
-          <td class="padding-tables">{{ item.alto.calculoFinal | number:'1.3-3' }}</td>
-        </tr>  
-        <tr>
-          <th style="
-          width: 0px !important;
-          padding-top: 0px !important;
-          padding-bottom: 0px !important;
-          padding-left: 0px !important;
-          padding-right: 0px !important;
-          transform: rotate(-90deg);" rowspan="6" class="text-center">Ancho</th>
-        </tr>
-        <tr>
-          <th class="padding-tables" nowrap>Ancho Tubo</th>
-          <th class="padding-tables" nowrap>Val. Aplicado</th>
-          <th class="padding-tables" nowrap>Val.1Roller</th>
-          <th class="padding-tables" nowrap>Val.2Rollers</th>
-          <th class="padding-tables" nowrap>Val.3Rollers</th>
-          <th class="padding-tables" nowrap>Val.4Rollers</th>
-          <th class="padding-tables" nowrap>Cálc. Final</th>
-        </tr> 
-        <tr>
-          <td class="padding-tables">{{ item.ancho['ancho-tubo'] | number:'1.3-3' }}</td>
-          <td class="padding-tables">{{ item.ancho.valorAplicado | number:'1.3-3' }}</td>
-          <td class="padding-tables">{{ item.ancho.ValorPor1Roller | number:'1.3-3' }}</td>
-          <td class="padding-tables">{{ item.ancho.ValorPor2Rollers | number:'1.3-3' }}</td>
-          <td class="padding-tables">{{ item.ancho.ValorPor3Rollers | number:'1.3-3' }}</td>
-          <td class="padding-tables">{{ item.alto.ValorPor4Rollers | number:'1.3-3' }}</td>
-          <td class="padding-tables">{{ item.ancho.calculoFinal | number:'1.3-3' }}</td>
-        </tr> 
-    </table>
-    <hr class="mt-2 mb-2">
-  </div>
+                        <td *ngIf="isFormulacion" class="sizeTd"> 
                           </td> 
                     </tr>
                 </tbody> 
-            </table>
+            </table> 
+        
+            <hr>
+          </div>
+        
+      <!-- PRTRS MOTORIZADO-->
+      <div class="table-container"  *ngIf="mostrarPRTRSMot">
+        <table class="table table-sm mb-0 table-responsive-lg" id="dubcomponente" style="    font-size: 14px;">              
+             <thead class="sticky-top" style="color: black;"> 
+                <tr>
+                  <th colspan="11" style="background: white;padding-bottom: 0px !important;">
+                  <h4>PRTRS-Motorizado: <b>{{ ListComponenteProductoMot[0]?.producto }}</b></h4>
+                  </th>
+                </tr>
+                <tr style="box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);  ">                       
+                    <th nowrap style="    height: 8px !important;"></th>       
+                    <th nowrap style="    height: 8px !important;">Tipo</th>       
+                    <th nowrap style="    height: 8px !important;">Código Tipo<!--<input type="checkbox" [(ngModel)]="isEditableTipo">--> 
+                    </th>
+                    <th nowrap style="    height: 8px !important;">Descripción Tipo</th>
+                    <th nowrap style="    height: 8px !important;">Ancho</th>
+                    <th nowrap style="    height: 8px !important;">Alto</th>
+                    <th nowrap style="    height: 8px !important;">Cant. Roller</th>
+                    <th nowrap style="    height: 8px !important;">Cálculo Final <!--<input type="checkbox" [(ngModel)]="isEditableCalculo">--> 
+                    </th>
+                    <th nowrap style="    height: 8px !important;">Merma <!--a<nput type="checkbox" [(ngModel)]="isEditableMerma">--> 
+                    </th>  
+                    <th nowrap style="    height: 8px !important;">  
+                        <button class="btn btn-primary-azul tp-btn-light sharp"  title="Agregar Nuevo Componente"
+                        (click)="openTablePopup('PRTRSMot')"><mat-icon>library_add</mat-icon> 
+                        </button>                         
+          
+                    </th>
+                    <th nowrap *ngIf="isFormulacion" style="    height: 8px !important;">                    
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="id_tabla"></tbody>
+            <tbody style="color: #373434;">
+                <tr *ngFor="let comp of ListComponenteProductoMot;let i = index" > <!-- 
+                    [ngStyle]="{'background': getBackgroundColor(comp.tipoDesc)}" -->
+                <td>
+                        <button class="btn btn-primary tp-btn-light sharp" 
+                        *ngIf="comp?.agregado !== 'true' && comp?.tipoDesc !== 'ACCESORIO'"
+                        (click)="clonarComponente(comp,'PRTRSMot')" 
+                        title="Clonar"
+                        style="margin: 0px;  height: 0px !important;"><mat-icon>toll</mat-icon> 
+                </button>
+                </td>
+                     <td class="sizeTd">{{ comp.tipoDesc }}</td>                
+                    <td style="width: 124px !important;font-size: 12px !important;" class="sizeTd">  
+                        <mat-form-field appearance="outline" style="width: 100%;" >
+                            <mat-select  [disabled]="!isEditableTipo" [(ngModel)]="comp.codigoTipo" placeholder="Buscar" style="width: 190px;" (selectionChange)="onNombreChange($event, comp)">
+                            <mat-select-trigger>
+                                <span *ngIf="!comp.codigoTipo">
+                                    {{ comp.codigoTipo || '---Seleccione---' }}                                        
+                                </span>
+                                <span *ngIf="comp.codigoTipo">
+                                    {{ comp.codigoTipo || comp.codigoTipo }}                                        
+                                </span>
+                            </mat-select-trigger>
+                            <input matInput (keyup)="applyFilter($event, comp)" placeholder="Buscar" class="search-input" />
+                            <mat-option *ngIf="!comp.filteredOptions">Cargando...</mat-option> 
+                            <mat-option *ngIf="!isOptionInFilteredOptions(comp.codigoTipo, comp.filteredOptions)" [value]="comp.codigoTipo">
+                                {{ comp.codigoTipo }} : {{ comp.codigoTipo }}
+                            </mat-option>                                
+                            <mat-option value="">---Seleccione---</mat-option>
+                            <mat-option *ngFor="let item of comp.filteredOptions" [value]="item.codigoTipo">
+                            {{ item.codigoTipo }} : {{ item.descripcionTipo }}
+                            </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                    </td>
+                    <td class="sizeTd"> {{comp.descripcionTipo}}</td> 
+                    <td style="text-align: center;min-width: 127px !important;" class="sizeTd"> 
+                        <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                        [(ngModel)]="comp.ancho"  *ngIf="comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA'"/>  
+                        <span *ngIf="!(comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA')">--</span>
+                        <!-- (ngModelChange)="onComponentInputChange(comp)" -->
+
+                    </td>  
+                    <td style="text-align: center;min-width: 127px !important;" class="sizeTd"> 
+                        <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                        [(ngModel)]="comp.alto"  *ngIf="comp.tipoDesc === 'TELA'" />
+                        <span *ngIf="comp.tipoDesc !== 'TELA'">--</span>                        
+                        <!--  (ngModelChange)="onComponentInputChange(comp)" -->
+                    </td> 
+                    <td class="sizeTd">                            
+                        <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                        [(ngModel)]="comp.cantidadRoller" />
+                        <!--  (ngModelChange)="onComponentInputChange(comp)"  -->
+                    </td> 
+                    <td style="min-width: 127px !important;" class="sizeTd">
+                        <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                        [(ngModel)]="comp.calculoFinal"  (input)="validateAndFormatInput($event)" [disabled]="!isEditableCalculo"/>
+                    </td>
+                    <td style="min-width: 55px !important;" class="sizeTd">
+                        <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                        [(ngModel)]="comp.merma"  (input)="validateAndFormatInput($event)" [disabled]="!isEditableMerma"
+                        *ngIf="comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA'"/>
+                        <span *ngIf="!(comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA')">--</span>
+                    </td> 
+                    <td class="sizeTd">
+                            <button class="btn btn-primary tp-btn-light sharp" *ngIf="comp?.agregado==='true'" title="Eliminar"
+                                (click)="eliminarItemAgregado(comp,'PRTRSMot')">
+                                <mat-icon>delete_forever</mat-icon>
+                            </button>
+                    </td>
+                    
+                    <td *ngIf="isFormulacion" class="sizeTd">  
+                      </td> 
+                </tr>
+            </tbody> 
+        </table> 
+    
+        <hr>
+      </div>
+      <!-- PRTRZ -->
+      <div class="table-container"  *ngIf="mostrarPRTRZ"> 
+          <table class="table table-sm mb-0 table-responsive-lg" id="dubcomponente" style="    font-size: 14px;">              
+               <thead class="sticky-top" style="color: black;">
+                <tr>
+                  <th colspan="11" style="background: white;padding-bottom: 0px !important;">
+                  <h4>PRTRZ: <b>{{ ListComponenteProductoPRTRZ[0]?.producto }}</b></h4>
+                  </th>
+                </tr>
+                  <tr style="box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);  ">                       
+                      <th nowrap style="    height: 8px !important;"></th>       
+                      <th nowrap style="    height: 8px !important;">Tipo</th>       
+                      <th nowrap style="    height: 8px !important;">Código Tipo<!--<input type="checkbox" [(ngModel)]="isEditableTipo">--> 
+                      </th>
+                      <th nowrap style="    height: 8px !important;">Descripción Tipo</th>
+                      <th nowrap style="    height: 8px !important;">Ancho</th>
+                      <th nowrap style="    height: 8px !important;">Alto</th>
+                      <th nowrap style="    height: 8px !important;">Cant. Roller</th>
+                      <th nowrap style="    height: 8px !important;">Cálculo Final <!--<input type="checkbox" [(ngModel)]="isEditableCalculo">--> 
+                      </th>
+                      <th nowrap style="    height: 8px !important;">Merma <!--a<nput type="checkbox" [(ngModel)]="isEditableMerma">--> 
+                      </th>  
+                      <th nowrap style="    height: 8px !important;">  
+                          <button class="btn btn-primary-azul tp-btn-light sharp"  title="Agregar Nuevo Componente"
+                          (click)="openTablePopup('PRTRZ')"><mat-icon>library_add</mat-icon> 
+                          </button>        
+                      </th>
+                      <th nowrap *ngIf="isFormulacion" style="    height: 8px !important;">                        
+                      </th>
+                  </tr>
+              </thead>
+              <tbody id="id_tabla"></tbody>
+              <tbody style="color: #373434;">
+                  <tr *ngFor="let comp of ListComponenteProductoPRTRZ;let i = index" > <!-- 
+                      [ngStyle]="{'background': getBackgroundColor(comp.tipoDesc)}" -->
+                  <td>
+                          <button class="btn btn-primary tp-btn-light sharp" 
+                          *ngIf="comp?.agregado !== 'true' && comp?.tipoDesc !== 'ACCESORIO'"
+                          (click)="clonarComponente(comp,'PRTRZ')" 
+                          title="Clonar"
+                          style="margin: 0px;  height: 0px !important;"><mat-icon>toll</mat-icon> 
+                  </button>
+                  </td>
+                       <td class="sizeTd">{{ comp.tipoDesc }}</td>                
+                      <td style="width: 124px !important;font-size: 12px !important;" class="sizeTd">  
+                          <mat-form-field appearance="outline" style="width: 100%;" >
+                              <mat-select  [disabled]="!isEditableTipo" [(ngModel)]="comp.codigoTipo" placeholder="Buscar" style="width: 190px;" (selectionChange)="onNombreChange($event, comp)">
+                              <mat-select-trigger>
+                                  <span *ngIf="!comp.codigoTipo">
+                                      {{ comp.codigoTipo || '---Seleccione---' }}                                        
+                                  </span>
+                                  <span *ngIf="comp.codigoTipo">
+                                      {{ comp.codigoTipo || comp.codigoTipo }}                                        
+                                  </span>
+                              </mat-select-trigger>
+                              <input matInput (keyup)="applyFilter($event, comp)" placeholder="Buscar" class="search-input" />
+                              <mat-option *ngIf="!comp.filteredOptions">Cargando...</mat-option> 
+                              <mat-option *ngIf="!isOptionInFilteredOptions(comp.codigoTipo, comp.filteredOptions)" [value]="comp.codigoTipo">
+                                  {{ comp.codigoTipo }} : {{ comp.codigoTipo }}
+                              </mat-option>                                
+                              <mat-option value="">---Seleccione---</mat-option>
+                              <mat-option *ngFor="let item of comp.filteredOptions" [value]="item.codigoTipo">
+                              {{ item.codigoTipo }} : {{ item.descripcionTipo }}
+                              </mat-option>
+                              </mat-select>
+                            </mat-form-field>
+                      </td>
+                      <td class="sizeTd"> {{comp.descripcionTipo}}</td> 
+                      <td style="text-align: center;min-width: 127px !important;" class="sizeTd"> 
+                          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                          [(ngModel)]="comp.ancho"  *ngIf="comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA'"/>  
+                          <span *ngIf="!(comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA')">--</span>
+                          <!-- (ngModelChange)="onComponentInputChange(comp)" -->
+
+                      </td>  
+                      <td style="text-align: center;min-width: 127px !important;" class="sizeTd"> 
+                          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                          [(ngModel)]="comp.alto"  *ngIf="comp.tipoDesc === 'TELA'" />
+                          <span *ngIf="comp.tipoDesc !== 'TELA'">--</span>                        
+                          <!--  (ngModelChange)="onComponentInputChange(comp)" -->
+                      </td> 
+                      <td class="sizeTd">                            
+                          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                          [(ngModel)]="comp.cantidadRoller" />
+                          <!--  (ngModelChange)="onComponentInputChange(comp)"  -->
+                      </td> 
+                      <td style="min-width: 127px !important;" class="sizeTd">
+                          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                          [(ngModel)]="comp.calculoFinal"  (input)="validateAndFormatInput($event)" [disabled]="!isEditableCalculo"/>
+                      </td>
+                      <td style="min-width: 55px !important;" class="sizeTd">
+                          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                          [(ngModel)]="comp.merma"  (input)="validateAndFormatInput($event)" [disabled]="!isEditableMerma"
+                          *ngIf="comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA'"/>
+                          <span *ngIf="!(comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA')">--</span>
+                      </td> 
+                      <td class="sizeTd">
+                              <button class="btn btn-primary tp-btn-light sharp" *ngIf="comp?.agregado==='true'" title="Eliminar"
+                                  (click)="eliminarItemAgregado(comp,'PRTRZ')">
+                                  <mat-icon>delete_forever</mat-icon>
+                              </button>
+                      </td>
+                      
+                      <td *ngIf="isFormulacion" class="sizeTd">
+                        </td> 
+                  </tr>
+              </tbody> 
+          </table> 
+     
+          <hr>
         </div>
+      
+        <!-- PRTRM00000016 -->
+<div class="table-container" *ngIf="mostrarPRTRM00000016"> 
+  <table class="table table-sm mb-0 table-responsive-lg"   style="font-size: 14px;">              
+    <thead class="sticky-top" style="color: black;">
+      <tr>
+        <th colspan="11" style="background: white;padding-bottom: 0px !important;">
+        <h4>PRTRM16: <b>{{ ListComponenteProductoPRTRM00000016[0]?.producto }}</b></h4>
+        </th>
+      </tr>
+      <tr style="box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">                       
+        <th nowrap style="height: 8px !important;"></th>       
+        <th nowrap style="height: 8px !important;">Tipo</th>       
+        <th nowrap style="height: 8px !important;">Código Tipo</th>
+        <th nowrap style="height: 8px !important;">Descripción Tipo</th>
+        <th nowrap style="height: 8px !important;">Ancho</th>
+        <th nowrap style="height: 8px !important;">Alto</th>
+        <th nowrap style="height: 8px !important;">Cant. Roller</th>
+        <th nowrap style="height: 8px !important;">Cálculo Final</th>
+        <th nowrap style="height: 8px !important;">Merma</th>  
+        <th nowrap style="height: 8px !important;">  
+          <button class="btn btn-primary-azul tp-btn-light sharp" title="Agregar Nuevo Componente"
+                  (click)="openTablePopup('PRTRM00000016')"><mat-icon>library_add</mat-icon></button> 
+        </th>
+        <th nowrap *ngIf="isFormulacion" style="height: 8px !important;"></th>
+      </tr>
+    </thead> 
+    <tbody style="color: #373434;">
+      <tr *ngFor="let comp of ListComponenteProductoPRTRM00000016; let i = index">
+        <td>
+          <button class="btn btn-primary tp-btn-light sharp" 
+                  *ngIf="comp?.agregado !== 'true' && comp?.tipoDesc !== 'ACCESORIO'"
+                  (click)="clonarComponente(comp,'PRTRM00000016')" 
+                  title="Clonar"
+                  style="margin: 0px; height: 0px !important;"><mat-icon>toll</mat-icon></button>
+        </td>
+        <td class="sizeTd">{{ comp.tipoDesc }}</td>                
+        <td style="width: 124px !important;font-size: 12px !important;" class="sizeTd">  
+          <mat-form-field appearance="outline" style="width: 100%;">
+            <mat-select [disabled]="!isEditableTipo" [(ngModel)]="comp.codigoTipo" placeholder="Buscar" style="width: 190px;" (selectionChange)="onNombreChange($event, comp)">
+              <mat-select-trigger>
+                <span *ngIf="!comp.codigoTipo">
+                  {{ comp.codigoTipo || '---Seleccione---' }}                                        
+                </span>
+                <span *ngIf="comp.codigoTipo">
+                  {{ comp.codigoTipo || comp.codigoTipo }}                                        
+                </span>
+              </mat-select-trigger>
+              <input matInput (keyup)="applyFilter($event, comp)" placeholder="Buscar" class="search-input" />
+              <mat-option *ngIf="!comp.filteredOptions">Cargando...</mat-option> 
+              <mat-option *ngIf="!isOptionInFilteredOptions(comp.codigoTipo, comp.filteredOptions)" [value]="comp.codigoTipo">
+                {{ comp.codigoTipo }} : {{ comp.codigoTipo }}
+              </mat-option>                                
+              <mat-option value="">---Seleccione---</mat-option>
+              <mat-option *ngFor="let item of comp.filteredOptions" [value]="item.codigoTipo">
+                {{ item.codigoTipo }} : {{ item.descripcionTipo }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </td>
+        <td class="sizeTd">{{comp.descripcionTipo}}</td> 
+        <td style="text-align: center;min-width: 127px !important;" class="sizeTd"> 
+          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                 [(ngModel)]="comp.ancho" *ngIf="comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA'"/>  
+          <span *ngIf="!(comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA')">--</span>
+        </td>  
+        <td style="text-align: center;min-width: 127px !important;" class="sizeTd"> 
+          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                 [(ngModel)]="comp.alto" *ngIf="comp.tipoDesc === 'TELA'" />
+          <span *ngIf="comp.tipoDesc !== 'TELA'">--</span>                        
+        </td> 
+        <td class="sizeTd">                            
+          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                 [(ngModel)]="comp.cantidadRoller" />
+        </td> 
+        <td style="min-width: 127px !important;" class="sizeTd">
+          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                 [(ngModel)]="comp.calculoFinal" (input)="validateAndFormatInput($event)" [disabled]="!isEditableCalculo"/>
+        </td>
+        <td style="min-width: 55px !important;" class="sizeTd">
+          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                 [(ngModel)]="comp.merma" (input)="validateAndFormatInput($event)" [disabled]="!isEditableMerma"
+                 *ngIf="comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA'"/>
+          <span *ngIf="!(comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA')">--</span>
+        </td> 
+        <td class="sizeTd">
+          <button class="btn btn-primary tp-btn-light sharp" *ngIf="comp?.agregado==='true'" title="Eliminar"
+                  (click)="eliminarItemAgregado(comp,'PRTRM00000016')">
+            <mat-icon>delete_forever</mat-icon>
+          </button>
+        </td>
+        <td *ngIf="isFormulacion" class="sizeTd"></td> 
+      </tr>
+    </tbody> 
+  </table>   
+  <hr>
+</div> 
+<!-- PRTRM00000001 -->
+<div class="table-container" *ngIf="mostrarPRTRM00000001"> 
+  <table class="table table-sm mb-0 table-responsive-lg" id="dubcomponentePRTRM00000001" style="font-size: 14px;">              
+    <thead class="sticky-top" style="color: black;">
+      <tr>
+        <th colspan="11" style="background: white;padding-bottom: 0px !important;">
+        <h4>PRTRM: <b>{{ ListComponenteProductoPRTRM00000001[0]?.producto }}</b></h4>
+        </th>
+      </tr>
+      <tr style="box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">                       
+        <th nowrap style="height: 8px !important;"></th>       
+        <th nowrap style="height: 8px !important;">Tipo</th>       
+        <th nowrap style="height: 8px !important;">Código Tipo</th>
+        <th nowrap style="height: 8px !important;">Descripción Tipo</th>
+        <th nowrap style="height: 8px !important;">Ancho</th>
+        <th nowrap style="height: 8px !important;">Alto</th>
+        <th nowrap style="height: 8px !important;">Cant. Roller</th>
+        <th nowrap style="height: 8px !important;">Cálculo Final</th>
+        <th nowrap style="height: 8px !important;">Merma</th>  
+        <th nowrap style="height: 8px !important;">  
+          <button class="btn btn-primary-azul tp-btn-light sharp" title="Agregar Nuevo Componente"
+                  (click)="openTablePopup('PRTRM00000001')"><mat-icon>library_add</mat-icon></button> 
+        </th>
+        <th nowrap *ngIf="isFormulacion" style="height: 8px !important;"></th>
+      </tr>
+    </thead> 
+    <tbody style="color: #373434;">
+      <tr *ngFor="let comp of ListComponenteProductoPRTRM00000001; let i = index">
+        <td>
+          <button class="btn btn-primary tp-btn-light sharp" 
+                  *ngIf="comp?.agregado !== 'true' && comp?.tipoDesc !== 'ACCESORIO'"
+                  (click)="clonarComponente(comp,'PRTRM00000001')" 
+                  title="Clonar"
+                  style="margin: 0px; height: 0px !important;"><mat-icon>toll</mat-icon></button>
+        </td>
+        <td class="sizeTd">{{ comp.tipoDesc }}</td>                
+        <td style="width: 124px !important;font-size: 12px !important;" class="sizeTd">  
+          <mat-form-field appearance="outline" style="width: 100%;">
+            <mat-select [disabled]="!isEditableTipo" [(ngModel)]="comp.codigoTipo" placeholder="Buscar" style="width: 190px;" (selectionChange)="onNombreChange($event, comp)">
+              <mat-select-trigger>
+                <span *ngIf="!comp.codigoTipo">
+                  {{ comp.codigoTipo || '---Seleccione---' }}                                        
+                </span>
+                <span *ngIf="comp.codigoTipo">
+                  {{ comp.codigoTipo || comp.codigoTipo }}                                        
+                </span>
+              </mat-select-trigger>
+              <input matInput (keyup)="applyFilter($event, comp)" placeholder="Buscar" class="search-input" />
+              <mat-option *ngIf="!comp.filteredOptions">Cargando...</mat-option> 
+              <mat-option *ngIf="!isOptionInFilteredOptions(comp.codigoTipo, comp.filteredOptions)" [value]="comp.codigoTipo">
+                {{ comp.codigoTipo }} : {{ comp.codigoTipo }}
+              </mat-option>                                
+              <mat-option value="">---Seleccione---</mat-option>
+              <mat-option *ngFor="let item of comp.filteredOptions" [value]="item.codigoTipo">
+                {{ item.codigoTipo }} : {{ item.descripcionTipo }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </td>
+        <td class="sizeTd">{{comp.descripcionTipo}}</td> 
+        <td style="text-align: center;min-width: 127px !important;" class="sizeTd"> 
+          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                 [(ngModel)]="comp.ancho" *ngIf="comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA'"/>  
+          <span *ngIf="!(comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA')">--</span>
+        </td>  
+        <td style="text-align: center;min-width: 127px !important;" class="sizeTd"> 
+          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                 [(ngModel)]="comp.alto" *ngIf="comp.tipoDesc === 'TELA'" />
+          <span *ngIf="comp.tipoDesc !== 'TELA'">--</span>                        
+        </td> 
+        <td class="sizeTd">                            
+          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                 [(ngModel)]="comp.cantidadRoller" />
+        </td> 
+        <td style="min-width: 127px !important;" class="sizeTd">
+          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                 [(ngModel)]="comp.calculoFinal" (input)="validateAndFormatInput($event)" [disabled]="!isEditableCalculo"/>
+        </td>
+        <td style="min-width: 55px !important;" class="sizeTd">
+          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                 [(ngModel)]="comp.merma" (input)="validateAndFormatInput($event)" [disabled]="!isEditableMerma"
+                 *ngIf="comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA'"/>
+          <span *ngIf="!(comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA')">--</span>
+        </td> 
+        <td class="sizeTd">
+          <button class="btn btn-primary tp-btn-light sharp" *ngIf="comp?.agregado==='true'" title="Eliminar"
+                  (click)="eliminarItemAgregado(comp,'PRTRM00000001')">
+            <mat-icon>delete_forever</mat-icon>
+          </button>
+        </td>
+        <td *ngIf="isFormulacion" class="sizeTd"></td> 
+      </tr>
+    </tbody> 
+  </table>   
+  <hr>
+</div> 
+<!-- PRTRH00000001 -->
+<div class="table-container" *ngIf="mostrarPRTRH00000001"> 
+  <table class="table table-sm mb-0 table-responsive-lg" id="dubcomponentePRTRH00000001" style="font-size: 14px;">              
+    <thead class="sticky-top" style="color: black;">
+      <tr>
+        <th colspan="11" style="background: white;padding-bottom: 0px !important;">
+        <h4>PRTRH: <b>{{ ListComponenteProductoPRTRH00000001[0]?.producto }}</b></h4>
+        </th>
+      </tr>
+      <tr style="box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">                       
+        <th nowrap style="height: 8px !important;"></th>       
+        <th nowrap style="height: 8px !important;">Tipo</th>       
+        <th nowrap style="height: 8px !important;">Código Tipo</th>
+        <th nowrap style="height: 8px !important;">Descripción Tipo</th>
+        <th nowrap style="height: 8px !important;">Ancho</th>
+        <th nowrap style="height: 8px !important;">Alto</th>
+        <th nowrap style="height: 8px !important;">Cant. Roller</th>
+        <th nowrap style="height: 8px !important;">Cálculo Final</th>
+        <th nowrap style="height: 8px !important;">Merma</th>  
+        <th nowrap style="height: 8px !important;">  
+          <button class="btn btn-primary-azul tp-btn-light sharp" title="Agregar Nuevo Componente"
+                  (click)="openTablePopup('PRTRH00000001')"><mat-icon>library_add</mat-icon></button> 
+        </th>
+        <th nowrap *ngIf="isFormulacion" style="height: 8px !important;"></th>
+      </tr>
+    </thead> 
+    <tbody style="color: #373434;">
+      <tr *ngFor="let comp of ListComponenteProductoPRTRH00000001; let i = index">
+        <td>
+          <button class="btn btn-primary tp-btn-light sharp" 
+                  *ngIf="comp?.agregado !== 'true' && comp?.tipoDesc !== 'ACCESORIO'"
+                  (click)="clonarComponente(comp,'PRTRH00000001')" 
+                  title="Clonar"
+                  style="margin: 0px; height: 0px !important;"><mat-icon>toll</mat-icon></button>
+        </td>
+        <td class="sizeTd">{{ comp.tipoDesc }}</td>                
+        <td style="width: 124px !important;font-size: 12px !important;" class="sizeTd">  
+          <mat-form-field appearance="outline" style="width: 100%;">
+            <mat-select [disabled]="!isEditableTipo" [(ngModel)]="comp.codigoTipo" placeholder="Buscar" style="width: 190px;" (selectionChange)="onNombreChange($event, comp)">
+              <mat-select-trigger>
+                <span *ngIf="!comp.codigoTipo">
+                  {{ comp.codigoTipo || '---Seleccione---' }}                                        
+                </span>
+                <span *ngIf="comp.codigoTipo">
+                  {{ comp.codigoTipo || comp.codigoTipo }}                                        
+                </span>
+              </mat-select-trigger>
+              <input matInput (keyup)="applyFilter($event, comp)" placeholder="Buscar" class="search-input" />
+              <mat-option *ngIf="!comp.filteredOptions">Cargando...</mat-option> 
+              <mat-option *ngIf="!isOptionInFilteredOptions(comp.codigoTipo, comp.filteredOptions)" [value]="comp.codigoTipo">
+                {{ comp.codigoTipo }} : {{ comp.codigoTipo }}
+              </mat-option>                                
+              <mat-option value="">---Seleccione---</mat-option>
+              <mat-option *ngFor="let item of comp.filteredOptions" [value]="item.codigoTipo">
+                {{ item.codigoTipo }} : {{ item.descripcionTipo }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </td>
+        <td class="sizeTd">{{comp.descripcionTipo}}</td> 
+        <td style="text-align: center;min-width: 127px !important;" class="sizeTd"> 
+          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                 [(ngModel)]="comp.ancho" *ngIf="comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA'"/>  
+          <span *ngIf="!(comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA')">--</span>
+        </td>  
+        <td style="text-align: center;min-width: 127px !important;" class="sizeTd"> 
+          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                 [(ngModel)]="comp.alto" *ngIf="comp.tipoDesc === 'TELA'" />
+          <span *ngIf="comp.tipoDesc !== 'TELA'">--</span>                        
+        </td> 
+        <td class="sizeTd">                            
+          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                 [(ngModel)]="comp.cantidadRoller" />
+        </td> 
+        <td style="min-width: 127px !important;" class="sizeTd">
+          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                 [(ngModel)]="comp.calculoFinal" (input)="validateAndFormatInput($event)" [disabled]="!isEditableCalculo"/>
+        </td>
+        <td style="min-width: 55px !important;" class="sizeTd">
+          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                 [(ngModel)]="comp.merma" (input)="validateAndFormatInput($event)" [disabled]="!isEditableMerma"
+                 *ngIf="comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA'"/>
+          <span *ngIf="!(comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA')">--</span>
+        </td> 
+        <td class="sizeTd">
+          <button class="btn btn-primary tp-btn-light sharp" *ngIf="comp?.agregado==='true'" title="Eliminar"
+                  (click)="eliminarItemAgregado(comp,'PRTRH00000001')">
+            <mat-icon>delete_forever</mat-icon>
+          </button>
+        </td>
+        <td *ngIf="isFormulacion" class="sizeTd"></td> 
+      </tr>
+    </tbody> 
+  </table> 
+  <hr>
+</div>
+ 
+<!-- PRTRF00000001 -->
+<div class="table-container" *ngIf="mostrarPRTRF00000001"> 
+  <table class="table table-sm mb-0 table-responsive-lg" id="dubcomponentePRTRH00000001" style="font-size: 14px;">              
+    <thead class="sticky-top" style="color: black;">
+      <tr>
+        <th colspan="11" style="background: white;padding-bottom: 0px !important;">
+        <h4>PRTRF: <b>{{ ListComponenteProductoPRTRF00000001[0]?.producto }}</b></h4>
+        </th>
+      </tr>
+      <tr style="box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">                       
+        <th nowrap style="height: 8px !important;"></th>       
+        <th nowrap style="height: 8px !important;">Tipo</th>       
+        <th nowrap style="height: 8px !important;">Código Tipo</th>
+        <th nowrap style="height: 8px !important;">Descripción Tipo</th>
+        <th nowrap style="height: 8px !important;">Ancho</th>
+        <th nowrap style="height: 8px !important;">Alto</th>
+        <th nowrap style="height: 8px !important;">Cant. Roller</th>
+        <th nowrap style="height: 8px !important;">Cálculo Final</th>
+        <th nowrap style="height: 8px !important;">Merma</th>  
+        <th nowrap style="height: 8px !important;">  
+          <button class="btn btn-primary-azul tp-btn-light sharp" title="Agregar Nuevo Componente"
+                  (click)="openTablePopup('PRTRF00000001')"><mat-icon>library_add</mat-icon></button> 
+        </th>
+        <th nowrap *ngIf="isFormulacion" style="height: 8px !important;"></th>
+      </tr>
+    </thead> 
+    <tbody style="color: #373434;">
+      <tr *ngFor="let comp of ListComponenteProductoPRTRF00000001; let i = index">
+        <td>
+          <button class="btn btn-primary tp-btn-light sharp" 
+                  *ngIf="comp?.agregado !== 'true' && comp?.tipoDesc !== 'ACCESORIO'"
+                  (click)="clonarComponente(comp,'PRTRF00000001')" 
+                  title="Clonar"
+                  style="margin: 0px; height: 0px !important;"><mat-icon>toll</mat-icon></button>
+        </td>
+        <td class="sizeTd">{{ comp.tipoDesc }}</td>                
+        <td style="width: 124px !important;font-size: 12px !important;" class="sizeTd">  
+          <mat-form-field appearance="outline" style="width: 100%;">
+            <mat-select [disabled]="!isEditableTipo" [(ngModel)]="comp.codigoTipo" placeholder="Buscar" style="width: 190px;" (selectionChange)="onNombreChange($event, comp)">
+              <mat-select-trigger>
+                <span *ngIf="!comp.codigoTipo">
+                  {{ comp.codigoTipo || '---Seleccione---' }}                                        
+                </span>
+                <span *ngIf="comp.codigoTipo">
+                  {{ comp.codigoTipo || comp.codigoTipo }}                                        
+                </span>
+              </mat-select-trigger>
+              <input matInput (keyup)="applyFilter($event, comp)" placeholder="Buscar" class="search-input" />
+              <mat-option *ngIf="!comp.filteredOptions">Cargando...</mat-option> 
+              <mat-option *ngIf="!isOptionInFilteredOptions(comp.codigoTipo, comp.filteredOptions)" [value]="comp.codigoTipo">
+                {{ comp.codigoTipo }} : {{ comp.codigoTipo }}
+              </mat-option>                                
+              <mat-option value="">---Seleccione---</mat-option>
+              <mat-option *ngFor="let item of comp.filteredOptions" [value]="item.codigoTipo">
+                {{ item.codigoTipo }} : {{ item.descripcionTipo }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </td>
+        <td class="sizeTd">{{comp.descripcionTipo}}</td> 
+        <td style="text-align: center;min-width: 127px !important;" class="sizeTd"> 
+          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                 [(ngModel)]="comp.ancho" *ngIf="comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA'"/>  
+          <span *ngIf="!(comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA')">--</span>
+        </td>  
+        <td style="text-align: center;min-width: 127px !important;" class="sizeTd"> 
+          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                 [(ngModel)]="comp.alto" *ngIf="comp.tipoDesc === 'TELA'" />
+          <span *ngIf="comp.tipoDesc !== 'TELA'">--</span>                        
+        </td> 
+        <td class="sizeTd">                            
+          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                 [(ngModel)]="comp.cantidadRoller" />
+        </td> 
+        <td style="min-width: 127px !important;" class="sizeTd">
+          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                 [(ngModel)]="comp.calculoFinal" (input)="validateAndFormatInput($event)" [disabled]="!isEditableCalculo"/>
+        </td>
+        <td style="min-width: 55px !important;" class="sizeTd">
+          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                 [(ngModel)]="comp.merma" (input)="validateAndFormatInput($event)" [disabled]="!isEditableMerma"
+                 *ngIf="comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA'"/>
+          <span *ngIf="!(comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA')">--</span>
+        </td> 
+        <td class="sizeTd">
+          <button class="btn btn-primary tp-btn-light sharp" *ngIf="comp?.agregado==='true'" title="Eliminar"
+                  (click)="eliminarItemAgregado(comp,'PRTRF00000001')">
+            <mat-icon>delete_forever</mat-icon>
+          </button>
+        </td>
+        <td *ngIf="isFormulacion" class="sizeTd"></td> 
+      </tr>
+    </tbody> 
+  </table> 
+  
+  <hr>
+</div>
+ 
+<!-- PRTLU00000001_2_3 -->
+<div class="table-container" *ngIf="mostrarPRTLU0000000123"> 
+  <table class="table table-sm mb-0 table-responsive-lg"  style="font-size: 14px;">              
+    <thead class="sticky-top" style="color: black;">
+      <tr>
+        <th colspan="11" style="background: white;padding-bottom: 0px !important;">
+        <h4> PRTLU :<b>{{ ListComponenteProductoPRTLU00000001_2_3[0]?.producto }}</b></h4>
+        </th>
+      </tr>
+      <tr style="box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">                       
+        <th nowrap style="height: 8px !important;"></th>       
+        <th nowrap style="height: 8px !important;">Tipo</th>       
+        <th nowrap style="height: 8px !important;">Código Tipo</th>
+        <th nowrap style="height: 8px !important;">Descripción Tipo</th>
+        <th nowrap style="height: 8px !important;">Ancho</th>
+        <th nowrap style="height: 8px !important;">Alto</th>
+        <th nowrap style="height: 8px !important;">Cant. Roller</th>
+        <th nowrap style="height: 8px !important;">Cálculo Final</th>
+        <th nowrap style="height: 8px !important;">Merma</th>  
+        <th nowrap style="height: 8px !important;">  
+          <button class="btn btn-primary-azul tp-btn-light sharp" title="Agregar Nuevo Componente"
+                  (click)="openTablePopup('PRTLU00000001_2_3')"><mat-icon>library_add</mat-icon></button> 
+        </th>
+        <th nowrap *ngIf="isFormulacion" style="height: 8px !important;"></th>
+      </tr>
+    </thead> 
+    <tbody style="color: #373434;">
+      <tr *ngFor="let comp of ListComponenteProductoPRTLU00000001_2_3; let i = index">
+        <td>
+          <button class="btn btn-primary tp-btn-light sharp" 
+                  *ngIf="comp?.agregado !== 'true' && comp?.tipoDesc !== 'ACCESORIO'"
+                  (click)="clonarComponente(comp,'PRTLU00000001_2_3')" 
+                  title="Clonar"
+                  style="margin: 0px; height: 0px !important;"><mat-icon>toll</mat-icon></button>
+        </td>
+        <td class="sizeTd">{{ comp.tipoDesc }}</td>                
+        <td style="width: 124px !important;font-size: 12px !important;" class="sizeTd">  
+          <mat-form-field appearance="outline" style="width: 100%;">
+            <mat-select [disabled]="!isEditableTipo" [(ngModel)]="comp.codigoTipo" placeholder="Buscar" style="width: 190px;" (selectionChange)="onNombreChange($event, comp)">
+              <mat-select-trigger>
+                <span *ngIf="!comp.codigoTipo">
+                  {{ comp.codigoTipo || '---Seleccione---' }}                                        
+                </span>
+                <span *ngIf="comp.codigoTipo">
+                  {{ comp.codigoTipo || comp.codigoTipo }}                                        
+                </span>
+              </mat-select-trigger>
+              <input matInput (keyup)="applyFilter($event, comp)" placeholder="Buscar" class="search-input" />
+              <mat-option *ngIf="!comp.filteredOptions">Cargando...</mat-option> 
+              <mat-option *ngIf="!isOptionInFilteredOptions(comp.codigoTipo, comp.filteredOptions)" [value]="comp.codigoTipo">
+                {{ comp.codigoTipo }} : {{ comp.codigoTipo }}
+              </mat-option>                                
+              <mat-option value="">---Seleccione---</mat-option>
+              <mat-option *ngFor="let item of comp.filteredOptions" [value]="item.codigoTipo">
+                {{ item.codigoTipo }} : {{ item.descripcionTipo }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </td>
+        <td class="sizeTd">{{comp.descripcionTipo}}</td> 
+        <td style="text-align: center;min-width: 127px !important;" class="sizeTd"> 
+          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                 [(ngModel)]="comp.ancho" *ngIf="comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA'"/>  
+          <span *ngIf="!(comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA')">--</span>
+        </td>  
+        <td style="text-align: center;min-width: 127px !important;" class="sizeTd"> 
+          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                 [(ngModel)]="comp.alto" *ngIf="comp.tipoDesc === 'TELA'" />
+          <span *ngIf="comp.tipoDesc !== 'TELA'">--</span>                        
+        </td> 
+        <td class="sizeTd">                            
+          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                 [(ngModel)]="comp.cantidadRoller" />
+        </td> 
+        <td style="min-width: 127px !important;" class="sizeTd">
+          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                 [(ngModel)]="comp.calculoFinal" (input)="validateAndFormatInput($event)" [disabled]="!isEditableCalculo"/>
+        </td>
+        <td style="min-width: 55px !important;" class="sizeTd">
+          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                 [(ngModel)]="comp.merma" (input)="validateAndFormatInput($event)" [disabled]="!isEditableMerma"
+                 *ngIf="comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA'"/>
+          <span *ngIf="!(comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA')">--</span>
+        </td> 
+        <td class="sizeTd">
+          <button class="btn btn-primary tp-btn-light sharp" *ngIf="comp?.agregado==='true'" title="Eliminar"
+                  (click)="eliminarItemAgregado(comp,'PRTLU00000001_2_3')">
+            <mat-icon>delete_forever</mat-icon>
+          </button>
+        </td>
+        <td *ngIf="isFormulacion" class="sizeTd"></td> 
+      </tr>
+    </tbody> 
+  </table> 
+</div>
+
     </div>
 </div>
 <div mat-dialog-actions>

@@ -151,18 +151,15 @@ export class SolicitudPendienteComponent implements OnInit {
     localStorage.setItem('fechaFin', this.fechaFin);
   }
   //ENDS
-  ngOnInit(): void { 
+  ngOnInit(): void {  
+    // Recuperar la fecha guardada en localStorage (si existe)
+const storedFechaInicio = localStorage.getItem('fechaInicio');
+const storedFechaFin = localStorage.getItem('fechaFin');
     const fecInicio = new Date();
     const fecIFin = new Date();
-
     // Ajustar la hora a medianoche para evitar problemas de zona horaria
     fecInicio.setHours(0, 0, 0, 0);
     fecIFin.setHours(0, 0, 0, 0);
-
-    // Recuperar la fecha guardada en localStorage (si existe)
-    const storedFechaInicio = sessionStorage.getItem('fechaInicio');
-    const storedFechaFin = sessionStorage.getItem('fechaFin');
-
     // Si ya hay una fecha guardada, usarla
     if (storedFechaInicio) {
       this.fechaInicio = storedFechaInicio;
@@ -171,7 +168,6 @@ export class SolicitudPendienteComponent implements OnInit {
       fecInicio.setDate(fecInicio.getDate() - 1);
       this.fechaInicio = fecInicio.toISOString().split('T')[0];  // YYYY-MM-DD
     }
-
     // Usar la fecha actual para fechaFin
     this.fechaFin = storedFechaFin ? storedFechaFin : fecIFin.toISOString().split('T')[0]; // YYYY-MM-DD
 

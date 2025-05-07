@@ -404,7 +404,7 @@ interface ConfiguracionLayout {
       tipoMecanismo: 0,
       modeloMecanismo: 0,
       tipoRiel: 0,
-      tipoCadena: 0,
+      tipoCadena: 1,
       tipoInstalacion: 0,
       tipoCassete: 0,
       tipoSopCentral: 0,

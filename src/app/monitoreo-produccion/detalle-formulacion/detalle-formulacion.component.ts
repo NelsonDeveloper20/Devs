@@ -1,3 +1,4 @@
+
 import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -9,6 +10,7 @@ import { ProductoService } from 'src/app/services/productoservice';
 import { SapService } from 'src/app/services/sap.service';
 import Swal from 'sweetalert2';
 
+
 @Component({
   selector: 'app-detalle-formulacion',
   templateUrl: './detalle-formulacion.component.html',
@@ -18,6 +20,18 @@ export class DetalleFormulacionComponent  implements OnInit {
 
 DatosGrupo:any;
 idUsuario:any;
+
+mostrarPRTRS = false;
+mostrarPRTRSMot=false;
+mostrarPRTRZ = false;
+mostrarPRTRH00000001 = false;
+mostrarPRTRM00000001 = false;
+mostrarPRTRF00000001 = false;
+mostrarPRTLU0000000123 = false;
+mostrarPRTRM00000016=false;
+// Agrega más según lo que necesites
+
+
 constructor(@Inject(MAT_DIALOG_DATA) public data: any,
 private toaster: Toaster,
   private dialogRef: MatDialogRef<DetalleFormulacionComponent>,
@@ -29,6 +43,21 @@ private toaster: Toaster,
 ) {
   this.DatosGrupo=data;
   
+  const productosArray = this.DatosGrupo?.productos
+    ?.split(',')
+    .map(p => p.trim()) || [];
+
+     
+  this.mostrarPRTRS = productosArray.includes('PRTRSMan');
+  this.mostrarPRTRSMot = productosArray.includes('PRTRSMot');
+  this.mostrarPRTRZ = productosArray.includes('PRTRZ');
+  this.mostrarPRTRH00000001 = productosArray.includes('PRTRH00000001');
+  this.mostrarPRTRM00000001 = productosArray.includes('PRTRM00000001');
+  this.mostrarPRTRF00000001 = productosArray.includes('PRTRF00000001');
+  this.mostrarPRTRM00000016 = productosArray.includes('PRTRM00000016');
+  this.mostrarPRTLU0000000123 = ['PRTLU00000001', 'PRTLU00000002', 'PRTLU00000003']
+    .some(p => productosArray.includes(p));
+
   const userDataString = JSON.parse(localStorage.getItem('UserLog'));   
   this.idUsuario= userDataString.id.toString(); 
   this.ListarComponteProductoByGrupo(data.cotizacionGrupo);
@@ -106,14 +135,7 @@ addResizeHandle(element: HTMLElement) {
   }  
   close() {
     this.dialogRef.close();
-  }
-//#region  TODOS LISATOS CLONADOS,AGREGADO,ELIMINADO
-//#region LISTAR COMPONENTE DEL PRODDUCTO POR GRUPO
-// Método para manejar el cambio de selección en mat-select
-/*
-isOptionInFilteredOptions(codigo: string, filteredOptions: any[]): boolean {
-  return filteredOptions.some(option => option.codigo === codigo);
-}*/
+  } 
 isOptionInFilteredOptions(codigo: string, filteredOptions: any[]): boolean {
   // Si filteredOptions es null o undefined, devolver falso.
   if (!filteredOptions || filteredOptions.length === 0) {
@@ -195,122 +217,169 @@ async listarComponentesTelaRielTubo(tipo: string,codigoProducto:any,nombreProduc
     return [];
   }
 }
-private async listarComponestePorCodigoProdsOFICIAL(prods) {
-  // Obtener valores únicos con mayúscula/minúscula corregida y excluir "ACCESORIO"
-  
-    // Obtener valores únicos con mayúscula/minúscula corregida y excluir "ACCESORIO"
-    let componentesUnicos = [...new Set(
-      this.ListComponenteProducto.filter(item=> item.tipoDesc !== "ACCESORIO")
-        .map(comp => this.capitalizeFirstLetter(comp.tipoDesc ?? "")) 
-    )]; 
-  // Normalizar nombres específicos
-  /*componentesUnicos = componentesUnicos.map(item =>
-    item === "Tela ancho" || item === "Tela altura" ? "Tela" : item
-  );*/ 
+private async listarComponestePorCodigoProdsOFICIAL(destinoList,codProducto) {  
 // Obtener el tipo de producto
-let tipoProducto = this.ListComponenteProducto[0]?.producto ?? "";
-// Normalizar tipo de producto
-if (tipoProducto === "ROLLER SHADE" || tipoProducto === "ROLLER SHADE MOTORIZADO") {
-  tipoProducto = "PRTRS";
-}
+let tipoProducto =codProducto;//PRTRS ,PRTRZ,PRTRM00000016, PRTRM00000001, PRTRH00000001, PRTRF00000001, PRTLU00000001_2_3 
 // Obtener componentes desde la API
-const response = await this.listarComponentes(tipoProducto);
+const response = await this.listarComponentes(tipoProducto);//ACCESORIO DIFERENTES A 
 if (response) {
-  // Filtrar accesorios y actualizar propiedades en un solo `forEach`
-  const transformedData = response.map((item: any) => ({
-    codigoTipo: item.codigo,
-    descripcionTipo: item.descripcion,
-    unidadMedida: item.unidad,
-    color: item.color,
-    serie: item.serie,
-    lote: item.lote,
-  })); 
-  // Agregar elemento "Ninguno" al inicio del array
-  transformedData.unshift({
-    codigoTipo: "Ninguno", // o algún valor especial como 0 o -1
-    descripcionTipo: "Ninguno",
-    unidadMedida: "",
-    color: "",
-    serie: "",
-    lote: "",
-  });
-  this.ListComponenteProducto
-    .filter(comp => comp.tipoDesc === "ACCESORIO")
-    .forEach(comp => {
-      comp.filteredOptions = transformedData;
-      comp.filteredOptionsOriginal = transformedData;
-      comp.error = false;
-    });
-}
+        
+      // Transformador general
+      const transformarItem = (item: any) => ({
+        codigoTipo: item.codigo,
+        descripcionTipo: item.descripcion,
+        unidadMedida: item.unidad,
+        color: item.color,
+        serie: item.serie,
+        lote: item.lote
+      });
+
+      // Transformación base
+      const transformedData = response.map(transformarItem);
+
+      // Agregar opción "Ninguno" al inicio
+      transformedData.unshift({
+        codigoTipo: "Ninguno",
+        descripcionTipo: "Ninguno",
+        unidadMedida: "",
+        color: "",
+        serie: "",
+        lote: ""
+      });
+
+      // Lista de productos especiales
+      const productosEspeciales = [
+        "PRTRM00000016", "PRTRM00000001",
+        "PRTRH00000001", "PRTRF00000001",
+        "PRTLU00000001_2_3", "PRTLU00000001",
+        "PRTLU00000002", "PRTLU00000003"
+      ];
+      const normalizar = (texto: string) =>
+        texto.trim().toLowerCase().replace(/es$|s$/i, ''); // quita plurales simples
+      if (productosEspeciales.includes(codProducto)) {
+        // Si son productos especiales, se asume que response es un array de grupos con subgrupos  
+        destinoList
+          .forEach(comp => {
+            comp.filteredOptions.push({
+              codigoTipo: "Ninguno",
+              descripcionTipo: "Ninguno",
+              unidadMedida: "",
+              color: "",
+              serie: "",
+              lote: ""
+            });
+            comp.filteredOptionsOriginal.push({
+              codigoTipo: "Ninguno",
+              descripcionTipo: "Ninguno",
+              unidadMedida: "",
+              color: "",
+              serie: "",
+              lote: ""
+            });
+            comp.error = false;
+          });
+        response.forEach((grupo: any) => {
+          const dataTransformada = transformarItem(grupo);             
+          const subGrupo = normalizar(grupo.subGrupo);  
+          destinoList
+            .filter(elem => normalizar(elem.descripcionTipo).includes(normalizar(grupo.subGrupo))) //elem.descripcionTipo.trim().toLowerCase().includes(subGrupo))
+            .forEach(comp => {
+              comp.filteredOptions.push(dataTransformada);
+              comp.filteredOptionsOriginal.push(dataTransformada);
+              comp.error = false;
+            });
+        });
+        
+      } else {
+        // Para accesorios normales
+        destinoList
+          .filter(comp => comp.tipoDesc.replace('ACCESORIOS', 'ACCESORIO') === "ACCESORIO")
+          .forEach(comp => {
+            comp.filteredOptions = transformedData;
+            comp.filteredOptionsOriginal = transformedData;
+            comp.error = false;
+          });
+      }
+      }
+// Obtener valores únicos con mayúscula/minúscula corregida y excluir "ACCESORIO"
+let componentesUnicos = [...new Set( //PARA LISTAR RIEL,TELA, ETC
+  destinoList.filter(item=> item.tipoDesc.replace("ACCESORIOS",'ACCESORIO') !== "ACCESORIO")
+    .map(comp => this.capitalizeFirstLetter(comp.tipoDesc ?? "")) 
+)];  
 //elimina duplicados de tela,tubo, etc
  componentesUnicos = [...new Set(componentesUnicos)];
 
 console.log("BUSCADOS==>",componentesUnicos);
-  for (const componente of componentesUnicos) {
-      const maestro = this.ListMaestroArticulos.find(item => item.nombreGrupo === componente);
-      console.log("COMPONENTES BUSCADOS");
-      console.log(componente);
-      
-      this.ListComponenteProducto
-      .filter(comp => this.capitalizeFirstLetter(comp.tipoDesc ?? "")  === componente)
-      .forEach(comp => {
-          comp.filteredOptions = null;
-          comp.filteredOptionsOriginal=null;
-          comp.error = false;
-      });
-      if (maestro) {
-          // Marca los componentes en estado de carga 
-          try {
-              // Intentar obtener datos con reintentos
-              const data = await this.obtenerDatosConReintentos(maestro, componente)as any[];   
-            const transformedData = data.map((item: any) => ({
-              codigoTipo: item.codigo,
-              descripcionTipo: item.nombre,
-              unidadMedida: item.unidadMedida,
-              color: item.color,
-              serie: item.serie,
-              lote: item.lote,
-            }));
-   
-            console.log("RESULTADO ===>",componente);
-            console.log(transformedData);             
-            
-              // Agregar elemento "Ninguno" al inicio del array
-              transformedData.unshift({
-                codigoTipo: "Ninguno", // o algún valor especial como 0 o -1
-                descripcionTipo: "Ninguno",
-                unidadMedida: "",
-                color: "",
-                serie: "",
-                lote: "",
-              });
-              // Actualizar componentes con los datos obtenidos  
-            this.ListComponenteProducto
-            .filter(comp => 
-              [//"Tela", "Tela altura",
-                 componente].includes(this.capitalizeFirstLetter(comp.tipoDesc ?? ""))
-            )
-            .forEach(comp => {
-              comp.filteredOptions = transformedData;
-              comp.filteredOptionsOriginal = transformedData;
-              comp.error = false;
-            });   
-          } catch (error) {
-              console.error(`Error al cargar datos para el componente ${componente}:`, error);
-               
+  if(codProducto=='PRTRSMan' || codProducto=='PRTRSMot' || codProducto=='PRTRZ'){
 
-              // Mostrar mensaje de error solo si es error de COM object
-              if (error.error?.ErrorDescription?.includes('COM object')) {
-                  this.toaster.open({
-                      text: `Error de conexión SAP para el componente ${componente}. Reintentando...`,
-                      caption: 'Error',
-                      type: 'warning',
-                  });
-              }
-          }
-      }
+    for (const componente of componentesUnicos) {
+      this.spinnerMessage = `Cargando Componentes: ${componente}`;
+      this.spinner.show('cargandoProductos');
+        const maestro = this.ListMaestroArticulos.find(item => item.nombreGrupo === componente);
+        console.log("COMPONENTES BUSCADOS");
+        console.log(componente);
+        
+        destinoList
+        .filter(comp => this.capitalizeFirstLetter(comp.tipoDesc ?? "")  === componente)
+        .forEach(comp => {
+            comp.filteredOptions = null;
+            comp.filteredOptionsOriginal=null;
+            comp.error = false;
+        });
+        if (maestro) {
+            // Marca los componentes en estado de carga 
+            try {
+                // Intentar obtener datos con reintentos
+                const data = await this.obtenerDatosConReintentos(maestro, componente)as any[];   
+              const transformedData = data.map((item: any) => ({
+                codigoTipo: item.codigo,
+                descripcionTipo: item.nombre,
+                unidadMedida: item.unidadMedida,
+                color: item.color,
+                serie: item.serie,
+                lote: item.lote,
+              }));
+     
+              console.log("RESULTADO ===>",componente);
+              console.log(transformedData);             
+              
+                // Agregar elemento "Ninguno" al inicio del array
+                transformedData.unshift({
+                  codigoTipo: "Ninguno", // o algún valor especial como 0 o -1
+                  descripcionTipo: "Ninguno",
+                  unidadMedida: "",
+                  color: "",
+                  serie: "",
+                  lote: "",
+                });
+                // Actualizar componentes con los datos obtenidos  
+              destinoList
+              .filter(comp => 
+                [//"Tela", "Tela altura",
+                   componente].includes(this.capitalizeFirstLetter(comp.tipoDesc ?? ""))
+              )
+              .forEach(comp => {
+                comp.filteredOptions = transformedData;
+                comp.filteredOptionsOriginal = transformedData;
+                comp.error = false;
+              });   
+            } catch (error) {
+              this.spinner.hide('cargandoProductos');
+                console.error(`Error al cargar datos para el componente ${componente}:`, error);
+                this.spinner.hide();
+                // Mostrar mensaje de error solo si es error de COM object
+                if (error.error?.ErrorDescription?.includes('COM object')) {
+                    this.toaster.open({
+                        text: `Error de conexión SAP para el componente ${componente}. Reintentando...`,
+                        caption: 'Error',
+                        type: 'warning',
+                    });
+                }
+            }
+        }
+    }
+  
   }
-
   
 }
 // Método auxiliar para reintentos
@@ -332,6 +401,7 @@ private async obtenerDatosConReintentos(maestro, componente, maxIntentos = 3) {
                   });
           });
       } catch (error) {
+        this.spinner.hide();
           if (intento === maxIntentos || !error.error?.ErrorDescription?.includes('COM object')) {
               throw error;
           }
@@ -343,19 +413,7 @@ private async obtenerDatosConReintentos(maestro, componente, maxIntentos = 3) {
 
 
 filteredListComponente = this.lisComponente;    
-// Método para filtrar opciones según el input de búsqueda
- 
-applyFilters(event: any, comp: any) {
-  const valor = event.target.value.toLowerCase();
-  if (!valor) {
-    comp.filteredOptions = [...comp.filteredOptionsOriginal]; // Restaura las opciones originales
-  } else {
-    comp.filteredOptions = comp.filteredOptionsOriginal.filter(option =>
-      option.codigo.toLowerCase().includes(valor)
-    );
-  }
-}
- 
+// Método para filtrar opciones según el input de búsqueda 
 applyFilter(event: any, comp: any) {
   const valor = event.target.value.toLowerCase();
   if (!valor) {
@@ -370,8 +428,16 @@ applyFilter(event: any, comp: any) {
   }
 }
 
+spinnerMessage: string = 'Cargando...';
 
 ListComponenteProducto:any=[];
+ListComponenteProductoMot:any=[];
+ListComponenteProductoPRTRZ:any=[];
+ListComponenteProductoPRTRM00000016:any=[];
+ListComponenteProductoPRTRM00000001:any=[];
+ListComponenteProductoPRTRH00000001:any=[];
+ListComponenteProductoPRTRF00000001:any=[];
+ListComponenteProductoPRTLU00000001_2_3:any=[];
 async ListarComponteProductoByGrupo(Grupo) {  
      // Si la lista está vacía, esperamos a que se complete la carga
  if (this.ListMaestroArticulos.length === 0) {  
@@ -392,42 +458,163 @@ async ListarComponteProductoByGrupo(Grupo) {
   });
     this.router.navigate(['/Home-main']);
     return;
-  }  
-  this.spinner.show();
-  this._service.ListarFormulacionRollerShade("-",Grupo,this.DatosGrupo.productos,this.DatosGrupo.accionamiento).subscribe(
-    async (data: any) => {
-      if (data && data.status === 200) {  
-        this.spinner.hide();    
-        //this.ListComponenteProducto = data.json;
-         const ordenPersonalizado = ['TUBO', 'TELA', 'RIEL'];
-
-         const productosOrdenados =  data.json.sort((a, b) => {
-           const iA = ordenPersonalizado.indexOf(a.tipoDesc);
-           const iB = ordenPersonalizado.indexOf(b.tipoDesc);
-           return (iA === -1 ? 999 : iA) - (iB === -1 ? 999 : iB);
-         });
-         
-          this.ListComponenteProducto = productosOrdenados.map(item => (
-          { ...item,  
-            filteredOptions: [], // Inicializa como una lista vacía
-            filteredOptionsOriginal: [], // Inicializa como una lista vacía             
-             })); 
-        const resultado ='';// `'${codigos}'`; // Agregar comillas al inicio y al final
-       if(this.ListComponenteProducto){
-        await  this.listarComponestePorCodigoProdsOFICIAL(resultado); 
-       }  
-      } else {
-        this.spinner.hide();
-        console.error('Error: No se pudo obtener datos.');
-      }
-    },
-    (error: any) => {
+  }   
+  // Extraer los productos de DatosGrupo.Productos o ProductosContados
+  let productosArray = [];  
+  // Procesar la columna ProductosContados
+  console.log(this.DatosGrupo);
+  productosArray = this.DatosGrupo.productos.split(', ');  
+  // Procesar cada producto
+  for (const element of productosArray) { 
+    const codigoProducto = element.trim();
+    
+    // Productos especiales PRTRS/PRTRZ
+    if (codigoProducto === "PRTRSMan") {
+      this.spinnerMessage = `Cargando producto: ${codigoProducto}`;
+      this.spinner.show('cargandoProductos');
+      await this.procesarProducto(Grupo, codigoProducto, this.ListComponenteProducto);
+      this.spinner.hide('cargandoProductos');
       this.spinner.hide();
-      console.error('Error al obtener datos:', error);
-      // Aquí podrías mostrar un mensaje de error al usuario
+    } 
+    if (codigoProducto === "PRTRSMot") {
+      this.spinnerMessage = `Cargando producto: ${codigoProducto}`;
+      this.spinner.show('cargandoProductos');
+      await this.procesarProducto(Grupo, codigoProducto, this.ListComponenteProductoMot);
+      this.spinner.hide('cargandoProductos');
+      this.spinner.hide();
+    } 
+    if (codigoProducto === "PRTRZ") {
+      this.spinnerMessage = `Cargando producto: ${codigoProducto}`;
+      this.spinner.show('cargandoProductos');
+      await this.procesarProducto(Grupo, codigoProducto, this.ListComponenteProductoPRTRZ);
+      this.spinner.hide('cargandoProductos');
+      this.spinner.hide();
+    } 
+    // PRTRM00000016
+    else if (codigoProducto === "PRTRM00000016") {
+      this.spinnerMessage = `Cargando producto: ${codigoProducto}`;
+      this.spinner.show('cargandoProductos');
+      await this.procesarProducto(Grupo, codigoProducto, this.ListComponenteProductoPRTRM00000016);
+      this.spinner.hide('cargandoProductos');
+      this.spinner.hide();
+    } 
+    // PRTRM00000001
+    else if (codigoProducto === "PRTRM00000001") {
+      this.spinnerMessage = `Cargando producto: ${codigoProducto}`;
+      this.spinner.show('cargandoProductos');
+      await this.procesarProducto(Grupo, codigoProducto, this.ListComponenteProductoPRTRM00000001);
+      this.spinner.hide('cargandoProductos');
+      this.spinner.hide();
+    } 
+    // PRTRH00000001
+    else if (codigoProducto === "PRTRH00000001") {
+      this.spinnerMessage = `Cargando producto: ${codigoProducto}`;
+      this.spinner.show('cargandoProductos');
+      await this.procesarProducto(Grupo, codigoProducto, this.ListComponenteProductoPRTRH00000001);
+      this.spinner.hide('cargandoProductos');
+      this.spinner.hide();
+    } 
+    // PRTRF00000001
+    else if (codigoProducto === "PRTRF00000001") {
+      this.spinnerMessage = `Cargando producto: ${codigoProducto}`;
+      this.spinner.show('cargandoProductos');
+      await this.procesarProducto(Grupo, codigoProducto, this.ListComponenteProductoPRTRF00000001);
+      this.spinner.hide('cargandoProductos');
+      this.spinner.hide();
+    } 
+    // PRTLU00000001, PRTLU00000002, PRTLU00000003
+    else if (["PRTLU00000001", "PRTLU00000002", "PRTLU00000003"].includes(codigoProducto)) {
+      this.spinnerMessage = `Cargando producto: ${codigoProducto}`;
+      this.spinner.show('cargandoProductos');
+      await this.procesarProducto(Grupo, codigoProducto, this.ListComponenteProductoPRTLU00000001_2_3);
+      this.spinner.hide('cargandoProductos');
+      this.spinner.hide();
+    }else{
+
+      this.spinner.hide();
     }
-  );
+  } 
 } 
+// Método para procesar un producto específico y asignar los resultados a la lista correspondiente
+async procesarProducto(Grupo, codigoProducto, listaDestino) { 
+  var accionamiento = this.DatosGrupo.accionamiento;
+var partes = accionamiento.split(',').map(p => p.trim());
+var resultadoAcionamiento = partes.includes("Motorizado") ? "Motorizado" : partes[0];
+
+  return new Promise((resolve, reject) => {
+    this._service.ListarFormulacionRollerShade("-", Grupo, codigoProducto, resultadoAcionamiento)
+      .subscribe(
+        async (data: any) => {
+          this.spinner.hide();
+          this.spinner.hide('cargandoProductos');
+          if (data && data.status === 200) {
+            const ordenPersonalizado = ['TUBO', 'TELA', 'RIEL'];
+            
+            let productosOrdenados;            
+            if (codigoProducto === "PRTRSMan" || codigoProducto === "PRTRSMot" || codigoProducto === "PRTRZ") {
+              productosOrdenados = data.json.sort((a, b) => {
+              const iA = ordenPersonalizado.indexOf(a.tipoDesc);
+              const iB = ordenPersonalizado.indexOf(b.tipoDesc);
+              return (iA === -1 ? 999 : iA) - (iB === -1 ? 999 : iB);
+               });
+               
+            }else{
+              productosOrdenados = data.json;
+            }            
+            // Si es la lista de PRTLU, hacemos un push
+            if (listaDestino === this.ListComponenteProductoPRTLU00000001_2_3) {
+              // Corregir el operador de asignación aquí
+              listaDestino.push(...productosOrdenados.map(item => ({
+                ...item,
+                filteredOptions: [],
+                filteredOptionsOriginal: []
+              })));
+            } else {
+              // Para las demás listas, asignamos directamente
+              Object.assign(listaDestino, productosOrdenados.map(item => ({
+                ...item,
+                filteredOptions: [],
+                filteredOptionsOriginal: []
+              })));
+            }
+             
+            const resultado = '';
+            if (listaDestino.length > 0) {
+              //if (codigoProducto === "PRTRS" || codigoProducto === "PRTRZ") {
+                this.spinnerMessage = `Cargando Componentes para: ${codigoProducto}`;
+                this.spinner.show('cargandoProductos');
+                await this.listarComponestePorCodigoProdsOFICIAL(listaDestino,codigoProducto); 
+              //}
+            }
+            resolve(true);
+          } else {
+            this.spinner.hide('cargandoProductos');
+            this.spinner.hide();
+            console.error('Error: No se pudo obtener datos.');
+            reject('No se pudo obtener datos');
+          }
+        },
+        (error: any) => {
+          this.spinner.hide('cargandoProductos');
+  
+          this.spinner.hide();
+          console.error('Error al obtener datos:', error);
+          reject(error);
+        }
+      );
+  });
+}
+
+tieneProducto(codigo: string): boolean {
+  console.log("===============>: "+codigo);
+  const productosArray = this.DatosGrupo?.productos
+    ?.split(',')
+    .map(p => p.trim()) || [];
+  console.log(productosArray);
+  return productosArray.includes(codigo);
+}
+
+
 //#region VALIACIONES SOLO NUMERICOS
 
 
@@ -441,154 +628,187 @@ validateAndFormatInput(event: Event): void {
   }
 }
 
-//#endregion
+//#endregion 
 
+// Método para validar componentes con soporte para diferentes tipos de lista
 guardarComponentes() {
-  var counter=0;
-  for (const item of this.ListComponenteProducto) {
-    // Primero validamos el código para todos los componentes
- 
-    // Para todos los componentes si es ninguno no validar nada
-    if (item.codigoTipo === "Ninguno") {
+  // Array para almacenar todas las listas a validar
+  const tablas_lista = ["PRTRSMan","PRTRSMot", "PRTRZ", "PRTRM00000016", "PRTRM00000001", "PRTRH00000001", "PRTRF00000001", "PRTLU00000001_2_3"];
+  let hayErrores = false;
+
+  // Validar cada lista individualmente
+  for (const tabla_lista of tablas_lista) {
+    const lista = this.getComponentList(tabla_lista); 
+    var nombreTabla=tabla_lista.replace('PRTRSMan','PRTRS').replace('PRTRSMot','PRTRS').replace('PRTLU00000001_2_3','PRTLU0000000');
+    if (!lista || lista.length === 0) {
+      // Si la lista está vacía, simplemente la omitimos
       continue;
     }
-    if (item.codigoTipo === "" || item.codigoTipo === null) {
-      this.toaster.open({
-        text: `Seleccione código de ${item.descripcionTipo}`,
-        caption: 'Mensaje',
-        type: 'danger'
-      });
-      counter++;
-      break;
-    }
-    
-    // Validaciones de cantidades y cálculos solo para los 3 tipos
-    if (!item.cantidadRoller || item.cantidadRoller === "") {
-      this.toaster.open({
-        text: `Ingrese cantidad de ${item.descripcionTipo}`,
-        caption: 'Mensaje',
-        type: 'danger'
-      });
-      counter++;
-      break;
-    }
-    
-    // Determinar si es uno de los tipos específicos
-    const isTuboTelaRiel = (item.tipoDesc === 'TUBO' || item.tipoDesc === 'RIEL' || item.tipoDesc === 'TELA');
-    
-    // Para los demás componentes que no son TUBO, RIEL o TELA, no hacemos más validaciones
-    if (!isTuboTelaRiel) {
-      continue;
-    }
-    // Validación de números negativos
-    if (Number(item.cantidadRoller) < 1 || Number(item.calculoFinal) < 1) {
-      this.toaster.open({
-        text: `Evite ingresar números negativos en cantidad y calculo final de ${item.descripcionTipo}`,
-        caption: 'Mensaje',
-        type: 'danger',
-        position: 'top-right',
-        duration: 3000
-      });
-      counter++;
-      break;
-    }
-    // A partir de aquí solo validaciones para TUBO, RIEL y TELA
-    
-    // Validación específica según tipo
-    if (item.tipoDesc === 'TUBO' || item.tipoDesc === 'RIEL') {
-      // Solo validar ancho para TUBO y RIEL
-      if (!item.ancho || Number(item.ancho) < 1) {
-        this.toaster.open({
-          text: `Ingrese un ancho válido para ${item.descripcionTipo}`,
-          caption: 'Mensaje',
-          type: 'danger'
-        });
-        counter++;
-        break;
+
+    // Validar componentes de la lista actual
+    for (const item of lista) {
+      // Para todos los componentes si es ninguno no validar nada
+      if (item.codigoTipo === "Ninguno") {
+        continue;
       }
-    }
-    
-    if (item.tipoDesc === 'TELA') {
-      // Validar ancho y alto para TELA
-      if (!item.ancho || Number(item.ancho) < 1) {
+      if (item.codigoTipo === "" || item.codigoTipo === null) {
         this.toaster.open({
-          text: `Ingrese un ancho válido para ${item.descripcionTipo}`,
+          text: `Seleccione código de ${item.descripcionTipo} en ${nombreTabla}`,
           caption: 'Mensaje',
           type: 'danger'
         });
-        counter++;
+        hayErrores = true;
         break;
       }
       
-      if (!item.alto || Number(item.alto) < 1) {
+      // Validaciones de cantidades y cálculos solo para los 3 tipos
+      if (!item.cantidadRoller || item.cantidadRoller === "") {
         this.toaster.open({
-          text: `Ingrese un alto válido para ${item.descripcionTipo}`,
+          text: `Ingrese cantidad de ${item.descripcionTipo} en ${nombreTabla}`,
           caption: 'Mensaje',
           type: 'danger'
         });
-        counter++;
+        hayErrores = true;
+        break;
+      }
+      
+      // Determinar si es uno de los tipos específicos
+      const isTuboTelaRiel = (item.tipoDesc === 'TUBO' || item.tipoDesc === 'RIEL' || item.tipoDesc === 'TELA');
+      
+      // Para los demás componentes que no son TUBO, RIEL o TELA, no hacemos más validaciones
+      if (!isTuboTelaRiel) {
+        continue;
+      }
+      // Validación de números negativos
+      if (Number(item.cantidadRoller) < 1 || Number(item.calculoFinal) < 1) {
+        this.toaster.open({
+          text: `Evite ingresar números negativos en cantidad y calculo final de ${item.descripcionTipo} en ${nombreTabla}`,
+          caption: 'Mensaje',
+          type: 'danger',
+          position: 'top-right',
+          duration: 3000
+        });
+        hayErrores = true;
+        break;
+      }
+      
+      // Validación específica según tipo
+      if (item.tipoDesc === 'TUBO' || item.tipoDesc === 'RIEL') {
+        // Solo validar ancho para TUBO y RIEL
+        if (!item.ancho || Number(item.ancho) < 1) {
+          this.toaster.open({
+            text: `Ingrese un ancho válido para ${item.descripcionTipo} en ${nombreTabla}`,
+            caption: 'Mensaje',
+            type: 'danger'
+          });
+          hayErrores = true;
+          break;
+        }
+      }
+      
+      if (item.tipoDesc === 'TELA') {
+        // Validar ancho y alto para TELA
+        if (!item.ancho || Number(item.ancho) < 1) {
+          this.toaster.open({
+            text: `Ingrese un ancho válido para ${item.descripcionTipo} en ${nombreTabla}`,
+            caption: 'Mensaje',
+            type: 'danger'
+          });
+          hayErrores = true;
+          break;
+        }
+        
+        if (!item.alto || Number(item.alto) < 1) {
+          this.toaster.open({
+            text: `Ingrese un alto válido para ${item.descripcionTipo} en ${nombreTabla}`,
+            caption: 'Mensaje',
+            type: 'danger'
+          });
+          hayErrores = true;
+          break;
+        }
+      }
+      if (!item.calculoFinal || item.calculoFinal === "") {
+        this.toaster.open({
+          text: `Ingrese cálculo final de ${item.descripcionTipo} en ${nombreTabla}`,
+          caption: 'Mensaje',
+          type: 'danger'
+        });
+        hayErrores = true;
         break;
       }
     }
-    if (!item.calculoFinal || item.calculoFinal === "") {
-      this.toaster.open({
-        text: `Ingrese cálculo final de ${item.descripcionTipo}`,
-        caption: 'Mensaje',
-        type: 'danger'
-      });
-      counter++;
+
+    // Si encontramos errores en una lista, salimos del ciclo
+    if (hayErrores) {
       break;
     }
-    
+  }
 
-  };
-  if(counter==0){
+  // Si no hay errores, procedemos a guardar
+  if(!hayErrores){
     this.GuardarExplocion();
-  }else{
-   /*
-    this.toaster.open({
-      text: "Debe ingresar todos los datos",
-      caption: 'Mensaje',
-      type: 'danger',
-      // duration: 994000
-    });*/
   }
 }
-
-
 ListGrupos:any  =[];
+// Método para guardar todos los componentes de todas las listas en un solo JSON
 GuardarExplocion(){  
-  // QUITA DEL ARRAY LOS CAMPOS   filteredOptions, agregado,producto
-  const jsonData = JSON.stringify(this.ListComponenteProducto.map(item => {
-    const { filteredOptions, producto,codigo,nombre,
-      cantidadRoller,valorAjuste,ajusteTubo,valorAjusteXroller, 
-      error,filteredOptionsOriginal,indiceAgrupacion,cantXGrupoIndiceAgrupacion,valorPor1Roller,valorPor2Rollers,valorPor3Rollers,valorPor4Rollers,detalleCompleto,
-      calculoFinalXgrupo,altoXgrupo,
-      ...rest } = item;
-    
-  return {
-    ...rest,
-    cantidad: rest.calculoFinal, // Renombra 'calculo fina' a 'cantidad'
-    grupo: rest.cotizacionGrupo,
-    numeroCotizacion:rest.numeroCotizacion,
-    descrip_Componente: rest.tipoDesc,
-    codigo_Componente:rest.codigoTipo,
-    componente: rest.descripcionTipo,
-    cantidadUtilizada:rest.calculoFinal,
-    usuario:this.idUsuario
-  };
-  })); 
-  console.log(jsonData);
-  if(this.ListComponenteProducto.length === 0){
+  // Array para almacenar todas las listas a guardar
+  const tablas_lista = ["PRTRSMan", "PRTRSMot", "PRTRZ", "PRTRM00000016", "PRTRM00000001", "PRTRH00000001", "PRTRF00000001", "PRTLU00000001_2_3"];
+  let todosLosComponentes = [];
+  let hayComponentes = false;
+  
+  // Recopilar componentes de todas las listas
+  for (const tabla_lista of tablas_lista) {
+    const lista = this.getComponentList(tabla_lista);
+    var nombreTabla=tabla_lista.replace('PRTRSMan','PRTRS').replace('PRTRSMot','PRTRS').replace('PRTLU00000001_2_3','PRTLU');
+    if (lista && lista.length > 0) {
+      // Transformar los componentes de esta lista
+      console.log("LLISTAR ================>: "+tabla_lista);
+      console.log(lista);
+      const componentesTransformados = lista.map(item => {
+        const { 
+          filteredOptions,  codigo, nombre,
+          cantidadRoller, valorAjuste, ajusteTubo, valorAjusteXroller, 
+          error, filteredOptionsOriginal, indiceAgrupacion, cantXGrupoIndiceAgrupacion,
+          valorPor1Roller, valorPor2Rollers, valorPor3Rollers, valorPor4Rollers,
+          detalleCompleto, calculoFinalXgrupo, altoXgrupo,
+          ...rest 
+        } = item;
+        
+        return {
+          ...rest,
+          cantidad: rest.calculoFinal, // Renombra 'calculoFinal' a 'cantidad'
+          grupo: rest.cotizacionGrupo,
+          numeroCotizacion: rest.numeroCotizacion,
+          descrip_Componente: rest.tipoDesc,
+          codigo_Componente: rest.codigoTipo,
+          componente: rest.descripcionTipo,
+          cantidadUtilizada: rest.calculoFinal,
+          usuario: this.idUsuario,
+          tipoProducto: nombreTabla //tabla_lista // Añadimos el tipo de producto como identificador
+        };
+      });
+      
+      // Agregar los componentes transformados al array general
+      todosLosComponentes = [...todosLosComponentes, ...componentesTransformados];
+      hayComponentes = true;
+    }
+  } 
+  
+  // Verificar si hay componentes para guardar
+  if (!hayComponentes) {
     this.toaster.open({
-      text: "Debe Ingresar componentes",
+      text: "Debe ingresar componentes en al menos una lista",
       caption: 'Mensaje',
       type: 'danger',
-      // duration: 994000
     });
     return;
-  }
+  } 
 
+  // Convertir todos los componentes a JSON
+  const jsonData = JSON.stringify(todosLosComponentes);
+  console.log(jsonData);
   Swal.fire({
     allowOutsideClick: false,
     title: "¿Desea Guardar?",
@@ -608,6 +828,7 @@ GuardarExplocion(){
         this.spinner.hide();
         console.log(response);
         if (response.status == 200) { 
+          this.spinner.hide();
               const respuesta = response.json.respuesta;
               const id = response.json.id; 
               console.log("RESPUESTA");
@@ -619,6 +840,7 @@ GuardarExplocion(){
             this.dialogRef.close(rpt);
              }
           }else{
+            this.spinner.hide();
             this.toaster.open({
               text: "Ocurrio un error al enviar: "+response,
               caption: 'Mensaje',
@@ -645,18 +867,80 @@ GuardarExplocion(){
     });
 } 
 
-eliminarItemAgregado(item: any) {
-  const index = this.ListComponenteProducto.indexOf(item);
-  if (index !== -1) {
-    this.ListComponenteProducto.splice(index, 1);
+ 
+// Método para eliminar un componente de una lista específica
+eliminarItemAgregado(item: any, tabla_lista: string) {
+  // Obtener la lista correspondiente según tabla_lista
+  const lista = this.getComponentList(tabla_lista);
+  if (!lista) {
+    this.toaster.open({
+      text: `Lista no encontrada para ${tabla_lista}`,
+      caption: 'Error',
+      type: 'danger',
+      position: 'bottom-right',
+      duration: 2000
+    });
+    return;
+  }
+  // Encuentra el índice del elemento seleccionado en la lista correcta
+  const index = lista.indexOf(item);
+  if (index === -1) {
+    this.toaster.open({
+      text: "No se encontró el componente para eliminar",
+      caption: 'Error',
+      type: 'danger',
+      position: 'bottom-right',
+      duration: 2000
+    });
+    return;
+  }
+  // Eliminar el elemento de la lista
+  lista.splice(index, 1);
+  /*
+  // Notificar al usuario que el componente ha sido eliminado
+  this.toaster.open({
+    text: "Componente eliminado exitosamente",
+    caption: 'Éxito',
+    type: 'success',
+    position: 'bottom-right',
+    duration: 2000
+  });*/
+}
+//#endregion 
+ // Definir un mapa para asociar cada código con su lista correspondiente
+private componentListsMap = {
+  "PRTRSMan": () => this.ListComponenteProducto,
+  "PRTRSMot": () => this.ListComponenteProductoMot,
+  "PRTRZ": () => this.ListComponenteProductoPRTRZ,
+  "PRTRM00000016": () => this.ListComponenteProductoPRTRM00000016,
+  "PRTRM00000001": () => this.ListComponenteProductoPRTRM00000001,
+  "PRTRH00000001": () => this.ListComponenteProductoPRTRH00000001,
+  "PRTRF00000001": () => this.ListComponenteProductoPRTRF00000001,
+  "PRTLU00000001_2_3": () => this.ListComponenteProductoPRTLU00000001_2_3
+};// Método para obtener la lista correspondiente según el tipo
+private getComponentList(tabla_lista: string): any[] {
+  const listGetter = this.componentListsMap[tabla_lista];
+  if (!listGetter) {
+    console.error(`Lista no encontrada para el tipo: ${tabla_lista}`);
+    return [];
+  }
+  return listGetter();
+}
+// Método para agregar un componente a la lista correspondiente
+private addComponentToList(tabla_lista: string, newComponent: any): void {
+  const list = this.getComponentList(tabla_lista);
+  if (list) {
+    list.push(newComponent);
   }
 }
-//#endregion
-  // Datos que simulan la carga desde un JSON
- 
+// Método para obtener el último elemento de una lista
+private getLastItemFromList(tabla_lista: string): any {
+  const list = this.getComponentList(tabla_lista);
+  return list && list.length > 0 ? list[list.length - 1] : null;
+}
   popupComponenteSelected:any;
   // Método para abrir el popup
-  async openTablePopup() {
+  async openTablePopup(tipo:string) {
      
 
     // Crear el contenido HTML para la tabla
@@ -713,7 +997,7 @@ eliminarItemAgregado(item: any) {
           document.getElementById(`action-${index}`)?.addEventListener('click', () => {
             console.log("===============>");
             console.log(item);
-            this.executeAction(item);
+            this.executeAction(item,tipo);
           });
         });
       }
@@ -721,10 +1005,10 @@ eliminarItemAgregado(item: any) {
   }
 
   // Método que se ejecuta cuando se hace clic en la acción
-  executeAction(item: any): void {
+  executeAction(item: any,tabla_lista:any): void {
     console.log('Acción ejecutada para:', item);
     this.popupComponenteSelected=item;
-    this.agregarComponente(); 
+    this.agregarComponente(tabla_lista); 
   }
 
   ListMaestroArticulos:any=[]; 
@@ -745,7 +1029,7 @@ eliminarItemAgregado(item: any) {
     });
   }
   @ViewChild('tableElement') tableElement: ElementRef;
-  async  agregarComponente(){
+  async  agregarComponente(tabla_lista:any){
     console.log("EJECUTANDO AGREGAR");
     const userDataString = JSON.parse(localStorage.getItem('UserLog'));   
     var idUsuario= userDataString.id.toString(); 
@@ -758,32 +1042,41 @@ eliminarItemAgregado(item: any) {
       this.router.navigate(['/Home-main']);
       return;
     }  
-    const ultimoItem = this.ListComponenteProducto[this.ListComponenteProducto.length - 1];
-     let listComponentes =[];
-     if (this.popupComponenteSelected.codigoGrupo === "TODOS") {
-      // recorre todos los codigos de componentes para ejecutar api y luego acumular cada una
-      for (const item of this.ListMaestroArticulos.filter(filt => filt.codigoGrupo !== 'TODOS')) {
-        
-     // Llamada al servicio para obtener componentes de SAP
-        const result = await this.ListarArticulosPorFamiliaGrupoIndividual(item.nombreGrupo);
-        if (result) {
-          listComponentes.push(...result);
-        }
-      }
-      console.log("RESULTADO FINAL==>");
-      console.log(listComponentes);
- 
-    } else {
-      // Llamada al servicio para obtener componentes de SAP
-      const result = await this.ListarArticulosPorFamiliaGrupoIndividual(this.popupComponenteSelected.nombreGrupo);
-      //listComponentes = result ? [result] : [];  
+     // Obtener el último elemento de la lista correspondiente 
+  const ultimoItem = this.getLastItemFromList(tabla_lista);
+  if (!ultimoItem) {
+    this.toaster.open({
+      text: "No se encontró información del producto",
+      caption: 'Error',
+      type: 'danger',
+      position: 'bottom-right',
+      duration: 2000
+    });
+    return;
+  }
+  
+     // Obtener los componentes según la selección
+  let listComponentes = [];
+  if (this.popupComponenteSelected.codigoGrupo === "TODOS") {
+    // Recorre todos los códigos de componentes para ejecutar api y acumular resultados
+    for (const item of this.ListMaestroArticulos.filter(filt => filt.codigoGrupo !== 'TODOS')) {
+      const result = await this.ListarArticulosPorFamiliaGrupoIndividual(item.nombreGrupo);
       if (result) {
         listComponentes.push(...result);
       }
-      console.log("RESULTADO POR INDIVIDUAL==>");
-      console.log(listComponentes);
     }
-     
+    console.log("RESULTADO FINAL==>");
+    console.log(listComponentes);
+  } else {
+    // Llamada al servicio para obtener componentes de SAP por grupo individual
+    const result = await this.ListarArticulosPorFamiliaGrupoIndividual(this.popupComponenteSelected.nombreGrupo);
+    if (result) {
+      listComponentes.push(...result);
+    }
+    console.log("RESULTADO POR INDIVIDUAL==>");
+    console.log(listComponentes);
+  }
+     // Transformar datos para la interfaz
   const transformedData = listComponentes.map((item: any) => ({
     codigoTipo: item.codigo,
     descripcionTipo: item.nombre,
@@ -801,43 +1094,45 @@ eliminarItemAgregado(item: any) {
     color: "",
     serie: "",
     lote: "",
+  }); 
+    // Crear el nuevo componente con los datos del ultimoItem
+  const newComponent = { 
+    producto: ultimoItem.producto,
+    numeroCotizacion: ultimoItem.numeroCotizacion,
+    cotizacionGrupo: ultimoItem.cotizacionGrupo,
+    codigoTipo: "",
+    descripcionTipo: this.popupComponenteSelected.nombreGrupo.toUpperCase(),
+    tipoDesc: "ACCESORIO",
+    codigo: "",
+    nombre: "",
+    alto: "0",
+    ancho: "0",
+    cantidadRoller: ultimoItem.cantidadRoller,
+    valorAjuste: null,
+    ajusteTubo: null,
+    valorAjusteXroller: null,
+    calculoFinal: 0,
+    merma: 0,
+    agregado: "true",
+    filteredOptions: transformedData,
+    filteredOptionsOriginal: transformedData,
+    familia: ultimoItem.familia,
+    subFamilia: ultimoItem.subFamilia
+  };
+  // Agregar el nuevo componente a la lista correspondiente
+  this.addComponentToList(tabla_lista, newComponent);
+ // Cerrar el popup y mostrar mensaje de éxito
+  Swal.close();
+  this.toaster.open({
+    text: "Componente agregado",
+    caption: 'Mensaje',
+    type: 'success',
+    position: 'bottom-right',
+    duration: 2000
   });
-// Agregar nuevo componente a la lista
-    this.ListComponenteProducto.push(
-      { 
-        producto: ultimoItem.producto,
-        numeroCotizacion: ultimoItem.numeroCotizacion,
-        cotizacionGrupo: ultimoItem.cotizacionGrupo,
-        codigoTipo: "",
-        descripcionTipo: this.popupComponenteSelected.nombreGrupo.toUpperCase(),
-        tipoDesc: "ACCESORIO",
-        codigo: "",
-        nombre: "",
-        alto: "0",
-        ancho: "0",
-        cantidadRoller: ultimoItem.cantidadRoller,
-        valorAjuste: null,
-        ajusteTubo: null,
-        valorAjusteXroller: null,
-        calculoFinal: 0,
-        merma: 0,
-        agregado:"true",
-        filteredOptions: transformedData,
-        filteredOptionsOriginal:transformedData ,
-        familia: ultimoItem.familia,
-        subFamilia: ultimoItem.subFamilia
-    });
-    
-    Swal.close();
-    this.toaster.open({
-      text: "Componente agregado",
-      caption: 'Mensaje',
-      type: 'success',
-      position: 'bottom-right',
-      duration: 2000
-    });  
-    // Desplazar el scroll hacia el final
-    this.scrollToBottom();
+  
+  // Desplazar el scroll hacia el final
+  this.scrollToBottom();
   }
   tipoDescColors: { [key: string]: string } = {
     'ACCESORIO': 'rgb(129 129 129 / 6%)',
@@ -905,7 +1200,7 @@ eliminarItemAgregado(item: any) {
     }
   }
   
-clonarComponente(item:any){  
+clonarComponente(item:any,tabla_lista:string){  
   const userDataString = JSON.parse(localStorage.getItem('UserLog'));   
   var idUsuario= userDataString.id.toString(); 
   if (!userDataString) {   this.toaster.open({
@@ -916,11 +1211,36 @@ clonarComponente(item:any){
   });
     this.router.navigate(['/Home-main']);
     return;
-  }  
-  // Encuentra el índice del elemento seleccionado
-  const index = this.ListComponenteProducto.indexOf(item);
+  }   
    
-  this.ListComponenteProducto.splice(index + 1, 0, {    
+  // Obtener la lista correspondiente según tabla_lista
+  const lista = this.getComponentList(tabla_lista);
+  if (!lista) {
+    this.toaster.open({
+      text: `Lista no encontrada para ${tabla_lista}`,
+      caption: 'Error',
+      type: 'danger',
+      position: 'bottom-right',
+      duration: 2000
+    });
+    return;
+  }
+  
+  // Encuentra el índice del elemento seleccionado en la lista correcta
+  const index = lista.indexOf(item);
+  if (index === -1) {
+    this.toaster.open({
+      text: "No se encontró el componente para clonar",
+      caption: 'Error',
+      type: 'danger',
+      position: 'bottom-right',
+      duration: 2000
+    });
+    return;
+  }
+
+  // Crear el clon con los datos del componente original
+  const clonedComponent = {    
     producto: item.producto,
     numeroCotizacion: item.numeroCotizacion,
     cotizacionGrupo: item.cotizacionGrupo,
@@ -928,21 +1248,34 @@ clonarComponente(item:any){
     descripcionTipo: item.descripcionTipo,
     tipoDesc: item.tipoDesc,
     codigo: item.codigo,
-    nombre:item.nombre,
-    alto: "",
-    ancho: "",
+    nombre: item.nombre,
+    alto: "",  // Reset alto
+    ancho: "", // Reset ancho
     cantidadRoller: item.cantidadRoller,
     valorAjuste: null,
     ajusteTubo: null,
     valorAjusteXroller: null,
     calculoFinal: 0,
     merma: 0,
-    agregado:"true",
+    agregado: "true",
     filteredOptions: item.filteredOptions,
-    filteredOptionsOriginal:item.filteredOptionsOriginal,
+    filteredOptionsOriginal: item.filteredOptionsOriginal,
     familia: item.familia,
     subFamilia: item.subFamilia
-  }); 
+  };  
+  // Insertar el clon justo después del componente original
+  lista.splice(index + 1, 0, clonedComponent);
+/*
+// Notificar al usuario que el componente ha sido clonado
+this.toaster.open({
+  text: "Componente clonado exitosamente",
+  caption: 'Éxito',
+  type: 'success',
+  position: 'bottom-right',
+  duration: 2000
+});*/
+
+
 }
 getGrupos(indiceAgrupacion: string): string[] {
   return indiceAgrupacion ? indiceAgrupacion.split(',') : [];
@@ -982,61 +1315,9 @@ getValores(cantXGrupo: string, element: any): any[] {
   return resul;
 }
 
-getValoresTotal(cantXGrupo: string, element: any): any[] {
-  const cantidades = cantXGrupo ? cantXGrupo.split(',') : [];
-  let resul: any[] = [];
 
-  cantidades.forEach(item => {
-    const cantidad = Number(item);
-    let valor: string = '0.00';
-    
-    switch(true) {
-      case cantidad === 1:
-        valor = (Number(parseFloat(element.valorPor1Roller).toFixed(3))*cantidad).toFixed(3).toString();
-        break;
-      case cantidad === 2:
-        valor = (Number(parseFloat(element.valorPor2Rollers).toFixed(3))*cantidad).toFixed(3).toString();
-        break;
-      case cantidad === 3:
-        valor = (Number(parseFloat(element.valorPor3Rollers).toFixed(3))*cantidad).toFixed(3).toString();
-        break;
-      case cantidad >= 4:
-        valor = (Number(parseFloat(element.valorPor4Rollers).toFixed(3))*cantidad).toFixed(3).toString();
-        break;
-      default:
-        console.warn(`Unhandled roller quantity: ${cantidad}`);
-    }
-    
-    resul.push(valor);
-  });
- 
-  return resul;
-}
-sum(valores: any[]): number {
-  if (!valores || valores.length === 0) return 0;
-  
-  return valores.reduce((acc, current) => {
-    // Convert to number, handling potential string inputs
-    const numValue = Number(parseFloat(current).toFixed(3))  
-    
-    return acc + numValue;
-  }, 0).toFixed(3);
-}
+
 isFormulacion: boolean = false;
-  toggleVisibilityFormulation(): void {
-    this.isFormulacion = !this.isFormulacion;
-  }
-
-  mostrar(comp:any){ 
-    if(comp.descripcionTipo=="CINTA DOBLE CONTACTO" || comp.descripcionTipo=='CINTA ADHESIVA CLEAR'){
-      return true;
-    }else
-    if(comp?.agregado!='true' && comp.tipoDesc == 'ACCESORIO'){
-      return true;
-    }else{
-      return false;
-    }
-  }
   //#endregion
 
 //#region CALCULADORA
@@ -1132,7 +1413,7 @@ calculateAccesorioComponent(component: any) {
 
 // Method to bind to input changes
 onComponentInputChange(component: any) {
-  this.autoCalculateComponent(component);
+ // this.autoCalculateComponent(component);
 }
  
 

@@ -49,3 +49,43 @@ table.unstyledTable tfoot td {
     flex: 1;
     overflow: auto;
   }
+.sizeTd{
+  font-size: 12px !important;
+
+}
+.scroll-left {
+  padding: 22px;
+  direction: rtl !important;           /* Invierte el scroll al lado izquierdo */
+  overflow: auto !important;
+  max-height: calc(100vh - 200px) !important;
+}
+
+.scroll-left > * {
+  direction: ltr !important;           /* Mantiene el contenido con lectura normal */
+}
+
+.scroll-left::-webkit-scrollbar {
+  width: 13px; /* Grosor de la barra */
+}
+
+.scroll-left::-webkit-scrollbar-track {
+  background: #f0f0f0; /* Color del fondo */
+}
+
+.scroll-left::-webkit-scrollbar-thumb {
+  background-color: #0D7ABD; /* Color del scroll mismo */
+  border-radius: 4px;
+  border: 1px solid #ffffff; /* Opcional: borde alrededor del scroll */
+}
+.sharp{
+  
+  min-width: 40px !important;
+  padding: 7px !important;
+  height: 35px !important;
+  min-height: 35px !important;
+}
+
+h4{
+  font-size: 13px !important;
+  margin-bottom: 0px !important;
+}

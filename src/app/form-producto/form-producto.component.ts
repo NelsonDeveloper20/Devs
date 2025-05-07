@@ -1243,7 +1243,14 @@ CboModeloMecanismo=[{id:0,nombre:"--Seleccione--",idTipoMecanismo:"0"}];listarCb
   var result=this.CboModeloMecanismo.filter(elem=>{elem.idTipoMecanismo==valorSeleccionado});
   this.CboModeloMecanismo=result;
 }
-CboTipoCadena=[{id:"0",nombre:"--Seleccione--"}];listarCboTipoCadena(){  
+//CboTipoCadena=[{id:"0",nombre:"--Seleccione--"}];
+
+CboTipoCadena=[
+  {id:"0",nombre:"--Seleccione--"},
+  {id:"Plastico",nombre:"Plastico"},
+  {id:"Metal",nombre:"Metal"}
+]; 
+listarCboTipoCadena(){  
   this.CboTipoCadena=[
     {id:"",nombre:"--Seleccione--"},
     {id:"Plastico",nombre:"Plastico"},
