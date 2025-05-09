@@ -680,7 +680,7 @@ guardarComponentes() {
         continue;
       }
       // Validación de números negativos
-      if (Number(item.cantidadRoller) < 1 || Number(item.calculoFinal) < 1) {
+      if (Number(item.cantidadRoller) < 0 || Number(item.calculoFinal) < 0) {
         this.toaster.open({
           text: `Evite ingresar números negativos en cantidad y calculo final de ${item.descripcionTipo} en ${nombreTabla}`,
           caption: 'Mensaje',
@@ -695,7 +695,7 @@ guardarComponentes() {
       // Validación específica según tipo
       if (item.tipoDesc === 'TUBO' || item.tipoDesc === 'RIEL') {
         // Solo validar ancho para TUBO y RIEL
-        if (!item.ancho || Number(item.ancho) < 1) {
+        if (!item.ancho || Number(item.ancho) < 0) {
           this.toaster.open({
             text: `Ingrese un ancho válido para ${item.descripcionTipo} en ${nombreTabla}`,
             caption: 'Mensaje',
@@ -708,7 +708,7 @@ guardarComponentes() {
       
       if (item.tipoDesc === 'TELA') {
         // Validar ancho y alto para TELA
-        if (!item.ancho || Number(item.ancho) < 1) {
+        if (!item.ancho || Number(item.ancho) < 0) {
           this.toaster.open({
             text: `Ingrese un ancho válido para ${item.descripcionTipo} en ${nombreTabla}`,
             caption: 'Mensaje',
@@ -718,7 +718,7 @@ guardarComponentes() {
           break;
         }
         
-        if (!item.alto || Number(item.alto) < 1) {
+        if (!item.alto || Number(item.alto) < 0) {
           this.toaster.open({
             text: `Ingrese un alto válido para ${item.descripcionTipo} en ${nombreTabla}`,
             caption: 'Mensaje',
