@@ -225,8 +225,8 @@ formatDateForInput(dateTime: string): string {
           if(this.ordenes) { //SI HAY ORDENE SELCCIONADO
 
             const detalleSap= this.ordenes?.Lineas;
-            console.log("NELSON");
-            console.log(detalleSap);
+            //console.log("NELSON");
+            //console.log(detalleSap);
             detalleSap.forEach(item=>  //AGREGAR LOS QUE AUN NO FUERON GUARDADOS EN LA BD
               {             
                 if (!this.Productos.some(row =>  row.codigoProducto.toString().trim() === item.codarticulo.toString().trim() && row.linea.toString().trim() === item.linea.toString().trim()))  {       
@@ -246,6 +246,7 @@ formatDateForInput(dateTime: string): string {
      "indiceAgrupacion":"", //NO
      "indexDetalle":"",//NO
      "pase":paseValue,
+     "codFamilia":item.codfamilia,
      /*
        CASE
         WHEN SUBSTRING(cd.codarticulo, 1, 3) != 'PRT' THEN 'PASDIRECCT'
@@ -333,6 +334,8 @@ formatDateForInput(dateTime: string): string {
               }
               }
             ); 
+            //console.log("FORMATEADO");           
+           // console.log(this.Productos);
           }
  
           this.spinner.hide();
@@ -371,34 +374,7 @@ formatDateForInput(dateTime: string): string {
        this.onSelectState(param);
       }
     });
-  }
-  /*getRowSpan(index: number): number {
-    // Determina si la fila actual debería ser la que combina las filas siguientes
-    if (index === 0 || 
-        this.Productos[index].cotizacionGrupo !== this.Productos[index - 1].cotizacionGrupo || 
-        this.Productos[index].tipo !== "Producto") {
-      let count = 1; // Inicializa el contador para el rowspan (comienza en 1)
-  
-      // Si no hay un grupo válido o el tipo no es "Producto", no combinar filas
-      if (!this.Productos[index].cotizacionGrupo || this.Productos[index].tipo !== "Producto") {
-        return 0; // Retorna 0, lo que significa que no habrá rowspan
-      }
-  
-      // Recorre las filas siguientes para contar cuántas comparten el mismo grupo y tipo
-      for (let i = index + 1; i < this.Productos.length; i++) {
-        if (this.Productos[i].cotizacionGrupo === this.Productos[index].cotizacionGrupo &&
-            this.Productos[i].tipo === "Producto") {
-          count++; // Incrementa el contador si coincide el grupo y tipo
-        } else {
-          break; // Detiene el conteo si hay una diferencia en el grupo o tipo
-        }
-      }
-  
-      return count; // Retorna la cantidad de filas a combinar
-    }
-  
-    return 0; // Retorna 0 si no es la fila principal del grupo
-  }*/
+  } 
   getRowSpan(index: number): number {
     // Determina si la fila actual debería ser la que combina las filas siguientes
     if (
@@ -598,20 +574,7 @@ formatDateForInput(dateTime: string): string {
     
    listTipoCliente:any=[];
    listas(){
-    this.spinner.show(); 
-   /* this._OrdenService.listas('TipoCliente').subscribe(
-      (res: any) => {
-        if(res){
-          this.listTipoCliente = res;
-        }
-        this.checkSpinner();
-      },
-      (error) => {
-        console.error("Error al obtener lista de tipo cliente:", error);
-        this.checkSpinner();
-      }
-    );*/
-  
+    this.spinner.show();  
     this._OrdenService.listas('Destino').subscribe(
       (res: any) => { 
         if(res){
@@ -935,6 +898,7 @@ eliminarAmbiente(indice: number) {
         this.itemCopiado.cotizacionGrupo=""; 
         this.itemCopiado.idTbl_Ambiente="";  
         this.itemCopiado.cantidad=producto.cantidad;
+        this.itemCopiado.codFamilia=producto.codFamilia;
         producto=this.itemCopiado;
         //this.itemCopiado=null;
 
@@ -1080,11 +1044,13 @@ eliminarAmbiente(indice: number) {
   }
 
   RegistrarProductoComponente(data){ 
+    console.log("ES DATA DE LISTA==>");
+    console.log(data);
     const capitalizedJson = this.capitalizeKeys(data);
     const userDataString = JSON.parse(localStorage.getItem('UserLog'));   
     var idUser= userDataString.id.toString();
     capitalizedJson["IdUsuarioCrea"]=idUser;
-    console.log(capitalizedJson);
+    console.log(capitalizedJson); 
     this.spinner.show(); 
     this._OrdenService.RegistrarDetalleOrdenProduccionComponente(capitalizedJson,"Componente")
       .subscribe({
@@ -1154,15 +1120,7 @@ eliminarAmbiente(indice: number) {
     dialogRef.afterClosed().subscribe({
       next: data => {   
        if (data) { 
-        this.ListarProyecto();
-        /*
-        this.toaster.open({
-          text: `Proyecto agregado ${data.correo}.`,
-          caption: 'Mensaje',
-          type: 'success',
-          position:'bottom-right'
-        });*/
-  
+        this.ListarProyecto(); 
       } 
     },
     error: error => { 
@@ -1464,7 +1422,7 @@ if (!this.filteredCotizaciones.some(existingItem => existingItem.docEntrySap ===
       Swal.fire({
         allowOutsideClick: false,
         title: "¿Desea Enviar?",
-        html: `¿Esta seguro de enviar a Operaciones Construcción?`,
+        html: `¿Esta seguro de enviar a Monitoreo?`,
         icon: 'info',
         showCancelButton: true,
         confirmButtonText: 'Si, Enviar',
@@ -1476,7 +1434,8 @@ if (!this.filteredCotizaciones.some(existingItem => existingItem.docEntrySap ===
       const jsonData = JSON.stringify(this.ListGrupos);
       console.log(jsonData);
       this.spinner.show();
-      this.ordenproduccionGrupoService.CambiarEstadoGrupo("Operaciones",jsonData)
+      //Operaciones
+      this.ordenproduccionGrupoService.CambiarEstadoGrupo("Construccion Terminada",jsonData)
         .subscribe({
           next: response => {
             this.spinner.hide();

@@ -441,7 +441,7 @@ const storedFechaFin = localStorage.getItem('fechaFin');
     Swal.fire({
       allowOutsideClick: false,
       title: "¿Desea Enviar?",
-      html: `¿Esta seguro de enviar a Operaciones Construcción?`,
+      html: `¿Esta seguro de enviar a a Monitoreo?`,
       icon: 'info',
       showCancelButton: true,
       confirmButtonText: 'Si, Enviar',
@@ -453,7 +453,8 @@ const storedFechaFin = localStorage.getItem('fechaFin');
     const jsonData = JSON.stringify(this.ListGrupos);
     console.log(jsonData);
     this.spinner.show();
-    this.ordenproduccionGrupoService.CambiarEstadoGrupo("Operaciones",jsonData)
+    //Operaciones    
+    this.ordenproduccionGrupoService.CambiarEstadoGrupo("Construccion Terminada",jsonData)
       .subscribe({
         next: response => {
           this.spinner.hide();

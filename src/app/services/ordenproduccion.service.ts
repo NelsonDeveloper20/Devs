@@ -48,7 +48,6 @@ export class OrdenproduccionService {
     formData.append('orden', JSON.stringify(_orden)); // Convertir el objeto a JSON y agregarlo al FormData
     formData.append('archivo', _archivo);
       return this.http.post<IApiResponse>(  this.urlBase + 'OrdenProduccion',  formData  );
-  
     }
     //REGISTRAR  PRODUCTO
     
