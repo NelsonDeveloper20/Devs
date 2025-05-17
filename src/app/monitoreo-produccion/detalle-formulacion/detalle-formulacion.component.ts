@@ -148,11 +148,14 @@ isOptionInFilteredOptions(codigo: string, filteredOptions: any[]): boolean {
  
 onNombreChange(event: any, element: any) {
   const selectedCodigo = event.value; // Código seleccionado
+  if(!selectedCodigo){
+    return;
+  }
   console.log(selectedCodigo);
     
-  const selectedOption = element.filteredOptionsOriginal.find(item => item.codigoTipo === selectedCodigo);
+  const selectedOption = element.filteredOptionsOriginal.find(item => item.codigoTipo.toUpperCase() === selectedCodigo.toUpperCase());
 console.log(selectedOption.descripcionTipo);
-  if (selectedOption  && element.agregado == 'true') {
+  if (selectedOption){//}  && element.agregado == 'true') {
     console.log("ingresa");
     element.nombre = selectedOption.nombre; // Actualiza el nombre
     element.unidadMedida = selectedOption.unidadMedida || ''; // Actualiza unidad de medida
