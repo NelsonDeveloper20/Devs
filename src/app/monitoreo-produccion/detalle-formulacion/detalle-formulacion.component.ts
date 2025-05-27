@@ -553,16 +553,21 @@ var resultadoAcionamiento = partes.includes("Motorizado") ? "Motorizado" : parte
           if (data && data.status === 200) {
             const ordenPersonalizado = ['TUBO', 'TELA', 'RIEL'];
             
-            let productosOrdenados;            
+            let productosOrdenados;  
+              let dataproductos=data.json; 
+              dataproductos = dataproductos.map(p => ({
+                ...p,
+                lote: "" // o null, 0, etc., lo que necesites como valor inicial
+              }));          
             if (codigoProducto === "PRTRSMan" || codigoProducto === "PRTRSMot" || codigoProducto === "PRTRZ") {
-              productosOrdenados = data.json.sort((a, b) => {
+              productosOrdenados = dataproductos.sort((a, b) => {
               const iA = ordenPersonalizado.indexOf(a.tipoDesc);
               const iB = ordenPersonalizado.indexOf(b.tipoDesc);
               return (iA === -1 ? 999 : iA) - (iB === -1 ? 999 : iB);
                });
                
             }else{
-              productosOrdenados = data.json;
+              productosOrdenados = dataproductos;
             }            
             // Si es la lista de PRTLU, hacemos un push
             if (listaDestino === this.ListComponenteProductoPRTLU00000001_2_3) {
@@ -1120,7 +1125,8 @@ private getLastItemFromList(tabla_lista: string): any {
     filteredOptions: transformedData,
     filteredOptionsOriginal: transformedData,
     familia: ultimoItem.familia,
-    subFamilia: ultimoItem.subFamilia
+    subFamilia: ultimoItem.subFamilia,
+    lote:""
   };
   // Agregar el nuevo componente a la lista correspondiente
   this.addComponentToList(tabla_lista, newComponent);
@@ -1264,7 +1270,8 @@ clonarComponente(item:any,tabla_lista:string){
     filteredOptions: item.filteredOptions,
     filteredOptionsOriginal: item.filteredOptionsOriginal,
     familia: item.familia,
-    subFamilia: item.subFamilia
+    subFamilia: item.subFamilia,
+    lote:item.lote
   };  
   // Insertar el clon justo después del componente original
   lista.splice(index + 1, 0, clonedComponent);

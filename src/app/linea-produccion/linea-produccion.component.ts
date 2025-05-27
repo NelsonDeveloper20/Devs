@@ -24,10 +24,21 @@ export class LineaProduccionComponent implements OnInit {
     private _service: LineaProduccionService
   ) {  
   }
-  ngOnInit(): void { 
+  fechaInicio: string = ''; 
+  panelOpenState = false;
+  ngOnInit(): void {  
+    const hoy = new Date();
+    // Fecha Fin: hoy
+    this.fechaInicio = this.formatDate(hoy);
+    // Fecha Inicio: hoy - 7 días 
     console.log("NNN");
     console.log(this.nombreLinea);
   }
+  formatDate(date: Date): string {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Asegura "05" y no "5"
+  return `${year}-${month}`;
+}
 
   ngAfterViewInit() {
     this.iniciarGraficos();  
@@ -55,17 +66,17 @@ LineaPieSeriesData: any[] = [];
 Fecha: Date = new Date();  
 LineaAverageSeries: any = {}; // Cambiado a un objeto
 
-
-fechaInicio: Date;
+ 
 ListarLinea() {
-  this.spinner.show();
-  var filtra="sin filtro";
+    this.LineaCategoria=[];
+  this.spinner.show(); 
+    var filtra="sin filtro";
   if(!this.nombreLinea){ // no tiene valor DEBE MOSTRAR TODO 
     filtra="sin filtro";
   }else{
     filtra="actual en adelante";
-  } 
-  this._service.ListarLineaProduccion(filtra).subscribe(
+  }
+  this._service.ListarLineaProduccion(this.fechaInicio).subscribe(
     (data: any) => {
       if (data && data.status === 200) {
         this.ListLinea = data.json;
@@ -226,7 +237,6 @@ filtrarPorTurnoYFecha(turno: string, fecha: string) {
         console.log(this.detalleLinea);
         this.showTablePopup(turno,fecha);
       } else {
-        this.spinner.hide();
         console.error('Error: No se pudo obtener datos.');
       }
     },
@@ -237,6 +247,7 @@ filtrarPorTurnoYFecha(turno: string, fecha: string) {
   );
 } 
 LinaProdHorizontal() {
+        this.spinner.show();
   Highcharts.chart('container_linea_horizontal', { 
      chart: {
       scrollablePlotArea: {
@@ -293,7 +304,11 @@ LinaProdHorizontal() {
         }
       }
     ]
-  });
+  }); // Espera un pequeño tiempo y luego fuerza el redimensionamiento
+  setTimeout(() => {
+    window.dispatchEvent(new Event('resize'));
+        this.spinner.hide();
+  }, 300);
 }
 //#endregion
 

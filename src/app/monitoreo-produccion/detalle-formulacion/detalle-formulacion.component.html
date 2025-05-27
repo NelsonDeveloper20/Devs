@@ -56,6 +56,8 @@
                         </th>
                         <th nowrap style="    height: 8px !important;">Merma <!--a<nput type="checkbox" [(ngModel)]="isEditableMerma">--> 
                         </th>  
+                        <th nowrap style="    height: 8px !important;">Lote <!--a<nput type="checkbox" [(ngModel)]="isEditableMerma">--> 
+                        </th>  
                         <th nowrap style="    height: 8px !important;">  
                             <button class="btn btn-primary-azul tp-btn-light sharp"  title="Agregar Nuevo Componente"
                             (click)="openTablePopup('PRTRSMan')"><mat-icon>library_add</mat-icon> 
@@ -129,7 +131,14 @@
                             [(ngModel)]="comp.merma"  (input)="validateAndFormatInput($event)" [disabled]="!isEditableMerma"
                             *ngIf="comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA'"/>
                             <span *ngIf="!(comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA')">--</span>
-                        </td> 
+                        </td>      
+                    <td style="min-width: 55px !important;" class="sizeTd">
+                    <textarea class="form-control input-sm"   rows="1"  style="height: 50px !important; font-size: 14px;"   [(ngModel)]="comp.lote"                   
+                     *ngIf="comp.tipoDesc === 'TELA'">
+                    </textarea>
+                    <span *ngIf="comp.tipoDesc !== 'TELA'">--</span>
+                    </td>
+
                         <td class="sizeTd">
                                 <button class="btn btn-primary tp-btn-light sharp" *ngIf="comp?.agregado==='true'" title="Eliminar"
                                     (click)="eliminarItemAgregado(comp,'PRTRSMan')">
@@ -167,6 +176,8 @@
                     <th nowrap style="    height: 8px !important;">Cálculo Final <!--<input type="checkbox" [(ngModel)]="isEditableCalculo">--> 
                     </th>
                     <th nowrap style="    height: 8px !important;">Merma <!--a<nput type="checkbox" [(ngModel)]="isEditableMerma">--> 
+                    </th>  
+                    <th nowrap style="    height: 8px !important;">Lote <!--a<nput type="checkbox" [(ngModel)]="isEditableMerma">--> 
                     </th>  
                     <th nowrap style="    height: 8px !important;">  
                         <button class="btn btn-primary-azul tp-btn-light sharp"  title="Agregar Nuevo Componente"
@@ -242,7 +253,13 @@
                         [(ngModel)]="comp.merma"  (input)="validateAndFormatInput($event)" [disabled]="!isEditableMerma"
                         *ngIf="comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA'"/>
                         <span *ngIf="!(comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA')">--</span>
-                    </td> 
+                    </td>       
+                    <td style="min-width: 55px !important;" class="sizeTd">
+                    <textarea class="form-control input-sm"   rows="1"  style="height: 50px !important; font-size: 14px;"   [(ngModel)]="comp.lote"                   
+                     *ngIf="comp.tipoDesc === 'TELA'">
+                    </textarea>
+                    <span *ngIf="comp.tipoDesc !== 'TELA'">--</span>
+                    </td>
                     <td class="sizeTd">
                             <button class="btn btn-primary tp-btn-light sharp" *ngIf="comp?.agregado==='true'" title="Eliminar"
                                 (click)="eliminarItemAgregado(comp,'PRTRSMot')">
@@ -279,6 +296,8 @@
                       <th nowrap style="    height: 8px !important;">Cálculo Final <!--<input type="checkbox" [(ngModel)]="isEditableCalculo">--> 
                       </th>
                       <th nowrap style="    height: 8px !important;">Merma <!--a<nput type="checkbox" [(ngModel)]="isEditableMerma">--> 
+                      </th>  
+                      <th nowrap style="    height: 8px !important;">Lote <!--a<nput type="checkbox" [(ngModel)]="isEditableMerma">--> 
                       </th>  
                       <th nowrap style="    height: 8px !important;">  
                           <button class="btn btn-primary-azul tp-btn-light sharp"  title="Agregar Nuevo Componente"
@@ -353,7 +372,13 @@
                           [(ngModel)]="comp.merma"  (input)="validateAndFormatInput($event)" [disabled]="!isEditableMerma"
                           *ngIf="comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA'"/>
                           <span *ngIf="!(comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA')">--</span>
-                      </td> 
+                      </td>      
+                    <td style="min-width: 55px !important;" class="sizeTd">
+                    <textarea class="form-control input-sm"   rows="1"  style="height: 50px !important; font-size: 14px;"   [(ngModel)]="comp.lote"                   
+                     *ngIf="comp.tipoDesc === 'TELA'">
+                    </textarea>
+                    <span *ngIf="comp.tipoDesc !== 'TELA'">--</span>
+                    </td>
                       <td class="sizeTd">
                               <button class="btn btn-primary tp-btn-light sharp" *ngIf="comp?.agregado==='true'" title="Eliminar"
                                   (click)="eliminarItemAgregado(comp,'PRTRZ')">
@@ -388,7 +413,8 @@
         <th nowrap style="height: 8px !important;">Alto</th>
         <th nowrap style="height: 8px !important;">Cant. Roller</th>
         <th nowrap style="height: 8px !important;">Cálculo Final</th>
-        <th nowrap style="height: 8px !important;">Merma</th>  
+        <th nowrap style="height: 8px !important;">Merma</th>    
+        <th nowrap style="height: 8px !important;">Lote</th>  
         <th nowrap style="height: 8px !important;">  
           <button class="btn btn-primary-azul tp-btn-light sharp" title="Agregar Nuevo Componente"
                   (click)="openTablePopup('PRTRM00000016')"><mat-icon>library_add</mat-icon></button> 
@@ -453,7 +479,13 @@
                  [(ngModel)]="comp.merma" (input)="validateAndFormatInput($event)" [disabled]="!isEditableMerma"
                  *ngIf="comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA'"/>
           <span *ngIf="!(comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA')">--</span>
-        </td> 
+        </td>  
+                    <td style="min-width: 55px !important;" class="sizeTd">
+                    <textarea class="form-control input-sm"   rows="1"  style="height: 50px !important; font-size: 14px;"   [(ngModel)]="comp.lote"                   
+                     *ngIf="comp.tipoDesc === 'TELA'">
+                    </textarea>
+                    <span *ngIf="comp.tipoDesc !== 'TELA'">--</span>
+                    </td>
         <td class="sizeTd">
           <button class="btn btn-primary tp-btn-light sharp" *ngIf="comp?.agregado==='true'" title="Eliminar"
                   (click)="eliminarItemAgregado(comp,'PRTRM00000016')">
@@ -484,7 +516,8 @@
         <th nowrap style="height: 8px !important;">Alto</th>
         <th nowrap style="height: 8px !important;">Cant. Roller</th>
         <th nowrap style="height: 8px !important;">Cálculo Final</th>
-        <th nowrap style="height: 8px !important;">Merma</th>  
+        <th nowrap style="height: 8px !important;">Merma</th>    
+        <th nowrap style="height: 8px !important;">Lote</th>  
         <th nowrap style="height: 8px !important;">  
           <button class="btn btn-primary-azul tp-btn-light sharp" title="Agregar Nuevo Componente"
                   (click)="openTablePopup('PRTRM00000001')"><mat-icon>library_add</mat-icon></button> 
@@ -549,7 +582,13 @@
                  [(ngModel)]="comp.merma" (input)="validateAndFormatInput($event)" [disabled]="!isEditableMerma"
                  *ngIf="comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA'"/>
           <span *ngIf="!(comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA')">--</span>
-        </td> 
+        </td>  
+                    <td style="min-width: 55px !important;" class="sizeTd">
+                    <textarea class="form-control input-sm"   rows="1"  style="height: 50px !important; font-size: 14px;"   [(ngModel)]="comp.lote"                   
+                     *ngIf="comp.tipoDesc === 'TELA'">
+                    </textarea>
+                    <span *ngIf="comp.tipoDesc !== 'TELA'">--</span>
+                    </td>
         <td class="sizeTd">
           <button class="btn btn-primary tp-btn-light sharp" *ngIf="comp?.agregado==='true'" title="Eliminar"
                   (click)="eliminarItemAgregado(comp,'PRTRM00000001')">
@@ -580,7 +619,8 @@
         <th nowrap style="height: 8px !important;">Alto</th>
         <th nowrap style="height: 8px !important;">Cant. Roller</th>
         <th nowrap style="height: 8px !important;">Cálculo Final</th>
-        <th nowrap style="height: 8px !important;">Merma</th>  
+        <th nowrap style="height: 8px !important;">Merma</th>    
+        <th nowrap style="height: 8px !important;">Lote</th>  
         <th nowrap style="height: 8px !important;">  
           <button class="btn btn-primary-azul tp-btn-light sharp" title="Agregar Nuevo Componente"
                   (click)="openTablePopup('PRTRH00000001')"><mat-icon>library_add</mat-icon></button> 
@@ -645,7 +685,13 @@
                  [(ngModel)]="comp.merma" (input)="validateAndFormatInput($event)" [disabled]="!isEditableMerma"
                  *ngIf="comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA'"/>
           <span *ngIf="!(comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA')">--</span>
-        </td> 
+        </td>  
+                    <td style="min-width: 55px !important;" class="sizeTd">
+                    <textarea class="form-control input-sm"   rows="1"  style="height: 50px !important; font-size: 14px;"   [(ngModel)]="comp.lote"                   
+                     *ngIf="comp.tipoDesc === 'TELA'">
+                    </textarea>
+                    <span *ngIf="comp.tipoDesc !== 'TELA'">--</span>
+                    </td>
         <td class="sizeTd">
           <button class="btn btn-primary tp-btn-light sharp" *ngIf="comp?.agregado==='true'" title="Eliminar"
                   (click)="eliminarItemAgregado(comp,'PRTRH00000001')">
@@ -677,7 +723,8 @@
         <th nowrap style="height: 8px !important;">Alto</th>
         <th nowrap style="height: 8px !important;">Cant. Roller</th>
         <th nowrap style="height: 8px !important;">Cálculo Final</th>
-        <th nowrap style="height: 8px !important;">Merma</th>  
+        <th nowrap style="height: 8px !important;">Merma</th>    
+        <th nowrap style="height: 8px !important;">Lote</th>  
         <th nowrap style="height: 8px !important;">  
           <button class="btn btn-primary-azul tp-btn-light sharp" title="Agregar Nuevo Componente"
                   (click)="openTablePopup('PRTRF00000001')"><mat-icon>library_add</mat-icon></button> 
@@ -742,7 +789,13 @@
                  [(ngModel)]="comp.merma" (input)="validateAndFormatInput($event)" [disabled]="!isEditableMerma"
                  *ngIf="comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA'"/>
           <span *ngIf="!(comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA')">--</span>
-        </td> 
+        </td>  
+                    <td style="min-width: 55px !important;" class="sizeTd">
+                    <textarea class="form-control input-sm"   rows="1"  style="height: 50px !important; font-size: 14px;"   [(ngModel)]="comp.lote"                   
+                     *ngIf="comp.tipoDesc === 'TELA'">
+                    </textarea>
+                    <span *ngIf="comp.tipoDesc !== 'TELA'">--</span>
+                    </td>
         <td class="sizeTd">
           <button class="btn btn-primary tp-btn-light sharp" *ngIf="comp?.agregado==='true'" title="Eliminar"
                   (click)="eliminarItemAgregado(comp,'PRTRF00000001')">
@@ -776,6 +829,7 @@
         <th nowrap style="height: 8px !important;">Cant. Roller</th>
         <th nowrap style="height: 8px !important;">Cálculo Final</th>
         <th nowrap style="height: 8px !important;">Merma</th>  
+        <th nowrap style="height: 8px !important;">Lote</th>  
         <th nowrap style="height: 8px !important;">  
           <button class="btn btn-primary-azul tp-btn-light sharp" title="Agregar Nuevo Componente"
                   (click)="openTablePopup('PRTLU00000001_2_3')"><mat-icon>library_add</mat-icon></button> 
@@ -840,7 +894,13 @@
                  [(ngModel)]="comp.merma" (input)="validateAndFormatInput($event)" [disabled]="!isEditableMerma"
                  *ngIf="comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA'"/>
           <span *ngIf="!(comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA')">--</span>
-        </td> 
+        </td>  
+                    <td style="min-width: 55px !important;" class="sizeTd">
+                    <textarea class="form-control input-sm"   rows="1"  style="height: 50px !important; font-size: 14px;"   [(ngModel)]="comp.lote"                   
+                     *ngIf="comp.tipoDesc === 'TELA'">
+                    </textarea>
+                    <span *ngIf="comp.tipoDesc !== 'TELA'">--</span>
+                    </td>
         <td class="sizeTd">
           <button class="btn btn-primary tp-btn-light sharp" *ngIf="comp?.agregado==='true'" title="Eliminar"
                   (click)="eliminarItemAgregado(comp,'PRTLU00000001_2_3')">
