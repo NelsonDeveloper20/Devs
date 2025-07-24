@@ -156,8 +156,12 @@ showFilter3(){
       "PRTLU00000001", "PRTLU00000002", "PRTLU00000003"
     ];
   
-    const tieneFormulacion = productosArray.some(p => productosConFormulacion.includes(p));
-  
+    //const tieneFormulacion = productosArray.some(p => productosConFormulacion.includes(p));
+  // Verificar si algún producto contiene "PRTCV" o está en la lista
+  const tieneFormulacion = productosArray.some(p => {
+    return productosConFormulacion.includes(p) || 
+           p.toUpperCase().includes('PRTCV');
+  });
     if (!tieneFormulacion) {
       Swal.fire({
         title: 'Mensaje',
@@ -1227,9 +1231,1050 @@ filteredListSapSalidaEntrada() {
   });
 }
 //#endregion
+enviarSalidaSap(item: any) {
+  var coti = item.numeroCotizacion;
+  var grupo = item.cotizacionGrupo;
+  const userDataString = JSON.parse(localStorage.getItem('UserLog'));
+  var idUsuario = userDataString.id.toString();
 
-enviarSalidaSap(item:any){
+  if (!userDataString) {
+    this.toaster.open({
+      text: "Su sesión ha caducado",
+      caption: 'Mensaje',
+      type: 'danger',
+    });
+    this.router.navigate(['/Home-main']);
+    return;
+  }
+
+  // Primer modal: Elegir entre Editar o Enviar Directamente
+  Swal.fire({
+    title: 'Enviar Salida a SAP',
+    text: '¿Desea revisar/editar los datos antes de enviar o enviar directamente?',
+    icon: 'question',
+    showCancelButton: true,
+    showDenyButton: true,
+    confirmButtonText: 'Editar Datos',
+    denyButtonText: 'Enviar Directamente',
+    cancelButtonText: 'Cancelar',
+    allowOutsideClick: false
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Opción: Editar datos
+      this.mostrarVistaPreviaSAP(coti, grupo, idUsuario, true);
+    } else if (result.isDenied) {
+      // Opción: Enviar directamente
+      this.confirmarEnvioDirecto(coti, grupo, idUsuario);
+    }
+  });
+}
+confirmarEnvioDirecto(numeroCotizacion: string, cotizacionGrupo: string, idUsuario: string) {
+  Swal.fire({
+    title: '¿Está seguro?',
+    text: 'Se enviará la salida a SAP con los datos actuales sin modificaciones.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, Enviar',
+    cancelButtonText: 'Cancelar',
+    allowOutsideClick: false
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.enviarDirectamenteASap(numeroCotizacion, cotizacionGrupo, idUsuario);
+    }
+  });
+}
+enviarDirectamenteASap(numeroCotizacion: string, cotizacionGrupo: string, idUsuario: string) {
+  this.spinner.show();  
+  this._service.EnviarSalidaSap(numeroCotizacion, cotizacionGrupo, idUsuario).subscribe({
+    next: (response: any) => {
+        this.spinner.hide();
+      console.log("RESULLLT=>");
+      console.log(response);
+      if (response.status == 200) {  
+            console.log("RESPUESTA");
+            const respuesta = response.json.respuesta; 
+            console.log("RESPUESTA");
+            console.log(respuesta);
+           if(respuesta=="OPERACION REALIZADA CORRECTAMENTE"){  
+      Swal.fire({
+        title: 'Mensaje',
+        text: 'Salida enviado correctamente a SAP',
+        icon: 'success',
+        confirmButtonText: 'Aceptar',
+        allowOutsideClick: false
+      });  
+      this.ListarMonitoreoExplocionSapSalidaEntrada();
+           }else{ 
+
+             
+            Swal.fire({
+              title: 'Ocurrió un error al enviar',
+              html: this.processResponse(response.json.detalle),  // Usamos 'html' en lugar de 'text'
+              icon: 'warning',
+              width: '600px', // Establece un tamaño fijo para la alerta
+              confirmButtonText: 'Aceptar',
+              allowOutsideClick: false
+            });
+           } 
+        }else{
+          Swal.fire({
+            title: 'Ocurrió un error al enviar',
+            html: this.processResponse(response.json.detalle),  // Usamos 'html' en lugar de 'text'
+            icon: 'warning',
+            width: '600px', // Establece un tamaño fijo para la alerta
+            confirmButtonText: 'Aceptar',
+            allowOutsideClick: false
+          });
+          
+        }
+    },
+    error: (error) => {
+      
+      this.spinner.hide();
+      var errorMessage = error.message;
+      console.error('There was an error!====================>');
+      console.log(error);
+      this.toaster.open({
+        text: errorMessage,
+        caption: 'Ocurrio un error',
+        type: 'danger',
+        // duration: 994000
+      }); 
+      Swal.fire({
+        title: 'Ocurrió un error al enviar',
+        html: error.error.json.respuesta +'<b> DETALLE: <b/><br>'+this.processResponse(error.error.json.detalle),  // Usamos 'html' en lugar de 'text'
+        icon: 'warning',
+        width: '600px', // Establece un tamaño fijo para la alerta
+        confirmButtonText: 'Aceptar',
+        allowOutsideClick: false
+      });
+    }
+  });
+}
+mostrarVistaPreviaSAP(numeroCotizacion: string, cotizacionGrupo: string, idUsuario: string, esEdicion: boolean = false) {
+  this.spinner.show();
   
+  // Llamar al API para obtener los datos de vista previa
+  this._service.JSONEnviarSalidaSap(numeroCotizacion, cotizacionGrupo).subscribe({
+    next: (response: any) => {
+      this.spinner.hide();
+      
+      if (response.status === 200) {
+        const data = JSON.parse(response.json.respuesta);
+        this.mostrarModalEdicion(data, numeroCotizacion, cotizacionGrupo, idUsuario, esEdicion);
+      } else {
+        Swal.fire({
+          title: 'Error',
+          text: 'Error al obtener los datos de vista previa',
+          icon: 'error'
+        });
+      }
+    },
+    error: (error) => {
+      this.spinner.hide();
+      Swal.fire({
+        title: 'Error',
+        text: 'Error al conectar con el servidor',
+        icon: 'error'
+      });
+    }
+  });
+}
+mostrarModalEdicion(data: any, numeroCotizacion: string, cotizacionGrupo: string, idUsuario: string, esEdicion: boolean) {
+  const documentLines = data.DocumentLines;
+  
+  // Función para determinar si un item es "tela" o "motor"
+  const getTipoItem = (itemCode: string, descripcion: string): string => {
+    const codigo = itemCode.toLowerCase();
+    const desc = descripcion.toLowerCase();
+    
+    if (codigo.includes('tela') || desc.includes('tela')) {
+      return 'tela';
+    } else if (codigo.includes('motor') || desc.includes('motor')) {
+      return 'motor';
+    }
+    return 'otro';
+  };
+
+  // Crear el HTML para la tabla editable con campos de lote y serie
+  const htmlContent = `
+    <div style="max-height: 500px; overflow-y: auto; overflow-x: auto;">
+      <table class="table table-striped table-sm" style="font-size: 11px; min-width: 1400px;">
+        <thead class="table-dark" style="color: currentcolor !important;">
+          <tr>
+            <th style="min-width: 100px;">Código</th>
+            <th style="min-width: 150px;">Descripción</th>
+            <th style="min-width: 80px;">Cantidad</th>
+            <th style="min-width: 100px;">Lote</th>
+            <th style="min-width: 100px;">Serie</th>
+            <th style="min-width: 100px;">Almacén</th>
+            <th style="min-width: 100px;">Cta. Contable</th>
+            <th style="min-width: 100px;">Familia</th>
+            <th style="min-width: 100px;">SubFamilia</th>
+            <th style="min-width: 100px;">Proyecto</th>
+            <th style="min-width: 100px;">Centro Costo</th>
+            <th style="min-width: 100px;">Orden Venta</th>
+          </tr>
+        </thead>
+        <tbody id="tablaItems">
+          ${documentLines.map((item: any, index: number) => {
+            const tipoItem = getTipoItem(item.ItemCode, item.ItemDescription);
+            const loteActual = item.BatchNumbers && item.BatchNumbers.length > 0 ? item.BatchNumbers[0].BatchNumber : '';
+            const serieActual = item.SerialNumbers && item.SerialNumbers.length > 0 ? item.SerialNumbers[0].SerialNumber : '';
+            
+            return `
+            <tr>
+              <td>
+                <input type="text" class="form-control form-control-sm" 
+                       value="${item.ItemCode}" 
+                       data-field="ItemCode" 
+                       data-index="${index}" 
+                       data-id="${item.Id}"
+                       ${!esEdicion ? 'readonly' : ''}
+                       style="background-color: ${esEdicion ? '#fff' : '#f8f9fa'};">
+              </td>
+              <td>
+                <input type="text" class="form-control form-control-sm" 
+                       value="${item.ItemDescription}" 
+                       data-field="ItemDescription" 
+                       data-index="${index}" 
+                       data-id="${item.Id}"
+                       ${!esEdicion ? 'readonly' : ''}
+                       style="background-color: ${esEdicion ? '#fff' : '#f8f9fa'};">
+              </td>
+              <td>
+                <input type="number" class="form-control form-control-sm" 
+                       value="${item.Quantity}" 
+                       data-field="Quantity" 
+                       data-index="${index}" 
+                       data-id="${item.Id}" 
+                       step="0.01"
+                       ${!esEdicion ? 'readonly' : ''}
+                       style="background-color: ${esEdicion ? '#fff' : '#f8f9fa'};">
+              </td>
+              <td>
+                <input type="text" class="form-control form-control-sm" 
+                       value="${loteActual}" 
+                       data-field="BatchNumber" 
+                       data-index="${index}" 
+                       data-id="${item.Id}"
+                       ${!esEdicion || tipoItem !== 'tela' ? 'readonly' : ''}
+                       placeholder="${tipoItem === 'tela' ? 'Ingrese lote' : 'N/A'}"
+                       style="background-color: ${esEdicion && tipoItem === 'tela' ? '#fff' : '#f8f9fa'};">
+              </td>
+              <td>
+                <input type="number" class="form-control form-control-sm" 
+                       value="${serieActual}" 
+                       data-field="SerialNumber" 
+                       data-index="${index}" 
+                       data-id="${item.Id}"
+                       ${!esEdicion || tipoItem !== 'motor' ? 'readonly' : ''}
+                       placeholder="${tipoItem === 'motor' ? 'Ingrese serie' : 'N/A'}"
+                       style="background-color: ${esEdicion && tipoItem === 'motor' ? '#fff' : '#f8f9fa'};">
+              </td>
+              <td>
+                <input type="text" class="form-control form-control-sm" 
+                       value="${item.WarehouseCode || ''}" 
+                       data-field="WarehouseCode" 
+                       data-index="${index}" 
+                       data-id="${item.Id}"
+                       readonly
+                       style="background-color: #e9ecef;">
+              </td>
+              <td>
+                <input type="text" class="form-control form-control-sm" 
+                       value="${item.AcctCode || ''}" 
+                       data-field="AcctCode" 
+                       data-index="${index}" 
+                       data-id="${item.Id}"
+                       readonly
+                       style="background-color: #e9ecef;">
+              </td>
+              <td>
+                <input type="text" class="form-control form-control-sm" 
+                       value="${item.FamiliaPT || ''}" 
+                       data-field="FamiliaPT" 
+                       data-index="${index}" 
+                       data-id="${item.Id}"
+                       ${!esEdicion ? 'readonly' : ''}
+                       style="background-color: ${esEdicion ? '#fff' : '#f8f9fa'};">
+              </td>
+              <td>
+                <input type="text" class="form-control form-control-sm" 
+                       value="${item.SubFamiliaPT || ''}" 
+                       data-field="SubFamiliaPT" 
+                       data-index="${index}" 
+                       data-id="${item.Id}"
+                       ${!esEdicion ? 'readonly' : ''}
+                       style="background-color: ${esEdicion ? '#fff' : '#f8f9fa'};">
+              </td>
+              <td>
+                <input type="text" class="form-control form-control-sm" 
+                       value="${item.ProjectCode || ''}" 
+                       data-field="ProjectCode" 
+                       data-index="${index}" 
+                       data-id="${item.Id}"
+                       readonly
+                       style="background-color: #e9ecef;">
+              </td>
+              <td>
+                <input type="text" class="form-control form-control-sm" 
+                       value="${item.CostingCode || ''}" 
+                       data-field="CostingCode" 
+                       data-index="${index}" 
+                       data-id="${item.Id}"
+                       readonly
+                       style="background-color: #e9ecef;">
+              </td>
+              <td>
+                <input type="text" class="form-control form-control-sm" 
+                       value="${item.IdOrdenVenta || ''}" 
+                       data-field="IdOrdenVenta" 
+                       data-index="${index}" 
+                       data-id="${item.Id}"
+                       readonly
+                       style="background-color: #e9ecef;">
+              </td>
+            </tr>
+          `}).join('')}
+        </tbody>
+      </table>
+    </div>
+    <div class="mt-3">
+      <small class="text-muted">
+        <strong>Leyenda:</strong> 
+        <span style="background-color: #fff; padding: 2px 6px; border: 1px solid #dee2e6; border-radius: 3px; margin-right: 10px;">Editables</span>
+        <span style="background-color: #f8f9fa; padding: 2px 6px; border: 1px solid #dee2e6; border-radius: 3px; margin-right: 10px;">Solo Lectura</span>
+        <span style="background-color: #e9ecef; padding: 2px 6px; border: 1px solid #dee2e6; border-radius: 3px;">Sistema</span>
+        <br><br>
+        <strong>Campos especiales:</strong> 
+        <span style="color: #28a745;">• Lote: Solo editable para items de "tela"</span>
+        <span style="color: #007bff; margin-left: 20px;">• Serie: Solo editable para items de "motor"</span>
+      </small>
+    </div>    
+          <div style="margin-top: 15px; text-align: center;">
+            <button id="btn-descargar-json" type="button" class="btn btn-info" 
+                    style="background-color: #17a2b8; border-color: #17a2b8; color: white; 
+                           padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer;">
+              <i class="fas fa-download"></i> Descargar JSON
+            </button>
+          </div>
+  `;
+
+  const titulo = esEdicion ? 
+    `Editar Datos - Cotización: ${cotizacionGrupo}` : 
+    `Vista Previa - Cotización: ${cotizacionGrupo}`;
+  
+  const botonConfirmar = esEdicion ? 'Guardar Cambios' : 'Enviar a SAP';
+
+  Swal.fire({
+    title: titulo,
+    html: htmlContent,
+    width: '95%',
+    showCancelButton: true,
+    confirmButtonText: botonConfirmar,
+    cancelButtonText: 'Cancelar',
+    allowOutsideClick: false,
+    didOpen: () => {
+      // Agregar evento al botón de descarga cuando se abre el modal
+      const btnDescargar = document.getElementById('btn-descargar-json');
+      if (btnDescargar) {
+        btnDescargar.addEventListener('click', () => {
+          this.descargarJSON(data, cotizacionGrupo);
+        });
+      }
+    },
+    preConfirm: () => {
+      if (esEdicion) {
+        return this.recopilarDatosModificados(documentLines);
+      }
+      return null;
+    }
+  }).then((result) => {
+    if (result.isConfirmed) {
+      if (esEdicion) {
+        this.guardarModificaciones(result.value, numeroCotizacion, cotizacionGrupo, idUsuario);
+      } else {
+        this.enviarDirectamenteASap(numeroCotizacion, cotizacionGrupo, idUsuario);
+      }
+    }
+  });
+}
+
+
+guardarModificaciones(datosModificados: any[], numeroCotizacion: string, cotizacionGrupo: string, idUsuario: string) {
+  this.spinner.show();
+  
+  this._service.ModificarEnviarSalidaSap(datosModificados).subscribe({
+    next: (response: any) => {
+      this.spinner.hide();
+      if (response.status === 200) {
+        Swal.fire({
+          title: 'Modificado',
+          text: 'Los datos han sido modificados correctamente.',
+          icon: 'success',
+          showCancelButton: true,
+          confirmButtonText: 'Enviar a SAP',
+          cancelButtonText: 'Cerrar',
+          allowOutsideClick: false
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.enviarDirectamenteASap(numeroCotizacion, cotizacionGrupo, idUsuario);
+          }
+        });
+      } else {
+        Swal.fire({
+          title: 'Error',
+          text: 'Error al guardar las modificaciones: ' + response.message,
+          icon: 'error'
+        });
+      }
+    },
+    error: (error) => {
+      this.spinner.hide();
+      Swal.fire({
+        title: 'Error',
+        text: 'Error al conectar con el servidor',
+        icon: 'error'
+      });
+    }
+  });
+}
+
+recopilarDatosModificados(originalData: any[]): any[] {
+  const datosModificados: any[] = [];
+  
+  // Función para determinar tipo de item
+  const getTipoItem = (itemCode: string, descripcion: string): string => {
+    const codigo = itemCode.toLowerCase();
+    const desc = descripcion.toLowerCase();
+    
+    if (codigo.includes('tela') || desc.includes('tela')) {
+      return 'tela';
+    } else if (codigo.includes('motor') || desc.includes('motor')) {
+      return 'motor';
+    }
+    return 'otro';
+  };
+  
+  originalData.forEach((item, index) => {
+    const itemCode = (document.querySelector(`input[data-field="ItemCode"][data-index="${index}"]`) as HTMLInputElement).value;
+    const itemDescription = (document.querySelector(`input[data-field="ItemDescription"][data-index="${index}"]`) as HTMLInputElement).value;
+    const tipoItem = getTipoItem(itemCode, itemDescription);
+    
+    // Obtener valores de lote y serie
+    const loteValue = (document.querySelector(`input[data-field="BatchNumber"][data-index="${index}"]`) as HTMLInputElement).value;
+    const serieValue = (document.querySelector(`input[data-field="SerialNumber"][data-index="${index}"]`) as HTMLInputElement).value;
+    
+    // Construir BatchNumbers y SerialNumbers según el tipo de item
+    let batchNumbers: any[] = [];
+    let serialNumbers: any[] = [];
+    
+    if (tipoItem === 'tela' && loteValue.trim()) {
+      batchNumbers = [{
+        BatchNumber: loteValue.trim(),
+        Quantity: parseFloat((document.querySelector(`input[data-field="Quantity"][data-index="${index}"]`) as HTMLInputElement).value)
+      }];
+    }
+    
+    if (tipoItem === 'motor' && serieValue.trim()) {
+      serialNumbers = [{
+        SerialNumber: serieValue.trim(),
+        Quantity: 1 // Para series siempre es 1
+      }];
+    }
+    
+    const itemModificado = {
+      Id: item.Id,
+      ItemCode: itemCode,
+      ItemDescription: itemDescription,
+      Quantity: parseFloat((document.querySelector(`input[data-field="Quantity"][data-index="${index}"]`) as HTMLInputElement).value),
+      FamiliaPT: (document.querySelector(`input[data-field="FamiliaPT"][data-index="${index}"]`) as HTMLInputElement).value,
+      SubFamiliaPT: (document.querySelector(`input[data-field="SubFamiliaPT"][data-index="${index}"]`) as HTMLInputElement).value,
+      // Mantener los campos originales que no se modifican
+      WarehouseCode: item.WarehouseCode,
+      AcctCode: item.AcctCode,
+      CostingCode: item.CostingCode,
+      ProjectCode: item.ProjectCode,
+      CostingCode2: item.CostingCode2,
+      CostingCode3: item.CostingCode3,
+      CostingCode4: item.CostingCode4,
+      CostingCode5: item.CostingCode5,
+      IdSistemaExterno: item.IdSistemaExterno,
+      IdLineaSistemaE: item.IdLineaSistemaE,
+      IdOrdenVenta: item.IdOrdenVenta,
+      // Lote y Serie actualizados
+      BatchNumbers: batchNumbers,
+      SerialNumbers: serialNumbers
+    };
+    
+    datosModificados.push(itemModificado);
+  });
+  
+  return datosModificados;
+}
+
+//#region  DATOS  ::::::::::::::::::NELSON
+
+// Método principal modificado con opciones
+enviarEntradaSap(item: any) {
+  const userDataString = JSON.parse(localStorage.getItem('UserLog'));
+  var idUsuario = userDataString.id.toString();
+  
+  if (!userDataString) {
+    this.toaster.open({
+      text: "Su sesión ha caducado",
+      caption: 'Mensaje',
+      type: 'danger',
+    });
+    this.router.navigate(['/Home-main']);
+    return;
+  }
+
+  // Mostrar opciones: Editar o Enviar Directamente
+  this.mostrarOpcionesEnvio(item, idUsuario);
+}
+
+// Método para mostrar opciones de envío
+mostrarOpcionesEnvio(item: any, idUsuario: string) {
+  Swal.fire({
+    title: '¿Cómo desea proceder?',
+    text: 'Seleccione una opción para continuar',
+    icon: 'question',
+    showCancelButton: true,
+    showDenyButton: true,
+    confirmButtonText: 'Enviar Directamente',
+    denyButtonText: 'Visualizar Datos',
+    cancelButtonText: 'Cancelar',
+    allowOutsideClick: false,
+    confirmButtonColor: '#28a745',
+    denyButtonColor: '#ffc107'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Enviar directamente a SAP
+      this.enviarDirectamenteASapEntrada(item, idUsuario);
+    } else if (result.isDenied) {
+      // Mostrar vista previa para editar
+      this.mostrarVistaPreviaEntrada(item, idUsuario);
+    }
+  });
+}
+
+// Método para envío directo a SAP
+enviarDirectamenteASapEntrada(item: any, idUsuario: string) {
+  Swal.fire({
+    title: '¿Está seguro de enviar la Entrada a SAP?',
+    text: 'Una vez enviado, el proceso se considerará finalizado y no podrá ser editado.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, Enviar',
+    cancelButtonText: 'Cancelar',
+    allowOutsideClick: false
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.ejecutarEnvioASap(item, idUsuario);
+    }
+  });
+}
+
+// Método para mostrar vista previa editable
+mostrarVistaPreviaEntrada(item: any, idUsuario: string) {
+  this.spinner.show();  
+  // Llamada a la API para obtener los datos JSON
+  this._service.JSONEnviarEntradaSap(item.numeroCotizacion, item.cotizacionGrupo)
+    .subscribe({
+      next: response => {
+        this.spinner.hide();
+          if (response.status === 200) {
+        const datosPrevia = JSON.parse(response.json.respuesta);  
+          this.mostrarModalEditable(datosPrevia, item, idUsuario,item.cotizacionGrupo);
+        } else {
+          this.mostrarError('Error al obtener datos de vista previa', response.json.detalle);
+        }
+      },
+      error: error => {
+        this.spinner.hide();
+        this.mostrarError('Error al cargar vista previa', error.message);
+      }
+    });
+}
+
+// Método para mostrar modal editable con SweetAlert 
+mostrarModalEditable(datos: any, item: any, idUsuario: string,grupo:any) {
+  // Agregar estilos CSS al documento
+  this.agregarEstilos();
+  
+  // Crear tabla HTML editable con los datos
+  const tablaHTML = this.generarTablaEditable(datos.DocumentLines);
+  
+  Swal.fire({
+    title: 'Vista previa de datos - Entrada SAP',
+    html: `
+      <div class="preview-container"> 
+        <div class="items-container">
+          <h4>Artículos - Puede editar los campos necesarios del :${grupo}</h4>
+          <div class="table-scroll-container">
+            ${tablaHTML}
+          </div>
+          <div style="margin-top: 10px; font-size: 12px; color: #6c757d;">
+            <i class="fas fa-info-circle"></i> Desplácese horizontalmente para ver todos los campos
+          </div>
+          <div style="margin-top: 15px; text-align: center;">
+            <button id="btn-descargar-json" type="button" class="btn btn-info" 
+                    style="background-color: #17a2b8; border-color: #17a2b8; color: white; 
+                           padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer;">
+              <i class="fas fa-download"></i> Descargar JSON
+            </button>
+          </div>
+        </div>
+      </div>
+    `,
+    width: '95%',
+    showCancelButton: true,
+    //confirmButtonText: 'Guardar Cambios',
+    cancelButtonText: 'Cancelar',
+    allowOutsideClick: false,
+    customClass: {
+      popup: 'swal2-popup-wide'
+    },
+    didOpen: () => {
+      // Agregar evento al botón de descarga cuando se abre el modal
+      const btnDescargar = document.getElementById('btn-descargar-json');
+      if (btnDescargar) {
+        btnDescargar.addEventListener('click', () => {
+          this.descargarJSON(datos, grupo);
+        });
+      }
+    },
+    preConfirm: () => {
+      // Recopilar datos modificados de la tabla
+    //  const datosModificados = this.recopilarDatosModificadosEntrada();
+      //return datosModificados;
+    }
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Procesar datos modificados
+    //  this.procesarDatosModificados(result.value, item, idUsuario);
+    }
+  });
+}
+// Método para descargar archivo JSON
+descargarJSON(datos: any, grupo: any) { 
+      
+const datosParaDescargar = datos;
+    // Convertir a JSON con formato legible
+    const jsonString = JSON.stringify(datosParaDescargar, null, 2);
+    
+    // Crear blob y enlace de descarga
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = window.URL.createObjectURL(blob);
+    
+    // Crear elemento 'a' temporal para la descarga
+    const enlaceDescarga = document.createElement('a');
+    enlaceDescarga.href = url;
+    enlaceDescarga.download = `datos_${grupo}_${new Date().toISOString().split('T')[0]}.json`;
+    
+    // Agregar al DOM, hacer clic y remover
+    document.body.appendChild(enlaceDescarga);
+    enlaceDescarga.click();
+    document.body.removeChild(enlaceDescarga);
+    
+    // Limpiar URL del objeto
+    window.URL.revokeObjectURL(url);
+  
+}
+// Generar tabla HTML editable
+// Generar tabla HTML editable con todos los campos
+generarTablaEditable(documentLines: any[]): string {
+  let tabla = `
+    <table class="table table-striped table-bordered" style="width: 100%; font-size: 12px;">
+      <thead style="color: currentcolor !important;">
+        <tr>
+          <th>Código Artículo</th>
+          <th>Descripción</th>
+          <th>Cantidad</th>
+          <th>Almacén</th>
+          <th>Cta. Contable</th>
+          <th>Centro Costo</th>
+          <th>Centro Costo 2</th>
+          <th>Centro Costo 3</th>
+          <th>Centro Costo 4</th>
+          <th>Centro Costo 5</th>
+          <th>Familia PT</th>
+          <th>Sub Familia PT</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+  
+  documentLines.forEach((line, index) => {
+    tabla += `
+      <tr>
+        <td>
+          <input type="text" class="form-control form-control-sm" style="max-width: 100% !important;" 
+                 value="${line.ItemCode || ''}" 
+                 data-field="ItemCode" 
+                 data-index="${index}"
+                 data-id="${line.Id}">
+        </td>
+        <td>
+          <input type="text" class="form-control form-control-sm"  style="max-width: 100% !important;" 
+                 value="${line.ItemDescription || ''}" 
+                 data-field="ItemDescription" 
+                 data-index="${index}"
+                 data-id="${line.Id}">
+        </td>
+        <td>
+          <input type="number" class="form-control form-control-sm" 
+                 value="${line.Quantity || 0}" 
+                 data-field="Quantity" 
+                 data-index="${index}"
+                 data-id="${line.Id}" 
+                 step="0.01">
+        </td>
+        <td>
+          <input type="text" class="form-control form-control-sm" 
+                 value="${line.WarehouseCode || ''}" 
+                 data-field="WarehouseCode" 
+                 data-index="${index}"
+                 data-id="${line.Id}">
+        </td>
+        <td>
+          <input type="text" class="form-control form-control-sm" 
+                 value="${line.AcctCode || ''}" 
+                 data-field="AcctCode" 
+                 data-index="${index}"
+                 data-id="${line.Id}">
+        </td>
+        <td>
+          <input type="text" class="form-control form-control-sm" 
+                 value="${line.CostingCode || ''}" 
+                 data-field="CostingCode" 
+                 data-index="${index}"
+                 data-id="${line.Id}">
+        </td>
+        <td>
+          <input type="text" class="form-control form-control-sm" 
+                 value="${line.CostingCode2 || ''}" 
+                 data-field="CostingCode2" 
+                 data-index="${index}"
+                 data-id="${line.Id}">
+        </td>
+        <td>
+          <input type="text" class="form-control form-control-sm" 
+                 value="${line.CostingCode3 || ''}" 
+                 data-field="CostingCode3" 
+                 data-index="${index}"
+                 data-id="${line.Id}">
+        </td>
+        <td>
+          <input type="text" class="form-control form-control-sm" 
+                 value="${line.CostingCode4 || ''}" 
+                 data-field="CostingCode4" 
+                 data-index="${index}"
+                 data-id="${line.Id}">
+        </td>
+        <td>
+          <input type="text" class="form-control form-control-sm" 
+                 value="${line.CostingCode5 || ''}" 
+                 data-field="CostingCode5" 
+                 data-index="${index}"
+                 data-id="${line.Id}">
+        </td>
+        <td>
+          <input type="text" class="form-control form-control-sm" 
+                 value="${line.FamiliaPT || ''}" 
+                 data-field="FamiliaPT" 
+                 data-index="${index}"
+                 data-id="${line.Id}">
+        </td>
+        <td>
+          <input type="text" class="form-control form-control-sm" 
+                 value="${line.SubFamiliaPT || line.SuibFamiliaPT || ''}" 
+                 data-field="SubFamiliaPT" 
+                 data-index="${index}"
+                 data-id="${line.Id}">
+        </td>
+      </tr>
+    `;
+  });
+  
+  tabla += `
+      </tbody>
+    </table>
+  `;
+  
+  return tabla;
+}
+// Recopilar datos modificados del formulario
+recopilarDatosModificadosEntrada(): any[] {
+  const datosModificados: any[] = [];
+  const inputs = document.querySelectorAll('.swal2-container input[data-index]');
+  
+  // Agrupar por índice/ID
+  const itemsMap = new Map();
+  
+  inputs.forEach((input: any) => {
+    const index = parseInt(input.dataset.index);
+    const id = input.dataset.id;
+    const field = input.dataset.field;
+    const value = input.value;
+    
+    if (!itemsMap.has(index)) {
+      itemsMap.set(index, { Id: parseInt(id) });
+    }
+    
+    itemsMap.get(index)[field] = value;
+  });
+  
+  // Convertir Map a Array
+  itemsMap.forEach((item) => {
+    datosModificados.push(item);
+  });
+  
+  return datosModificados;
+}
+
+// Procesar datos modificados
+procesarDatosModificados(datosModificados: any[], item: any, idUsuario: string) {
+  this.spinner.show();
+  
+  // Llamar a la API de modificación
+  this._service.ModificarEnviarEntradaSap(datosModificados)
+    .subscribe({
+      next: response => {
+        this.spinner.hide();
+        
+        if (response.status == 200 && response.json.respuesta === "Modificado") {
+          // Mostrar confirmación de modificación exitosa
+          this.mostrarConfirmacionModificacion(item, idUsuario);
+        } else {
+          this.mostrarError('Error al modificar datos', response.json.detalle || response.json.respuesta);
+        }
+      },
+      error: error => {
+        this.spinner.hide();
+        this.mostrarError('Error al modificar datos', error.message);
+      }
+    });
+}
+
+// Mostrar confirmación de modificación y preguntar si desea enviar a SAP
+mostrarConfirmacionModificacion(item: any, idUsuario: string) {
+  Swal.fire({
+    title: '¡Datos Modificados!',
+    text: 'Los datos han sido modificados correctamente. ¿Desea enviar a SAP ahora?',
+    icon: 'success',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, Enviar a SAP',
+    cancelButtonText: 'No, Finalizar',
+    allowOutsideClick: false,
+    confirmButtonColor: '#28a745'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Confirmar envío a SAP
+      this.confirmarEnvioFinalASap(item, idUsuario);
+    } else {
+      // Finalizar sin enviar
+      Swal.fire({
+        title: 'Proceso Completado',
+        text: 'Los datos han sido guardados. Puede enviar a SAP más tarde.',
+        icon: 'info',
+        confirmButtonText: 'Entendido'
+      });
+      
+      // Refrescar la lista
+//      this.ListarMonitoreoExplocionSapSalidaEntrada();
+    }
+  });
+}
+
+// Confirmar envío final a SAP
+confirmarEnvioFinalASap(item: any, idUsuario: string) {
+  Swal.fire({
+    title: '¿Confirma el envío a SAP?',
+    text: 'Una vez enviado, el proceso se considerará finalizado y no podrá ser editado.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, Enviar',
+    cancelButtonText: 'Cancelar',
+    allowOutsideClick: false
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.ejecutarEnvioASap(item, idUsuario);
+    }
+  });
+}
+
+// Ejecutar envío a SAP (método común)
+ejecutarEnvioASap(item: any, idUsuario: string) {
+  this.spinner.show();
+  
+  this._service.EnviarEntradaSap(item.numeroCotizacion, item.cotizacionGrupo, idUsuario)
+    .subscribe({
+      next: response => {
+        this.spinner.hide();
+        
+        if (response.status == 200) {
+          const respuesta = response.json.respuesta;
+          
+          if (respuesta == "OPERACION REALIZADA CORRECTAMENTE") {
+            Swal.fire({
+              title: '¡Éxito!',
+              text: 'Entrada enviada correctamente a SAP',
+              icon: 'success',
+              confirmButtonText: 'Aceptar',
+              allowOutsideClick: false
+            });
+            this.ListarMonitoreoExplocionSapSalidaEntrada();
+          } else {
+            this.mostrarError('Error al enviar a SAP', response.json.detalle);
+          }
+        } else {
+          this.mostrarError('Error al enviar a SAP', response.json.detalle);
+        }
+      },
+      error: error => {
+        this.spinner.hide();
+        const errorDetail = error.error?.json?.detalle || error.message;
+        const errorResponse = error.error?.json?.respuesta || '';
+        
+        this.mostrarError('Error al enviar a SAP', `${errorResponse} ${errorDetail}`);
+      }
+    });
+}
+
+// Método auxiliar para mostrar errores
+mostrarError(titulo: string, detalle: string) {
+  Swal.fire({
+    title: titulo,
+    html: this.processResponse(detalle),
+    icon: 'error',
+    width: '600px',
+    confirmButtonText: 'Aceptar',
+    allowOutsideClick: false
+  });
+}
+
+// Agregar estilos CSS
+// Agregar estilos CSS actualizados
+private agregarEstilos() {
+  // Verificar si ya están agregados los estilos
+  if (document.getElementById('sap-preview-styles')) {
+    return;
+  }
+  
+  const estilo = document.createElement('style');
+  estilo.id = 'sap-preview-styles';
+  estilo.innerHTML = `
+    .preview-container {
+      text-align: left;
+    }
+    .info-general {
+      margin-bottom: 20px;
+      padding: 15px;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      border: 1px solid #dee2e6;
+    }
+    .info-general h4 {
+      margin-bottom: 10px;
+      color: #495057;
+    }
+    .items-container {
+      margin-top: 20px;
+    }
+    .items-container h4 {
+      margin-bottom: 15px;
+      color: #495057;
+    }
+    .form-control-sm {
+      padding: 4px 8px;
+      font-size: 11px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      min-width: 80px;
+      max-width: 120px;
+    }
+    .form-control-sm:focus {
+      border-color: #80bdff;
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+    .table {
+      margin-bottom: 0;
+      table-layout: fixed;
+      width: 100%;
+    }
+    .table th {
+      background-color: #e9ecef;
+      font-weight: bold;
+      padding: 8px 4px;
+      text-align: center;
+      border: 1px solid #dee2e6;
+      font-size: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .table td {
+      padding: 3px 2px;
+      border: 1px solid #dee2e6;
+      text-align: center;
+      vertical-align: middle;
+    }
+    .table-striped tbody tr:nth-of-type(odd) {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+    .table-bordered {
+      border: 1px solid #dee2e6;
+    }
+    
+    /* Ancho específico para cada columna */
+    .table th:nth-child(1),
+    .table td:nth-child(1) { width: 10%; } /* Código Artículo */
+    .table th:nth-child(2),
+    .table td:nth-child(2) { width: 15%; } /* Descripción */
+    .table th:nth-child(3),
+    .table td:nth-child(3) { width: 8%; }  /* Cantidad */
+    .table th:nth-child(4),
+    .table td:nth-child(4) { width: 8%; }  /* Almacén */
+    .table th:nth-child(5),
+    .table td:nth-child(5) { width: 10%; } /* Cta. Contable */
+    .table th:nth-child(6),
+    .table td:nth-child(6) { width: 8%; }  /* Centro Costo */
+    .table th:nth-child(7),
+    .table td:nth-child(7) { width: 8%; }  /* Centro Costo 2 */
+    .table th:nth-child(8),
+    .table td:nth-child(8) { width: 8%; }  /* Centro Costo 3 */
+    .table th:nth-child(9),
+    .table td:nth-child(9) { width: 8%; }  /* Centro Costo 4 */
+    .table th:nth-child(10),
+    .table td:nth-child(10) { width: 8%; } /* Centro Costo 5 */
+    .table th:nth-child(11),
+    .table td:nth-child(11) { width: 9%; } /* Familia PT */
+    .table th:nth-child(12),
+    .table td:nth-child(12) { width: 10%; } /* Sub Familia PT */
+    
+    /* Hacer el contenedor scrollable horizontalmente */
+    .table-scroll-container {
+      overflow-x: auto;
+      overflow-y: auto;
+      max-height: 400px;
+      border: 1px solid #dee2e6;
+      border-radius: 4px;
+    }
+    
+   
+  `;
+  
+  document.head.appendChild(estilo);
+}
+//#endregion
+//::::::::::::::::::::::::::::END
+enviarSalidaSapv1(item:any){  
+  var coti=item.numeroCotizacion
+  var grupo=item.cotizacionGrupo;
+
   const userDataString = JSON.parse(localStorage.getItem('UserLog'));   
   var idUsuario= userDataString.id.toString(); 
   if (!userDataString) {   this.toaster.open({
@@ -1250,8 +2295,7 @@ enviarSalidaSap(item:any){
     cancelButtonText: 'Cancelar',
     allowOutsideClick: false
   }).then((result) => {
-    if (result.isConfirmed){ 
-    
+    if (result.isConfirmed){     
 this.spinner.show();
 this._service.EnviarSalidaSap(item.numeroCotizacion,item.cotizacionGrupo,idUsuario)
   .subscribe({
@@ -1322,7 +2366,7 @@ this._service.EnviarSalidaSap(item.numeroCotizacion,item.cotizacionGrupo,idUsuar
     }
   });
 }
-enviarEntradaSap(item:any){
+enviarEntradaSapV1(item:any){
   
   const userDataString = JSON.parse(localStorage.getItem('UserLog'));   
   var idUsuario= userDataString.id.toString(); 

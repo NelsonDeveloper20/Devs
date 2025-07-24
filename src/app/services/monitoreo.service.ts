@@ -72,6 +72,8 @@ export class MonitoreoService {
   EnviarSalidaSap(grupoCotizacion: any,grupo:any,idusuario :any): Observable<any> {
     return this.http.post<IApiResponse>(`${this.urlBase}Monitoreo/EnviarSalidaSap?cotizacion=`+grupoCotizacion+"&grupo="+grupo+"&idusuario="+idusuario,{});
   }
+
+  
   EnviarEntradaSap(grupoCotizacion: any,grupo:any,idusuario :any): Observable<any> {
     return this.http.post<IApiResponse>(`${this.urlBase}Monitoreo/EnviarEntradaSap?cotizacion=`+grupoCotizacion+"&grupo="+grupo+"&idusuario="+idusuario,{});
   }
@@ -83,8 +85,27 @@ export class MonitoreoService {
   ListarMaestroArticulos(): Observable<any> {
     return this.http.get<any>(`${this.urlBase}MaestroArticulo`);
   }
+//SAP
 
+JSONEnviarSalidaSap(numeroCotizacion: string, cotizacionGrupo: string): Observable<any> { 
+  return this.http.post<any>(`${this.urlBase}Monitoreo/JSONEnviarSalidaSap?cotizacion=`+numeroCotizacion+'&grupo='+cotizacionGrupo, {  });
+}
+
+ JSONEnviarEntradaSap(numeroCotizacion: string, cotizacionGrupo: string): Observable<any> { 
+ 
+  return this.http.post<any>(`${this.urlBase}Monitoreo/JSONEnviarEntradaSap?cotizacion=`+numeroCotizacion+'&grupo='+cotizacionGrupo ,{  });
+}
+
+  ModificarEnviarSalidaSap(datosModificados: any[]): Observable<any> {
+  return this.http.post<any>(`${this.urlBase}Monitoreo/ModificarEnviarSalidaSap`, datosModificados);
+} 
+// Método para modificar datos antes de enviar a SAP
+ModificarEnviarEntradaSap(datosModificados: any[]): Observable<any> {
+  const url = `${this.urlBase}Monitoreo/ModificarEnviarEntradaSap`;
   
+  return this.http.post<any>(url, datosModificados);
+}
+//END SAP
   ListarFormulacionRollerShade(numCotizacion: any,grupoCotizacion:any,tipoProducto:any,accionamiento:any): Observable<any> {
     return this.http.get<any>(`${this.urlBase}Monitoreo/ListarFormulacionRollerShade?numCotizacion=`+numCotizacion+"&grupoCotizacion="+grupoCotizacion+"&tipoProducto="+tipoProducto+"&accionamiento="+accionamiento);
   }

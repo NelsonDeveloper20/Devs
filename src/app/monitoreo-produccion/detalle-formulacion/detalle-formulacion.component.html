@@ -705,6 +705,109 @@
   <hr>
 </div>
  
+<!-- PRTCV -->
+<div class="table-container" *ngIf="mostrarPRTCV"> 
+  <table class="table table-sm mb-0 table-responsive-lg"  style="font-size: 14px;">              
+    <thead class="sticky-top" style="color: black;">
+      <tr>
+        <th colspan="11" style="background: white;padding-bottom: 0px !important;">
+        <h4>PRTCV: <b>{{ ListComponenteProductoPRTCV[0]?.producto }}</b></h4>
+        </th>
+      </tr>
+      <tr style="box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">                       
+        <th nowrap style="height: 8px !important;"></th>       
+        <th nowrap style="height: 8px !important;">Tipo</th>       
+        <th nowrap style="height: 8px !important;">Código Tipo</th>
+        <th nowrap style="height: 8px !important;">Descripción Tipo</th>
+        <th nowrap style="height: 8px !important;">Ancho</th>
+        <th nowrap style="height: 8px !important;">Alto</th>
+        <th nowrap style="height: 8px !important;">Cant. Roller</th>
+        <th nowrap style="height: 8px !important;">Cálculo Final</th>
+        <th nowrap style="height: 8px !important;">Merma</th>    
+        <th nowrap style="height: 8px !important;">Lote</th>  
+        <th nowrap style="height: 8px !important;">  
+          <button class="btn btn-primary-azul tp-btn-light sharp" title="Agregar Nuevo Componente"
+                  (click)="openTablePopup('PRTCV')"><mat-icon>library_add</mat-icon></button> 
+        </th>
+        <th nowrap *ngIf="isFormulacion" style="height: 8px !important;"></th>
+      </tr>
+    </thead> 
+    <tbody style="color: #373434;">
+      <tr *ngFor="let comp of ListComponenteProductoPRTCV; let i = index">
+        <td>
+          <button class="btn btn-primary tp-btn-light sharp" 
+                  *ngIf="comp?.agregado !== 'true' && comp?.tipoDesc !== 'ACCESORIO'"
+                  (click)="clonarComponente(comp,'PRTCV')" 
+                  title="Clonar"
+                  style="margin: 0px; height: 0px !important;"><mat-icon>toll</mat-icon></button>
+        </td>
+        <td class="sizeTd">{{ comp.tipoDesc }}</td>                
+        <td style="width: 124px !important;font-size: 12px !important;" class="sizeTd">  
+          <mat-form-field appearance="outline" style="width: 100%;">
+            <mat-select [disabled]="!isEditableTipo" [(ngModel)]="comp.codigoTipo" placeholder="Buscar" style="width: 190px;" (selectionChange)="onNombreChange($event, comp)">
+              <mat-select-trigger>
+                <span *ngIf="!comp.codigoTipo">
+                  {{ comp.codigoTipo || '---Seleccione---' }}                                        
+                </span>
+                <span *ngIf="comp.codigoTipo">
+                  {{ comp.codigoTipo || comp.codigoTipo }}                                        
+                </span>
+              </mat-select-trigger>
+              <input matInput (keyup)="applyFilter($event, comp)" placeholder="Buscar" class="search-input" />
+              <mat-option *ngIf="!comp.filteredOptions">Cargando...</mat-option> 
+              <mat-option *ngIf="!isOptionInFilteredOptions(comp.codigoTipo, comp.filteredOptions)" [value]="comp.codigoTipo">
+                {{ comp.codigoTipo }} : {{ comp.codigoTipo }}
+              </mat-option>                                
+              <mat-option value="">---Seleccione---</mat-option>
+              <mat-option *ngFor="let item of comp.filteredOptions" [value]="item.codigoTipo">
+                {{ item.codigoTipo }} : {{ item.descripcionTipo }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </td>
+        <td class="sizeTd">{{comp.descripcionTipo}}</td> 
+        <td style="text-align: center;min-width: 127px !important;" class="sizeTd"> 
+          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                 [(ngModel)]="comp.ancho" *ngIf="comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA'"/>  
+          <span *ngIf="!(comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA')">--</span>
+        </td>  
+        <td style="text-align: center;min-width: 127px !important;" class="sizeTd"> 
+          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                 [(ngModel)]="comp.alto" *ngIf="comp.tipoDesc === 'TELA'" />
+          <span *ngIf="comp.tipoDesc !== 'TELA'">--</span>                        
+        </td> 
+        <td class="sizeTd">                            
+          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                 [(ngModel)]="comp.cantidadRoller" />
+        </td> 
+        <td style="min-width: 127px !important;" class="sizeTd">
+          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                 [(ngModel)]="comp.calculoFinal" (input)="validateAndFormatInput($event)" [disabled]="!isEditableCalculo"/>
+        </td>
+        <td style="min-width: 55px !important;" class="sizeTd">
+          <input type="number" class="form-control input-sm" min="0" style="height: 33px !important;font-size: 14px;"
+                 [(ngModel)]="comp.merma" (input)="validateAndFormatInput($event)" [disabled]="!isEditableMerma"
+                 *ngIf="comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA'"/>
+          <span *ngIf="!(comp.tipoDesc === 'TUBO' || comp.tipoDesc === 'RIEL' || comp.tipoDesc === 'TELA')">--</span>
+        </td>  
+                    <td style="min-width: 55px !important;" class="sizeTd">
+                    <textarea class="form-control input-sm"   rows="1"  style="height: 50px !important; font-size: 14px;"   [(ngModel)]="comp.lote"                   
+                     *ngIf="comp.tipoDesc === 'TELA'">
+                    </textarea>
+                    <span *ngIf="comp.tipoDesc !== 'TELA'">--</span>
+                    </td>
+        <td class="sizeTd">
+          <button class="btn btn-primary tp-btn-light sharp" *ngIf="comp?.agregado==='true'" title="Eliminar"
+                  (click)="eliminarItemAgregado(comp,'PRTCV')">
+            <mat-icon>delete_forever</mat-icon>
+          </button>
+        </td>
+        <td *ngIf="isFormulacion" class="sizeTd"></td> 
+      </tr>
+    </tbody> 
+  </table> 
+  <hr>
+</div>
 <!-- PRTRF00000001 -->
 <div class="table-container" *ngIf="mostrarPRTRF00000001"> 
   <table class="table table-sm mb-0 table-responsive-lg" id="dubcomponentePRTRH00000001" style="font-size: 14px;">              

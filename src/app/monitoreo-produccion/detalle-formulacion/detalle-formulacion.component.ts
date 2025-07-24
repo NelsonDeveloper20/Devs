@@ -25,6 +25,8 @@ mostrarPRTRS = false;
 mostrarPRTRSMot=false;
 mostrarPRTRZ = false;
 mostrarPRTRH00000001 = false;
+mostrarPRTCV = false;
+
 mostrarPRTRM00000001 = false;
 mostrarPRTRF00000001 = false;
 mostrarPRTLU0000000123 = false;
@@ -52,6 +54,10 @@ private toaster: Toaster,
   this.mostrarPRTRSMot = productosArray.includes('PRTRSMot');
   this.mostrarPRTRZ = productosArray.includes('PRTRZ');
   this.mostrarPRTRH00000001 = productosArray.includes('PRTRH00000001');
+  //this.mostrarPRTCV = productosArray.includes('PRTCV');
+  // Cambio aquí: usar some() con startsWith() en lugar de includes()
+  this.mostrarPRTCV = productosArray.some(p => p.startsWith('PRTCV'));
+
   this.mostrarPRTRM00000001 = productosArray.includes('PRTRM00000001');
   this.mostrarPRTRF00000001 = productosArray.includes('PRTRF00000001');
   this.mostrarPRTRM00000016 = productosArray.includes('PRTRM00000016');
@@ -223,6 +229,10 @@ async listarComponentesTelaRielTubo(tipo: string,codigoProducto:any,nombreProduc
 private async listarComponestePorCodigoProdsOFICIAL(destinoList,codProducto) {  
 // Obtener el tipo de producto
 let tipoProducto =codProducto;//PRTRS ,PRTRZ,PRTRM00000016, PRTRM00000001, PRTRH00000001, PRTRF00000001, PRTLU00000001_2_3 
+if(codProducto.toUpperCase().includes('PRTCV')){
+        tipoProducto='PRTRH00000001';
+        codProducto='PRTRH00000001';
+      }
 // Obtener componentes desde la API
 const response = await this.listarComponentes(tipoProducto);//ACCESORIO DIFERENTES A 
 if (response) {
@@ -259,6 +269,7 @@ if (response) {
       ];
       const normalizar = (texto: string) =>
         texto.trim().toLowerCase().replace(/es$|s$/i, ''); // quita plurales simples
+      
       if (productosEspeciales.includes(codProducto)) {
         // Si son productos especiales, se asume que response es un array de grupos con subgrupos  
         destinoList
@@ -439,6 +450,7 @@ ListComponenteProductoPRTRZ:any=[];
 ListComponenteProductoPRTRM00000016:any=[];
 ListComponenteProductoPRTRM00000001:any=[];
 ListComponenteProductoPRTRH00000001:any=[];
+ListComponenteProductoPRTCV:any=[];
 ListComponenteProductoPRTRF00000001:any=[];
 ListComponenteProductoPRTLU00000001_2_3:any=[];
 async ListarComponteProductoByGrupo(Grupo) {  
@@ -514,6 +526,14 @@ async ListarComponteProductoByGrupo(Grupo) {
       this.spinnerMessage = `Cargando producto: ${codigoProducto}`;
       this.spinner.show('cargandoProductos');
       await this.procesarProducto(Grupo, codigoProducto, this.ListComponenteProductoPRTRH00000001);
+      this.spinner.hide('cargandoProductos');
+      this.spinner.hide();
+    } 
+    else if (codigoProducto.toUpperCase().includes('PRTCV')) {
+
+      this.spinnerMessage = `Cargando producto: ${codigoProducto}`;
+      this.spinner.show('cargandoProductos');
+      await this.procesarProducto(Grupo, codigoProducto, this.ListComponenteProductoPRTCV);
       this.spinner.hide('cargandoProductos');
       this.spinner.hide();
     } 
@@ -641,7 +661,7 @@ validateAndFormatInput(event: Event): void {
 // Método para validar componentes con soporte para diferentes tipos de lista
 guardarComponentes() {
   // Array para almacenar todas las listas a validar
-  const tablas_lista = ["PRTRSMan","PRTRSMot", "PRTRZ", "PRTRM00000016", "PRTRM00000001", "PRTRH00000001", "PRTRF00000001", "PRTLU00000001_2_3"];
+  const tablas_lista = ["PRTRSMan","PRTRSMot", "PRTRZ", "PRTRM00000016", "PRTRM00000001", "PRTRH00000001","PRTCV", "PRTRF00000001", "PRTLU00000001_2_3"];
   let hayErrores = false;
 
   // Validar cada lista individualmente
@@ -762,7 +782,7 @@ ListGrupos:any  =[];
 // Método para guardar todos los componentes de todas las listas en un solo JSON
 GuardarExplocion(){  
   // Array para almacenar todas las listas a guardar
-  const tablas_lista = ["PRTRSMan", "PRTRSMot", "PRTRZ", "PRTRM00000016", "PRTRM00000001", "PRTRH00000001", "PRTRF00000001", "PRTLU00000001_2_3"];
+  const tablas_lista = ["PRTRSMan", "PRTRSMot", "PRTRZ", "PRTRM00000016", "PRTRM00000001", "PRTRH00000001", "PRTRF00000001", "PRTLU00000001_2_3","PRTCV"];
   let todosLosComponentes = [];
   let hayComponentes = false;
   
@@ -924,7 +944,8 @@ private componentListsMap = {
   "PRTRM00000001": () => this.ListComponenteProductoPRTRM00000001,
   "PRTRH00000001": () => this.ListComponenteProductoPRTRH00000001,
   "PRTRF00000001": () => this.ListComponenteProductoPRTRF00000001,
-  "PRTLU00000001_2_3": () => this.ListComponenteProductoPRTLU00000001_2_3
+  "PRTLU00000001_2_3": () => this.ListComponenteProductoPRTLU00000001_2_3,
+  "PRTCV":()=>this.ListComponenteProductoPRTCV
 };// Método para obtener la lista correspondiente según el tipo
 private getComponentList(tabla_lista: string): any[] {
   const listGetter = this.componentListsMap[tabla_lista];
@@ -1051,7 +1072,7 @@ private getLastItemFromList(tabla_lista: string): any {
       return;
     }  
      // Obtener el último elemento de la lista correspondiente 
-  const ultimoItem = this.getLastItemFromList(tabla_lista);
+  const ultimoItem = this.getLastItemFromList(tabla_lista); 
   if (!ultimoItem) {
     this.toaster.open({
       text: "No se encontró información del producto",
@@ -1209,7 +1230,7 @@ private getLastItemFromList(tabla_lista: string): any {
     }
   }
   
-clonarComponente(item:any,tabla_lista:string){  
+clonarComponente(item:any,tabla_lista:string){
   const userDataString = JSON.parse(localStorage.getItem('UserLog'));   
   var idUsuario= userDataString.id.toString(); 
   if (!userDataString) {   this.toaster.open({
