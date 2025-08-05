@@ -1135,6 +1135,8 @@ CboNombreTubo=[{codigo:0,nombre:"--Seleccione--"}];
 async listarCboNombreTubo(familia,tipoProducto){  
   this.CboNombreTubo=[{codigo:0,nombre:"--Seleccione--"}];    
   const listComponentes = await this.ListarArticulosPorFamiliaGrupoIndividual("Tubo"); 
+  console.log("SON LOS TUBOS:://///////////////////");
+  console.log(listComponentes)
   this.CboNombreTubo.push(...listComponentes); 
   
 
@@ -1923,9 +1925,9 @@ case "CodigoMotor":await this.listarCboMotor(tipoProducto);break;
       
     if (this.cache[componente]) {
       console.log(`Usando datos en caché para ${componente}`);
-      if (CodigosTela.length > 0) {
+      /*if (CodigosTela.length > 0) {
         return this.cache[componente].filter(item => CodigosTela.includes(item.codigo));
-      }
+      }*/
       return this.cache[componente];
     }
 
