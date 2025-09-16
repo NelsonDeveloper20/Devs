@@ -54,8 +54,6 @@ private toaster: Toaster,
   this.mostrarPRTRSMot = productosArray.includes('PRTRSMot');
   this.mostrarPRTRZ = productosArray.includes('PRTRZ');
   this.mostrarPRTRH00000001 = productosArray.includes('PRTRH00000001');
-  //this.mostrarPRTCV = productosArray.includes('PRTCV');
-  // Cambio aquí: usar some() con startsWith() en lugar de includes()
   this.mostrarPRTCV = productosArray.some(p => p.startsWith('PRTCV'));
 
   this.mostrarPRTRM00000001 = productosArray.includes('PRTRM00000001');
