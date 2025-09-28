@@ -1201,6 +1201,7 @@ ListarMonitoreoExplocionSapSalidaEntrada() {
     (data: any) => {
       if (data && data.status === 200) {  
         this.ListMonitoreoExplocionSapSalidaEntrada = data.json;//.map(item => ({ ...item, isExpand: false }));
+        
         this.spinner.hide();      
       } else {
         this.spinner.hide();
@@ -1228,6 +1229,128 @@ filteredListSapSalidaEntrada() {
       }
       return false;
     });
+  });
+}
+//#endregion
+//#region ENVIO SAP MERMA
+
+enviarSalidaMermaSap(item: any) {
+  var coti = item.numeroCotizacion;
+  var grupo = item.cotizacionGrupo;
+  const userDataString = JSON.parse(localStorage.getItem('UserLog'));
+  var idUsuario = userDataString.id.toString();
+
+  if (!userDataString) {
+    this.toaster.open({
+      text: "Su sesión ha caducado",
+      caption: 'Mensaje',
+      type: 'danger',
+    });
+    this.router.navigate(['/Home-main']);
+    return;
+  }
+/*
+  // Primer modal: Elegir entre Editar o Enviar Directamente
+  Swal.fire({
+    title: 'Enviar Salida a SAP',
+    text: '¿Desea revisar/editar los datos antes de enviar o enviar directamente?',
+    icon: 'question',
+    showCancelButton: true,
+    showDenyButton: true,
+    confirmButtonText: 'Editar Datos',
+    denyButtonText: 'Enviar Directamente',
+    cancelButtonText: 'Cancelar',
+    allowOutsideClick: false
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Opción: Editar datos
+    //  this.mostrarVistaPreviaSAP(coti, grupo, idUsuario, true);
+    } else if (result.isDenied) {*/
+      // Opción: Enviar directamente 
+  Swal.fire({
+    title: '¿Está seguro?',
+    text: 'Se enviará la salida de MERMA a SAP con los datos actuales.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, Enviar',
+    cancelButtonText: 'Cancelar',
+    allowOutsideClick: false
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.enviarDirectamenteMermaASap(coti, grupo, idUsuario);
+    }
+  }); 
+
+    /*}
+  });*/
+}
+
+enviarDirectamenteMermaASap(numeroCotizacion: string, cotizacionGrupo: string, idUsuario: string) {
+  this.spinner.show();  
+  this._service.EnviarSalidaMermaSap(numeroCotizacion, cotizacionGrupo, idUsuario).subscribe({
+    next: (response: any) => {
+        this.spinner.hide();
+      console.log("RESULLLT=>");
+      console.log(response);
+      if (response.status == 200) {  
+            console.log("RESPUESTA");
+            const respuesta = response.json.respuesta; 
+            console.log("RESPUESTA");
+            console.log(respuesta);
+           if(respuesta=="OPERACION REALIZADA CORRECTAMENTE"){  
+      Swal.fire({
+        title: 'Mensaje',
+        text: 'Salida de Merma enviado correctamente a SAP',
+        icon: 'success',
+        confirmButtonText: 'Aceptar',
+        allowOutsideClick: false
+      });  
+      this.ListarMonitoreoExplocionSapSalidaEntrada();
+           }else{ 
+
+             
+            Swal.fire({
+              title: 'Ocurrió un error al enviar',
+              html: this.processResponse(response.json.detalle),  // Usamos 'html' en lugar de 'text'
+              icon: 'warning',
+              width: '600px', // Establece un tamaño fijo para la alerta
+              confirmButtonText: 'Aceptar',
+              allowOutsideClick: false
+            });
+           } 
+        }else{
+          Swal.fire({
+            title: 'Ocurrió un error al enviar',
+            html: this.processResponse(response.json.detalle),  // Usamos 'html' en lugar de 'text'
+            icon: 'warning',
+            width: '600px', // Establece un tamaño fijo para la alerta
+            confirmButtonText: 'Aceptar',
+            allowOutsideClick: false
+          });
+          
+        }
+    },
+    error: (error) => {
+      
+      this.spinner.hide();
+      var errorMessage = error.message;
+      console.error('There was an error!====================>');
+      console.log(error);
+      this.toaster.open({
+        text: errorMessage,
+        caption: 'Ocurrio un error',
+        type: 'danger',
+        // duration: 994000
+      }); 
+      Swal.fire({
+        title: 'Ocurrió un error al enviar',
+        html: error.error.json.respuesta +'<b> DETALLE: <b/><br>'+this.processResponse(error.error.json.detalle),  // Usamos 'html' en lugar de 'text'
+        icon: 'warning',
+        width: '600px', // Establece un tamaño fijo para la alerta
+        confirmButtonText: 'Aceptar',
+        allowOutsideClick: false
+      });
+    }
   });
 }
 //#endregion
@@ -2459,6 +2582,15 @@ this._service.EnviarEntradaSap(item.numeroCotizacion,item.cotizacionGrupo,idUsua
   }); 
     }
   });
+} 
+validaMermaEnviadaSap(detalleSalida: any[]): boolean {
+  for (let i = 0; i < detalleSalida.length; i++) {
+    var dato = detalleSalida[i].codigoSalidaMermaSap;
+    if (dato) {
+      return true;
+    }
+  }
+  return false;
 }
 DetalleSalidaSap(item:any){
   const dialogConfig = new MatDialogConfig();

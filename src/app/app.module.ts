@@ -171,6 +171,7 @@ import { LineaProdDialogComponent } from './registro-cotizacions/linea-prod-dial
 import { DetalleSalidaEntradaSapComponent } from './monitoreo-produccion/detalle-salida-entrada-sap/detalle-salida-entrada-sap.component';
 import { DetalleFormulacionComponent } from './monitoreo-produccion/detalle-formulacion/detalle-formulacion.component';
 import { DetalleFormulacionRollerzebraComponent } from './monitoreo-produccion/detalle-formulacion-rollerzebra/detalle-formulacion-rollerzebra.component';
+import { CargaMiniexcelComponent } from './monitoreo-produccion/carga-miniexcel/carga-miniexcel.component';
 
 //IMPORT
 
@@ -237,6 +238,7 @@ import { DetalleFormulacionRollerzebraComponent } from './monitoreo-produccion/d
     DetalleSalidaEntradaSapComponent,
     DetalleFormulacionComponent,
     DetalleFormulacionRollerzebraComponent,
+    CargaMiniexcelComponent,
   ],
   imports: [
     HighchartsChartModule, //grafico

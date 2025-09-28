@@ -1,0 +1,55 @@
+
+    .excel-container {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .toolbar {
+      padding: 10px;
+      background-color: #f5f5f5;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    .btn-primary { background-color: #007bff; color: white; }
+    .btn-secondary { background-color: #6c757d; color: white; }
+    .btn-success { background-color: #28a745; color: white; }
+    .btn-info { background-color: #17a2b8; color: white; }
+    
+    .btn:hover {
+      opacity: 0.8;
+    }
+    
+    .luckysheet-container {
+      flex: 1;
+      position: relative;
+    }
+    
+    /* Estilos para mejorar la apariencia */
+    ::ng-deep .luckysheet-wa-editor {
+      font-family: Arial, sans-serif;
+    }
+    
+    ::ng-deep .luckysheet-cell {
+      border: 1px solid #d0d0d0;
+    }
+    
+    ::ng-deep .luckysheet-cols-h-cells {
+      background-color: #f8f9fa;
+    }
+    
+    ::ng-deep .luckysheet-rows-h {
+      background-color: #f8f9fa;
+    }

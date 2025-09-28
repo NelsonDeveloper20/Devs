@@ -525,6 +525,7 @@
                             <th style="white-space: nowrap">Fec.Envio Salida</th>
                             <th style="white-space: nowrap">User EnvioSalida</th>
                             <th style="white-space: nowrap">Detalle Salida</th>
+                            <th style="white-space: nowrap">Envio Merma</th>
                             <th style="white-space: nowrap">Cod.Entrada Sap</th>
                             <th style="white-space: nowrap">Fec.Entrada Sap</th>
                             <th style="white-space: nowrap">User EnvioEntrada</th>
@@ -555,6 +556,25 @@
                                 <img  
                                 src="https://cdn.iconscout.com/icon/free/png-256/free-sap-logo-icon-download-in-svg-png-gif-file-formats--technology-social-media-vol-6-pack-logos-icons-2945134.png?f=webp&w=256" 
                                 alt="upload" width="44" height="44">
+                              </td>
+                              <td>        <!--MERMA -->          
+                                <div *ngIf="item.codigoSalidaSap && item.merma!='0'">
+                                <button class="btn btn-primary tp-btn-light sharp" *ngIf="!validaMermaEnviadaSap(item.detalleSalida)" (click)="enviarSalidaMermaSap(item)"
+                                style="background: #ec6d28 !important;    border: 1px solid #ec6d28 !important;">
+                                  <mat-icon>forward</mat-icon>
+                                </button>                                                 
+                                 <button class="btn btn-primary tp-btn-light sharp"   *ngIf="validaMermaEnviadaSap(item.detalleSalida)" title="Salida de merma enviada"
+                                 style="background: #09cc09 !important;     border: 1px solid #09cc09 !important;">
+                                   <mat-icon>playlist_add_check</mat-icon> 
+                                </button> 
+                                </div>         
+
+                                <div *ngIf="item.codigoSalidaSap && item.merma=='0'">                                  
+                                 <button class="btn btn-primary tp-btn-light sharp" title="Grupo no tiene merma ingresada para envio"
+                                 style="background: #4a554a !important;     border: 1px solid #4a554a !important;">
+                                   <mat-icon>info</mat-icon> 
+                                </button> 
+                                </div> 
                               </td>
                               <td>{{ pendienteEntrada(item)  }}</td>   
                               <td> {{esFechaValida(item.fechaEntradaSap) ? (item.fechaEntradaSap | date:'dd/MM/yyyy HH:mm') : ''}} </td>

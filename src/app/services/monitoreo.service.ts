@@ -73,6 +73,10 @@ export class MonitoreoService {
     return this.http.post<IApiResponse>(`${this.urlBase}Monitoreo/EnviarSalidaSap?cotizacion=`+grupoCotizacion+"&grupo="+grupo+"&idusuario="+idusuario,{});
   }
 
+  EnviarSalidaMermaSap(grupoCotizacion: any,grupo:any,idusuario :any): Observable<any> {
+    return this.http.post<IApiResponse>(`${this.urlBase}Monitoreo/EnviarSalidaMermaSap?cotizacion=`+grupoCotizacion+"&grupo="+grupo+"&idusuario="+idusuario,{});
+  }
+
   
   EnviarEntradaSap(grupoCotizacion: any,grupo:any,idusuario :any): Observable<any> {
     return this.http.post<IApiResponse>(`${this.urlBase}Monitoreo/EnviarEntradaSap?cotizacion=`+grupoCotizacion+"&grupo="+grupo+"&idusuario="+idusuario,{});

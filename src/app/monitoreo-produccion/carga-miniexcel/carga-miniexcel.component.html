@@ -1,0 +1,13 @@
+ 
+  <!-- Font Awesome para iconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+ <div class="excel-container">
+      <div class="toolbar">
+        <button (click)="saveData()" class="btn btn-primary">Guardar</button>
+        <button (click)="loadData()" class="btn btn-secondary">Cargar</button>
+        <button (click)="exportExcel()" class="btn btn-success">Exportar Excel</button>
+        <input type="file" #fileInput (change)="importExcel($event)" accept=".xlsx,.xls" class="btn btn-info">
+      </div>
+      <div #luckyheetContainer id="luckysheet" class="luckysheet-container"></div>
+    </div>  
