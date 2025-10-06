@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit,Inject } from '@angular/core'; 
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { MsalBroadcastService, MsalGuardConfiguration, MsalService, MSAL_GUARD_CONFIG } from '@azure/msal-angular';
 import { EventMessage, EventType, InteractionStatus, RedirectRequest } from '@azure/msal-browser'; 
 import { Subject, Subscription } from 'rxjs';
@@ -35,7 +35,7 @@ export class AppComponent implements OnInit, OnDestroy {
   {
  
   }
-  
+  isStandalonePage = false;
 rutaImagen: string = '';
 dominio:String="";
 subscription: Subscription;
@@ -46,7 +46,12 @@ ngOnInit(): void {
     // Actualiza el valor de isLoggedIn cuando cambie el estado de inicio de sesión
     this.isUserLoggedIn = isLoggedIn;
   });
- 
+ // Detectar rutas standalone
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      this.isStandalonePage = event.url.includes('/Excel');
+    });
   this.dominio= window.location.hostname;  
 this.rutaImagen='../../assets/login.png'; 
 

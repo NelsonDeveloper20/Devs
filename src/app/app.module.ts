@@ -92,8 +92,8 @@ import { MatTreeModule } from '@angular/material/tree';
 //import { AdminComponent } from './admin/admin.component';
 import { LoadingComponent } from './elements/loading/loading.component';
 import { NavHeaderComponent } from './elements/nav-header/nav-header.component';
+import { HeaderComponent } from './elements/header/header.component';/*
 import { NavigationComponent } from './elements/navigation/navigation.component';
-import { HeaderComponent } from './elements/header/header.component';
 import { FooterComponent } from './elements/footer/footer.component';
 
 import { ElementsComponent } from './forms/elements/elements.component';
@@ -105,14 +105,14 @@ import { LockScreenComponent } from './pages/lock-screen/lock-screen.component';
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
 import { Error400Component } from './pages/error400/error400.component';
 import { Error403Component } from './pages/error403/error403.component';
-import { Error404Component } from './pages/error404/error404.component';
 import { Error500Component } from './pages/error500/error500.component';
 import { Error503Component } from './pages/error503/error503.component';
 
 import { KanbanComponent } from './kanban/kanban.component';
 
 import { HeaderModule } from './kanban/header/header.module';
-import { BoardModule } from './kanban/board/board.module';
+import { BoardModule } from './kanban/board/board.module';*/
+import { Error404Component } from './pages/error404/error404.component';
 
 import { TokenInterceptor } from './shared/interceptors/token.interceptor';
 
@@ -172,6 +172,7 @@ import { DetalleSalidaEntradaSapComponent } from './monitoreo-produccion/detalle
 import { DetalleFormulacionComponent } from './monitoreo-produccion/detalle-formulacion/detalle-formulacion.component';
 import { DetalleFormulacionRollerzebraComponent } from './monitoreo-produccion/detalle-formulacion-rollerzebra/detalle-formulacion-rollerzebra.component';
 import { CargaMiniexcelComponent } from './monitoreo-produccion/carga-miniexcel/carga-miniexcel.component';
+import { StandaloneLayoutComponent } from './monitoreo-produccion/standalone-layout/standalone-layout.component';
 
 //IMPORT
 
@@ -185,8 +186,8 @@ import { CargaMiniexcelComponent } from './monitoreo-produccion/carga-miniexcel/
     HomeComponent,
     LoadingComponent,
     NavHeaderComponent,
+    HeaderComponent,/*
     NavigationComponent,
-    HeaderComponent,
     FooterComponent,
 
     ElementsComponent,
@@ -198,10 +199,10 @@ import { CargaMiniexcelComponent } from './monitoreo-produccion/carga-miniexcel/
     ForgotPasswordComponent,
     Error400Component,
     Error403Component,
-    Error404Component,
     Error500Component,
     Error503Component,
-    KanbanComponent,
+    KanbanComponent,*/
+    Error404Component,
     LoginComponent,
     HomeMainComponent,
     HomeMainUserComponent,
@@ -239,6 +240,7 @@ import { CargaMiniexcelComponent } from './monitoreo-produccion/carga-miniexcel/
     DetalleFormulacionComponent,
     DetalleFormulacionRollerzebraComponent,
     CargaMiniexcelComponent,
+    StandaloneLayoutComponent,
   ],
   imports: [
     HighchartsChartModule, //grafico
@@ -298,9 +300,9 @@ import { CargaMiniexcelComponent } from './monitoreo-produccion/carga-miniexcel/
     MatTableModule,
     MatTooltipModule,
     MatTreeModule,
-
+/*
     HeaderModule,
-    BoardModule,
+    BoardModule,*/
 
     //AZURE
     //offc

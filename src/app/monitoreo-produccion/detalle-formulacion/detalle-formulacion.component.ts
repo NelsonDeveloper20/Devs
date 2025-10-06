@@ -26,7 +26,6 @@ mostrarPRTRSMot=false;
 mostrarPRTRZ = false;
 mostrarPRTRH00000001 = false;
 mostrarPRTCV = false;
-
 mostrarPRTRM00000001 = false;
 mostrarPRTRF00000001 = false;
 mostrarPRTLU0000000123 = false;
@@ -43,13 +42,10 @@ private toaster: Toaster,
   private apiSap:SapService,
   private _productoService: ProductoService,
 ) {
-  this.DatosGrupo=data;
-  
+  this.DatosGrupo=data;  
   const productosArray = this.DatosGrupo?.productos
     ?.split(',')
-    .map(p => p.trim()) || [];
-
-     
+    .map(p => p.trim()) || [];     
   this.mostrarPRTRS = productosArray.includes('PRTRSMan');
   this.mostrarPRTRSMot = productosArray.includes('PRTRSMot');
   this.mostrarPRTRZ = productosArray.includes('PRTRZ');
@@ -61,12 +57,9 @@ private toaster: Toaster,
   this.mostrarPRTRM00000016 = productosArray.includes('PRTRM00000016');
   this.mostrarPRTLU0000000123 = ['PRTLU00000001', 'PRTLU00000002', 'PRTLU00000003']
     .some(p => productosArray.includes(p));
-
   const userDataString = JSON.parse(localStorage.getItem('UserLog'));   
   this.idUsuario= userDataString.id.toString(); 
   this.ListarComponteProductoByGrupo(data.cotizacionGrupo);
-
-
   this.dialogRef.updateSize('80vw', '80vh');
   this.dialogRef.disableClose = true;
   
@@ -773,7 +766,7 @@ guardarComponentes() {
 
   // Si no hay errores, procedemos a guardar
   if(!hayErrores){
-    this.GuardarExplocion();
+    this.GuardarExplocion(); 
   }
 }
 ListGrupos:any  =[];

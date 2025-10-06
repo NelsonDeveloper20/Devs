@@ -37,13 +37,19 @@
               "./node_modules/metismenujs/dist/metismenujs.css",
               "src/assets/vendor/owl-carousel/owl.carousel.css",
               "src/assets/css/style.css",
-              "src/assets/css/dashboard.css"
+              "src/assets/css/dashboard.css",
+              "node_modules/luckysheet/dist/plugins/css/pluginsCss.css",
+              "node_modules/luckysheet/dist/plugins/plugins.css",
+              "node_modules/luckysheet/dist/css/luckysheet.css",
+              "node_modules/luckysheet/dist/assets/iconfont/iconfont.css"
             ],
             "scripts": [
 			  "node_modules/apexcharts/dist/apexcharts.min.js",
         "node_modules/highcharts/highcharts.js",
         "node_modules/highcharts/highcharts-more.js",
-        "node_modules/highcharts/modules/solid-gauge.js"
+        "node_modules/highcharts/modules/solid-gauge.js",
+              "node_modules/luckysheet/dist/plugins/js/plugin.js",
+              "node_modules/luckysheet/dist/luckysheet.umd.js"
 			]
           },
           "configurations": {

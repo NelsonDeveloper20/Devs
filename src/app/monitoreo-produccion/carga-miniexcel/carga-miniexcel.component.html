@@ -1,13 +1,134 @@
- 
-  <!-- Font Awesome para iconos -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
+ <router-outlet></router-outlet>
+ <ngx-spinner
+  bdColor="rgba(255, 255, 255, 1)"
+  size="medium"
+  color="#0D7ABD"
+  type="ball-beat"
+  [fullScreen]="true"
+  [name]="'cargandoProductos'"
+>
+  <p style="color: black">{{ spinnerMessage }}</p>
+</ngx-spinner> 
  <div class="excel-container">
-      <div class="toolbar">
-        <button (click)="saveData()" class="btn btn-primary">Guardar</button>
-        <button (click)="loadData()" class="btn btn-secondary">Cargar</button>
-        <button (click)="exportExcel()" class="btn btn-success">Exportar Excel</button>
-        <input type="file" #fileInput (change)="importExcel($event)" accept=".xlsx,.xls" class="btn btn-info">
+      <!--<h3>Explocion Grupo 109344-4</h3>-->
+          
+   <div class="toolbarbut" [ngClass]="{'collapsed': isToolbarCollapsed, 'expanded': !isToolbarCollapsed}" *ngIf="mostrarOpciones">
+  <!-- Botón de Toggle -->
+  <button class="toggle-btn" (click)="toggleToolbar()">
+    <i class="material-icons">menu</i>
+  </button>
+  
+  <!-- Contenedor de botones -->
+  <div class="toolbar-buttons" >
+    <button (click)="volver()" class="btn btn-info">
+      <i class="material-icons">arrow_back</i>
+      Volver
+    </button>
+    
+    <button (click)="saveData()" class="btn btn-primary">
+      <i class="material-icons">save</i>
+      Guardar
+    </button>
+
+    <button (click)="exportToExcel()" class="btn btn-secondary">
+      <i class="material-icons">file_download</i>
+      Exportar
+    </button>
+
+    <button (click)="openTablePopup()" class="btn btn-success">
+      <i class="material-icons">add_circle</i>
+      Agregar
+    </button>
+    
+    <div class="form-group">
+      <mat-checkbox [(ngModel)]="HabilitarCombos" (change)="onCheckCombos($event)">
+       <span *ngIf="HabilitarCombos">Combos Habilitados</span>
+       <span *ngIf="!HabilitarCombos">Combos InHabilitados</span>         
+      </mat-checkbox>
+    </div>
+  </div>
+</div>
+
+      <!-- Contenedor de Luckysheet -->
+      <div id="luckysheet" style="width: 100% !important;"
+           [style.height.px]="sheetHeight">
       </div>
-      <div #luckyheetContainer id="luckysheet" class="luckysheet-container"></div>
-    </div>  
+
+      <!-- Panel de datos guardados -->
+      <div class="data-panel" *ngIf="savedData">
+        <h3>Últimos datos guardados:</h3>
+        <pre>{{ savedData | json }}</pre>
+      </div>
+    </div> 
+ <div class="modal-overlay" *ngIf="isModalOpen" (click)="cerrarModal()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Seleccionar Componente</h2>
+      <button class="close-button" (click)="cerrarModal()">&times;</button>
+    </div>
+    
+    <div class="modal-body">
+      <div class="form-group">
+        <mat-checkbox [(ngModel)]="checkboxValue" (change)="onCheckboxChange($event)">
+         Listar Todos 
+        </mat-checkbox>
+      </div>
+
+      <div class="form-group">
+        <label for="combo-tipos">Seleccione una opción:</label> 
+       <!-- Contenedor del campo de selección -->
+<mat-form-field appearance="outline" style="width: 100%;">
+    
+    <!-- Select de Material con binding bidireccional -->
+    <mat-select [(ngModel)]="seleccionado" 
+                placeholder="Buscar: código, descripción (usa *)..."  
+                (selectionChange)="onCotizacionSelected($event)" 
+                [disableOptionCentering]="true"
+            panelClass="high-z-index-panel"
+                >
+         
+
+        <!-- Personaliza lo que se muestra cuando hay una selección -->
+        <mat-select-trigger>
+            <span *ngIf="seleccionado">
+                {{ seleccionado.codigoTipo }} : {{ seleccionado.descripcionTipo }}
+            </span>
+            <span *ngIf="!seleccionado">
+                ---Seleccione---
+            </span>
+        </mat-select-trigger>
+        
+        <!-- Campo de búsqueda dentro del dropdown -->
+        <mat-option disabled>
+            <input 
+                matInput 
+                (keyup)="applyFilter($event)" 
+                (click)="$event.stopPropagation()"
+                placeholder="Buscar (ej: PALRS*4 o *tubo*)..." 
+                class="search-input" 
+                style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" />
+        </mat-option>
+        
+        <!-- Mensaje de carga -->
+        <mat-option *ngIf="!dataItems || dataItems.length === 0" disabled>
+            {{ dataItems ? 'No hay resultados' : 'Cargando...' }}
+        </mat-option>
+        
+        <!-- Opción para limpiar selección -->
+        <mat-option [value]="null">---Seleccione---</mat-option>
+        
+        <!-- Lista de opciones filtradas -->
+        <mat-option *ngFor="let item of dataItems" [value]="item">
+            {{ item.codigoTipo }} : {{ item.descripcionTipo }}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
+      </div> 
+    </div>
+    
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="cerrarModal()">Cancelar</button>
+      <button class="btn btn-primary" (click)="confirmar()">Aceptar</button>
+    </div>
+  </div>
+</div> 

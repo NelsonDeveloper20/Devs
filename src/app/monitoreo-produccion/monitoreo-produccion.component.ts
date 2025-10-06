@@ -147,6 +147,7 @@ showFilter3(){
   //#region ABRIR EXPLOCIÓN
   dialogRef:any;
   AbrirExplocionComponentes(item:any): void {   
+
     const productosArray = item.productos.split(',').map(p => p.trim());
 
     const productosConFormulacion = [
@@ -172,42 +173,84 @@ showFilter3(){
       }); 
       return;
     }
-    
+/*
+  this.router.navigate(['/Excel'], {
+    state: { data: item }
+  });
+return;*/
     console.log("ABRIENDO GRUPO =======> ",item);
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.disableClose = true;
-    dialogConfig.autoFocus = true; 
-    dialogConfig.panelClass = 'custom-dialog-container';
-    //const cadenaCompleta = 'PRTRS0054';  
-    dialogConfig.data = item; 
-        this.dialogRef=this.dialog.open(DetalleFormulacionComponent,//DetalleMonitoreoDialogComponent,
-           dialogConfig); 
-       this.dialogRef.afterClosed().subscribe({
-      next: data => {   
-       if (data) {
-           
+
+     // AQUÍ VA EL NUEVO CÓDIGO - Mostrar opciones de explosión
+ Swal.fire({
+  title: 'Seleccione tipo de explosión',
+  text: '¿Qué tipo de explosión desea realizar?',
+  icon: 'question',
+  showDenyButton: true,
+  showCancelButton: true,
+  confirmButtonText: 'Explosión Normal',
+  denyButtonText: 'Explosión tipo Excel',
+  cancelButtonText: 'Cancelar',
+  confirmButtonColor: '#3085d6',
+  denyButtonColor: '#28a745',
+  cancelButtonColor: '#6c757d',
+  allowOutsideClick: false,
+  allowEscapeKey: false
+}).then((result) => {
+  if (result.isConfirmed) {
+    // Opción 1: Explosión Normal (abre el diálogo)
+    this.abrirExplosionNormal(item);
+  } else if (result.isDenied) {
+    // Opción 2: Explosión tipo Excel (navega a Excel)
+    this.router.navigate(['/Excel'], {
+      state: { data: item }
+    });
+  } else if (result.isDismissed) {
+    // Opción 3: Cancelar (no hace nada)
+    console.log('Acción cancelada por el usuario');
+  }
+});
+
+  }
+  // Extrae la lógica de explosión normal a un método separado
+private abrirExplosionNormal(item: any): void {
+  console.log("ABRIENDO GRUPO =======> ", item);
+  const dialogConfig = new MatDialogConfig();
+  dialogConfig.disableClose = true;
+  dialogConfig.autoFocus = true;
+  dialogConfig.panelClass = 'custom-dialog-container';
+  dialogConfig.data = item;
+
+  this.dialogRef = this.dialog.open(DetalleFormulacionComponent, dialogConfig);
+
+  this.dialogRef.afterClosed().subscribe({
+    next: data => {
+      if (data) {
         Swal.fire({
           title: 'Mensaje',
-          text: 'Explocion realizada',
+          text: 'Explosión realizada',
           icon: 'success',
           confirmButtonText: 'Aceptar',
           allowOutsideClick: false
-          }); 
-          this.ListMonitoreoExplocion=[];
+        }).then(() => {
+          this.ListMonitoreoExplocion = [];
           this.ListarMonitoreoExplocion();
-      } 
-    },
-    error: error => { 
-        var errorMessage = error.message;
-        console.error('There was an error!', error); 
-        this.toaster.open({
-          text: errorMessage,
-          caption: 'Ocurrio un error',
-          type: 'danger',
         });
       }
-    });
-  }
+    },
+    error: error => {
+      var errorMessage = error.message;
+      console.error('There was an error!', error);
+
+      this.toaster.open({
+        text: errorMessage,
+        caption: 'Ocurrió un error',
+        type: 'danger',
+      });
+    }
+  });
+
+  
+}
   //#endregion
 
 Fecha:Date=new Date();

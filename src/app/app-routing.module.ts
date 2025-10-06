@@ -1,11 +1,11 @@
 import { Component, NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
+import { Error404Component } from './pages/error404/error404.component';/*
 import { Error400Component } from './pages/error400/error400.component';
 import { Error403Component } from './pages/error403/error403.component';
-import { Error404Component } from './pages/error404/error404.component';
 import { Error500Component } from './pages/error500/error500.component';
-import { Error503Component } from './pages/error503/error503.component';
+import { Error503Component } from './pages/error503/error503.component';*/
 import { LoginComponent } from './login/login.component';
 import { HomeMainComponent } from './home-main/home-main.component';
 import { HomeMainUserComponent } from './home-main-user/home-main-user.component';
@@ -29,6 +29,8 @@ import { MantOpComponent } from './mant-op/mant-op.component';
 import { MantenimientoComponentesComponent } from './mantenimiento-componentes/mantenimiento-componentes.component';
 import { SupervisionOpComponent } from './supervision-op/supervision-op.component';
 import { AuthGuard } from './auth.guard';
+import { CargaMiniexcelComponent } from './monitoreo-produccion/carga-miniexcel/carga-miniexcel.component';
+import { StandaloneLayoutComponent } from './monitoreo-produccion/standalone-layout/standalone-layout.component';
 //END API AZURE
 const routes: Routes = [
   {
@@ -75,6 +77,21 @@ const routes: Routes = [
     component: MonitoreoProduccionComponent,
     canActivate: [AuthGuard],
   },
+  {
+    path: 'Excel',
+    component: CargaMiniexcelComponent, 
+    //canActivate: [AuthGuard],
+  },/*
+  {  
+  path: 'Excel',
+  component: StandaloneLayoutComponent,
+  children: [
+    {
+      path: '',
+      component: CargaMiniexcelComponent
+    }
+  ]
+},*/
   {
     path: 'Mantenimiento-Perfil',
     component: MantenimientoPerfilesComponent,
@@ -128,11 +145,11 @@ const routes: Routes = [
     path: 'auth',
     component: LoginComponent,
   },
-  { path: 'page-error-400', component: Error400Component },
+  /*{ path: 'page-error-400', component: Error400Component },
   { path: 'page-error-403', component: Error403Component },
   { path: 'page-error-404', component: Error404Component },
   { path: 'page-error-500', component: Error500Component },
-  { path: 'page-error-503', component: Error503Component },
+  { path: 'page-error-503', component: Error503Component },*/
   { path: '**', component: Error404Component },
 
   { path: '', component: HomeMainComponent, pathMatch: 'full' },
