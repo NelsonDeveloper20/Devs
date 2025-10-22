@@ -226,6 +226,13 @@ for (let i = 0; i < this.cantSubArray; i++) {
 }
 // arraySubArray ahora contiene todos los subarrays creados a partir de DatosJson2  
 
+ const hoy = new Date();
+const dia = hoy.getDate().toString().padStart(2, '0');
+const mes = (hoy.getMonth() + 1).toString().padStart(2, '0');
+const anio = hoy.getFullYear();
+const fechaFormateada = `${dia}/${mes}/${anio}`;
+
+console.log(fechaFormateada);
 
     console.log("GRUPOS==>");
     console.log(arraySubArray.length);
@@ -255,8 +262,8 @@ for (let i = 0; i < this.cantSubArray; i++) {
                 </td>
                 <td style="border: none !important;width: 287px;vertical-align: top;text-align: start;padding-bottom: 0px !important;">
                     <div class="" style="color: black;">
-                        <h4 style="font-weight: 700;margin-bottom: 0px;color: black;">Fecha de entrega: ${primerElemento?.fechaEntrega}</h4>
-                        <h4 style="font-weight: 700;margin-bottom: 0px;color: black;">Fecha impresión: ${this.formatDate(primerElemento?.fechaImpresion)}</h4>
+                        <h5 style="font-weight: 700;margin-bottom: 0px;color: black;">Fecha de entrega: ${primerElemento?.fechaEntrega}</h5>
+                        <h5 style="font-weight: 700;margin-bottom: 0px;color: black;">Fecha impresión: ${fechaFormateada}</h5>
                     </div>
                 </td>
             </tr>

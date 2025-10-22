@@ -91,9 +91,10 @@ mostrarOpciones:boolean=false;
     console.log('Datos recibidos:', stateData);
     this.DatosGrupo = stateData;
     this.listarComponenteProductoByGrupo(this.DatosGrupo.cotizacionGrupo);
-
+/*
     this.adjustSheetSize();
     window.addEventListener('resize', () => this.adjustSheetSize());
+    */
 
     document.removeEventListener('paste', this.handlePaste);
     document.removeEventListener('copy', this.handleCopy);
@@ -542,15 +543,113 @@ private mostrarError(mensaje: string): void {
 
   ngAfterViewInit(): void {
     setTimeout(() => {
+    // ⭐ Deshabilitar scroll del body
+    document.body.style.overflow = 'hidden';
+    document.body.style.height = '100vh';
       this.initializeLuckysheet();
-      this.setupClipboardHandling();
+      this.setupClipboardHandling(); 
+    // 🎯 AGREGAR SOLO ESTA LÍNEA
+    this.setupMouseWheelScroll();
     }, 500);
+  } 
+// 🎯 Método 1: Configurar scroll con rueda del mouse
+private setupMouseWheelScroll(): void {
+  const luckysheetContainer = document.getElementById('luckysheet');
+  
+  if (!luckysheetContainer) {
+    console.warn('Contenedor de Luckysheet no encontrado');
+    return;
   }
 
-  ngOnDestroy(): void {
-    this.luckysheetHelper.destroy();
-    window.removeEventListener('resize', () => this.adjustSheetSize());
-    document.removeEventListener('paste', this.handlePaste);
+  setTimeout(() => {
+    const scrollContainer = luckysheetContainer.querySelector('.luckysheet-scrollbar-ltr') ||
+                           luckysheetContainer.querySelector('.luckysheet-cell-flow') ||
+                           luckysheetContainer.querySelector('#luckysheet-cell-main');
+    
+    if (!scrollContainer) {
+      this.addWheelListener(luckysheetContainer);
+      return;
+    }
+
+    this.addWheelListener(scrollContainer as HTMLElement);
+  }, 1000);
+}
+
+// 🎯 Método 2: Agregar listener de rueda del mouse
+private addWheelListener(element: HTMLElement): void {
+  element.removeEventListener('wheel', this.handleWheel as any);
+  element.addEventListener('wheel', this.handleWheel.bind(this), { passive: false });
+  console.log('✅ Scroll con rueda del mouse configurado');
+}
+
+// 🎯 Método 3: Manejador del evento wheel
+private handleWheel(e: WheelEvent): void {
+  // CRÍTICO: NO BLOQUEAR SI EL EVENTO VIENE DEL MODAL
+  const target = e.target as HTMLElement;
+  
+  const isFromModal = target.closest('.modal-overlay') || 
+                      target.closest('.modal-container') ||
+                      target.closest('.cdk-overlay-container') ||
+                      target.closest('mat-select-panel') ||
+                      target.closest('.mat-select-panel');
+  
+  if (isFromModal) {
+    return; // Dejar que el scroll nativo funcione en el modal
+  }
+  
+  const isFromLuckysheet = target.closest('#luckysheet') !== null;
+  
+  if (!isFromLuckysheet) {
+    return;
+  }
+  
+  e.preventDefault();
+  e.stopPropagation();
+  
+  try {
+    const cellMain = document.querySelector('#luckysheet-cell-main') as HTMLElement;
+    
+    if (!cellMain) return;
+
+    const scrollSpeed = 3;
+    const deltaY = e.deltaY * scrollSpeed;
+    const deltaX = e.deltaX * scrollSpeed;
+
+    const currentScrollTop = cellMain.scrollTop || 0;
+    const currentScrollLeft = cellMain.scrollLeft || 0;
+
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      cellMain.scrollTop = currentScrollTop + deltaY;
+    } else {
+      cellMain.scrollLeft = currentScrollLeft + deltaX;
+    }
+
+    if (typeof luckysheet !== 'undefined' && luckysheet.scroll) {
+      const sheet = luckysheet.getSheet();
+      if (sheet) {
+        luckysheet.scroll({
+          scrollTop: cellMain.scrollTop,
+          scrollLeft: cellMain.scrollLeft
+        });
+      }
+    }
+    
+  } catch (error) {
+    console.error('Error en handleWheel:', error);
+  }
+}
+  ngOnDestroy(): void { 
+
+  document.body.style.overflow = 'auto';
+  document.body.style.height = 'auto';
+  
+  this.luckysheetHelper.destroy();
+  document.removeEventListener('paste', this.handlePaste);
+  document.removeEventListener('copy', this.handleCopy);// 🎯 AGREGAR ESTA PARTE
+  const luckysheetContainer = document.getElementById('luckysheet');
+  if (luckysheetContainer) {
+    luckysheetContainer.removeEventListener('wheel', this.handleWheel as any);
+  }
   }
 
  
@@ -756,8 +855,7 @@ nombreHojaActiva: string = '';
     );
   }
 
-  HabilitarCombos:boolean=true;
-  
+HabilitarCombos:boolean=false;  
 onCheckCombos(event: any) {
   console.log('Checkbox cambiado:', event.checked);
   // Aquí puedes ejecutar tu lógica
@@ -1347,14 +1445,15 @@ exportarProductos(): void {
       const nuevaFila = {
         ...ultimoItem,  // Copia todas las propiedades
         // Sobrescribe solo lo que necesites cambiar
-        Tipo: tipoagregado, 
+        Tipo: "ACCESORIO",// tipoagregado, 
         Ancho: 0,
         Alto: 0, 
         Merma: 0,
         Lote: "",
         "Cálculo Final":0,
         "Cant. Roller":0,
-        "Codigo Tipo":""
+        "Codigo Tipo":"",
+        Descripcion:tipoagregado
         //Descripcion: this.popupComponenteSelected.nombreGrupo.toUpperCase()
         }; 
      if (this.luckysheetHelper.addNewRow(nuevaFila)) { 

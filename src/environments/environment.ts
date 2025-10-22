@@ -8,7 +8,7 @@ export const environment = {
   authority: 'https://login.microsoftonline.com/b5fdc43d-890f-4208-917d-107c711d57cc',
   authRedirectUri: 'http://localhost:4200',
   logoutRedirectUri: 'http://localhost:4200', 
-  baseUrl: 'https://localhost:7014', //API 
+  baseUrl: 'http://191.98.160.56:82', //API 'https://localhost:7014',//
   urlSap:'http://191.98.160.56:8081/'
 };
  

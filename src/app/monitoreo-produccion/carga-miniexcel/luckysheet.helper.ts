@@ -4,141 +4,7 @@ declare var luckysheet: any;
 import * as XLSX from 'xlsx';
 export class LuckysheetHelper {
    
-  // Datos de ejemplo actualizados con la nueva columna País
-  private sampleData = [
-    {
-      "name": "Empleados",
-      "color": "#4CAF50",
-      "index": 0,
-      "status": 1,
-      "order": 0,
-      "hide": 0,
-      "row": 25,
-      "column": 18,
-      "defaultRowHeight": 19,
-      "defaultColWidth": 100,
-      "celldata": [
-        // Headers con estilos - AGREGAMOS PAÍS Y MOVEMOS COLUMNAS
-        {"r": 0, "c": 0, "v": {"v": "ID", "ct": {"fa": "General", "t": "g"}, "m": "ID", "bg": "#1976D2", "fc": "#FFFFFF", "bl": 1, "fs": 12}},
-        {"r": 0, "c": 1, "v": {"v": "Nombre", "ct": {"fa": "General", "t": "g"}, "m": "Nombre", "bg": "#1976D2", "fc": "#FFFFFF", "bl": 1, "fs": 12}},
-        {"r": 0, "c": 2, "v": {"v": "Apellido", "ct": {"fa": "General", "t": "g"}, "m": "Apellido", "bg": "#1976D2", "fc": "#FFFFFF", "bl": 1, "fs": 12}},
-        {"r": 0, "c": 3, "v": {"v": "Email", "ct": {"fa": "General", "t": "g"}, "m": "Email", "bg": "#1976D2", "fc": "#FFFFFF", "bl": 1, "fs": 12}},
-        {"r": 0, "c": 4, "v": {"v": "Edad", "ct": {"fa": "General", "t": "g"}, "m": "Edad", "bg": "#1976D2", "fc": "#FFFFFF", "bl": 1, "fs": 12}},
-        {"r": 0, "c": 5, "v": {"v": "Salario", "ct": {"fa": "General", "t": "g"}, "m": "Salario", "bg": "#1976D2", "fc": "#FFFFFF", "bl": 1, "fs": 12}},
-        {"r": 0, "c": 6, "v": {"v": "País", "ct": {"fa": "General", "t": "g"}, "m": "País", "bg": "#FF5722", "fc": "#FFFFFF", "bl": 1, "fs": 12}},
-        {"r": 0, "c": 7, "v": {"v": "Ciudad", "ct": {"fa": "General", "t": "g"}, "m": "Ciudad", "bg": "#FF9800", "fc": "#FFFFFF", "bl": 1, "fs": 12}},
-        {"r": 0, "c": 8, "v": {"v": "Departamento", "ct": {"fa": "General", "t": "g"}, "m": "Departamento", "bg": "#795548", "fc": "#FFFFFF", "bl": 1, "fs": 12}},
-        {"r": 0, "c": 9, "v": {"v": "Fecha Ingreso", "ct": {"fa": "General", "t": "g"}, "m": "Fecha Ingreso", "bg": "#1976D2", "fc": "#FFFFFF", "bl": 1, "fs": 12}},
-        {"r": 0, "c": 10, "v": {"v": "Activo", "ct": {"fa": "General", "t": "g"}, "m": "Activo", "bg": "#1976D2", "fc": "#FFFFFF", "bl": 1, "fs": 12}},
-        
-        // Datos de empleados - ACTUALIZADOS CON PAÍS Y CIUDAD
-        {"r": 1, "c": 0, "v": {"v": 1, "ct": {"fa": "General", "t": "n"}, "m": "1"}},
-        {"r": 1, "c": 1, "v": {"v": "Juan", "ct": {"fa": "General", "t": "g"}, "m": "Juan"}},
-        {"r": 1, "c": 2, "v": {"v": "Pérez", "ct": {"fa": "General", "t": "g"}, "m": "Pérez"}},
-        {"r": 1, "c": 3, "v": {"v": "juan.perez@empresa.com", "ct": {"fa": "General", "t": "g"}, "m": "juan.perez@empresa.com"}},
-        {"r": 1, "c": 4, "v": {"v": 28, "ct": {"fa": "General", "t": "n"}, "m": "28"}},
-        {"r": 1, "c": 5, "v": {"v": 3500.50, "ct": {"fa": "General", "t": "n"}, "m": "3500.5"}},
-        {"r": 1, "c": 6, "v": {"v": "Perú", "ct": {"fa": "General", "t": "g"}, "m": "Perú", "bg": "#FFF3E0"}},
-        {"r": 1, "c": 7, "v": {"v": "Lima", "ct": {"fa": "General", "t": "g"}, "m": "Lima", "bg": "#FFF8E1"}},
-        {"r": 1, "c": 8, "v": {"v": "Ventas", "ct": {"fa": "General", "t": "g"}, "m": "Ventas", "bg": "#F3E5F5"}},
-        {"r": 1, "c": 9, "v": {"v": "2022-01-15", "ct": {"fa": "yyyy-mm-dd", "t": "d"}, "m": "2022-01-15"}},
-        {"r": 1, "c": 10, "v": {"v": "Sí", "ct": {"fa": "General", "t": "g"}, "m": "Sí", "bg": "#C8E6C9"}},
-        
-        {"r": 2, "c": 0, "v": {"v": 2, "ct": {"fa": "General", "t": "n"}, "m": "2"}},
-        {"r": 2, "c": 1, "v": {"v": "María", "ct": {"fa": "General", "t": "g"}, "m": "María"}},
-        {"r": 2, "c": 2, "v": {"v": "González", "ct": {"fa": "General", "t": "g"}, "m": "González"}},
-        {"r": 2, "c": 3, "v": {"v": "maria.gonzalez@empresa.com", "ct": {"fa": "General", "t": "g"}, "m": "maria.gonzalez@empresa.com"}},
-        {"r": 2, "c": 4, "v": {"v": 32, "ct": {"fa": "General", "t": "n"}, "m": "32"}},
-        {"r": 2, "c": 5, "v": {"v": 4200.75, "ct": {"fa": "General", "t": "n"}, "m": "4200.75"}},
-        {"r": 2, "c": 6, "v": {"v": "Colombia", "ct": {"fa": "General", "t": "g"}, "m": "Colombia", "bg": "#FFF3E0"}},
-        {"r": 2, "c": 7, "v": {"v": "Bogotá", "ct": {"fa": "General", "t": "g"}, "m": "Bogotá", "bg": "#FFF8E1"}},
-        {"r": 2, "c": 8, "v": {"v": "Tecnología", "ct": {"fa": "General", "t": "g"}, "m": "Tecnología", "bg": "#F3E5F5"}},
-        {"r": 2, "c": 9, "v": {"v": "2021-03-10", "ct": {"fa": "yyyy-mm-dd", "t": "d"}, "m": "2021-03-10"}},
-        {"r": 2, "c": 10, "v": {"v": "Sí", "ct": {"fa": "General", "t": "g"}, "m": "Sí", "bg": "#C8E6C9"}},
-        
-        {"r": 3, "c": 0, "v": {"v": 3, "ct": {"fa": "General", "t": "n"}, "m": "3"}},
-        {"r": 3, "c": 1, "v": {"v": "Carlos", "ct": {"fa": "General", "t": "g"}, "m": "Carlos"}},
-        {"r": 3, "c": 2, "v": {"v": "Rodríguez", "ct": {"fa": "General", "t": "g"}, "m": "Rodríguez"}},
-        {"r": 3, "c": 3, "v": {"v": "carlos.rodriguez@empresa.com", "ct": {"fa": "General", "t": "g"}, "m": "carlos.rodriguez@empresa.com"}},
-        {"r": 3, "c": 4, "v": {"v": 35, "ct": {"fa": "General", "t": "n"}, "m": "35"}},
-        {"r": 3, "c": 5, "v": {"v": 5500.00, "ct": {"fa": "General", "t": "n"}, "m": "5500"}},
-        {"r": 3, "c": 6, "v": {"v": "México", "ct": {"fa": "General", "t": "g"}, "m": "México", "bg": "#FFF3E0"}},
-        {"r": 3, "c": 7, "v": {"v": "Guadalajara", "ct": {"fa": "General", "t": "g"}, "m": "Guadalajara", "bg": "#FFF8E1"}},
-        {"r": 3, "c": 8, "v": {"v": "Tecnología", "ct": {"fa": "General", "t": "g"}, "m": "Tecnología", "bg": "#F3E5F5"}},
-        {"r": 3, "c": 9, "v": {"v": "2020-06-01", "ct": {"fa": "yyyy-mm-dd", "t": "d"}, "m": "2020-06-01"}},
-        {"r": 3, "c": 10, "v": {"v": "Sí", "ct": {"fa": "General", "t": "g"}, "m": "Sí", "bg": "#C8E6C9"}},
-        
-        {"r": 4, "c": 0, "v": {"v": 4, "ct": {"fa": "General", "t": "n"}, "m": "4"}},
-        {"r": 4, "c": 1, "v": {"v": "Ana", "ct": {"fa": "General", "t": "g"}, "m": "Ana"}},
-        {"r": 4, "c": 2, "v": {"v": "López", "ct": {"fa": "General", "t": "g"}, "m": "López"}},
-        {"r": 4, "c": 3, "v": {"v": "ana.lopez@empresa.com", "ct": {"fa": "General", "t": "g"}, "m": "ana.lopez@empresa.com"}},
-        {"r": 4, "c": 4, "v": {"v": 29, "ct": {"fa": "General", "t": "n"}, "m": "29"}},
-        {"r": 4, "c": 5, "v": {"v": 3800.25, "ct": {"fa": "General", "t": "n"}, "m": "3800.25"}},
-        {"r": 4, "c": 6, "v": {"v": "Chile", "ct": {"fa": "General", "t": "g"}, "m": "Chile", "bg": "#FFF3E0"}},
-        {"r": 4, "c": 7, "v": {"v": "Santiago", "ct": {"fa": "General", "t": "g"}, "m": "Santiago", "bg": "#FFF8E1"}},
-        {"r": 4, "c": 8, "v": {"v": "Finanzas", "ct": {"fa": "General", "t": "g"}, "m": "Finanzas", "bg": "#F3E5F5"}},
-        {"r": 4, "c": 9, "v": {"v": "2021-09-15", "ct": {"fa": "yyyy-mm-dd", "t": "d"}, "m": "2021-09-15"}},
-        {"r": 4, "c": 10, "v": {"v": "Sí", "ct": {"fa": "General", "t": "g"}, "m": "Sí", "bg": "#C8E6C9"}},
-        
-        {"r": 5, "c": 0, "v": {"v": 5, "ct": {"fa": "General", "t": "n"}, "m": "5"}},
-        {"r": 5, "c": 1, "v": {"v": "Luis", "ct": {"fa": "General", "t": "g"}, "m": "Luis"}},
-        {"r": 5, "c": 2, "v": {"v": "Martínez", "ct": {"fa": "General", "t": "g"}, "m": "Martínez"}},
-        {"r": 5, "c": 3, "v": {"v": "luis.martinez@empresa.com", "ct": {"fa": "General", "t": "g"}, "m": "luis.martinez@empresa.com"}},
-        {"r": 5, "c": 4, "v": {"v": 26, "ct": {"fa": "General", "t": "n"}, "m": "26"}},
-        {"r": 5, "c": 5, "v": {"v": 3200.00, "ct": {"fa": "General", "t": "n"}, "m": "3200"}},
-        {"r": 5, "c": 6, "v": {"v": "Argentina", "ct": {"fa": "General", "t": "g"}, "m": "Argentina", "bg": "#FFF3E0"}},
-        {"r": 5, "c": 7, "v": {"v": "Buenos Aires", "ct": {"fa": "General", "t": "g"}, "m": "Buenos Aires", "bg": "#FFF8E1"}},
-        {"r": 5, "c": 8, "v": {"v": "Finanzas", "ct": {"fa": "General", "t": "g"}, "m": "Finanzas", "bg": "#F3E5F5"}},
-        {"r": 5, "c": 9, "v": {"v": "2023-02-01", "ct": {"fa": "yyyy-mm-dd", "t": "d"}, "m": "2023-02-01"}},
-        {"r": 5, "c": 10, "v": {"v": "Sí", "ct": {"fa": "General", "t": "g"}, "m": "Sí", "bg": "#C8E6C9"}},
-        
-        // Fila de totales y estadísticas
-        {"r": 7, "c": 3, "v": {"v": "ESTADÍSTICAS:", "ct": {"fa": "General", "t": "g"}, "m": "ESTADÍSTICAS:", "bg": "#FF9800", "fc": "#FFFFFF", "bl": 1, "fs": 11}},
-        {"r": 7, "c": 4, "v": {"v": "Edad Promedio:", "ct": {"fa": "General", "t": "g"}, "m": "Edad Promedio:", "bg": "#FF9800", "fc": "#FFFFFF", "bl": 1}},
-        {"r": 7, "c": 5, "v": {"v": "=AVERAGE(E2:E6)", "ct": {"fa": "General", "t": "n"}, "m": "30", "f": "=AVERAGE(E2:E6)", "bg": "#FF9800", "fc": "#FFFFFF", "bl": 1}},
-        
-        {"r": 8, "c": 4, "v": {"v": "Salario Total:", "ct": {"fa": "General", "t": "g"}, "m": "Salario Total:", "bg": "#4CAF50", "fc": "#FFFFFF", "bl": 1}},
-        {"r": 8, "c": 5, "v": {"v": "=SUM(F2:F6)", "ct": {"fa": "General", "t": "n"}, "m": "20200.5", "f": "=SUM(F2:F6)", "bg": "#4CAF50", "fc": "#FFFFFF", "bl": 1}},
-        
-        {"r": 9, "c": 4, "v": {"v": "Salario Promedio:", "ct": {"fa": "General", "t": "g"}, "m": "Salario Promedio:", "bg": "#2196F3", "fc": "#FFFFFF", "bl": 1}},
-        {"r": 9, "c": 5, "v": {"v": "=AVERAGE(F2:F6)", "ct": {"fa": "General", "t": "n"}, "m": "4040.1", "f": "=AVERAGE(F2:F6)", "bg": "#2196F3", "fc": "#FFFFFF", "bl": 1}},
-        
-        {"r": 10, "c": 4, "v": {"v": "Total Empleados:", "ct": {"fa": "General", "t": "g"}, "m": "Total Empleados:", "bg": "#9C27B0", "fc": "#FFFFFF", "bl": 1}},
-        {"r": 10, "c": 5, "v": {"v": "=COUNT(A2:A6)", "ct": {"fa": "General", "t": "n"}, "m": "5", "f": "=COUNT(A2:A6)", "bg": "#9C27B0", "fc": "#FFFFFF", "bl": 1}},
-      ]
-    },
-    {
-      "name": "Ventas",
-      "color": "#E91E63",
-      "index": 1,
-      "status": 0,
-      "order": 1,
-      "hide": 0,
-      "row": 15,
-      "column": 8,
-      "defaultRowHeight": 19,
-      "defaultColWidth": 100,
-      "celldata": [
-        {"r": 0, "c": 0, "v": {"v": "Mes", "ct": {"fa": "General", "t": "g"}, "m": "Mes", "bg": "#E91E63", "fc": "#FFFFFF", "bl": 1}},
-        {"r": 0, "c": 1, "v": {"v": "Producto", "ct": {"fa": "General", "t": "g"}, "m": "Producto", "bg": "#E91E63", "fc": "#FFFFFF", "bl": 1}},
-        {"r": 0, "c": 2, "v": {"v": "Cantidad", "ct": {"fa": "General", "t": "g"}, "m": "Cantidad", "bg": "#E91E63", "fc": "#FFFFFF", "bl": 1}},
-        {"r": 0, "c": 3, "v": {"v": "Precio Unitario", "ct": {"fa": "General", "t": "g"}, "m": "Precio Unitario", "bg": "#E91E63", "fc": "#FFFFFF", "bl": 1}},
-        {"r": 0, "c": 4, "v": {"v": "Total", "ct": {"fa": "General", "t": "g"}, "m": "Total", "bg": "#E91E63", "fc": "#FFFFFF", "bl": 1}},
-        
-        {"r": 1, "c": 0, "v": {"v": "Enero", "ct": {"fa": "General", "t": "g"}, "m": "Enero"}},
-        {"r": 1, "c": 1, "v": {"v": "Laptop", "ct": {"fa": "General", "t": "g"}, "m": "Laptop"}},
-        {"r": 1, "c": 2, "v": {"v": 10, "ct": {"fa": "General", "t": "n"}, "m": "10"}},
-        {"r": 1, "c": 3, "v": {"v": 800, "ct": {"fa": "General", "t": "n"}, "m": "800"}},
-        {"r": 1, "c": 4, "v": {"v": "=C2*D2", "ct": {"fa": "General", "t": "n"}, "m": "8000", "f": "=C2*D2"}},
-        
-        {"r": 2, "c": 0, "v": {"v": "Febrero", "ct": {"fa": "General", "t": "g"}, "m": "Febrero"}},
-        {"r": 2, "c": 1, "v": {"v": "Mouse", "ct": {"fa": "General", "t": "g"}, "m": "Mouse"}},
-        {"r": 2, "c": 2, "v": {"v": 50, "ct": {"fa": "General", "t": "n"}, "m": "50"}},
-        {"r": 2, "c": 3, "v": {"v": 25, "ct": {"fa": "General", "t": "n"}, "m": "25"}},
-        {"r": 2, "c": 4, "v": {"v": "=C3*D3", "ct": {"fa": "General", "t": "n"}, "m": "1250", "f": "=C3*D3"}},
-      ]
-    }
-  ];
+   
 
   // Método para convertir ListComponenteProducto a formato Luckysheet
   // Método para convertir ListComponenteProducto a formato Luckysheet
@@ -395,10 +261,7 @@ fa: Es el formato de número (format string)
   }
   };
 }
-
-  getSampleData(): any[] {
-    return this.sampleData;
-  }
+ 
   
   // Inicializar Luckysheet con opciones
   initializeLuckysheet(grupo:any,
@@ -489,6 +352,20 @@ fa: Es el formato de número (format string)
       
       enableAddRow: true,
       enableAddCol: true,
+
+      // 🔒 CONFIGURACIONES PARA BLOQUEAR HOJAS
+      enableAddBackTop: false,        // 🔒 Desactiva botón "Agregar hoja" (ícono +)
+      sheetRightClickConfig: {        // 🔒 Desactiva menú contextual de hojas
+        delete: false,                 // No permite eliminar hojas
+        copy: false,                   // No permite copiar hojas  
+        rename: false,                 // No permite renombrar hojas
+        color: false,                  // No permite cambiar color
+        hide: false,                   // No permite ocultar hojas
+        move: false                    // No permite mover hojas
+      },
+      
+
+
       rowHeaderWidth: 46,
       columnHeaderHeight: 50,
       sheetFormulaBar: true,
@@ -527,11 +404,46 @@ fa: Es el formato de número (format string)
         cellUpdated: callbacks.onCellUpdated || (() => {}),
         rangeSelect: callbacks.onRangeSelect || (() => {}),
         sheetActivate: callbacks.onSheetActivate || (() => {}),
-        workbookCreateAfter: callbacks.onWorkbookCreateAfter || (() => {  // 👈 Agregar aquí
+        workbookCreateAfter: () => {
+      console.log('Workbook creado, configurando validaciones...');
+      
+      // 🔒 PREVENIR DOBLE CLIC EN NOMBRES DE HOJAS
+      setTimeout(() => {
+        const sheetBar = document.querySelector('.luckysheet-sheet-container');
+        if (sheetBar) {
+          sheetBar.addEventListener('dblclick', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            console.log('⚠️ Doble clic bloqueado en hoja');
+          }, true);
+        }
+        
+        // Bloquear input de edición de nombre si aparece
+        const observer = new MutationObserver(() => {
+          const sheetInput = document.querySelector('.luckysheet-sheets-item-name input');
+          if (sheetInput) {
+            (sheetInput as HTMLInputElement).blur();
+            (sheetInput as HTMLElement).remove();
+            console.log('⚠️ Input de edición de nombre bloqueado');
+          }
+        });
+        
+        observer.observe(document.body, {
+          childList: true,
+          subtree: true
+        });
+      }, 500);
+      
+      // Llamar al callback original si existe
+      if (callbacks.onWorkbookCreateAfter) {
+        callbacks.onWorkbookCreateAfter();
+      }
+    },
+        /*workbookCreateAfter: callbacks.onWorkbookCreateAfter || (() => {  // 👈 Agregar aquí
           console.log('Workbook creado, configurando validaciones...');
         }
       ),
-        
+        */
       // Hook para mejorar el pegado
       cellPasteBefore: (data: any[][], range: any) => {
         console.log('Pegando datos mejorados:', {

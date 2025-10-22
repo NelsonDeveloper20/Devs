@@ -5,17 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="keywords" content="" />
-  <meta name="author" content="DexignZone" />
-  <meta name="robots" content="" />
-  <meta name="description" content="Grupo Pana S.A. " />
-  <meta property="og:title" content="Grupo Pana S.A. " />
-  <meta property="og:description" content="Grupo Pana S.A. " />
+  <meta name="author" content="NelsonR" />
+  <meta name="robots" content="" /> 
   <meta property="og:image" content="" />
   <meta name="format-detection" content="telephone=no">
   <title>DC-Blinds</title>
-  <base href="/">  
-  <script src="assets\vendor\jquery\jquery.min.js"></script>
-  <!--<link rel="icon" href="assets/images/GP.ico" type="image/x-icon" />-->
+  <base href="/"> 
+  
+  <!-- Cargar jQuery PRIMERO -->
+  <script src="assets/vendor/jquery/jquery.min.js"></script>
+  <script> 
+    // Backup simple de jQuery (sin noConflict para no afectar Luckysheet)
+    window._jQueryOriginal = window.jQuery;
+    window._$Original = window.$;
+    console.log('✓ jQuery guardado');
+  </script>
+  
   <link rel="icon" href="https://www.decoblinds.pe/wp-content/uploads/2022/04/cropped-favicon-32x32.png" sizes="32x32">
   <link rel="icon" href="https://www.decoblinds.pe/wp-content/uploads/2022/04/cropped-favicon-192x192.png" sizes="192x192">
   <link rel="apple-touch-icon" href="https://www.decoblinds.pe/wp-content/uploads/2022/04/cropped-favicon-180x180.png">
@@ -26,22 +31,58 @@
   <script src="https://cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
- <script src="https://code.jquery.com/jquery-1.11.0.js"></script>
   <script type="text/javascript" src="https://rawgit.com/select2/select2/master/dist/js/select2.js"></script>
-<link rel="stylesheet" type="text/css" href="https://rawgit.com/select2/select2/master/dist/css/select2.min.css">
+  <link rel="stylesheet" type="text/css" href="https://rawgit.com/select2/select2/master/dist/css/select2.min.css">
+  <link rel="stylesheet" type="text/css" href="assets/css/style.css">
 
-  <style>    
-  .select2-container {
-    z-index: 9999 !important; /* Ajusta este valor según sea necesario para estar por encima del z-index del diálogo */
+  <script>
+    // Backup PROFUNDO de Select2 y sus dependencias
+    if (window.jQuery && window.jQuery.fn && window.jQuery.fn.select2) {
+      window._select2Original = window.jQuery.fn.select2;
+      
+      // Guardar las funciones críticas de jQuery que Select2 usa
+      window._jQueryFunctions = {
+        on: window.jQuery.fn.on,
+        off: window.jQuery.fn.off,
+        trigger: window.jQuery.fn.trigger,
+        val: window.jQuery.fn.val,
+        data: window.jQuery.fn.data,
+        prop: window.jQuery.fn.prop,
+        attr: window.jQuery.fn.attr,
+        addClass: window.jQuery.fn.addClass,
+        removeClass: window.jQuery.fn.removeClass,
+        find: window.jQuery.fn.find
+      };
+      
+      console.log('✓ Select2 y funciones críticas guardadas');
+    }
+  </script>
+  <style>   
+   .select2-container {
+    z-index: 999999 !important; /* Z-index muy alto para estar sobre todo */
     border-radius: 3px;
-}
-.select2-container--default .select2-selection--single {
+  }
+  .select2-container--open {
+    z-index: 999999 !important;
+  }
+  .select2-dropdown {
+    z-index: 999999 !important;
+    border: 4px solid #ededed;
+    max-width: 580px !important;
+    width: 100% !important;
+    box-shadow: 3px 17px 9px 0px rgb(36 34 34 / 14%), -2px 3px 18px 0px rgb(5 5 5 / 12%) !important;
+  }
+  .mat-dialog-container .select2-container {
+    z-index: 999999 !important;
+  }
+  .select2-container--default .select2-selection--single {
     border-radius: 4px !important;
     border: 1px solid #E8E8E8;
     height: 49px !important;
     background: #fff;
     align-content: center !important;
-}
+  }
+    
   .mat-header-cell, .mat-cell {
   white-space: nowrap; /* Evita que el texto se envuelva */
   overflow: hidden; /* Oculta el texto que excede el ancho de la celda */
@@ -255,7 +296,7 @@ margin-left: 0.563rem !important;
       direction="ltr"
       data-primary="color_11"
 >
-<!--
+ <!--
 <h1>NNN</h1>
 <select id="example"  style="width: 300px">
   <option value="JAN">January</option>
@@ -274,11 +315,52 @@ margin-left: 0.563rem !important;
   <app-root> 
   </app-root>
   <app-redirect></app-redirect> 
+<script>
+(function() { 
+  
+  // Función de restauración que NO afecta a Luckysheet
+  function restaurarSelect2SiEsNecesario() {
+    let restaurado = false;
+    
+    // Solo restaurar Select2 si desapareció (sin tocar jQuery global)
+    if (window.jQuery && window.jQuery.fn && !window.jQuery.fn.select2 && window._select2Original) {
+      console.warn('⚠ Select2 desapareció, restaurando...');
+      window.jQuery.fn.select2 = window._select2Original;
+      window.$.fn.select2 = window._select2Original;
+      restaurado = true;
+    }
+    
+    // Restaurar funciones críticas que Select2 necesita (si fueron sobrescritas)
+    if (window._jQueryFunctions) {
+      Object.keys(window._jQueryFunctions).forEach(function(fnName) {
+        if (window.jQuery.fn[fnName] && 
+            window.jQuery.fn[fnName].toString() !== window._jQueryFunctions[fnName].toString()) {
+          // Solo restaurar si la función fue modificada
+          window.jQuery.fn[fnName] = window._jQueryFunctions[fnName];
+          window.$.fn[fnName] = window._jQueryFunctions[fnName];
+          restaurado = true;
+        }
+      });
+    }
+    
+    if (restaurado) {
+      console.log('✓ Select2 restaurado (Luckysheet intacto)');
+    }
+  }
+  
+  // Esperar a que Luckysheet cargue completamente antes de empezar a monitorear
+  setTimeout(function() {
+    console.log('🔍 Iniciando monitoreo de Select2...');
+    
+    // Restaurar periódicamente pero SIN afectar jQuery/Luckysheet
+    setInterval(restaurarSelect2SiEsNecesario, 2000);
+    
+  }, 1500); // Dar tiempo a que Luckysheet se inicialice
+  
+  console.log('✓ Sistema de protección Select2 activado (compatible con Luckysheet)');
+  
+})();
+</script>
+
 </body>
-<!--<script>
-  $('#example').select2({
-    placeholder: 'Select a month'
-}); 
- 
-</script> -->
 </html>

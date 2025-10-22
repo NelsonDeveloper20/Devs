@@ -1,3 +1,4 @@
+ 
 <ngx-spinner
   bdColor="rgba(255, 255, 255, 1)"
   size="medium"
@@ -19,10 +20,7 @@
 
   </div>
 <div mat-dialog-content style="max-width: 1114px !important;"> 
-  <div class="panel-body">
-    <!--{{JsonItemHijo | json}}
-    <hr>
-    {{jsonProductoItemDelHijo | json }}-->
+  <div class="panel-body"> 
     <app-form-producto [JsonItemHijo]="JsonItemHijo" (JsonProuctoDelHijo)="onProductoActualizado($event)"></app-form-producto>
 </div>
 </div>

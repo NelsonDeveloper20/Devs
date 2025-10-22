@@ -766,6 +766,7 @@ CboTela=[{codigo:0,nombre:"--Seleccione--"}];async listarCboTela(codsubfamilia){
 }
 
 ChangeTela(event: any): void { 
+  console.log("SELECCIONADO TELA:");
   const value = event.target.value;  
   const Tela = document.getElementById("Tela") as HTMLInputElement ;
   const item = this.CboTela.find(element => element.codigo === value);
@@ -1175,6 +1176,8 @@ async listarCboNombreTubo(familia,tipoProducto){
 }
 
 ChangeTubo(event: any): void {
+  console.log("SELECCIONADO event:");
+  console.log(event);
   const value = event.target.value;  
   const Tela = document.getElementById("NombreTubo") as HTMLInputElement ;
   const item = this.CboNombreTubo.find(element => element.codigo === value);

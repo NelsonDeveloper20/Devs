@@ -48,10 +48,8 @@
     </div>
   </div>
 </div>
-
-      <!-- Contenedor de Luckysheet -->
-      <div id="luckysheet" style="width: 100% !important;"
-           [style.height.px]="sheetHeight">
+ 
+      <div id="luckysheet">
       </div>
 
       <!-- Panel de datos guardados -->
@@ -99,7 +97,7 @@
         </mat-select-trigger>
         
         <!-- Campo de búsqueda dentro del dropdown -->
-        <mat-option disabled>
+        <mat-option disabled class="search-input">
             <input 
                 matInput 
                 (keyup)="applyFilter($event)" 

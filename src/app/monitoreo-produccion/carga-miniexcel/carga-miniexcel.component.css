@@ -313,17 +313,19 @@
 }
 
 /* SEARCH INPUT */
-.search-input {
-  position: sticky;
+ 
+
+  .search-input {
+  position: sticky !important;
   top: 0;
   z-index: 9999;
-  background-color: white;
+  background-color: white ;
+  
   width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
-
 mat-option.mat-option-disabled {
   background-color: #fff !important;
   cursor: default !important;
@@ -363,4 +365,19 @@ mat-option.mat-option-disabled {
   font-size: 12px;
   white-space: pre-wrap;
   word-wrap: break-word;
+}
+
+/* 🔒 PREVENIR DOBLE CLIC EN NOMBRES DE HOJAS */
+.luckysheet-sheets-item-name {
+  pointer-events: none !important;
+}
+
+/* Permitir clic simple para cambiar de hoja */
+.luckysheet-sheets-item {
+  pointer-events: auto !important;
+}
+
+/* Ocultar input de edición si logra aparecer */
+.luckysheet-sheets-item-name input {
+  display: none !important;
 }
