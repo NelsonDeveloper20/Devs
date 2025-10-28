@@ -17,6 +17,7 @@ interface Usuario {
   correo: string;
   usuario: string;
   clave: string;
+  ping: string;
   codigoUsuario: string;
   fechaCreacion: string;
   fechaModificacion: string;
@@ -175,6 +176,7 @@ export class RegistrarUsuarioComponent implements OnInit {
       correo: '',
       usuario: '',
       clave: '',
+      ping:'',
       codigoUsuario: '',
       fechaCreacion: '',
       fechaModificacion: '',

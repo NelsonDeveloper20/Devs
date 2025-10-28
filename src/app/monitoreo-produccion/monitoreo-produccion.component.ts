@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, QueryList, Renderer2, ViewChild, ViewChildren, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, OnInit, QueryList, Renderer2, TemplateRef, ViewChild, ViewChildren, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Toaster } from 'ngx-toast-notifications';
@@ -16,6 +16,7 @@ import { SapService } from '../services/sap.service';
 import { DetalleSalidaEntradaSapComponent } from './detalle-salida-entrada-sap/detalle-salida-entrada-sap.component';
 import { DetalleFormulacionComponent } from './detalle-formulacion/detalle-formulacion.component';
 import { DetalleFormulacionRollerzebraComponent } from './detalle-formulacion-rollerzebra/detalle-formulacion-rollerzebra.component';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 declare var $: any; // Declara la variable $ para usar jQuery
 @Component({
   selector: 'app-monitoreo-produccion',
@@ -41,7 +42,8 @@ export class MonitoreoProduccionComponent implements OnInit {
     private toaster: Toaster,
     private spinner: NgxSpinnerService, 
     private _service: MonitoreoService,private renderer: Renderer2,
-    private _sapService:SapService
+    private _sapService:SapService,
+        private modalService: NgbModal,
   ) {  
   } 
    // Método para guardar las fechas seleccionadas en localStorage
@@ -105,10 +107,15 @@ showfilter=false;
 
 showfilter2=false; 
 showfilter3=false;
+showfilter4=false;
 cotizacion2: string; 
 fechaInicio2: Date;
 fechaFin2: Date;  
 showFilter(){ 
+  if(this.indexTab==3){
+    this.showFilter4();//SALIDA ENTRADA SAP 
+
+  }else 
   if(this.indexTab==2){
     this.showFilter3();//SALIDA ENTRADA SAP 
    
@@ -142,6 +149,10 @@ setTimeout(() => {
 
 showFilter3(){
   this.showfilter3=!this.showfilter3; 
+   
+  } 
+showFilter4(){
+  this.showfilter4=!this.showfilter4; 
    
   } 
   //#region ABRIR EXPLOCIÓN
@@ -382,6 +393,12 @@ onTabChange(event: MatTabChangeEvent) {
     if(this.ListMonitoreoExplocionSapSalidaEntrada.length==0){
       console.log("BUSCARA"); 
       this.ListarMonitoreoExplocionSapSalidaEntrada();
+    }
+  }
+  if(event.index==3){ //SAP ENTRADA SALIDA
+    if(this.ListMonitoreoExplocionSapSalidaEntradaRevertido.length==0){
+      console.log("BUSCARA"); 
+     // this.ListarMonitoreoExplocionSapSalidaEntradaRevertido();
     }
   }
 
@@ -1258,6 +1275,58 @@ ListarMonitoreoExplocionSapSalidaEntrada() {
     }
   ); 
 }
+
+
+cotizacionSapRevertido: string; 
+fechaInicioSapRevertido: string;
+fechaFinSapRevertido: string;   
+
+ListMonitoreoExplocionSapSalidaEntradaRevertido:any=[];
+ListarMonitoreoExplocionSapSalidaEntradaRevertido() { 
+  this.guardarFechasSapEntradaSalida();
+  console.log("BUSCANDO");
+  const cotizacion = this.cotizacionSapRevertido || "--";
+  const fechaInicio = this.fechaInicioSapRevertido ? this.fechaInicioSapRevertido.toString() : "--";
+  const fechaFin = this.fechaFinSapRevertido ? this.fechaFinSapRevertido.toString() : "--";
+    
+  this.spinner.show();
+  this._service.ListarMonitoreoSapSalidaEntradaRevertido(cotizacion,fechaInicio,fechaFin).subscribe(
+    (data: any) => {
+      if (data && data.status === 200) {  
+        this.ListMonitoreoExplocionSapSalidaEntradaRevertido = data.json;//.map(item => ({ ...item, isExpand: false }));
+        
+        this.spinner.hide();      
+      } else {
+        this.spinner.hide();
+        console.error('Error: No se pudo obtener datos.');
+      }
+    },
+    (error: any) => {
+      this.spinner.hide();
+      console.error('Error al obtener datos:', error);
+      // Aquí podrías mostrar un mensaje de error al usuario
+    }
+  ); 
+}
+
+filterTextSapSalidaEntradaRevertido: string = '';
+filteredListSapSalidaEntradaRevertido() {
+  if (!this.filterTextSapSalidaEntradaRevertido) {
+    return this.ListMonitoreoExplocionSapSalidaEntradaRevertido;
+  }
+  return this.ListMonitoreoExplocionSapSalidaEntradaRevertido.filter(item => {
+    const keys = ['ruc', 'razonSocial', 'cotizacion', 'cotizacionGrupo', 'codigoProducto', 'nombreProducto', 'accionamiento', 'cantidad', 'cantidadProductos', 'estado'];
+    return keys.some(key => {
+      const value = item[key];
+      if (typeof value === 'string') {
+        return value.toLowerCase().includes(this.filterTextSapSalidaEntradaRevertido.toLowerCase());
+      }
+      return false;
+    });
+  });
+}
+
+
 filterTextSapSalidaEntrada: string = '';
 filteredListSapSalidaEntrada() {
   if (!this.filterTextSapSalidaEntrada) {
@@ -1274,10 +1343,25 @@ filteredListSapSalidaEntrada() {
     });
   });
 }
+
 //#endregion
 //#region ENVIO SAP MERMA
 
-enviarSalidaMermaSap(item: any) {
+// 3. ENVIAR MERMA SAP
+@ViewChild('modalMerma') modalMerma!: TemplateRef<any>;
+
+
+  // Propiedades
+  mermaData: any[] = [];
+  cargandoMerma: boolean = false;
+  enviandoMerma: boolean = false;
+  modalRef: NgbModalRef | null = null;
+  baseUrl: string = 'tu-url-base-api'; // Ajusta según tu configuración
+  grupoSeleccionado: string = ''; // Obtén esto de donde corresponda 
+
+
+
+  async enviarSalidaMermaSap(item: any) {
   var coti = item.numeroCotizacion;
   var grupo = item.cotizacionGrupo;
   const userDataString = JSON.parse(localStorage.getItem('UserLog'));
@@ -1291,24 +1375,38 @@ enviarSalidaMermaSap(item: any) {
     });
     this.router.navigate(['/Home-main']);
     return;
-  }
+  } 
+  
+  try {
+      this.cargandoMerma = true;
+      
+      // Abrir modal
+      this.modalRef = this.modalService.open(this.modalMerma, { 
+        size: 'xl', 
+        backdrop: 'static',
+        keyboard: false,
+        centered: true
+      });
+
+      // Cargar datos
+      await this.cargarDatosMerma(grupo);
+      
+    } catch (error: any) {
+      console.error('Error al cargar merma:', error);
+      
+      this.toaster.open({
+        text: error.message || 'Error al cargar datos de merma',
+        type: 'danger'
+      });
+      
+      // Cerrar modal si hay error
+      if (this.modalRef) {
+        this.modalRef.dismiss();
+      }
+    } finally {
+      this.cargandoMerma = false;
+    }
 /*
-  // Primer modal: Elegir entre Editar o Enviar Directamente
-  Swal.fire({
-    title: 'Enviar Salida a SAP',
-    text: '¿Desea revisar/editar los datos antes de enviar o enviar directamente?',
-    icon: 'question',
-    showCancelButton: true,
-    showDenyButton: true,
-    confirmButtonText: 'Editar Datos',
-    denyButtonText: 'Enviar Directamente',
-    cancelButtonText: 'Cancelar',
-    allowOutsideClick: false
-  }).then((result) => {
-    if (result.isConfirmed) {
-      // Opción: Editar datos
-    //  this.mostrarVistaPreviaSAP(coti, grupo, idUsuario, true);
-    } else if (result.isDenied) {*/
       // Opción: Enviar directamente 
   Swal.fire({
     title: '¿Está seguro?',
@@ -1322,11 +1420,219 @@ enviarSalidaMermaSap(item: any) {
     if (result.isConfirmed) {
       this.enviarDirectamenteMermaASap(coti, grupo, idUsuario);
     }
-  }); 
+  }); */
 
     /*}
   });*/
 }
+
+  async cargarDatosMerma(cotizacionGrupo:any): Promise<void> {
+    try {
+      const response = await this._service.ListarMermaAModificar(cotizacionGrupo).toPromise();      
+      this.mermaData = response || [];
+      
+      if (this.mermaData.length === 0) {
+        throw new Error('No hay datos de merma para enviar');
+      }
+
+      console.log('Datos de merma cargados:', this.mermaData);
+      
+    } catch (error: any) {
+      console.error('Error al cargar merma:', error);
+      throw new Error(error.error?.mensaje || 'Error al cargar datos de merma');
+    }
+  }
+  
+    /**
+     * Confirmar y enviar merma al API
+     */
+    async confirmarEnvioMerma(modal: any): Promise<void> {
+      // Validación final
+      if (!this.validarTodosLosDatos()) {
+        this.toaster.open({
+          text: 'Complete todos los campos requeridos correctamente',
+          type: 'warning'
+        });
+        return;
+      }
+  
+    // Verificar que haya al menos un ítem para enviar
+    if (!this.hayItemsParaEnviar()) {
+      this.toaster.open({
+        text: 'Debe haber al menos un ítem con merma mayor a 0 para enviar',
+        type: 'warning'
+      });
+      return;
+    }
+  // Contar ítems que se enviarán
+    const itemsConMerma = this.mermaData.filter(item => {
+      const mermaNum = parseFloat(item.merma);
+      return !isNaN(mermaNum) && mermaNum > 0;
+    });
+  
+    const itemsSinMerma = this.mermaData.length - itemsConMerma.length;
+      // Mensaje de confirmación personalizado
+    let textoConfirmacion = `Se enviarán ${itemsConMerma.length} ítem(s) con merma a SAP.`;
+    if (itemsSinMerma > 0) {
+      textoConfirmacion += `<br><small class="text-muted">${itemsSinMerma} ítem(s) con merma = 0 serán omitidos.</small>`;
+    }
+  
+      // Confirmar con SweetAlert
+      const confirmacion = await Swal.fire({
+        title: '¿Confirmar envío?',
+        html: textoConfirmacion, 
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, enviar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#f39c12',
+        cancelButtonColor: '#6c757d'
+      });
+  
+      if (!confirmacion.isConfirmed) {
+        return;
+      }
+  
+      // Preparar datos para enviar
+      const datosEnviar = this.mermaData.map(item => ({
+        id: item.id,
+        itemCode: item.cod_Componente.trim(),
+        itemDescription: item.descripcion.trim(),
+        merma: item.merma,
+        lote: item.lote ? item.lote.trim() : null
+      }));
+  
+      console.log('Datos a enviar:', datosEnviar);
+  
+      // Enviar al API
+      await this.guardarYEnviarMerma(datosEnviar, modal);
+    }
+    
+      /**
+       * Enviar datos al API
+       */
+      async guardarYEnviarMerma(datos: any[], modal: any): Promise<void> {
+        this.enviandoMerma = true;
+    
+  const userDataString = JSON.parse(localStorage.getItem('UserLog'));
+  const idusuario = userDataString.id.toString();
+        try { 
+          if (!idusuario) {
+            throw new Error('No se pudo obtener el ID del usuario');
+          }
+     
+          const response = await this._service.guardarYEnviarMerma(datos,idusuario).toPromise();
+    
+          console.log('Respuesta del servidor:', response);
+     
+    
+            console.log("RESPUESTA");
+            const respuesta = response.json.respuesta; 
+            console.log("RESPUESTA");
+            console.log(respuesta);
+           if(respuesta=="OPERACION REALIZADA CORRECTAMENTE"){  
+            // Cerrar modal
+            modal.close();
+            // Mostrar éxito 
+            // Limpiar datos
+            this.mermaData = [];
+             const codigoMerma = response.json.codigo;
+
+             
+      Swal.fire({
+        title: 'Mensaje',
+        text: 'Salida de Merma enviado correctamente a SAP',
+        icon: 'success',
+        confirmButtonText: 'Aceptar',
+        allowOutsideClick: false
+      });  
+      this.ListarMonitoreoExplocionSapSalidaEntrada();
+           }else{ 
+
+             
+            Swal.fire({
+              title: 'Ocurrió un error al enviar',
+              html: this.processResponse(response.json.detalle),  // Usamos 'html' en lugar de 'text'
+              icon: 'warning',
+              width: '600px', // Establece un tamaño fijo para la alerta
+              confirmButtonText: 'Aceptar',
+              allowOutsideClick: false
+            });
+           } 
+
+
+        } catch (error: any) { 
+          
+      this.spinner.hide();
+      var errorMessage = error.message;
+      console.error('There was an error!====================>');
+      console.log(error);
+      this.toaster.open({
+        text: errorMessage,
+        caption: 'Ocurrio un error',
+        type: 'danger',
+        // duration: 994000
+      }); 
+      Swal.fire({
+        title: 'Ocurrió un error al enviar',
+        html: error.error.json.respuesta +'<b> DETALLE: <b/><br>'+this.processResponse(error.error.json.detalle),  // Usamos 'html' en lugar de 'text'
+        icon: 'warning',
+        width: '600px', // Establece un tamaño fijo para la alerta
+        confirmButtonText: 'Aceptar',
+        allowOutsideClick: false
+      });
+      
+        }  finally {
+          this.enviandoMerma = false;
+        }
+      }
+/**
+ * Verificar si hay al menos un ítem con merma mayor a 0 para enviar
+ */
+hayItemsParaEnviar(): boolean {
+  return this.mermaData.some(item => {
+    const mermaNum = parseFloat(item.merma);
+    return !isNaN(mermaNum) && mermaNum > 0;
+  });
+}
+
+/**
+ * Validar todos los datos antes de enviar
+ */
+validarTodosLosDatos(): boolean {
+  if (this.mermaData.length === 0) {
+    return false;
+  }
+
+  // Todos los ítems deben tener merma válida
+  return this.mermaData.every(item => !this.esMermaInvalida(item.merma));
+}
+/**
+ * Validar si la merma es inválida
+ */
+esMermaInvalida(merma: any): boolean {
+  // La merma es inválida si:
+  // 1. Es null o undefined
+  // 2. Es un string vacío
+  // 3. Es menor a 0
+  if (merma === null || merma === undefined || merma === '') {
+    return true;
+  }
+  
+  const mermaNum = parseFloat(merma);
+  return isNaN(mermaNum) || mermaNum < 0;
+} 
+
+
+/**
+ * Validar una fila individual
+ * IMPORTANTE: Solo la merma es obligatoria, los demás campos pueden estar vacíos
+ */
+validarFila(item: any): boolean {
+  // Solo validar que la merma sea válida
+  return !this.esMermaInvalida(item.merma);
+}
+
 
 enviarDirectamenteMermaASap(numeroCotizacion: string, cotizacionGrupo: string, idUsuario: string) {
   this.spinner.show();  
@@ -1565,147 +1871,85 @@ mostrarModalEdicion(data: any, numeroCotizacion: string, cotizacionGrupo: string
   // Crear el HTML para la tabla editable con campos de lote y serie
   const htmlContent = `
     <div style="max-height: 500px; overflow-y: auto; overflow-x: auto;">
-      <table class="table table-striped table-sm" style="font-size: 11px; min-width: 1400px;">
-        <thead class="table-dark" style="color: currentcolor !important;">
+      <table class="table-sm" style="font-size: 11px; min-width: 1400px;">
+        <thead class="thead-light" style="color: currentcolor !important;">
           <tr>
+            <th style="min-width: 100px;">Producto</th>
             <th style="min-width: 100px;">Código</th>
             <th style="min-width: 150px;">Descripción</th>
-            <th style="min-width: 80px;">Cantidad</th>
-            <th style="min-width: 100px;">Lote</th>
-            <th style="min-width: 100px;">Serie</th>
-            <th style="min-width: 100px;">Almacén</th>
-            <th style="min-width: 100px;">Cta. Contable</th>
-            <th style="min-width: 100px;">Familia</th>
-            <th style="min-width: 100px;">SubFamilia</th>
-            <th style="min-width: 100px;">Proyecto</th>
-            <th style="min-width: 100px;">Centro Costo</th>
-            <th style="min-width: 100px;">Orden Venta</th>
+            <th style="min-width: 80px;">Calculo Final</th>
+            <th style="min-width: 80px;">Merma</th>
+            <th style="min-width: 100px;">Lote</th> 
           </tr>
         </thead>
         <tbody id="tablaItems">
           ${documentLines.map((item: any, index: number) => {
-            const tipoItem = getTipoItem(item.ItemCode, item.ItemDescription);
+            const tipoItem = getTipoItem(item.ItemCode, item.ItemDescription);  
             const loteActual = item.BatchNumbers && item.BatchNumbers.length > 0 ? item.BatchNumbers[0].BatchNumber : '';
-            const serieActual = item.SerialNumbers && item.SerialNumbers.length > 0 ? item.SerialNumbers[0].SerialNumber : '';
             
             return `
             <tr>
+            <td class="align-middle">
+                <small>${item.SubFamiliaPT}</small>
+              </td>
               <td>
-                <input type="text" class="form-control form-control-sm" 
+                <input type="text" class="form-control-sm" 
                        value="${item.ItemCode}" 
                        data-field="ItemCode" 
                        data-index="${index}" 
-                       data-id="${item.Id}"
-                       ${!esEdicion ? 'readonly' : ''}
-                       style="background-color: ${esEdicion ? '#fff' : '#f8f9fa'};">
+                       data-id="${item.Id}" 
+                       style="font-size: 13px;border: 1px solid #c7c7c7;width: 100% !important;">
               </td>
               <td>
-                <input type="text" class="form-control form-control-sm" 
+                <input type="text" class="form-control-sm" 
                        value="${item.ItemDescription}" 
                        data-field="ItemDescription" 
                        data-index="${index}" 
-                       data-id="${item.Id}"
-                       ${!esEdicion ? 'readonly' : ''}
-                       style="background-color: ${esEdicion ? '#fff' : '#f8f9fa'};">
+                       data-id="${item.Id}" 
+                       style="font-size: 13px;border: 1px solid #c7c7c7;width: 100% !important;">
               </td>
               <td>
-                <input type="number" class="form-control form-control-sm" 
+                <input type="number" class="form-control-sm" 
                        value="${item.Quantity}" 
                        data-field="Quantity" 
                        data-index="${index}" 
                        data-id="${item.Id}" 
-                       step="0.01"
-                       ${!esEdicion ? 'readonly' : ''}
-                       style="background-color: ${esEdicion ? '#fff' : '#f8f9fa'};">
+                       step="0.01" 
+                       style="font-size: 13px;border: 1px solid #c7c7c7;width: 100% !important;">
               </td>
               <td>
-                <input type="text" class="form-control form-control-sm" 
+                <input type="number" class="form-control-sm" 
+                       value="${item.Merma}" 
+                       data-field="Merma" 
+                       data-index="${index}" 
+                       data-id="${item.Id}" 
+                       step="0.01" 
+                       style="font-size: 13px;border: 1px solid #c7c7c7;width: 100% !important;">
+              </td>
+              <td>
+                <input type="text" class="form-control-sm" 
                        value="${loteActual}" 
                        data-field="BatchNumber" 
                        data-index="${index}" 
-                       data-id="${item.Id}"
-                       ${!esEdicion || tipoItem !== 'tela' ? 'readonly' : ''}
+                       data-id="${item.Id}" 
                        placeholder="${tipoItem === 'tela' ? 'Ingrese lote' : 'N/A'}"
-                       style="background-color: ${esEdicion && tipoItem === 'tela' ? '#fff' : '#f8f9fa'};">
-              </td>
-              <td>
-                <input type="number" class="form-control form-control-sm" 
-                       value="${serieActual}" 
-                       data-field="SerialNumber" 
-                       data-index="${index}" 
-                       data-id="${item.Id}"
-                       ${!esEdicion || tipoItem !== 'motor' ? 'readonly' : ''}
-                       placeholder="${tipoItem === 'motor' ? 'Ingrese serie' : 'N/A'}"
-                       style="background-color: ${esEdicion && tipoItem === 'motor' ? '#fff' : '#f8f9fa'};">
-              </td>
-              <td>
-                <input type="text" class="form-control form-control-sm" 
-                       value="${item.WarehouseCode || ''}" 
-                       data-field="WarehouseCode" 
-                       data-index="${index}" 
-                       data-id="${item.Id}"
-                       readonly
-                       style="background-color: #e9ecef;">
-              </td>
-              <td>
-                <input type="text" class="form-control form-control-sm" 
-                       value="${item.AcctCode || ''}" 
-                       data-field="AcctCode" 
-                       data-index="${index}" 
-                       data-id="${item.Id}"
-                       readonly
-                       style="background-color: #e9ecef;">
-              </td>
-              <td>
-                <input type="text" class="form-control form-control-sm" 
-                       value="${item.FamiliaPT || ''}" 
-                       data-field="FamiliaPT" 
-                       data-index="${index}" 
-                       data-id="${item.Id}"
-                       ${!esEdicion ? 'readonly' : ''}
-                       style="background-color: ${esEdicion ? '#fff' : '#f8f9fa'};">
-              </td>
-              <td>
-                <input type="text" class="form-control form-control-sm" 
-                       value="${item.SubFamiliaPT || ''}" 
-                       data-field="SubFamiliaPT" 
-                       data-index="${index}" 
-                       data-id="${item.Id}"
-                       ${!esEdicion ? 'readonly' : ''}
-                       style="background-color: ${esEdicion ? '#fff' : '#f8f9fa'};">
-              </td>
-              <td>
-                <input type="text" class="form-control form-control-sm" 
-                       value="${item.ProjectCode || ''}" 
-                       data-field="ProjectCode" 
-                       data-index="${index}" 
-                       data-id="${item.Id}"
-                       readonly
-                       style="background-color: #e9ecef;">
-              </td>
-              <td>
-                <input type="text" class="form-control form-control-sm" 
-                       value="${item.CostingCode || ''}" 
-                       data-field="CostingCode" 
-                       data-index="${index}" 
-                       data-id="${item.Id}"
-                       readonly
-                       style="background-color: #e9ecef;">
-              </td>
-              <td>
-                <input type="text" class="form-control form-control-sm" 
-                       value="${item.IdOrdenVenta || ''}" 
-                       data-field="IdOrdenVenta" 
-                       data-index="${index}" 
-                       data-id="${item.Id}"
-                       readonly
-                       style="background-color: #e9ecef;">
-              </td>
+                      style="font-size: 13px;border: 1px solid #c7c7c7;width: 100% !important;">
+              </td> 
             </tr>
           `}).join('')}
         </tbody>
       </table>
     </div>
+          <div style="margin-top: 15px; text-align: center;">
+            <button id="btn-descargar-json" type="button" class="btn btn-info" 
+                    style="background-color: #17a2b8; border-color: #17a2b8; color: white; 
+                           padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer;">
+              <i class="fas fa-download"></i> Descargar JSON
+            </button>
+          </div>
+  `;
+/*
+
     <div class="mt-3">
       <small class="text-muted">
         <strong>Leyenda:</strong> 
@@ -1718,15 +1962,7 @@ mostrarModalEdicion(data: any, numeroCotizacion: string, cotizacionGrupo: string
         <span style="color: #007bff; margin-left: 20px;">• Serie: Solo editable para items de "motor"</span>
       </small>
     </div>    
-          <div style="margin-top: 15px; text-align: center;">
-            <button id="btn-descargar-json" type="button" class="btn btn-info" 
-                    style="background-color: #17a2b8; border-color: #17a2b8; color: white; 
-                           padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer;">
-              <i class="fas fa-download"></i> Descargar JSON
-            </button>
-          </div>
-  `;
-
+  */
   const titulo = esEdicion ? 
     `Editar Datos - Cotización: ${cotizacionGrupo}` : 
     `Vista Previa - Cotización: ${cotizacionGrupo}`;
@@ -1736,7 +1972,7 @@ mostrarModalEdicion(data: any, numeroCotizacion: string, cotizacionGrupo: string
   Swal.fire({
     title: titulo,
     html: htmlContent,
-    width: '95%',
+    width: '80%',
     showCancelButton: true,
     confirmButtonText: botonConfirmar,
     cancelButtonText: 'Cancelar',
@@ -1809,69 +2045,22 @@ guardarModificaciones(datosModificados: any[], numeroCotizacion: string, cotizac
 
 recopilarDatosModificados(originalData: any[]): any[] {
   const datosModificados: any[] = [];
-  
-  // Función para determinar tipo de item
-  const getTipoItem = (itemCode: string, descripcion: string): string => {
-    const codigo = itemCode.toLowerCase();
-    const desc = descripcion.toLowerCase();
-    
-    if (codigo.includes('tela') || desc.includes('tela')) {
-      return 'tela';
-    } else if (codigo.includes('motor') || desc.includes('motor')) {
-      return 'motor';
-    }
-    return 'otro';
-  };
-  
+   
   originalData.forEach((item, index) => {
     const itemCode = (document.querySelector(`input[data-field="ItemCode"][data-index="${index}"]`) as HTMLInputElement).value;
-    const itemDescription = (document.querySelector(`input[data-field="ItemDescription"][data-index="${index}"]`) as HTMLInputElement).value;
-    const tipoItem = getTipoItem(itemCode, itemDescription);
-    
+    const merma = (document.querySelector(`input[data-field="Merma"][data-index="${index}"]`) as HTMLInputElement).value;
+    const itemDescription = (document.querySelector(`input[data-field="ItemDescription"][data-index="${index}"]`) as HTMLInputElement).value; 
     // Obtener valores de lote y serie
-    const loteValue = (document.querySelector(`input[data-field="BatchNumber"][data-index="${index}"]`) as HTMLInputElement).value;
-    const serieValue = (document.querySelector(`input[data-field="SerialNumber"][data-index="${index}"]`) as HTMLInputElement).value;
-    
-    // Construir BatchNumbers y SerialNumbers según el tipo de item
-    let batchNumbers: any[] = [];
-    let serialNumbers: any[] = [];
-    
-    if (tipoItem === 'tela' && loteValue.trim()) {
-      batchNumbers = [{
-        BatchNumber: loteValue.trim(),
-        Quantity: parseFloat((document.querySelector(`input[data-field="Quantity"][data-index="${index}"]`) as HTMLInputElement).value)
-      }];
-    }
-    
-    if (tipoItem === 'motor' && serieValue.trim()) {
-      serialNumbers = [{
-        SerialNumber: serieValue.trim(),
-        Quantity: 1 // Para series siempre es 1
-      }];
-    }
+    const loteValue = (document.querySelector(`input[data-field="BatchNumber"][data-index="${index}"]`) as HTMLInputElement).value; 
+          
     
     const itemModificado = {
       Id: item.Id,
       ItemCode: itemCode,
       ItemDescription: itemDescription,
-      Quantity: parseFloat((document.querySelector(`input[data-field="Quantity"][data-index="${index}"]`) as HTMLInputElement).value),
-      FamiliaPT: (document.querySelector(`input[data-field="FamiliaPT"][data-index="${index}"]`) as HTMLInputElement).value,
-      SubFamiliaPT: (document.querySelector(`input[data-field="SubFamiliaPT"][data-index="${index}"]`) as HTMLInputElement).value,
-      // Mantener los campos originales que no se modifican
-      WarehouseCode: item.WarehouseCode,
-      AcctCode: item.AcctCode,
-      CostingCode: item.CostingCode,
-      ProjectCode: item.ProjectCode,
-      CostingCode2: item.CostingCode2,
-      CostingCode3: item.CostingCode3,
-      CostingCode4: item.CostingCode4,
-      CostingCode5: item.CostingCode5,
-      IdSistemaExterno: item.IdSistemaExterno,
-      IdLineaSistemaE: item.IdLineaSistemaE,
-      IdOrdenVenta: item.IdOrdenVenta,
-      // Lote y Serie actualizados
-      BatchNumbers: batchNumbers,
-      SerialNumbers: serialNumbers
+      Quantity: parseFloat((document.querySelector(`input[data-field="Quantity"][data-index="${index}"]`) as HTMLInputElement).value),  
+      BatchNumbers: loteValue.trim(),
+      Merma:merma
     };
     
     datosModificados.push(itemModificado);
@@ -1978,7 +2167,7 @@ mostrarModalEditable(datos: any, item: any, idUsuario: string,grupo:any) {
     html: `
       <div class="preview-container"> 
         <div class="items-container">
-          <h4>Artículos - Puede editar los campos necesarios del :${grupo}</h4>
+          <h5> Grupo :${grupo}</h5>
           <div class="table-scroll-container">
             ${tablaHTML}
           </div>
@@ -1995,7 +2184,7 @@ mostrarModalEditable(datos: any, item: any, idUsuario: string,grupo:any) {
         </div>
       </div>
     `,
-    width: '95%',
+    width: '60%',
     showCancelButton: true,
     //confirmButtonText: 'Guardar Cambios',
     cancelButtonText: 'Cancelar',
@@ -2026,11 +2215,19 @@ mostrarModalEditable(datos: any, item: any, idUsuario: string,grupo:any) {
 }
 // Método para descargar archivo JSON
 descargarJSON(datos: any, grupo: any) { 
-      
-const datosParaDescargar = datos;
+  console.log(datos);
+      const datosParaDescargar = JSON.parse(JSON.stringify(datos));
+  
+  // Verificar si existe DocumentLines y es un array
+  if (datosParaDescargar.DocumentLines && Array.isArray(datosParaDescargar.DocumentLines)) {
+    datosParaDescargar.DocumentLines.forEach((item: any) => {
+      delete item.Merma;  // ← Nota: es "Merma" con mayúscula
+      //delete item.Id;     // También puedes eliminar otros campos si quieres
+    });
+  }
     // Convertir a JSON con formato legible
     const jsonString = JSON.stringify(datosParaDescargar, null, 2);
-    
+  
     // Crear blob y enlace de descarga
     const blob = new Blob([jsonString], { type: 'application/json' });
     const url = window.URL.createObjectURL(blob);
@@ -2053,114 +2250,53 @@ const datosParaDescargar = datos;
 // Generar tabla HTML editable con todos los campos
 generarTablaEditable(documentLines: any[]): string {
   let tabla = `
-    <table class="table table-striped table-bordered" style="width: 100%; font-size: 12px;">
+    <table class="table-sm" style="width: 100%; font-size: 11px">
       <thead style="color: currentcolor !important;">
         <tr>
           <th>Código Artículo</th>
           <th>Descripción</th>
           <th>Cantidad</th>
-          <th>Almacén</th>
-          <th>Cta. Contable</th>
-          <th>Centro Costo</th>
-          <th>Centro Costo 2</th>
-          <th>Centro Costo 3</th>
-          <th>Centro Costo 4</th>
-          <th>Centro Costo 5</th>
-          <th>Familia PT</th>
-          <th>Sub Familia PT</th>
+          <th>Alto</th>
+          <th>Ancho</th>
+          <th>Codigo Salida/Merma</th>  
         </tr>
       </thead>
       <tbody>
-  `;
-  
+  `;   
+  console.log(documentLines);
   documentLines.forEach((line, index) => {
     tabla += `
       <tr>
         <td>
-          <input type="text" class="form-control form-control-sm" style="max-width: 100% !important;" 
-                 value="${line.ItemCode || ''}" 
-                 data-field="ItemCode" 
-                 data-index="${index}"
-                 data-id="${line.Id}">
+          <input type="text" class="form-control-sm"  
+                 value="${line.ItemCode || ''}"   readonly
+                 style="font-size: 13px;border: 1px solid #c7c7c7;width: 100% !important;  max-width: 100% !important;">
         </td>
         <td>
-          <input type="text" class="form-control form-control-sm"  style="max-width: 100% !important;" 
-                 value="${line.ItemDescription || ''}" 
-                 data-field="ItemDescription" 
-                 data-index="${index}"
-                 data-id="${line.Id}">
+          <input type="text" class="form-control-sm"  
+                 value="${line.ItemDescription || ''}"   readonly
+                 style="font-size: 13px;border: 1px solid #c7c7c7;width: 100% !important;  max-width: 100% !important;">
         </td>
         <td>
-          <input type="number" class="form-control form-control-sm" 
-                 value="${line.Quantity || 0}" 
-                 data-field="Quantity" 
-                 data-index="${index}"
-                 data-id="${line.Id}" 
-                 step="0.01">
+          <input type="text" class="form-control-sm"  
+                 value="${line.Quantity || ''}"   readonly
+                 style="font-size: 13px;border: 1px solid #c7c7c7;width: 100% !important;  max-width: 100% !important;">
         </td>
         <td>
-          <input type="text" class="form-control form-control-sm" 
-                 value="${line.WarehouseCode || ''}" 
-                 data-field="WarehouseCode" 
-                 data-index="${index}"
-                 data-id="${line.Id}">
+          <input type="text" class="form-control-sm"  
+                 value="${line.Alto || ''}"   readonly
+                 style="font-size: 13px;border: 1px solid #c7c7c7;width: 100% !important;  max-width: 100% !important;">
         </td>
         <td>
-          <input type="text" class="form-control form-control-sm" 
-                 value="${line.AcctCode || ''}" 
-                 data-field="AcctCode" 
-                 data-index="${index}"
-                 data-id="${line.Id}">
+          <input type="text" class="form-control-sm"   
+                 value="${line.Ancho || ''}"  readonly
+                 style="font-size: 13px;border: 1px solid #c7c7c7;width: 100% !important;  max-width: 100% !important;">
         </td>
         <td>
-          <input type="text" class="form-control form-control-sm" 
-                 value="${line.CostingCode || ''}" 
-                 data-field="CostingCode" 
-                 data-index="${index}"
-                 data-id="${line.Id}">
-        </td>
-        <td>
-          <input type="text" class="form-control form-control-sm" 
-                 value="${line.CostingCode2 || ''}" 
-                 data-field="CostingCode2" 
-                 data-index="${index}"
-                 data-id="${line.Id}">
-        </td>
-        <td>
-          <input type="text" class="form-control form-control-sm" 
-                 value="${line.CostingCode3 || ''}" 
-                 data-field="CostingCode3" 
-                 data-index="${index}"
-                 data-id="${line.Id}">
-        </td>
-        <td>
-          <input type="text" class="form-control form-control-sm" 
-                 value="${line.CostingCode4 || ''}" 
-                 data-field="CostingCode4" 
-                 data-index="${index}"
-                 data-id="${line.Id}">
-        </td>
-        <td>
-          <input type="text" class="form-control form-control-sm" 
-                 value="${line.CostingCode5 || ''}" 
-                 data-field="CostingCode5" 
-                 data-index="${index}"
-                 data-id="${line.Id}">
-        </td>
-        <td>
-          <input type="text" class="form-control form-control-sm" 
-                 value="${line.FamiliaPT || ''}" 
-                 data-field="FamiliaPT" 
-                 data-index="${index}"
-                 data-id="${line.Id}">
-        </td>
-        <td>
-          <input type="text" class="form-control form-control-sm" 
-                 value="${line.SubFamiliaPT || line.SuibFamiliaPT || ''}" 
-                 data-field="SubFamiliaPT" 
-                 data-index="${index}"
-                 data-id="${line.Id}">
-        </td>
+          <input type="text" class="form-control-sm" 
+                 value="${line.IdSalida || ''}"    readonly
+                 style="font-size: 13px;border: 1px solid #c7c7c7;width: 100% !important;  max-width: 100% !important;">
+        </td>  
       </tr>
     `;
   });
@@ -2694,6 +2830,128 @@ pendienteEntrada(item:any){
   }else{
     return ""
   } 
+}
+revertir(codigoGrupo: any) {
+  Swal.fire({
+    title: 'Reversión de Proceso',
+    html: `
+      <div style="text-align: left;">
+        <p style="margin-bottom: 15px;">
+          Para revertir el envío de salida a SAP, debe ingresar sus credenciales:
+        </p>
+        <label style="display: block; margin-bottom: 5px; font-weight: 600;">
+          Código PIN de Usuario:
+        </label>
+        <input id="swal-ping" class="swal2-input" placeholder="Ingrese su PIN" 
+               style="margin-top: 0; width: 90%;" autocomplete="off">
+        
+        <label style="display: block; margin-top: 15px; margin-bottom: 5px; font-weight: 600;">
+          Motivo de Reversión:
+        </label>
+        <textarea id="swal-motivo" class="swal2-textarea" placeholder="Describa el motivo de la reversión" 
+                  rows="3" style="width: 90%; resize: vertical;"></textarea>
+      </div>
+    `,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Confirmar Reversión',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    focusConfirm: false,
+    preConfirm: () => {
+      const ping = (document.getElementById('swal-ping') as HTMLInputElement).value;
+      const motivo = (document.getElementById('swal-motivo') as HTMLTextAreaElement).value;
+      
+      // Validaciones en frontend
+      if (!ping || ping.trim() === '') {
+        Swal.showValidationMessage('Debe ingresar su código PIN');
+        return false;
+      }
+      
+      if (!motivo || motivo.trim() === '') {
+        Swal.showValidationMessage('Debe ingresar el motivo de la reversión');
+        return false;
+      }
+      
+      if (motivo.trim().length < 10) {
+        Swal.showValidationMessage('El motivo debe tener al menos 10 caracteres');
+        return false;
+      }
+      
+      return { ping: ping.trim(), motivo: motivo.trim() };
+    }
+  }).then((result) => {
+    if (result.isConfirmed && result.value) {
+      // Mostrar loading mientras se procesa
+      Swal.fire({
+        title: 'Procesando reversión...',
+        text: 'Por favor espere',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+      
+      // Llamar al API
+      this._service.revertirProcesoSap(codigoGrupo, result.value.ping, result.value.motivo)
+    .subscribe({
+      next: (response) => {
+        if(response.status==200){ 
+          Swal.fire({
+            icon: 'success',
+            title: 'Reversión Exitosa',
+            html: `
+              <p>${response.json.respuesta}</p>
+              <small>Usuario: ${response.json.usuario}</small><br>
+              <small>Fecha: ${response.json.fechaReversion}</small>
+            `,
+            confirmButtonColor: '#28a745',
+  allowOutsideClick: false,  // No se cierra al hacer clic fuera
+  allowEscapeKey: false,     // No se cierra con ESC
+  allowEnterKey: true        // Se puede cerrar con Enter (opcional)
+          }).then((result) => {
+            if (result.isConfirmed) { 
+              this.ListarMonitoreoExplocionSapSalidaEntrada()
+            }
+          });
+          
+        }else{
+          
+        Swal.fire({
+          icon: 'warning',
+          title: 'Error en Reversión',
+          text: response.json.respuesta,
+          confirmButtonColor: '#d33'
+        });
+        }
+      },
+      error: (error) => {
+        let mensajeError = 'Error al procesar la reversión';
+        let iconoError: any = 'error';
+        
+        // Manejar según status code
+        if (error.status === 401) {
+          mensajeError = 'Código PIN incorrecto. Verifique sus credenciales.';
+          iconoError = 'warning';
+        } else if (error.status === 404) {
+          mensajeError = 'No se encontró el grupo especificado.';
+        } else if (error.error?.json?.respuesta) {
+          mensajeError = error.json.respuesta;
+        }
+        
+        Swal.fire({
+          icon: iconoError,
+          title: 'Error en Reversión',
+          text: mensajeError,
+          confirmButtonColor: '#d33'
+        });
+      }
+    });
+
+    }
+  });
 }
  
 }

@@ -1,132 +1,490 @@
- <router-outlet></router-outlet>
- <ngx-spinner
+<router-outlet></router-outlet>
+
+<!-- SPINNER -->
+<ngx-spinner
   bdColor="rgba(255, 255, 255, 1)"
   size="medium"
   color="#0D7ABD"
   type="ball-beat"
   [fullScreen]="true"
-  [name]="'cargandoProductos'"
->
+  [name]="'cargandoProductos'">
   <p style="color: black">{{ spinnerMessage }}</p>
 </ngx-spinner> 
- <div class="excel-container">
-      <!--<h3>Explocion Grupo 109344-4</h3>-->
-          
-   <div class="toolbarbut" [ngClass]="{'collapsed': isToolbarCollapsed, 'expanded': !isToolbarCollapsed}" *ngIf="mostrarOpciones">
-  <!-- Botón de Toggle -->
-  <button class="toggle-btn" (click)="toggleToolbar()">
-    <i class="material-icons">menu</i>
-  </button>
+<div class="excel-container">  
+<div class="workflow-stepper-vertical" *ngIf="mostrarOpciones && !isToolbarCollapsed">
   
-  <!-- Contenedor de botones -->
-  <div class="toolbar-buttons" >
-    <button (click)="volver()" class="btn btn-info">
-      <i class="material-icons">arrow_back</i>
-      Volver
-    </button>
-    
-    <button (click)="saveData()" class="btn btn-primary">
-      <i class="material-icons">save</i>
-      Guardar
-    </button>
-
-    <button (click)="exportToExcel()" class="btn btn-secondary">
-      <i class="material-icons">file_download</i>
-      Exportar
-    </button>
-
-    <button (click)="openTablePopup()" class="btn btn-success">
-      <i class="material-icons">add_circle</i>
-      Agregar
-    </button>
-    
-    <div class="form-group">
-      <mat-checkbox [(ngModel)]="HabilitarCombos" (change)="onCheckCombos($event)">
-       <span *ngIf="HabilitarCombos">Combos Habilitados</span>
-       <span *ngIf="!HabilitarCombos">Combos InHabilitados</span>         
-      </mat-checkbox>
+  <!-- Header del Stepper -->
+  <div class="stepper-header">
+    <h4 class="stepper-title" style="
+    color: white;">
+      <i class="material-icons">timeline</i>
+      Proceso de Explosión
+    </h4>
+    <span class="stepper-subtitle">
+      Grupo: {{ DatosGrupo.cotizacionGrupo }}
+    </span>
+  </div>
+  
+  <!-- Pasos Verticales -->
+  <div class="stepper-steps-vertical">
+    <div 
+      *ngFor="let paso of pasos; let i = index; let last = last" 
+      class="step-item-vertical"
+      [ngClass]="{
+        'completed': paso.completado,
+        'active': paso.activo,
+        'disabled': !paso.activo && !paso.completado,
+        'optional': paso.opcional && !aplicaMerma
+      }">
+      
+      <!-- Contenedor del paso -->
+      <div class="step-content-wrapper">
+        
+        <!-- Círculo e icono -->
+        <div class="step-circle-wrapper">
+          <div class="step-circle">
+            <i class="material-icons" *ngIf="!paso.completado">{{ paso.icono }}</i>
+            <i class="material-icons check-icon" *ngIf="paso.completado">check_circle</i>
+          </div>
+          
+          <!-- Línea vertical conectora -->
+          <div class="step-line-vertical" *ngIf="!last"></div>
+        </div>
+        
+        <!-- Información del paso -->
+        <div class="step-info">
+          <div class="step-title-wrapper">
+            <span class="step-number">Paso {{ paso.id }}</span>
+            <span class="step-title">{{ paso.nombre }}</span>
+            
+            <!-- Badge de estado -->
+            <span class="step-badge" *ngIf="paso.completado">
+              <i class="material-icons">done</i>
+            </span>
+            <span class="step-badge active-badge" *ngIf="paso.activo && !paso.completado">
+              <i class="material-icons">radio_button_checked</i>
+            </span>
+            <span class="step-badge optional-badge" *ngIf="paso.opcional && !aplicaMerma">
+              Omitido
+            </span>
+          </div>
+          
+          <!-- Detalles adicionales cuando está completado -->
+          <div class="step-details" *ngIf="paso.completado && paso.codigo">
+            <div class="detail-item" *ngIf="paso.codigo">
+              <i class="material-icons">confirmation_number</i>
+              <span class="detail-label">Código:</span>
+              <span class="detail-value">{{ paso.codigo }}</span>
+            </div>
+            <div class="detail-item" *ngIf="paso.fecha">
+              <i class="material-icons">schedule</i>
+              <span class="detail-label">Fecha:</span>
+              <span class="detail-value">{{ paso.fecha | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+          </div>
+          
+          <!-- Mensaje de ayuda para paso activo -->
+          <div class="step-help" *ngIf="paso.activo && !paso.completado">
+            <i class="material-icons">info</i>
+            <span>{{ obtenerMensajeAyuda(paso.id) }}</span>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
+  
+  <!-- Footer con progreso -->
+  <div class="stepper-footer">
+    <div class="progress-section">
+      <div class="progress-info">
+        <span class="progress-label">Progreso Total</span>
+        <span class="progress-percentage">{{ calcularProgreso() }}%</span>
+      </div>
+      <div class="progress-bar">
+        <div 
+          class="progress-fill" 
+          [style.width.%]="calcularProgreso()">
+        </div>
+      </div>
+    </div>
+     
   </div>
 </div>
- 
-      <div id="luckysheet">
-      </div>
 
-      <!-- Panel de datos guardados -->
-      <div class="data-panel" *ngIf="savedData">
-        <h3>Últimos datos guardados:</h3>
-        <pre>{{ savedData | json }}</pre>
-      </div>
-    </div> 
- <div class="modal-overlay" *ngIf="isModalOpen" (click)="cerrarModal()">
-  <div class="modal-container" (click)="$event.stopPropagation()">
-    <div class="modal-header">
-      <h2>Seleccionar Componente</h2>
-      <button class="close-button" (click)="cerrarModal()">&times;</button>
-    </div>
+  <!-- ============================================ -->
+  <!-- TOOLBAR CON BOTONES -->
+  <!-- ============================================ -->
+  <div 
+    class="toolbarbut" 
+    [ngClass]="{
+      'collapsed': isToolbarCollapsed, 
+      'expanded': !isToolbarCollapsed
+    }" 
+    *ngIf="mostrarOpciones">
     
-    <div class="modal-body">
+    <!-- Botón Toggle -->
+    <button class="toggle-btn" (click)="toggleToolbar()">
+      <i class="material-icons">menu</i>
+    </button>
+    
+    <!-- Botones del workflow -->
+    <div class="toolbar-buttons">
+      
+      <!-- BOTÓN VOLVER -->
+      <button 
+        (click)="volver()" 
+        class="btn btn-secondary">
+        <i class="material-icons">arrow_back</i>
+        Volver
+      </button>
+      
+      <!-- BOTÓN GUARDAR -->
+     <!-- BOTÓN GUARDAR / MODIFICAR -->
+<button 
+  (click)="saveData()" 
+  [disabled]="pasos[1].completado"
+  class="btn"
+  [ngClass]="{
+    'btn-primary': !pasos[0].completado,
+    'btn-warning': pasos[0].completado && !pasos[1].completado,
+    'btn-success': pasos[1].completado
+  }" >
+  <i class="material-icons">
+    {{ obtenerIconoBotonGuardar() }}
+  </i>
+  {{ obtenerTextoBotonGuardar() }}
+  
+  <!-- Indicador de modificación -->
+  <span *ngIf="datosModificados && pasos[0].completado" 
+        style="display: block; font-size: 10px; margin-top: 2px; color: #ff9800;">
+    ⚠️ Hay cambios sin guardar
+  </span>
+</button>
+      
+      <!-- BOTÓN ENVIAR SALIDA -->
+      <button 
+        (click)="enviarSalidaSAP()" 
+        [disabled]="!pasos[0].completado || pasos[1].completado"
+        class="btn"
+        [ngClass]="{
+          'btn-info': pasos[0].completado && !pasos[1].completado,
+          'btn-success': pasos[1].completado,
+          'btn-secondary': !pasos[0].completado
+        }"
+        [title]="!pasos[0].completado ? 'Debe guardar primero' : (pasos[1].completado ? 'Ya enviado' : 'Enviar salida a SAP')">
+        <i class="material-icons">
+          {{ pasos[1].completado ? 'check_circle' : 'output' }}
+        </i>
+        {{ pasos[1].completado ? 'Salida Enviada ✓' : 'Enviar Salida' }}
+        <span *ngIf="pasos[1].completado && pasos[1].codigo" 
+              style="display: block; font-size: 10px; margin-top: 2px;">
+          {{ pasos[1].codigo }}
+        </span>
+      </button>
+      
+      <!-- BOTÓN ENVIAR MERMA (Condicional) -->
+      <button 
+        *ngIf="aplicaMerma"
+        (click)="enviarSalidaMerma()" 
+        [disabled]="!pasos[1].completado || pasos[2].completado"
+        class="btn"
+        [ngClass]="{
+          'btn-warning': pasos[1].completado && !pasos[2].completado,
+          'btn-success': pasos[2].completado,
+          'btn-secondary': !pasos[1].completado
+        }"
+        [title]="!pasos[1].completado ? 'Debe enviar salida primero' : (pasos[2].completado ? 'Ya enviado' : 'Enviar merma a SAP')">
+        <i class="material-icons">
+          {{ pasos[2].completado ? 'check_circle' : 'output' }}
+        </i>
+        {{ pasos[2].completado ? 'Merma Enviada ✓' : 'Enviar Merma' }}
+        <span *ngIf="pasos[2].completado && pasos[2].codigo" 
+              style="display: block; font-size: 10px; margin-top: 2px;">
+          {{ pasos[2].codigo }}
+        </span>
+      </button>
+      
+      <!-- BOTÓN ENVIAR ENTRADA -->
+ <!-- BOTÓN ENVIAR ENTRADA - CORREGIDO -->
+<button 
+  (click)="enviarEntradaSAP()" 
+  [disabled]="!puedeEnviarEntrada() || pasos[3].completado"
+  class="btn"
+  [ngClass]="{
+    'btn-success': (puedeEnviarEntrada() && !pasos[3].completado) || pasos[3].completado,
+    'btn-secondary': !puedeEnviarEntrada() && !pasos[3].completado
+  }"
+  [title]="!puedeEnviarEntrada() ? 'Complete los pasos anteriores' : (pasos[3].completado ? 'Ya enviado' : 'Enviar entrada a SAP')">
+  <i class="material-icons">
+    {{ pasos[3].completado ? 'check_circle' : 'input' }}
+  </i>
+  {{ pasos[3].completado ? 'Entrada Enviada ✓' : 'Enviar Entrada' }}
+  <span *ngIf="pasos[3].completado && pasos[3].codigo" 
+        style="display: block; font-size: 10px; margin-top: 2px;">
+    {{ pasos[3].codigo }}
+  </span>
+</button>
+      
+      <!-- SEPARADOR -->
+      <hr style="margin: 10px 0; border: none; border-top: 1px solid #ddd;">
+      
+      <!-- BOTÓN EXPORTAR -->
+      <button 
+        (click)="exportToExcel()" 
+        class="btn btn-secondary"
+        title="Exportar a Excel">
+        <i class="material-icons">file_download</i>
+        Exportar
+      </button>
+      
+      <!-- CHECKBOX COMBOS -->
       <div class="form-group">
-        <mat-checkbox [(ngModel)]="checkboxValue" (change)="onCheckboxChange($event)">
-         Listar Todos 
+        <mat-checkbox 
+          [(ngModel)]="HabilitarCombos" 
+          (change)="onCheckCombos($event)">
+          <span *ngIf="HabilitarCombos">Combos Habilitados</span>
+          <span *ngIf="!HabilitarCombos">Combos Inhabilitados</span>
         </mat-checkbox>
       </div>
+      
+      <!-- BOTÓN VALIDAR CÓDIGOS -->
+      <button  
+      
+        *ngIf="pasos[0].completado==false || pasos[1].completado==false"
 
-      <div class="form-group">
-        <label for="combo-tipos">Seleccione una opción:</label> 
-       <!-- Contenedor del campo de selección -->
-<mat-form-field appearance="outline" style="width: 100%;">
-    
-    <!-- Select de Material con binding bidireccional -->
-    <mat-select [(ngModel)]="seleccionado" 
-                placeholder="Buscar: código, descripción (usa *)..."  
-                (selectionChange)="onCotizacionSelected($event)" 
-                [disableOptionCentering]="true"
-            panelClass="high-z-index-panel"
-                >
-         
-
-        <!-- Personaliza lo que se muestra cuando hay una selección -->
-        <mat-select-trigger>
-            <span *ngIf="seleccionado">
-                {{ seleccionado.codigoTipo }} : {{ seleccionado.descripcionTipo }}
-            </span>
-            <span *ngIf="!seleccionado">
-                ---Seleccione---
-            </span>
-        </mat-select-trigger>
-        
-        <!-- Campo de búsqueda dentro del dropdown -->
-        <mat-option disabled class="search-input">
-            <input 
-                matInput 
-                (keyup)="applyFilter($event)" 
-                (click)="$event.stopPropagation()"
-                placeholder="Buscar (ej: PALRS*4 o *tubo*)..." 
-                class="search-input" 
-                style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" />
-        </mat-option>
-        
-        <!-- Mensaje de carga -->
-        <mat-option *ngIf="!dataItems || dataItems.length === 0" disabled>
-            {{ dataItems ? 'No hay resultados' : 'Cargando...' }}
-        </mat-option>
-        
-        <!-- Opción para limpiar selección -->
-        <mat-option [value]="null">---Seleccione---</mat-option>
-        
-        <!-- Lista de opciones filtradas -->
-        <mat-option *ngFor="let item of dataItems" [value]="item">
-            {{ item.codigoTipo }} : {{ item.descripcionTipo }}
-        </mat-option>
-    </mat-select>
-</mat-form-field>
-      </div> 
-    </div>
-    
-    <div class="modal-footer">
-      <button class="btn btn-secondary" (click)="cerrarModal()">Cancelar</button>
-      <button class="btn btn-primary" (click)="confirmar()">Aceptar</button>
+        (click)="validarTodasLasFilas()"
+        [disabled]="!mostrarOpciones"
+        class="btn btn-info"
+        title="Validar códigos en SAP">
+        <i class="material-icons">verified</i>
+        Validar Códigos
+      </button>
+      
+      <!-- BOTÓN RESETEAR (Solo si no se envió a SAP) -->
+      <!--<button 
+        *ngIf="pasos[0].completado && !pasos[1].completado"
+        (click)="resetearWorkflow()"
+        class="btn btn-warning"
+        title="Resetear proceso">
+        <i class="material-icons">refresh</i>
+        Resetear
+      </button>-->
     </div>
   </div>
-</div> 
+
+  <!-- ============================================ -->
+  <!-- HOJA DE CÁLCULO LUCKYSHEET -->
+  <!-- ============================================ -->
+  <div id="luckysheet"></div>
+
+  <!-- ============================================ -->
+  <!-- MODAL DE SELECCIÓN -->
+  <!-- ============================================ -->
+  <div class="modal-overlay" *ngIf="isModalOpen" (click)="cerrarModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Seleccionar Componente</h2>
+        <button class="close-button" (click)="cerrarModal()">&times;</button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="form-group">
+          <mat-checkbox 
+            [(ngModel)]="checkboxValue" 
+            (change)="onCheckboxChange($event)">
+            Listar Todos
+          </mat-checkbox>
+        </div>
+
+        <div class="form-group">
+          <label for="combo-tipos">Seleccione una opción:</label>
+          
+          <mat-form-field appearance="outline" style="width: 100%;">
+            <mat-select 
+              [(ngModel)]="seleccionado" 
+              placeholder="Buscar: código, descripción (usa *)..."  
+              (selectionChange)="onCotizacionSelected($event)" 
+              [disableOptionCentering]="true"
+              panelClass="high-z-index-panel">
+              
+              <mat-select-trigger>
+                <span *ngIf="seleccionado">
+                  {{ seleccionado.codigoTipo }} : {{ seleccionado.descripcionTipo }}
+                </span>
+                <span *ngIf="!seleccionado">
+                  ---Seleccione---
+                </span>
+              </mat-select-trigger>
+              
+              <mat-option disabled class="search-input">
+                <input 
+                  matInput 
+                  (keyup)="applyFilter($event)" 
+                  (click)="$event.stopPropagation()"
+                  placeholder="Buscar (ej: PALRS*4 o *tubo*)..." 
+                  class="search-input" 
+                  style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" />
+              </mat-option>
+              
+              <mat-option *ngIf="!dataItems || dataItems.length === 0" disabled>
+                {{ dataItems ? 'No hay resultados' : 'Cargando...' }}
+              </mat-option>
+              
+              <mat-option [value]="null">---Seleccione---</mat-option>
+              
+              <mat-option *ngFor="let item of dataItems" [value]="item">
+                {{ item.codigoTipo }} : {{ item.descripcionTipo }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="cerrarModal()">Cancelar</button>
+        <button class="btn btn-primary" (click)="confirmar()">Aceptar</button>
+      </div>
+    </div>
+  </div>
+
+ 
+<!-- Modal para editar merma -->
+<ng-template #modalMerma let-modal>
+  <div class="modal-header bg-warning text-white">
+    <h5 class="modal-title">Revisar y Enviar Merma a SAP</h5>
+    <button type="button" class="close text-white" (click)="modal.dismiss()" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  
+  <div class="modal-body" style="max-height: 500px; overflow-y: auto;">
+    <div *ngIf="cargandoMerma" class="text-center py-5">
+      <div class="spinner-border text-warning" role="status">
+        <span class="sr-only">Cargando...</span>
+      </div>
+      <p class="mt-2">Cargando datos de merma...</p>
+    </div>
+
+    <div *ngIf="!cargandoMerma && mermaData.length === 0" class="alert alert-info">     
+       No hay datos de merma para mostrar
+    </div>
+
+    <div *ngIf="!cargandoMerma && mermaData.length > 0">
+      <div class="alert alert-warning" role="alert" style="font-size: 12px;">
+        <strong>Importante:</strong> Revise y modifique los datos necesarios antes de enviar a SAP
+      </div>
+
+      <div class="alert alert-info" role="alert" style="font-size: 12px;">
+        <i class="material-icons" style="font-size: 16px; vertical-align: middle;">info</i>
+        <strong>Nota:</strong> Solo se enviarán a SAP los ítems con merma mayor a 0. Los ítems con merma igual a 0 serán ignorados.
+      </div>
+
+      <div class="table-responsive">
+        <table class="table-sm" style="font-size: 13px;">
+          <thead class="thead-light">
+            <tr>
+              <th style="width: 15%;">Producto</th>
+              <th style="width: 20%;">Código Componente</th>
+              <th style="width: 30%;">Descripción</th>
+              <th style="width: 15%;">
+                Merma <span class="text-danger">*</span>
+              </th>
+              <th style="width: 20%;">Lote</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of mermaData; let i = index" 
+                [class.table-warning]="item.merma == 0"
+                [class.table-danger]="!validarFila(item)">
+              <td class="align-middle">
+                <small>{{ item.producto }}</small>
+              </td>
+              <td>
+                <input 
+                  type="text" 
+                  class="form-control-sm" 
+                  style="font-size: 13px;border: 1px solid #c7c7c7;width: 100% !important;"
+                  [(ngModel)]="item.cod_Componente"
+                  placeholder="Ingrese código"
+                />
+              </td>
+              <td>
+                <input 
+                  type="text" 
+                  class="form-control-sm" 
+                  style="font-size: 13px;border: 1px solid #c7c7c7;width: 100% !important;"
+                  [(ngModel)]="item.descripcion"
+                  placeholder="Ingrese descripción"
+                />
+              </td>
+              <td>
+                <input 
+                  type="number" 
+                  class="form-control-sm" 
+                  style="font-size: 13px;border: 1px solid #c7c7c7;width: 100% !important;"
+                  [(ngModel)]="item.merma"
+                  [class.is-invalid]="esMermaInvalida(item.merma)"
+                  step="0.001"
+                  min="0"
+                  placeholder="0.000"
+                  required
+                />
+                <div class="invalid-feedback" *ngIf="esMermaInvalida(item.merma)" style="display: block;">
+                  La merma es obligatoria y debe ser mayor o igual a 0
+                </div>
+                <small *ngIf="item.merma == 0" class="text-warning">
+                  Este ítem no será enviado (merma = 0)
+                </small>
+              </td>
+              <td>
+                <input 
+                  type="text" 
+                  style="font-size: 13px;border: 1px solid #c7c7c7;width: 100% !important;"
+                  class="form-control-sm" 
+                  [(ngModel)]="item.lote"
+                  placeholder="Opcional"
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-12">
+          <small class="text-muted">
+            <span class="text-danger">*</span> Campo obligatorio
+          </small>
+          <br>
+          <small class="text-muted">
+            <span class="badge badge-warning">Amarillo</span> = Ítems con merma 0 (no se enviarán)
+          </small>
+          <br>
+          <small class="text-muted">
+            <span class="badge badge-danger">Rojo</span> = Ítems con datos inválidos
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">
+       Cancelar
+    </button>
+    <button 
+      type="button" 
+      class="btn btn-warning text-white" 
+      (click)="confirmarEnvioMerma(modal)"
+      [disabled]="!validarTodosLosDatos() || enviandoMerma || !hayItemsParaEnviar()">
+      <span *ngIf="!enviandoMerma">
+        <i class="material-icons">output</i> Enviar a SAP
+      </span>
+      <span *ngIf="enviandoMerma">
+        <span class="spinner-border spinner-border-sm" role="status"></span>
+        Enviando...
+      </span>
+    </button>
+  </div>
+</ng-template>
+</div>

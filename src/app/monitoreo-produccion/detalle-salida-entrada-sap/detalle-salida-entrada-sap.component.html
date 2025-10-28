@@ -10,8 +10,7 @@
   
       <table *ngIf="detallesSalida.length"  class="table table-responsive-lg mb-0">
         <thead class="sticky-top">
-            <tr>
-                <th>Id</th>
+            <tr> 
                 <th>DocDate</th>
                 <th>TaxDate</th>
                 <th>Comments</th>
@@ -21,28 +20,20 @@
                 <th>IdOrdenVenta</th>
                 <th>ItemCode</th>
                 <th>Quantity</th>
+                <th>BatchNumbers</th>
                 <th>WarehouseCode</th>
-                <th>AcctCode</th>
-                <th>CostingCode</th>
-                <th>ProjectCode</th>
-                <th>CostingCode2</th>
-                <th>CostingCode3</th>
-                <th>CostingCode4</th>
-                <th>CostingCode5</th>
+                <th>AcctCode</th> 
                 <th>IdLineaSistemaE</th>
                 <th>FamiliaPT</th>
-                <th>SubFamiliaPT</th>
-                <th>BatchNumbers</th>
-                <th>SerialNumbers</th>
-                <th>CodigoSalidaSap</th>
-                <th>FechaCreacion</th>
-                <th>Tipo</th>
+                <th>SubFamiliaPT</th> 
+                <th>CodigoSalida</th>
+                <th>CodigoSalidaMerma</th>
+                <th>FechaCreacion</th> 
                 <th>CotizacionGrupo</th>
               </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let detalle of detallesSalida">
-                <td>{{ detalle.id }}</td>
+            <tr *ngFor="let detalle of detallesSalida"> 
                 <td>{{ detalle.docDate }}</td>
                 <td>{{ detalle.taxDate }}</td>
                 <td>{{ detalle.comments }}</td>
@@ -52,22 +43,16 @@
                 <td>{{ detalle.idOrdenVenta }}</td>
                 <td>{{ detalle.itemCode }}</td>
                 <td>{{ detalle.quantity }}</td>
+                <td>{{ detalle.batchNumbers }}</td>
                 <td>{{ detalle.warehouseCode }}</td>
-                <td>{{ detalle.acctCode }}</td>
-                <td>{{ detalle.costingCode }}</td>
-                <td>{{ detalle.projectCode }}</td>
-                <td>{{ detalle.costingCode2 }}</td>
-                <td>{{ detalle.costingCode3 }}</td>
-                <td>{{ detalle.costingCode4 }}</td>
-                <td>{{ detalle.costingCode5 }}</td>
+                <td>{{ detalle.acctCode }}</td> 
                 <td>{{ detalle.idLineaSistemaE }}</td>
                 <td>{{ detalle.familiaPT }}</td>
-                <td>{{ detalle.subFamiliaPT }}</td>
-                <td>{{ detalle.batchNumbers }}</td>
-                <td>{{ detalle.serialNumbers }}</td>
+                <td>{{ detalle.subFamiliaPT }}</td> 
                 <td>{{ detalle.codigoSalidaSap }}</td>
-                <td>{{ detalle.fechaCreacion | date: 'yyyy-MM-dd' }}</td>
-                <td>{{ detalle.tipo }}</td>
+                <td>{{ detalle.codigoSalidaMermaSap }}</td>
+                
+                <td>{{ detalle.fechaCreacion | date: 'yyyy-MM-dd' }}</td> 
                 <td>{{ detalle.cotizacionGrupo }}</td>
               </tr>
         </tbody>
@@ -87,21 +72,13 @@
                 <th>ItemCode</th>
                 <th>Quantity</th>
                 <th>WarehouseCode</th>
-                <th>AcctCode</th>
-                <th>CostingCode</th>
-                <th>ProjectCode</th>
-                <th>CostingCode2</th>
-                <th>CostingCode3</th>
-                <th>CostingCode4</th>
-                <th>CostingCode5</th>
+                <th>AcctCode</th> 
                 <th>IdLineaSistemaE</th>
                 <th>FamiliaPT</th>
                 <th>SubFamiliaPT</th>
-                <th>BatchNumbers</th>
-                <th>SerialNumbers</th>
+                <th>BatchNumbers</th> 
                 <th>CodigoSalidaSap</th>
-                <th>FechaCreacion</th>
-                <th>Tipo</th>
+                <th>FechaCreacion</th> 
                 <th>CotizacionGrupo</th>
               </tr>
         </thead>
@@ -118,21 +95,13 @@
                 <td>{{ detalle.itemCode }}</td>
                 <td>{{ detalle.quantity }}</td>
                 <td>{{ detalle.warehouseCode }}</td>
-                <td>{{ detalle.acctCode }}</td>
-                <td>{{ detalle.costingCode }}</td>
-                <td>{{ detalle.projectCode }}</td>
-                <td>{{ detalle.costingCode2 }}</td>
-                <td>{{ detalle.costingCode3 }}</td>
-                <td>{{ detalle.costingCode4 }}</td>
-                <td>{{ detalle.costingCode5 }}</td>
+                <td>{{ detalle.acctCode }}</td> 
                 <td>{{ detalle.idLineaSistemaE }}</td>
                 <td>{{ detalle.familiaPT }}</td>
                 <td>{{ detalle.subFamiliaPT }}</td>
-                <td>{{ detalle.batchNumbers }}</td>
-                <td>{{ detalle.serialNumbers }}</td>
+                <td>{{ detalle.batchNumbers }}</td> 
                 <td>{{ detalle.codigoSalidaSap }}</td>
-                <td>{{ detalle.fechaCreacion | date: 'yyyy-MM-dd' }}</td>
-                <td>{{ detalle.tipo }}</td>
+                <td>{{ detalle.fechaCreacion | date: 'yyyy-MM-dd' }}</td> 
                 <td>{{ detalle.cotizacionGrupo }}</td>
               </tr>
         </tbody>

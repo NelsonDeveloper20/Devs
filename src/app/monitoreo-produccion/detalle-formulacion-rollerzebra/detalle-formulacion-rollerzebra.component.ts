@@ -600,7 +600,7 @@ idUsuario:any;
        if (result.isConfirmed) { 
          
    this.spinner.show();
-   this._service.GuardarFormulacionRollerShade(jsonData)
+   this._service.GuardarFormulacionRollerShade(jsonData,"Guardado")
      .subscribe({
        next: response => {
          this.spinner.hide();

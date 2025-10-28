@@ -58,6 +58,82 @@
     }
   </script>
   <style>   
+  
+/* Tabla general */
+.table-sm {
+  font-size: 13px;
+  border-collapse: collapse !important; /* ← Cambia esto */ 
+  border-spacing: 0;
+  margin-bottom: 0 !important;
+}
+
+/* Encabezado */ 
+.table-sm thead th {
+  padding: 10px 8px !important;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: none !important; 
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.table-sm thead tr {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Cuerpo de la tabla */
+.table-sm tbody {
+  background: white;
+}
+  
+.table-sm tbody tr:last-child {
+  border-bottom: 1px solid #eaeaea !important;
+}
+.table-sm tbody tr {
+  border-bottom: 1px solid #eaeaea  !important; /* Color más visible */
+}
+.table-sm tbody tr:hover {
+  background-color: #f8f9ff !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
+  border-bottom: 1px solid #dee2e6 !important; /* Mantener borde en hover */
+} 
+
+.table-sm tbody td {
+  padding: 8px !important;
+  vertical-align: middle !important;
+  border: none !important;
+  color: #333;
+  line-height: 1.3;
+  white-space: nowrap !important;
+}
+
+/* Botones */
+.table-sm .btn {
+  min-width: 36px;
+  height: 36px;
+  padding: 6px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 2px;
+}
+
+.table-sm .btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+  margin: 0;
+} 
+
+
+
    .select2-container {
     z-index: 999999 !important; /* Z-index muy alto para estar sobre todo */
     border-radius: 3px;
@@ -247,7 +323,7 @@ margin-left: 0.563rem !important;
     padding: 12px 9px !important; 
 }
 .example-containerss {
-  height: 550px;
+  height: 650px;
   /*overflow: auto;*/
 }
 .primary {
