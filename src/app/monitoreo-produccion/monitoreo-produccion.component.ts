@@ -158,7 +158,7 @@ showFilter4(){
   //#region ABRIR EXPLOCIÓN
   dialogRef:any;
   AbrirExplocionComponentes(item:any): void {   
-
+/*
     const productosArray = item.productos.split(',').map(p => p.trim());
 
     const productosConFormulacion = [
@@ -183,7 +183,7 @@ showFilter4(){
         allowOutsideClick: false
       }); 
       return;
-    }
+    }*/
 /*
   this.router.navigate(['/Excel'], {
     state: { data: item }

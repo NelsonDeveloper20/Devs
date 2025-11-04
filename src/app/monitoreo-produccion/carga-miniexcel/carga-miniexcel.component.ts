@@ -1067,7 +1067,7 @@ async listarComponenteProductoByGrupo(grupo: string): Promise<void> {
     this.ListComponenteProducto = [];
 
     // Procesar productos en lote
-    await this.procesarProductosEnLote(grupo, codigosProductos);
+    await this.procesarProductosEnLote(grupo, codigosProductos); 
 
     console.log("DATA OBTENIDA");
     console.log(this.ListComponenteProducto);
@@ -1163,7 +1163,7 @@ private async procesarProductosEnLote(grupo: string, codigosProductos: string[])
   //var codigosProductos=['PRTRSMan', 'PRTRSMot'];
   this.inicializarCombosPorHoja(codigosProductos);
   for (const codigoProducto of codigosProductos) {
-    if (this.debeProcerarProducto(codigoProducto)) {
+    //if (this.debeProcerarProducto(codigoProducto)) {   
       try {
         this.spinnerMessage = `Cargando producto: ${codigoProducto} (${procesados + 1}/${codigosProductos.length})`;
         this.spinner.show('cargandoProductos');
@@ -1178,9 +1178,9 @@ private async procesarProductosEnLote(grupo: string, codigosProductos: string[])
       } finally {
         this.spinner.hide('cargandoProductos');
       }
-    } else {
+    /*} else {
       console.log(`⏭️ Producto omitido: ${codigoProducto}`);
-    }
+    }*/
   }
 
   this.spinner.hide();
