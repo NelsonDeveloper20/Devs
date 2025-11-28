@@ -1239,7 +1239,7 @@ private obtenerCodigoProductoEspecial(codigoProducto: string): string | null {
   // Para cortinas, retorna el código original si contiene PRTCV
   if (codigo.includes('PRTCV')) return codigoProducto;
   
-  return null;
+  return codigoProducto;
 }
 /**
  * Procesa un producto específico y lo agrega a la lista
