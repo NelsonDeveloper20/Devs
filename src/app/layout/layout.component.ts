@@ -248,10 +248,10 @@ console.log(fechaFormateada);
         // Add header table for each page
         
         if(this.paginas > 0) {
-          this.html += '<p style="height: 20.67px; background: red;visibility: hidden;">Página ' + (i + 1) + '</p>';
+          this.html += '<p style="height: 50.67px; background: red;visibility: hidden;">Página ' + (i + 1) + '</p>';
       }
         this.html += `
-    <table class="table-layout laypdf" style="width: 100% !important; font-size: 11px; font-weight: 500;">
+    <table class="table-layout laypdf" style="width: 100% !important; font-size: 11px; font-weight: 500;height: 100px !important;    max-height: 100px !important;    min-height: 100px !important;">
         <tbody>
             <tr>
                 <td style="border: none !important;vertical-align: top;text-align: start;padding-bottom: 0px !important;">
@@ -722,7 +722,7 @@ console.log(fechaFormateada);
 
       html_indice_agrupacion += "<td>" + prods[i].indiceAgrupacion + "</td>";
       html_indexdetalle += "<td>" + prods[i].index_detalle + "</td>";
-      html_tipotubo += "<td >" + prods[i].nombreTubo + "</td>";
+      html_tipotubo += "<td style='font-size: 9px !important;' >" + prods[i].nombreTubo + "</td>";
       html_area +=
         "<td>" + (prods[i].telaCalculo * prods[i].alturaCalculo).toFixed(3) + "</td>"; //"<td>"+prods[i].area+"</td>";
 
@@ -1092,10 +1092,11 @@ console.log(fechaFormateada);
         notaprod = prods[num_table].nota;
     } catch (err) {}
     let htmlobs = '';
-    htmlobs += `<label>  ${notaprod} </label></br>`;
-    htmlobs += "<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label></br></br>";
-    html += "<div><table class='table-layout laypdf'><tbody>";
-    html += "<tr><td style='border: 0px dotted white !important;'></td>" + html_renderFigura + "</tr>";
+    htmlobs += `${notaprod}`;
+    /*htmlobs += `<label>  ${notaprod} </label></br>`;
+    htmlobs += "<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label></br></br>";*/
+    html += "<div><table class='table-layout laypdf' style='height: 600px !important;    max-height: 600px !important;    min-height: 600px !important;'><tbody>";
+    html += "<tr><td style='border: 0px dotted white !important;height: 103px !important;   min-height: 103px !important;    max-height: 103px !important;'></td>" + html_renderFigura + "</tr>";
 
     html += "<tr><td style='border: 0px dotted white !important;height: 18px;'></td></tr>";
 
@@ -1141,7 +1142,16 @@ console.log(fechaFormateada);
     html += `<tr><td class=tela_${num_table}>Area</td>${html_area}</tr>`;
     html += `<tr class='bordertable'><td>Escuadra</td>${html_escuadra}</tr>`;
     html += `<tr><td class=tela_${num_table}><b>Comentario:</b></td><td colspan='7'></td></tr>`;
-    html += `</tbody></table>
+    html += `<tr>
+    <td class="tela_${num_table}"><b>Observaciones:</b></td>
+    <td colspan="5">${htmlobs}</td>
+    <td><b>Fecha Entrega:</b> ${primerElemento.fechaEntrega}</td>
+    <td><b>Turno:</b> ${turno_l}</td>
+</tr>`;
+html += `</tbody></table>`;
+
+return html;
+    /*html += `</tbody></table>
     <div class='row'>
     <div class='col-lg-10'  style='font-size: 11px;'>
     <b>OBSERVACIONES:</b> ${htmlobs}
@@ -1152,7 +1162,7 @@ console.log(fechaFormateada);
     </div>
     
    `;// ${htmlfechas}<label>OBSERVACIONES: ${htmlobs}</label></div>
-    return html;
+    return html;*/
      
   }
   //ENDS
@@ -1166,7 +1176,8 @@ console.log(fechaFormateada);
     <tr>
     <th style='background: #B8122B !important; color: white !important; text-align: center !important; border: 0.1px solid #dbdbdb4f;'>Código Producto</th>
     <th style='background: #B8122B !important; color: white !important; text-align: center !important; border: 0.1px solid #dbdbdb4f;'>Nombre Producto</th>
-    <th style='background: #B8122B !important; color: white !important; text-align: center !important; border: 0.1px solid #dbdbdb4f;'>Cantidad</th>
+    <th style='background: #B8122B !important; color: white !important; text-align: center !important; border: 0.1px solid #dbdbdb4f;'>Cantidad</th><th style='background: #B8122B !important; color: white !important; text-align: center !important; border: 0.1px solid #dbdbdb4f;'>Ancho</th>
+<th style='background: #B8122B !important; color: white !important; text-align: center !important; border: 0.1px solid #dbdbdb4f;'>Alto</th>
     <th style='background: #B8122B !important; color: white !important; text-align: center !important; border: 0.1px solid #dbdbdb4f;'>Unidad Medida</th>
     <th style='background: #B8122B !important; color: white !important; text-align: center !important; border: 0.1px solid #dbdbdb4f;'>Sub Familia</th>
     <th style='background: #B8122B !important; color: white !important; text-align: center !important; border: 0.1px solid #dbdbdb4f;'>Tipo OP</th>
@@ -1181,7 +1192,9 @@ console.log(fechaFormateada);
         this.html += "<tr>";
         this.html += `<td style='border: 0.1px solid #dbdbdb4f;'>${element.codigoProducto}</td>`;
         this.html += `<td style='border: 0.1px solid #dbdbdb4f;'>${element.nombreProducto}</td>`;
-        this.html += `<td style='border: 0.1px solid #dbdbdb4f;'>${element.cantidad}</td>`;
+        this.html += `<td style='border: 0.1px solid #dbdbdb4f;'>${element.cantidad}</td>`;       
+         this.html += `<td style='border: 0.1px solid #dbdbdb4f;'>${element.ancho}</td>`;
+        this.html += `<td style='border: 0.1px solid #dbdbdb4f;'>${element.alto}</td>`;
         this.html += `<td style='border: 0.1px solid #dbdbdb4f;'>${element.unidadMedida}</td>`;
         this.html += `<td style='border: 0.1px solid #dbdbdb4f;'>${element.subFamilia}</td>`;     
         this.html += `<td style='border: 0.1px solid #dbdbdb4f;'>${element.tipo_OP}</td>`;
