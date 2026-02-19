@@ -28,6 +28,7 @@ interface ConfiguracionLayout {
 })
 export class LayoutComponent implements OnInit {
   objConfiguracionAtributos: ConfiguracionLayout = ObjConfigsLayout;
+  horaImpresion: Date = new Date();
 
   id: string | null = null;
   @ViewChild('content') content: ElementRef;
@@ -60,6 +61,7 @@ export class LayoutComponent implements OnInit {
     console.log('Received ID:', this.id);
     // Puedes realizar más acciones con el id aquí
     //this.generarPDF2();
+    this.horaImpresion = new Date();
   } 
   DatosJson2:any=[];
   ObtenerLayout(cotizacionGrupo: any) {
