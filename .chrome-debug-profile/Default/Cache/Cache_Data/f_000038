@@ -14952,7 +14952,7 @@ class LayoutComponent {
                     <img id="barcodeImage_${i}" src="${this.getQRImageSource()}" style="width: 114px; height: 50px;">
                 </td>
                 <td colspan="2" style="border: none !important;text-align: center;vertical-align: top;text-align: center;padding-bottom: 0px !important;">
-                    <h3 style="color: black;">Orden de Produccion N: ${primerElemento === null || primerElemento === void 0 ? void 0 : primerElemento.cotizacionGrupo}</h3>
+                    <h3 style="color: black;">Orden Produccion: ${primerElemento === null || primerElemento === void 0 ? void 0 : primerElemento.cotizacionGrupo}</h3>
                 </td>
                 <td style="border: none !important;width: 287px;vertical-align: top;text-align: start;padding-bottom: 0px !important;">
                     <div class="" style="color: black;">

@@ -1,56 +1,67 @@
 <style>
-.pagina {
-    page-break-after: always;
-}
-</style> 
+    .pagina {
+        page-break-after: always;
+    }
+</style>
 
 <button (click)="generarPDF2()">Generar PDF</button>
 <button (click)="ObtenerLayout('rr')">listar data</button>
 <button (click)="GenerarLayout()"> ES EL NUEVO </button>
- 
+
 <hr>
-<h1>:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::DESDE AQUI ES LA GENERACION:::::::::::::::::::::::::::::::::::::::::::.</h1>
+<h1>:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::DESDE AQUI ES LA
+    GENERACION:::::::::::::::::::::::::::::::::::::::::::.</h1>
 <img id="barcodeImageProductos" style="width: 114px; height: 50px;">
-<div   id="layout" style="height: 100% !important;   font-family: 'Didact Gothic', sans-serif !important;
+<div id="layout" style="height: 100% !important;   font-family: 'Didact Gothic', sans-serif !important;
 color: black !important;margin: 8px;">
-  
-        <!--CABEZAR MAS CODIGO QR-->
-         <table *ngIf="this.tipoGrupo!=='Producto'"class="table-layout laypdf" style=" width: 100% !important;   font-size: 11px;  font-weight: 500;height: 100px !important;
+
+    <!--CABEZAR MAS CODIGO QR-->
+    <table *ngIf="this.tipoGrupo!=='Producto'" class="table-layout laypdf" style=" width: 100% !important;   font-size: 11px;  font-weight: 500;height: 100px !important;
     max-height: 100px !important;
-    min-height: 100px !important;"  > 
-            <tbody> 
-                <tr>
-                    <td style="border: none !important;vertical-align: top;text-align: start;padding-bottom: 0px !important;">    
-                        <img id="barcodeImage" style="width: 114px; height: 50px;">
-                    </td>
-                    <td colspan="2" style="border: none !important;text-align: center;vertical-align: top;text-align: center;padding-bottom: 0px !important;"> <h3  style="color: black;">Orden de Produccion N: {{DatosJson2[0]?.cotizacionGrupo}}</h3></td>                 
-                    <td style="border: none !important;width: 287px;vertical-align: top;text-align: start;padding-bottom: 0px !important;">
-                        <div class="" style="color: black;">
-                        <h5 style="font-weight: 700;margin-bottom: 0px;color: black;"> Fecha de entrega: {{DatosJson2[0]?.fechaEntrega }} </h5>
-                        <h5 style="font-weight: 700;margin-bottom: 0px;color: black;">
-                             Fecha :  {{DatosJson2[0]?.fechaImpresion | date:'dd/MM/yyyy'}} {{ horaImpresion | date:'hh:mm a' }}
-                            
-                            </h5>
-                        </div>
-                    </td>
-                </tr>  
-            <tr>            
-            <td  style="border: none !important;text-align: start;padding-bottom: 0px !important;">             
-                <span>Cliente:. {{DatosJson2[0]?.cliente}} </span><br>
-                <span>Direccion: {{DatosJson2[0]?.direccion}}   </span>    
+    min-height: 100px !important;">
+        <tbody>
+            <tr>
+                <td
+                    style="border: none !important;vertical-align: top;text-align: start;padding-bottom: 0px !important;">
+                    <img id="barcodeImage" style="width: 114px; height: 50px;">
                 </td>
-            <td colspan="2" style="border: none !important;text-align: center;padding-bottom: 0px !important;">Telefono: {{DatosJson2[0]?.telefono}}  &nbsp;&nbsp;&nbsp; Documento: {{DatosJson2[0]?.numeroCotizacion}}   </td> 
-            <td style="width: 287px;border: none !important;text-align: start;padding-bottom: 0px !important;"> 
-                <span>TIPO:  Distribucion  {{DatosJson2[0]?.tipoCliente}}  </span> <br>
-                <span>RESPONSABLE:   {{DatosJson2[0]?.vendedor}}  </span> <br>                
-                <span style="font-weight: 500;"> FECHA:  {{DatosJson2[0]?.fecha_Fabricacion | date:'dd/MM/yyyy'}}</span> 
-            </td> 
+                <td colspan="2"
+                    style="border: none !important;text-align: center;vertical-align: top;text-align: center;padding-bottom: 0px !important;">
+                    <h3 style="color: black;">Orden Produccion:{{DatosJson2[0]?.cotizacionGrupo}}</h3>
+                </td>
+                <td
+                    style="border: none !important;width: 287px;vertical-align: top;text-align: start;padding-bottom: 0px !important;">
+                    <div class="" style="color: black;">
+                        <h5 style="font-weight: 700;margin-bottom: 0px;color: black;"> Fecha de entrega:
+                            {{DatosJson2[0]?.fechaEntrega }} </h5>
+                        <h5 style="font-weight: 700;margin-bottom: 0px;color: black;">
+                            Fecha : {{DatosJson2[0]?.fechaImpresion | date:'dd/MM/yyyy'}} {{ horaImpresion | date:'hh:mm
+                            a' }}
+
+                        </h5>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: none !important;text-align: start;padding-bottom: 0px !important;">
+                    <span>Cliente:. {{DatosJson2[0]?.cliente}} </span><br>
+                    <span>Direccion: {{DatosJson2[0]?.direccion}} </span>
+                </td>
+                <td colspan="2" style="border: none !important;text-align: center;padding-bottom: 0px !important;">
+                    Telefono: {{DatosJson2[0]?.telefono}} &nbsp;&nbsp;&nbsp; Documento:
+                    {{DatosJson2[0]?.numeroCotizacion}} </td>
+                <td style="width: 287px;border: none !important;text-align: start;padding-bottom: 0px !important;">
+                    <span>TIPO: Distribucion {{DatosJson2[0]?.tipoCliente}} </span> <br>
+                    <span>RESPONSABLE: {{DatosJson2[0]?.vendedor}} </span> <br>
+                    <span style="font-weight: 500;"> FECHA: {{DatosJson2[0]?.fecha_Fabricacion |
+                        date:'dd/MM/yyyy'}}</span>
+                </td>
             </tr>
         </tbody>
-            </table>
-            <!--END-->
-<div  #layout>
+    </table>
+    <!--END-->
+    <div #layout>
+
+    </div>
 
 </div>
-    
-  </div>

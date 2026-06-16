@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import html2pdf from 'html2pdf.js';
+import html2canvas from 'html2canvas';
 // Importa el método jsPDF para autotable
 import 'jspdf-autotable';
 import * as _ from 'lodash';
@@ -126,28 +127,119 @@ export class LayoutComponent implements OnInit {
     );
   }
   generarPDF2() {
-    console.log("ejecute");
-    const options = {
-      filename: 'documento.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' },
+    const contenido = document.getElementById('layout')?.innerHTML;
+    if (!contenido) return;
+ 
+    const ventana = window.open('', '_blank', 'width=750,height=600');
+    if (!ventana) return;
+ 
+    ventana.document.write(`<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Orden de Produccion</title>
+  <link href="https://fonts.googleapis.com/css2?family=Didact+Gothic&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Didact Gothic', sans-serif; 
+      color: black; 
+      font-size: 11px; 
+      margin: 8px;
+      font-weight: 500;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    /* Tablas */
+    table { border-collapse: collapse; width: 100%; }
+    .table-layout > tr { margin: 0 !important; padding: 0 !important; }
+    .table-layout td { 
+      margin: 0 !important; 
+      padding: 5px !important; 
+      font-size: 14px; 
+      text-align: center;
+      font-weight: 500;
+    }
+    .laypdf td { 
+      margin: 0 !important; 
+      padding: 2px !important; 
+      font-size: 10px !important; 
+      border: 1px dotted black !important;
+      font-weight: 500;
+    }
+    
+    /* Colores */
+    .amarillo { background: #fff826 !important; font-weight: bold; }
+    .cabecera { background: gray !important; font-weight: bold !important; font-size: 15px !important; }
+    .cenefa { background: orange !important; font-weight: bold !important; font-size: 19px !important; }
+    .bordertable { border: 1px dotted black; }
+    
+    /* Headers */
+    h3 { white-space: nowrap; font-size: 16px; margin: 0; font-weight: 700; }
+    h5 { font-size: 12px; margin: 0; font-weight: 700; }
+    span { font-weight: 500; }
+    
+    /* Product blocks */
+    .product-block { 
+      display: block; margin: 8px auto; padding: 10px 20px; border: 1px #333 solid; 
+      width: 76px; background-color: white; position: relative; text-align: center; 
+      z-index: 3; height: 82px; white-space: pre-wrap;
+    }
+    .product-block.cuadrado::before { width: 23px; height: 24px; border: 3px solid #000; content: ''; background-color: #000; position: absolute; top: 0%; right: -2px; }
+    .product-block.izquierda::before { content: ''; height: 80%; width: 4px; background-color: #333; position: absolute; top: 10%; left: 8px; }
+    .product-block.derecha::before { content: ''; height: 80%; width: 4px; background-color: #333; position: absolute; top: 10%; right: 8px; z-index: -1; }
+    .product-block.izquierda_paloteblanco::before { content: ''; height: 80%; width: 7px; border: 2px solid #0e0e0e; position: absolute; top: 10%; left: 8px; }
+    .product-block.derecha_paloteblanco::before { content: ''; height: 80%; width: 7px; border: 2px solid #0e0e0e; position: absolute; top: 10%; right: 8px; }
+    .product-block._cuadradoizquierda::before { content: ''; height: 27%; width: 21px; background-color: #333; position: absolute; top: 0%; left: 0px; }
+    .product-block._cuadradoderecha::before { content: ''; height: 27%; width: 21px; background-color: #333; position: absolute; top: 0%; right: 0px; }
+    .ambos { content: ''; height: 80%; width: 4px; background-color: #333; position: absolute; top: 10%; right: 4px; }
+    
+    /* Motorizado toldo */
+    .motorizado_toldo_izquierda { color: #ffffff00; display: block; margin: 33px auto; padding: 10px 20px; width: 22px; border-right: 3px solid #333; white-space: pre-wrap; text-align: center; z-index: 999; height: 43px; position: absolute; }
+    .motorizado_toldo_derecha { color: rgba(255,255,255,0); display: block; width: 102px; white-space: pre-wrap; text-align: center; z-index: 999; height: 43px; position: absolute; margin: 33px auto; padding: 10px 20px; border-right: 3px solid rgb(51,51,51); }
+    .motorizado_toldo_derechaM1 { color: rgba(255,255,255,0); display: block; width: 109px; white-space: pre-wrap; text-align: center; z-index: 999; height: 43px; position: absolute; margin: 33px auto; padding: 10px 20px; border-right: 3px solid rgb(51,51,51); }
+    .motorizado_toldo_izquierdaM1 { color: #ffffff00; display: block; margin: 33px auto; padding: 10px 20px; width: 60px; border-right: 3px solid #333; white-space: pre-wrap; text-align: center; z-index: 999; height: 43px; position: absolute; }
+    .motorizado_toldo_derecha_w { color: rgba(255,255,255,0); display: block; white-space: pre-wrap; text-align: center; z-index: 999; position: absolute; padding: 10px 20px; border-right: 3px solid rgb(51,51,51); margin: 40px auto !important; height: 40px !important; width: 86px !important; }
+    .motorizado_toldo_derechaM2 { color: rgba(255,255,255,0); display: block; white-space: pre-wrap; text-align: center; z-index: 999; position: absolute; padding: 10px 20px; border-right: 3px solid rgb(51,51,51); margin: 50px auto !important; height: 30px !important; width: 96px !important; }
+    .motorizado_toldo_izquierdaM2 { color: #ffffff00; display: block; margin: 33px auto; padding: 10px 20px; width: 60px; border-right: 3px solid #333; white-space: pre-wrap; text-align: center; z-index: 999; height: 43px; position: absolute; }
+    
+    /* Product TD agrupaciones */
+    .prod_td { position: relative; }
+    .prod_td.g_first::before { z-index: 1; content: ''; display: block; background-color: black; position: absolute; top: 109px; right: -1px; height: 3px; width: 50%; }
+    .prod_td.g_first::after { z-index: 1; content: ''; display: block; background-color: black; position: absolute; top: 60px; right: 50%; height: 50%; width: 4px; }
+    .prod_td.g_midle::before { z-index: 1; content: ''; display: block; background-color: black; position: absolute; top: 109px; left: 0px; height: 3px; width: 100%; }
+    .prod_td.g_last::before { z-index: 1; content: ''; display: block; background-color: black; position: absolute; top: 109px; left: -1px; height: 3px; width: 50%; }
+    .prod_td.g_last::after { z-index: 1; content: ''; display: block; background-color: black; position: absolute; top: 60px; left: 50%; height: 50%; width: 4px; }
+    
+    /* Centrales */
+    .centrales { background: red; width: 100%; height: 3px; right: -118px; position: absolute; }
+    .centrales::before { z-index: 1; content: ''; display: block; background-color: red; position: absolute; top: 0px; height: 59px; width: 6px; }
+    .centrales::after { z-index: 1; content: ''; display: block; background-color: red; position: absolute; top: 0px; right: -1%; height: 59px; width: 6px; }
+    .centralcontinuos { background: red; width: 100%; height: 3px; right: 122px; position: absolute; }
+    .centralcontinuos::before { z-index: 1; content: ''; display: block; position: absolute; top: -1px; height: 59px; width: 6px; }
+    .centralcontinuos::after { z-index: 1; content: ''; display: block; background-color: red; position: absolute; top: -1px; right: -1%; height: 59px; width: 6px; }
+    
+    @media print {
+      @page { size: A4 landscape; margin: 5mm; }
+      .pagina { page-break-after: always; page-break-inside: avoid; display: block; overflow: hidden; }
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+  ${contenido}
+  <script>
+    window.onload = function() {
+      setTimeout(function() {
+        window.print();
+        window.onafterprint = function() { window.close(); };
+      }, 1000);
     };
-
-    const contenido = document.getElementById('layout');
-    html2pdf()
-      .from(contenido)
-      .set(options)
-      .toPdf() // Convertir a PDF
-      .get('pdf') // Obtener el objeto PDF
-      .then((pdf) => {
-        // Crear un enlace temporal para abrir el PDF en una nueva pestaña
-        const blob = new Blob([pdf.output('blob')], {
-          type: 'application/pdf',
-        });
-        const url = URL.createObjectURL(blob);
-        window.open(url);
-      }); 
+  </script>
+</body>
+</html>`);
+    ventana.document.close();
   } 
   generarCodigoBarras() {
     const canvas = document.createElement('canvas');
@@ -232,7 +324,9 @@ for (let i = 0; i < this.cantSubArray; i++) {
 const dia = hoy.getDate().toString().padStart(2, '0');
 const mes = (hoy.getMonth() + 1).toString().padStart(2, '0');
 const anio = hoy.getFullYear();
-const fechaFormateada = `${dia}/${mes}/${anio}`;
+const horas = hoy.getHours().toString().padStart(2, '0');
+const minutos = hoy.getMinutes().toString().padStart(2, '0');
+const fechaFormateada = `${dia}/${mes}/${anio} ${horas}:${minutos}`;
 
 console.log(fechaFormateada);
 
@@ -249,9 +343,12 @@ console.log(fechaFormateada);
         }                 
         // Add header table for each page
         
+        // Cerrar página anterior y abrir nueva página
         if(this.paginas > 0) {
-          this.html += '<p style="height: 50.67px; background: red;visibility: hidden;">Página ' + (i + 1) + '</p>';
-      }
+          this.html += '</div>'; // cierra la página anterior
+        }
+        this.html += '<div class="pagina" style="width:100%;page-break-after:always;">'; // abre nueva página
+        
         this.html += `
     <table class="table-layout laypdf" style="width: 100% !important; font-size: 11px; font-weight: 500;height: 100px !important;    max-height: 100px !important;    min-height: 100px !important;">
         <tbody>
@@ -286,19 +383,15 @@ console.log(fechaFormateada);
         </tbody>
     </table>`;
 
-        if(this.paginas==0){
-          this.html += this.renderProducts(primerElemento, arraySubArray[i], i, central_si, this.comentcoun);
-        }else{
-        //  this.html +='<p style=" height: 95.67px;visibility: hidden; ">Página </p>';///* visibility: hidden; */
         this.html += this.renderProducts(primerElemento, arraySubArray[i], i, central_si, this.comentcoun);
-        this.html +='</div>';
-        }
-
         
         this.counter++;
         this.totalPaGina++;
         this.paginas++; 
     }
+    
+    // Cerrar la última página
+    this.html += '</div>';
 
     // Asignar el HTML generado al elemento del DOM 
     this.contenthtml.nativeElement.innerHTML = this.html;

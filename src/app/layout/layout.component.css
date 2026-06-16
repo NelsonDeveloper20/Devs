@@ -711,3 +711,10 @@ color: #363431;
         /*font-weight: 900;*/
     }
      
+
+/* Estilos para las páginas del PDF */
+.pagina {
+  page-break-after: always;
+  display: block;
+  overflow: hidden;
+}
