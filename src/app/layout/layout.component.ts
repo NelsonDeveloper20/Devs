@@ -126,11 +126,12 @@ export class LayoutComponent implements OnInit {
       }
     );
   }
-  generarPDF2() {
-    const contenido = document.getElementById('layout')?.innerHTML;
+  generarPDF2(htmlContenido?: string) {
+    // Si se pasa HTML como parámetro, usar esa copia. Si no, leer del DOM (para botones manuales)
+    const contenido = htmlContenido || document.getElementById('layout')?.innerHTML;
     if (!contenido) return;
  
-    const ventana = window.open('', '_blank', 'width=750,height=600');
+    const ventana = window.open('', '_blank');
     if (!ventana) return;
  
     ventana.document.write(`<!DOCTYPE html>
@@ -229,14 +230,6 @@ export class LayoutComponent implements OnInit {
 </head>
 <body>
   ${contenido}
-  <script>
-    window.onload = function() {
-      setTimeout(function() {
-        window.print();
-        window.onafterprint = function() { window.close(); };
-      }, 1000);
-    };
-  </script>
 </body>
 </html>`);
     ventana.document.close();
@@ -393,10 +386,15 @@ console.log(fechaFormateada);
     // Cerrar la última página
     this.html += '</div>';
 
+    // Guardar copia inmutable del HTML ANTES de asignarlo al DOM
+    const htmlClonado = this.html;
+    
     // Asignar el HTML generado al elemento del DOM 
     this.contenthtml.nativeElement.innerHTML = this.html;
     this.spinner.hide();
-    this.generarPDF2();
+    
+    // Generar PDF usando la copia inmutable
+    this.generarPDF2(htmlClonado);
 }
 // Helper method to format date
   formatDate(date: string): string {
@@ -1265,8 +1263,56 @@ return html;
     
     this.generarCodigoBarras();
     this.spinner.show();
-    this.html=""; 
-    this.html = "<table cellspacing='0' style='width: 100% !important; font-size: 13px; border-collapse: collapse;' class=''>";
+    
+    const primerElemento = this.DatosJson2[0];
+    const hoy = new Date();
+    const dia = hoy.getDate().toString().padStart(2, '0');
+    const mes = (hoy.getMonth() + 1).toString().padStart(2, '0');
+    const anio = hoy.getFullYear();
+    const horas = hoy.getHours().toString().padStart(2, '0');
+    const minutos = hoy.getMinutes().toString().padStart(2, '0');
+    const fechaFormateada = `${dia}/${mes}/${anio} ${horas}:${minutos}`;
+    
+    // Construir HTML completo incluyendo cabecera
+    this.html = "";
+    
+    // CABECERA (igual que en el HTML pero generada en TypeScript)
+    this.html += `
+    <table class="table-layout laypdf" style="width: 100% !important; font-size: 11px; font-weight: 500; height: 100px !important; max-height: 100px !important; min-height: 100px !important;">
+        <tbody>
+            <tr>
+                <td style="border: none !important; vertical-align: top; text-align: start; padding-bottom: 0px !important;">
+                    <img src="${this.getQRImageSource()}" style="width: 114px; height: 50px;">
+                </td>
+                <td colspan="2" style="border: none !important; text-align: center; vertical-align: top; padding-bottom: 0px !important;">
+                    <h3 style="color: black;">Orden Produccion: ${primerElemento?.cotizacionGrupo || '---'}</h3>
+                </td>
+                <td style="border: none !important; width: 287px; vertical-align: top; text-align: start; padding-bottom: 0px !important;">
+                    <div style="color: black;">
+                        <h5 style="font-weight: 700; margin-bottom: 0px; color: black;">Fecha de entrega: ${primerElemento?.fechaEntrega || '---'}</h5>
+                        <h5 style="font-weight: 700; margin-bottom: 0px; color: black;">Fecha : ${fechaFormateada}</h5>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: none !important; text-align: start; padding-bottom: 0px !important;">
+                    <span>Cliente: ${primerElemento?.cliente || '---'}</span><br>
+                    <span>Direccion: ${primerElemento?.direccion || '---'}</span>
+                </td>
+                <td colspan="2" style="border: none !important; text-align: center; padding-bottom: 0px !important;">
+                    Telefono: ${primerElemento?.telefono || '---'} &nbsp;&nbsp;&nbsp; Documento: ${primerElemento?.numeroCotizacion || '---'}
+                </td>
+                <td style="width: 287px; border: none !important; text-align: start; padding-bottom: 0px !important;">
+                    <span>TIPO: Distribucion ${primerElemento?.tipoCliente || '---'}</span><br>
+                    <span>RESPONSABLE: ${primerElemento?.vendedor || '---'}</span><br>
+                    <span style="font-weight: 500;">FECHA: ${this.formatDate(primerElemento?.fecha_Fabricacion)}</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>`;
+    
+    // TABLA DE COMPONENTES
+    this.html += "<table cellspacing='0' style='width: 100% !important; font-size: 13px; border-collapse: collapse;' class=''>";
     this.html += `<thead style='height: 37px !important;'>
     <tr>
     <th style='background: #B8122B !important; color: white !important; text-align: center !important; border: 0.1px solid #dbdbdb4f;'>Código Producto</th>
@@ -1301,10 +1347,14 @@ return html;
     
     this.html += "</tbody></table>";
     
+    // Guardar copia inmutable del HTML completo (cabecera + tabla)
+    const htmlClonado = this.html;
+    
     this.contenthtml.nativeElement.innerHTML = this.html;
     this.spinner.hide();
     
-    this.generarPDF2();
+    // Generar PDF usando la copia inmutable
+    this.generarPDF2(htmlClonado);
   }
 }
  
