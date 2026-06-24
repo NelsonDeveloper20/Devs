@@ -338,6 +338,8 @@ console.log(fechaFormateada);
         
         // Cerrar página anterior y abrir nueva página
         if(this.paginas > 0) {
+          // Agregar línea separadora antes de cerrar la página
+          this.html += '<hr style="border: none; border-top: 2px dashed #999; margin: 20px 0;">';
           this.html += '</div>'; // cierra la página anterior
         }
         this.html += '<div class="pagina" style="width:100%;page-break-after:always;">'; // abre nueva página
@@ -383,7 +385,8 @@ console.log(fechaFormateada);
         this.paginas++; 
     }
     
-    // Cerrar la última página
+    // Cerrar la última página con línea separadora
+    this.html += '<hr style="border: none; border-top: 2px dashed #999; margin: 20px 0;">';
     this.html += '</div>';
 
     // Guardar copia inmutable del HTML ANTES de asignarlo al DOM
